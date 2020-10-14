@@ -1,0 +1,16 @@
+@startuml
+class Dstu2PatientController <<RestController>>
+class Dstu2PatientTransformer
+class Patient
+class PatientEntity
+class WebExceptionHandler <<RestControllerAdvice>>
+Interface PatientRepository
+
+WebExceptionHandler .. Dstu2PatientController: <<decorates>>
+Dstu2PatientController *--> Dstu2PatientTransformer
+Dstu2PatientController *--> PatientRepository
+Dstu2PatientController ..down..> Patient: <<publish>>
+Dstu2PatientTransformer ..up..> Patient: <<create>>
+Dstu2PatientTransformer ..> PatientEntity : <<transform>>
+PatientRepository ..> PatientEntity : <<process>>
+@enduml

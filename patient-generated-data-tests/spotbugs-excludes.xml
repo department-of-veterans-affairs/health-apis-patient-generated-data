@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FindBugsFilter>
+  <!--
+    IdRegistrar.registeredIds() is a Lombok generated lazy getter that is implemented
+    correctly. Details can be read here: https://projectlombok.org/features/GetterLazy
+  -->
+  <Match>
+    <Class name="gov.va.api.health.dataquery.tests.IdRegistrar"/>
+    <Method name="registeredIds"/>
+    <Or>
+      <Bug pattern="JLM_JSR166_UTILCONCURRENT_MONITORENTER"/>
+      <Bug pattern="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE"/>
+    </Or>
+  </Match>
+  <!--
+    Path is determined automatically and not user specified.
+  -->
+  <Match>
+    <Class name="gov.va.api.health.dataquery.tests.crawler.FileResultsCollector"/>
+    <Bug pattern="PATH_TRAVERSAL_IN"/>
+  </Match>
+</FindBugsFilter>
