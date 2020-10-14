@@ -70,7 +70,7 @@
                 <argument>-cp</argument>
                 <argument>patient-generated-data.jar</argument>
                 <argument>-Dlogging.level.root=INFO</argument>
-                <argument>-Dloader=gov.va.api.health.patientgenerateddata.service.Application</argument>
+                <argument>-Dloader=gov.va.api.health.patientgenerateddata.Application</argument>
               </arguments>
             </configuration>
           </execution>
