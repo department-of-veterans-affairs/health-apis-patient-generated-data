@@ -10,11 +10,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 
 @Slf4j
-public class SmokeTestIT {
+public class SmokeIT {
   @Test
   void health() {
     Service svc = systemDefinition().internal();
-    String request = svc.url() + "/actuator/health";
+    String request = svc.urlWithApiPath() + "actuator/health";
     log.info(request);
     ExpectedResponse.of(
             RestAssured.given()
