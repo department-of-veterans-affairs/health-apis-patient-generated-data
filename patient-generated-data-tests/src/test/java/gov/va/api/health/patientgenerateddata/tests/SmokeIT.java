@@ -14,7 +14,7 @@ public class SmokeIT {
   @Test
   void health() {
     Service svc = systemDefinition().internal();
-    String request = svc.urlWithApiPath() + "/actuator/health";
+    String request = svc.urlWithApiPath() + "actuator/health";
     log.info(request);
     ExpectedResponse.of(
             RestAssured.given()
