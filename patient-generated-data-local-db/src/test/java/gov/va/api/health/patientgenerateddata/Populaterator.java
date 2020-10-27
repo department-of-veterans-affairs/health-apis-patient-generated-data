@@ -6,31 +6,30 @@ import java.sql.DriverManager;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.NonNull;
 import lombok.SneakyThrows;
 import lombok.Value;
 
-@Value
-@AllArgsConstructor(staticName = "of")
 public final class Populaterator {
   @SneakyThrows
-  private static void bootstrap(Db db) {
+  private static void bootstrap(@NonNull Db db) {
     log("Bootstrapping " + db.name());
-    var conn = db.bootstrapConnection();
-    if (conn.isEmpty()) {
+    var maybeConn = db.bootstrapConnection();
+    if (maybeConn.isEmpty()) {
       return;
     }
+    var conn = maybeConn.get();
     for (var n : db.bootstrapDatabases()) {
       log("Creating database " + n);
-      conn.get().prepareStatement("DROP DATABASE IF EXISTS " + n).execute();
-      conn.get().prepareStatement("CREATE DATABASE " + n).execute();
+      conn.prepareStatement("DROP DATABASE IF EXISTS " + n).execute();
+      conn.prepareStatement("CREATE DATABASE " + n).execute();
     }
-    conn.get().commit();
-    conn.get().close();
+    conn.commit();
+    conn.close();
   }
 
-  private static void log(String msg) {
+  private static void log(@NonNull String msg) {
     System.out.println(msg);
   }
 
@@ -54,8 +53,8 @@ public final class Populaterator {
   }
 
   @SneakyThrows
-  private static void populate(Db db) {
-    log("Populating " + db.name() + " database");
+  private static void populate(@NonNull Db db) {
+    log("Populating " + db.name());
     bootstrap(db);
     var connection = db.connection();
     log("Creating 'app' schema");
@@ -82,8 +81,8 @@ public final class Populaterator {
 
   @Value
   @Builder
-  static final class H2 implements Db {
-    String dbFile;
+  private static final class H2 implements Db {
+    @NonNull String dbFile;
 
     @Override
     public Optional<Connection> bootstrapConnection() {
@@ -101,16 +100,16 @@ public final class Populaterator {
 
   @Value
   @Builder
-  static final class SqlServer implements Db {
-    String host;
+  private static final class SqlServer implements Db {
+    @NonNull String host;
 
-    String port;
+    @NonNull String port;
 
-    String user;
+    @NonNull String user;
 
-    String password;
+    @NonNull String password;
 
-    String database;
+    @NonNull String database;
 
     @Override
     @SneakyThrows
