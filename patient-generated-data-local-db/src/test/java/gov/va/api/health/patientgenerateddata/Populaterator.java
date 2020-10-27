@@ -6,6 +6,7 @@ import java.sql.DriverManager;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 import liquibase.Contexts;
 import liquibase.LabelExpression;
 import liquibase.Liquibase;
@@ -79,15 +80,27 @@ public final class Populaterator {
   @SneakyThrows
   private static void populate(@NonNull Db db) {
     log("Populating " + db.name());
+    waitForStartup(db);
     bootstrap(db);
     liquibase(db);
     var connection = db.connection();
-    // log("Creating 'app' schema");
-    // connection.prepareStatement("CREATE SCHEMA APP").execute();
-    // create individual tables
     connection.commit();
     connection.close();
     log("Finished " + db.name());
+  }
+
+  @SneakyThrows
+  private static void waitForStartup(@NonNull Db db) {
+    for (int i = 1; i <= 30; i++) {
+      try {
+        db.bootstrapConnection();
+        return;
+      } catch (Exception e) {
+        log("Waiting for startup...");
+        TimeUnit.SECONDS.sleep(2);
+      }
+    }
+    throw new IllegalStateException("Failed to start");
   }
 
   interface Db {

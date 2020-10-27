@@ -17,7 +17,4 @@ docker run \
   -p 1633:1433 \
   -d mcr.microsoft.com/mssql/server:2017-latest
 
-# Wait for SQL server
-sleep 10
-
 mvn clean install -Ppopulaterator -P'!standard'
