@@ -60,7 +60,7 @@ public final class Populaterator {
     var connection = db.connection();
     log("Creating 'app' schema");
     connection.prepareStatement("CREATE SCHEMA APP").execute();
-    // TODO create individual tables
+    // create individual tables
     connection.commit();
     connection.close();
     log("Finished " + db.name());
