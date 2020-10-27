@@ -16,5 +16,9 @@
       <groupId>gov.va.api.health</groupId>
       <artifactId>service-auto-config</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.liquibase</groupId>
+      <artifactId>liquibase-core</artifactId>
+    </dependency>
   </dependencies>
 </project>
