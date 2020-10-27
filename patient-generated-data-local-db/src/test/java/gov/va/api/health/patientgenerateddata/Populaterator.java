@@ -56,12 +56,12 @@ public final class Populaterator {
   private static void populate(@NonNull Db db) {
     log("Populating " + db.name());
     bootstrap(db);
-    var connection = db.connection();
-    log("Creating 'app' schema");
-    connection.prepareStatement("CREATE SCHEMA APP").execute();
-    // create individual tables
-    connection.commit();
-    connection.close();
+    //    var connection = db.connection();
+    //    log("Creating 'app' schema");
+    //    connection.prepareStatement("CREATE SCHEMA APP").execute();
+    //    // create individual tables
+    //    connection.commit();
+    //    connection.close();
     log("Finished " + db.name());
   }
 
