@@ -1,4 +1,4 @@
-# facilities-local-db
+# patient-generated-data-local-db
 
 This project builds a SQL Server Docker image
 for local development. This is the operational database for
