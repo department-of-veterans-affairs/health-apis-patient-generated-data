@@ -21,5 +21,10 @@ download the artifact from
 and install manually:
 
 ```
-mvn install:install-file -Dfile=/path/to/liquibase-core-3.8.9.jar -DgroupId=org.liquibase -DartifactId=liquibase-core -Dversion=3.8.9 -Dpackaging=jar
+mvn install:install-file \
+  -Dfile=/path/to/liquibase-core-3.8.9.jar \
+  -DgroupId=org.liquibase \
+  -DartifactId=liquibase-core \
+  -Dversion=3.8.9 \
+  -Dpackaging=jar
 ```
