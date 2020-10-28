@@ -84,6 +84,7 @@ public final class Populaterator {
     bootstrap(db);
     liquibase(db);
     var connection = db.connection();
+    // populate individual resources
     connection.commit();
     connection.close();
     log("Finished " + db.name());
