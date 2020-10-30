@@ -6,6 +6,14 @@ import java.sql.DriverManager;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
+import liquibase.Contexts;
+import liquibase.LabelExpression;
+import liquibase.Liquibase;
+import liquibase.database.Database;
+import liquibase.database.DatabaseFactory;
+import liquibase.database.jvm.JdbcConnection;
+import liquibase.resource.FileSystemResourceAccessor;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.SneakyThrows;
@@ -29,6 +37,23 @@ public final class Populaterator {
     conn.close();
   }
 
+  @SneakyThrows
+  private static void liquibase(@NonNull Db db) {
+    var connection = db.connection();
+    Database database =
+        DatabaseFactory.getInstance()
+            .findCorrectDatabaseImplementation(new JdbcConnection(connection));
+    String baseDir = System.getProperty("basedir", ".");
+    try (Liquibase liquibase =
+        new Liquibase(
+            baseDir
+                + "/../patient-generated-data/src/main/resources/db/changelog/db.changelog-master.yaml",
+            new FileSystemResourceAccessor(),
+            database)) {
+      liquibase.update(new Contexts(), new LabelExpression());
+    }
+  }
+
   private static void log(@NonNull String msg) {
     System.out.println(msg);
   }
@@ -37,7 +62,7 @@ public final class Populaterator {
   public static void main(String[] args) {
     if (Boolean.parseBoolean(System.getProperty("populaterator.h2", "true"))) {
       String baseDir = System.getProperty("basedir", ".");
-      populate(H2.builder().dbFile(baseDir + "/target/mock-pgd-db").build());
+      populate(H2.builder().dbFile(baseDir + "/target/pgd-db").build());
     }
     if (Boolean.parseBoolean(System.getProperty("populaterator.sqlserver", "false"))) {
       populate(
@@ -55,14 +80,28 @@ public final class Populaterator {
   @SneakyThrows
   private static void populate(@NonNull Db db) {
     log("Populating " + db.name());
+    waitForStartup(db);
     bootstrap(db);
+    liquibase(db);
     var connection = db.connection();
-    log("Creating 'app' schema");
-    connection.prepareStatement("CREATE SCHEMA APP").execute();
-    // create individual tables
+    // populate individual resources
     connection.commit();
     connection.close();
     log("Finished " + db.name());
+  }
+
+  @SneakyThrows
+  private static void waitForStartup(@NonNull Db db) {
+    for (int i = 1; i <= 30; i++) {
+      try {
+        db.bootstrapConnection();
+        return;
+      } catch (Exception e) {
+        log("Waiting for startup...");
+        TimeUnit.SECONDS.sleep(2);
+      }
+    }
+    throw new IllegalStateException("Failed to start");
   }
 
   interface Db {
