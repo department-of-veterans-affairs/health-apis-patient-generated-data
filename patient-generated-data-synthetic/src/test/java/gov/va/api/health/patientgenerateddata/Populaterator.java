@@ -16,6 +16,9 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.IntStream;
+
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
 import liquibase.Contexts;
 import liquibase.LabelExpression;
 import liquibase.Liquibase;
@@ -88,7 +91,6 @@ public final class Populaterator {
               .password("<YourStrong!Passw0rd>")
               .database("pgd")
               .build());
-      System.exit(0);
     }
   }
 
@@ -110,9 +112,15 @@ public final class Populaterator {
     Set<String> ids = new HashSet<>();
     for (File f : new File(baseDir() + "/src/test/resources/questionnaire").listFiles()) {
       Questionnaire questionnaire = MAPPER.readValue(f, Questionnaire.class);
+      Set<ConstraintViolation<Questionnaire>> violations =
+          Validation.buildDefaultValidatorFactory().getValidator().validate(questionnaire);
+      checkState(violations.isEmpty(), "Invalid payload: " + violations);
+
       String id = questionnaire.id();
       checkState(id != null);
-      checkState(!ids.contains(id));
+      checkState(!ids.contains(id), "Duplicate ID " + id);
+      ids.add(id);
+
       try (PreparedStatement statement =
           connection.prepareStatement(
               "insert into app.questionnaire ("
@@ -126,7 +134,6 @@ public final class Populaterator {
         statement.setObject(2, new ObjectMapper().writeValueAsString(questionnaire));
         statement.setObject(3, 0);
         statement.execute();
-        ids.add(id);
       }
     }
   }
