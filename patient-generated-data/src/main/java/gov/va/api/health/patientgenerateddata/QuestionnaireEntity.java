@@ -1,7 +1,5 @@
 package gov.va.api.health.patientgenerateddata;
 
-// import gov.va.api.health.dataquery.service.controller.EnumSearcher;
-// import gov.va.api.health.dataquery.service.controller.datamart.DatamartEntity;
 import javax.persistence.Basic;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;

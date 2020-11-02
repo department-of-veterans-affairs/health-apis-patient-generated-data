@@ -6,7 +6,6 @@ import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
-
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.io.JsonEOFException;
@@ -167,8 +166,6 @@ public final class WebExceptionHandler {
 
   @ExceptionHandler({
     BindException.class,
-    // Exceptions.BadSearchParameter.class,
-    // Exceptions.MissingSearchParameters.class,
     UnsatisfiedServletRequestParameterException.class,
     gov.va.api.lighthouse.vulcan.InvalidRequest.class
   })
@@ -185,21 +182,12 @@ public final class WebExceptionHandler {
 
   @ExceptionHandler({
     HttpClientErrorException.NotFound.class,
-    Exceptions.NotFound.class,
-    // Exceptions.UnknownIdentityInSearchParameter.class,
-    // Exceptions.UnknownResource.class,
-    // BadId.class
+    Exceptions.NotFound.class
   })
   @ResponseStatus(HttpStatus.NOT_FOUND)
   OperationOutcome handleNotFound(Exception e, HttpServletRequest request) {
     return responseFor("not-found", e, request, emptyList(), true);
   }
-
-  //  @ExceptionHandler({Exceptions.NotImplemented.class})
-  //  @ResponseStatus(HttpStatus.NOT_IMPLEMENTED)
-  //  OperationOutcome handleNotImplemented(Exception e, HttpServletRequest request) {
-  //    return responseFor("not-implemented", e, request, emptyList(), true);
-  //  }
 
   /**
    * For exceptions relating to unmarshalling json, we want to make sure no PII is being logged.
