@@ -11,6 +11,7 @@
   <version>0.0.7-SNAPSHOT</version>
   <packaging>jar</packaging>
   <properties>
+    <fhir-resources.version>5.0.11</fhir-resources.version>
     <populaterator.sqlserver>false</populaterator.sqlserver>
   </properties>
   <dependencies>
@@ -21,6 +22,16 @@
     <dependency>
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
+    </dependency>
+    <!--  <dependency>
+      <groupId>gov.va.api.health</groupId>
+      <artifactId>service-auto-config</artifactId>
+      <version>${project.version}</version>
+    </dependency> -->
+    <dependency>
+      <groupId>gov.va.api.health</groupId>
+      <artifactId>us-core-r4</artifactId>
+      <version>${fhir-resources.version}</version>
     </dependency>
     <dependency>
       <groupId>com.microsoft.sqlserver</groupId>
