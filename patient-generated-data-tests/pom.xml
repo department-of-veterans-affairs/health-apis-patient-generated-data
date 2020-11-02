@@ -27,7 +27,7 @@
     </dependency>
     <dependency>
       <groupId>gov.va.api.health</groupId>
-      <artifactId>patient-generated-data-local-db</artifactId>
+      <artifactId>patient-generated-data-synthetic</artifactId>
       <version>${project.version}</version>
       <scope>test</scope>
       <classifier>tests</classifier>
@@ -51,7 +51,7 @@
             </goals>
             <configuration>
               <outputDirectory>${project.build.directory}</outputDirectory>
-              <includeArtifactIds>h2,junit-platform-console-standalone,patient-generated-data,patient-generated-data-local-db</includeArtifactIds>
+              <includeArtifactIds>h2,junit-platform-console-standalone,patient-generated-data,patient-generated-data-synthetic</includeArtifactIds>
               <stripVersion>true</stripVersion>
             </configuration>
           </execution>
@@ -81,12 +81,12 @@
                 <argument>java</argument>
                 <argument>-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5090</argument>
                 <argument>-cp</argument>
-                <argument>patient-generated-data.jar${path.separator}h2.jar${path.separator}patient-generated-data-local-db-tests.jar</argument>
+                <argument>patient-generated-data.jar${path.separator}h2.jar${path.separator}patient-generated-data-synthetic-tests.jar</argument>
                 <argument>-Dloader=gov.va.api.health.patientgenerateddata.Application</argument>
                 <argument>-Dlogging.level.root=INFO</argument>
                 <argument>-Dspring.datasource.driver-class-name=org.h2.Driver</argument>
                 <argument>-Dspring.datasource.password=sa</argument>
-                <argument>-Dspring.datasource.url=jdbc:h2:${project.basedir}/../patient-generated-data-local-db/target/pgd-db</argument>
+                <argument>-Dspring.datasource.url=jdbc:h2:${project.basedir}/../patient-generated-data-synthetic/target/pgd-db</argument>
                 <argument>-Dspring.datasource.username=sa</argument>
                 <argument>-Dspring.jpa.generate-ddl=false</argument>
                 <argument>-Dspring.jpa.hibernate.ddl-auto=none</argument>
