@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Validated
 @RestController
 @RequestMapping(
-    value = {"/r4/Questionnaire"},
+    value = "/r4/Questionnaire",
     produces = {"application/json", "application/fhir+json"})
 @AllArgsConstructor(onConstructor = @__({@Autowired}))
 public class QuestionnaireController {
