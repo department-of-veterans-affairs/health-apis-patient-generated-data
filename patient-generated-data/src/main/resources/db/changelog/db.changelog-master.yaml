@@ -7,3 +7,28 @@ databaseChangeLog:
         - sql:
             dbms: h2, mssql
             sql: create schema app;
+
+  - changeSet:
+      id: 2
+      author: pteracuda
+      changes:
+        - createTable:
+            tableName: questionnaire
+            schemaName: app
+            columns:
+              - column:
+                  name: id
+                  type: varchar(32)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: payload
+                  type: clob
+                  constraints:
+                    nullable: false
+              - column:
+                  name: version
+                  type: int
+                  constraints:
+                    nullable: false

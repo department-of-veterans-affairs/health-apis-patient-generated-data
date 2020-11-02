@@ -76,6 +76,7 @@
               <healthcheckUrl>http://localhost:8095/actuator/health</healthcheckUrl>
               <skip>${sentinel.skipLaunch}</skip>
               <processLogFile>${project.build.directory}/patient-generated-data.log</processLogFile>
+              <waitAfterLaunch>60</waitAfterLaunch>
               <arguments>
                 <argument>java</argument>
                 <argument>-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5090</argument>
@@ -90,6 +91,7 @@
                 <argument>-Dspring.jpa.generate-ddl=false</argument>
                 <argument>-Dspring.jpa.hibernate.ddl-auto=none</argument>
                 <argument>-Dspring.jpa.properties.hibernate.globally_quoted_identifiers=false</argument>
+                <argument>-Dweb-exception-key=-sharktopus-v-pteracuda-</argument>
                 <argument>org.springframework.boot.loader.PropertiesLauncher</argument>
               </arguments>
             </configuration>

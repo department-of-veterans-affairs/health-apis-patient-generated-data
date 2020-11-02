@@ -10,7 +10,10 @@
   <artifactId>patient-generated-data</artifactId>
   <version>0.0.7-SNAPSHOT</version>
   <packaging>jar</packaging>
-  <properties/>
+  <properties>
+    <fhir-resources.version>5.0.11</fhir-resources.version>
+    <vulcan.version>1.0.0</vulcan.version>
+  </properties>
   <dependencies>
     <dependency>
       <groupId>com.microsoft.sqlserver</groupId>
@@ -19,6 +22,16 @@
     <dependency>
       <groupId>gov.va.api.health</groupId>
       <artifactId>service-auto-config</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>gov.va.api.health</groupId>
+      <artifactId>us-core-r4</artifactId>
+      <version>${fhir-resources.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>gov.va.api.lighthouse</groupId>
+      <artifactId>vulcan</artifactId>
+      <version>${vulcan.version}</version>
     </dependency>
     <dependency>
       <groupId>org.liquibase</groupId>
