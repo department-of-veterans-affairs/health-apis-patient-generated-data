@@ -6,6 +6,7 @@ import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
+
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.io.JsonEOFException;
@@ -180,10 +181,7 @@ public final class WebExceptionHandler {
     return responseFor("not-allowed", e, request, emptyList(), true);
   }
 
-  @ExceptionHandler({
-    HttpClientErrorException.NotFound.class,
-    Exceptions.NotFound.class
-  })
+  @ExceptionHandler({HttpClientErrorException.NotFound.class, Exceptions.NotFound.class})
   @ResponseStatus(HttpStatus.NOT_FOUND)
   OperationOutcome handleNotFound(Exception e, HttpServletRequest request) {
     return responseFor("not-found", e, request, emptyList(), true);
