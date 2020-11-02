@@ -2,7 +2,6 @@ package gov.va.api.health.patientgenerateddata;
 
 import static com.google.common.base.Preconditions.checkState;
 import static java.util.Collections.emptyList;
-import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -128,7 +127,7 @@ public final class WebExceptionHandler {
                 .status(Narrative.NarrativeStatus.additional)
                 .div("<div>Failure: " + request.getRequestURI() + "</div>")
                 .build())
-        .issue(singletonList(issue))
+        .issue(List.of(issue))
         .build();
   }
 
