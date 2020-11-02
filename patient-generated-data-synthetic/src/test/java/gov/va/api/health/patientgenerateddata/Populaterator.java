@@ -82,7 +82,7 @@ public final class Populaterator {
     log("Populating " + db.name());
     waitForStartup(db);
     bootstrap(db);
-    // liquibase(db);
+    liquibase(db);
     var connection = db.connection();
     // populate individual resources
     connection.commit();
