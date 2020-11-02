@@ -1,5 +1,5 @@
 databaseChangeLog:
-  - logicalFilePath: classpath:/db/changelog/db.changelog-master.yaml
+  - logicalFilePath: db/changelog/db.changelog-master.yaml
 
   - changeSet:
       id: 1
