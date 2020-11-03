@@ -11,7 +11,7 @@
   <packaging>pom</packaging>
   <modules>
     <module>patient-generated-data</module>
-    <module>patient-generated-data-local-db</module>
+    <module>patient-generated-data-synthetic</module>
     <module>patient-generated-data-tests</module>
   </modules>
 </project>

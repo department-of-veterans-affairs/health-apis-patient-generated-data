@@ -17,4 +17,4 @@ docker run \
   -p 1633:1433 \
   -d mcr.microsoft.com/mssql/server:2017-latest
 
-mvn clean install -Ppopulaterator -P'!standard'
+mvn clean install -Ppopulaterator -P'!standard' -Dexec.cleanupDaemonThreads=false

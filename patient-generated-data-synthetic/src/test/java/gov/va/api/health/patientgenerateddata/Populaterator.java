@@ -1,12 +1,23 @@
 package gov.va.api.health.patientgenerateddata;
 
+import static com.google.common.base.Preconditions.checkState;
+import static java.util.stream.Collectors.joining;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import gov.va.api.health.r4.api.resources.Questionnaire;
 import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.IntStream;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
 import liquibase.Contexts;
 import liquibase.LabelExpression;
 import liquibase.Liquibase;
@@ -20,6 +31,12 @@ import lombok.SneakyThrows;
 import lombok.Value;
 
 public final class Populaterator {
+  private static final ObjectMapper MAPPER = new ObjectMapper();
+
+  private static String baseDir() {
+    return System.getProperty("basedir", ".");
+  }
+
   @SneakyThrows
   private static void bootstrap(@NonNull Db db) {
     log("Bootstrapping " + db.name());
@@ -30,7 +47,6 @@ public final class Populaterator {
     var conn = maybeConn.get();
     for (var n : db.bootstrapDatabases()) {
       log("Creating database " + n);
-      conn.prepareStatement("DROP DATABASE IF EXISTS " + n).execute();
       conn.prepareStatement("CREATE DATABASE " + n).execute();
     }
     conn.commit();
@@ -43,10 +59,9 @@ public final class Populaterator {
     Database database =
         DatabaseFactory.getInstance()
             .findCorrectDatabaseImplementation(new JdbcConnection(connection));
-    String baseDir = System.getProperty("basedir", ".");
     try (Liquibase liquibase =
         new Liquibase(
-            baseDir
+            baseDir()
                 + "/../patient-generated-data/src/main/resources/db/changelog/db.changelog-master.yaml",
             new FileSystemResourceAccessor(),
             database)) {
@@ -61,8 +76,10 @@ public final class Populaterator {
   @SneakyThrows
   public static void main(String[] args) {
     if (Boolean.parseBoolean(System.getProperty("populaterator.h2", "true"))) {
-      String baseDir = System.getProperty("basedir", ".");
-      populate(H2.builder().dbFile(baseDir + "/target/pgd-db").build());
+      String dbFile = baseDir() + "/target/pgd-db";
+      new File(dbFile + ".mv.db").delete();
+      new File(dbFile + ".trace.db").delete();
+      populate(H2.builder().dbFile(dbFile).build());
     }
     if (Boolean.parseBoolean(System.getProperty("populaterator.sqlserver", "false"))) {
       populate(
@@ -73,7 +90,6 @@ public final class Populaterator {
               .password("<YourStrong!Passw0rd>")
               .database("pgd")
               .build());
-      System.exit(0);
     }
   }
 
@@ -84,10 +100,41 @@ public final class Populaterator {
     bootstrap(db);
     liquibase(db);
     var connection = db.connection();
-    // populate individual resources
+    questionnaire(connection);
     connection.commit();
     connection.close();
     log("Finished " + db.name());
+  }
+
+  @SneakyThrows
+  private static void questionnaire(@NonNull Connection connection) {
+    Set<String> ids = new HashSet<>();
+    for (File f : new File(baseDir() + "/src/test/resources/questionnaire").listFiles()) {
+      Questionnaire questionnaire = MAPPER.readValue(f, Questionnaire.class);
+      Set<ConstraintViolation<Questionnaire>> violations =
+          Validation.buildDefaultValidatorFactory().getValidator().validate(questionnaire);
+      checkState(violations.isEmpty(), "Invalid payload: " + violations);
+
+      String id = questionnaire.id();
+      checkState(id != null);
+      checkState(!ids.contains(id), "Duplicate ID " + id);
+      ids.add(id);
+
+      try (PreparedStatement statement =
+          connection.prepareStatement(
+              "insert into app.questionnaire ("
+                  + "id,"
+                  + "payload,"
+                  + "version"
+                  + ") values ("
+                  + IntStream.range(0, 3).mapToObj(v -> "?").collect(joining(","))
+                  + ")")) {
+        statement.setObject(1, id);
+        statement.setObject(2, new ObjectMapper().writeValueAsString(questionnaire));
+        statement.setObject(3, 0);
+        statement.execute();
+      }
+    }
   }
 
   @SneakyThrows
@@ -131,8 +178,6 @@ public final class Populaterator {
     @Override
     @SneakyThrows
     public Connection connection() {
-      new File(dbFile + ".mv.db").delete();
-      new File(dbFile + ".trace.db").delete();
       return DriverManager.getConnection("jdbc:h2:" + dbFile, "sa", "sa");
     }
   }

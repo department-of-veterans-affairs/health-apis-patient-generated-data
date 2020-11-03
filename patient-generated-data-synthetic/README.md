@@ -1,9 +1,8 @@
-# patient-generated-data-local-db
+# patient-generated-data-synthetic
 
-This project builds a SQL Server Docker image
-for local development. This is the operational database for
-Patient Generated Data.
-An H2 database instance is also built for use by integration tests.
+Synthetic data for local and development environments.
+This project also builds a SQL Server Docker image
+for local development, and an H2 database for use by integration tests.
 
 ## Local Development
 

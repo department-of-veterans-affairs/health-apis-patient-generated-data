@@ -7,10 +7,12 @@
     <version>7.0.15</version>
     <relativePath/>
   </parent>
-  <artifactId>patient-generated-data-local-db</artifactId>
+  <artifactId>patient-generated-data-synthetic</artifactId>
   <version>0.0.7-SNAPSHOT</version>
   <packaging>jar</packaging>
   <properties>
+    <fhir-resources.version>5.0.11</fhir-resources.version>
+    <javax.el.version>3.0.1-b12</javax.el.version>
     <populaterator.sqlserver>false</populaterator.sqlserver>
   </properties>
   <dependencies>
@@ -23,8 +25,22 @@
       <artifactId>h2</artifactId>
     </dependency>
     <dependency>
+      <groupId>gov.va.api.health</groupId>
+      <artifactId>us-core-r4</artifactId>
+      <version>${fhir-resources.version}</version>
+    </dependency>
+    <dependency>
       <groupId>com.microsoft.sqlserver</groupId>
       <artifactId>mssql-jdbc</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.glassfish</groupId>
+      <artifactId>javax.el</artifactId>
+      <version>${javax.el.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.hibernate.validator</groupId>
+      <artifactId>hibernate-validator</artifactId>
     </dependency>
     <dependency>
       <groupId>org.liquibase</groupId>

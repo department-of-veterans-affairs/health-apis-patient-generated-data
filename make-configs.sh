@@ -38,4 +38,5 @@ makeConfig patient-generated-data $PROFILE
 configValue patient-generated-data $PROFILE spring.datasource.password '<YourStrong!Passw0rd>'
 configValue patient-generated-data $PROFILE spring.datasource.url 'jdbc:sqlserver://localhost:1633;database=pgd;sendStringParametersAsUnicode=false'
 configValue patient-generated-data $PROFILE spring.datasource.username 'SA'
+configValue patient-generated-data $PROFILE web-exception-key '-sharktopus-v-pteracuda-'
 checkForUnsetValues patient-generated-data $PROFILE

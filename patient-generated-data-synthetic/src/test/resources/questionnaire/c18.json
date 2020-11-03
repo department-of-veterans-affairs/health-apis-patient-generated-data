@@ -1,0 +1,58 @@
+{
+  "resourceType" : "Questionnaire",
+  "id" : "c18",
+  "meta" : {
+    "tag" : [
+      {
+        "system" : "https://wiki.mobilehealth.va.gov/display/PGDMS/Client+Provenance+Mapping",
+        "code" : "vagov-a0e116eb-faa1-4703-aafe-1a270128607a",
+        "display" : "VA GOV CLIPBOARD"
+      }
+    ]
+  },
+  "title" : "VA GOV Pre-Visit Agenda Questionnaire",
+  "status" : "active",
+  "publisher" : "clipboard.gov.va",
+  "item" : [
+    {
+      "linkId" : "01",
+      "text" : "What is the reason for this appointment?",
+      "type" : "string"
+    },
+    {
+      "linkId" : "02",
+      "text" : "What do I want to talk about at this appointment?",
+      "type" : "text"
+    },
+    {
+      "linkId" : "03",
+      "text" : "I have new symptoms.",
+      "type" : "boolean"
+    },
+    {
+      "linkId" : "04",
+      "text" : "I have medication questions.",
+      "type" : "boolean"
+    },
+    {
+      "linkId" : "05",
+      "text" : "I have questions about my diagnosis.",
+      "type" : "boolean"
+    },
+    {
+      "linkId" : "06",
+      "text" : "I have questions about my tests.",
+      "type" : "boolean"
+    },
+    {
+      "linkId" : "07",
+      "text" : "I have questions about my treatment plans.",
+      "type" : "boolean"
+    },
+    {
+      "linkId" : "08",
+      "text" : "I have other concerns or life issues to discuss.",
+      "type" : "boolean"
+    }
+  ]
+}
