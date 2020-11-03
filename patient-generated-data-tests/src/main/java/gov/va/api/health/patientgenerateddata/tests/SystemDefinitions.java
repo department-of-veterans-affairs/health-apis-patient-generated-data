@@ -1,5 +1,6 @@
 package gov.va.api.health.patientgenerateddata.tests;
 
+
 import gov.va.api.health.sentinel.Environment;
 import gov.va.api.health.sentinel.SentinelProperties;
 import lombok.Builder;
@@ -14,12 +15,16 @@ class SystemDefinitions {
         .internal(
             serviceDefinition(
                 "internal", "https://blue.lab.lighthouse.va.gov", 443, "/patient-generated-data/"))
+        .r4(
+            serviceDefinition(
+                "r4", "https://blue.lab.lighthouse.va.gov", 443, "/services/pgd/v0/r4/"))
         .build();
   }
 
   private static SystemDefinition local() {
     return SystemDefinition.builder()
         .internal(serviceDefinition("internal", "http://localhost", 8095, "/"))
+        .r4(serviceDefinition("r4", "http://localhost", 8095, "/r4/"))
         .build();
   }
 
@@ -31,6 +36,9 @@ class SystemDefinitions {
                 "https://blue.production.lighthouse.va.gov",
                 443,
                 "/patient-generated-data/"))
+        .r4(
+            serviceDefinition(
+                "r4", "https://blue.production.lighthouse.va.gov", 443, "/services/pgd/v0/r4/"))
         .build();
   }
 
@@ -39,6 +47,7 @@ class SystemDefinitions {
         .internal(
             serviceDefinition(
                 "internal", "https://blue.qa.lighthouse.va.gov", 443, "/patient-generated-data/"))
+        .r4(serviceDefinition("r4", "https://blue.qa.lighthouse.va.gov", 443, "/pgd/v0/r4/"))
         .build();
   }
 
@@ -58,6 +67,7 @@ class SystemDefinitions {
                 "https://blue.staging.lighthouse.va.gov",
                 443,
                 "/patient-generated-data/"))
+        .r4(serviceDefinition("r4", "https://blue.staging.lighthouse.va.gov", 443, "/pgd/v0/r4/"))
         .build();
   }
 
@@ -69,6 +79,9 @@ class SystemDefinitions {
                 "https://blue.staging-lab.lighthouse.va.gov",
                 443,
                 "/patient-generated-data/"))
+        .r4(
+            serviceDefinition(
+                "r4", "https://blue.staging-lab.lighthouse.va.gov", 443, "/pgd/v0/r4/"))
         .build();
   }
 
@@ -118,5 +131,7 @@ class SystemDefinitions {
   @Builder
   static final class SystemDefinition {
     @NonNull Service internal;
+
+    @NonNull Service r4;
   }
 }
