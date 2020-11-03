@@ -139,7 +139,7 @@ public class WebExceptionHandlerTest {
     OperationOutcome outcome =
         new WebExceptionHandler("")
             .handleSnafu(
-                new IllegalStateException("oh noez", new RuntimeException("cause")),
+                new Exceptions.InvalidPayload("oh noez", new RuntimeException("cause")),
                 mock(HttpServletRequest.class));
     assertThat(outcome.id(null).extension(null))
         .isEqualTo(

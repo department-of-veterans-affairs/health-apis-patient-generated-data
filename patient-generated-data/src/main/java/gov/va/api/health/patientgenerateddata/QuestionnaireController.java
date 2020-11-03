@@ -23,7 +23,7 @@ public class QuestionnaireController {
   private final QuestionnaireRepository repository;
 
   @SneakyThrows
-  private static <T> T deserializedPayload(
+  static <T> T deserializedPayload(
       @NonNull String id, @NonNull String payload, @NonNull Class<T> clazz) {
     try {
       return JacksonConfig.createMapper().readValue(payload, clazz);
