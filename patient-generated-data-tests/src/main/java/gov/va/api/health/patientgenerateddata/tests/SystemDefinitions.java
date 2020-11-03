@@ -1,6 +1,5 @@
 package gov.va.api.health.patientgenerateddata.tests;
 
-
 import gov.va.api.health.sentinel.Environment;
 import gov.va.api.health.sentinel.SentinelProperties;
 import lombok.Builder;
