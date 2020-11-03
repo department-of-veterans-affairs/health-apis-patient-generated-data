@@ -38,7 +38,7 @@ import org.springframework.web.client.HttpClientErrorException;
 
 @Slf4j
 @RestControllerAdvice
-@RequestMapping(produces = {"application/json"})
+@RequestMapping(produces = "application/json")
 public final class WebExceptionHandler {
   private final String encryptionKey;
 
