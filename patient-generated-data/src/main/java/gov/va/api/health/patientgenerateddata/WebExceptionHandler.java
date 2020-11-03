@@ -76,7 +76,7 @@ public final class WebExceptionHandler {
             .replaceAll("[\r\n]", "");
   }
 
-  private static String sanitizedMessage(Throwable tr) {
+  static String sanitizedMessage(Throwable tr) {
     if (tr instanceof MismatchedInputException) {
       MismatchedInputException mie = (MismatchedInputException) tr;
       return String.format("path: %s", mie.getPathReference());
