@@ -14,6 +14,7 @@ import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.DataBinder;
 
 public class QuestionnaireControllerTest {
   @Test
@@ -21,6 +22,12 @@ public class QuestionnaireControllerTest {
     assertThrows(
         Exceptions.InvalidPayload.class,
         () -> QuestionnaireController.deserializedPayload("x", "notjson", Questionnaire.class));
+  }
+
+  @Test
+  void initDirectFieldAccess() {
+    new QuestionnaireController(mock(QuestionnaireRepository.class))
+        .initDirectFieldAccess(mock(DataBinder.class));
   }
 
   @Test
