@@ -101,34 +101,34 @@ public class WebExceptionHandlerTest {
   }
 
   @Test
-  void sanitizedMessage_Exception() {
+  void sanitizedMessage_exception() {
     assertThat(WebExceptionHandler.sanitizedMessage(new RuntimeException("oh noez")))
         .isEqualTo("oh noez");
   }
 
   @Test
-  void sanitizedMessage_JsonEOFException() {
+  void sanitizedMessage_jsonEOFException() {
     JsonEOFException ex = mock(JsonEOFException.class);
     when(ex.getLocation()).thenReturn(new JsonLocation(null, 0, 0, 0));
     assertThat(WebExceptionHandler.sanitizedMessage(ex)).isEqualTo("line: 0, column: 0");
   }
 
   @Test
-  void sanitizedMessage_JsonMappingException() {
+  void sanitizedMessage_jsonMappingException() {
     JsonMappingException ex = mock(JsonMappingException.class);
     when(ex.getPathReference()).thenReturn("x");
     assertThat(WebExceptionHandler.sanitizedMessage(ex)).isEqualTo("path: x");
   }
 
   @Test
-  void sanitizedMessage_JsonParseException() {
+  void sanitizedMessage_jsonParseException() {
     JsonParseException ex = mock(JsonParseException.class);
     when(ex.getLocation()).thenReturn(new JsonLocation(null, 0, 0, 0));
     assertThat(WebExceptionHandler.sanitizedMessage(ex)).isEqualTo("line: 0, column: 0");
   }
 
   @Test
-  void sanitizedMessage_MismatchedInputException() {
+  void sanitizedMessage_mismatchedInputException() {
     MismatchedInputException ex = mock(MismatchedInputException.class);
     when(ex.getPathReference()).thenReturn("path");
     assertThat(WebExceptionHandler.sanitizedMessage(ex)).isEqualTo("path: path");
