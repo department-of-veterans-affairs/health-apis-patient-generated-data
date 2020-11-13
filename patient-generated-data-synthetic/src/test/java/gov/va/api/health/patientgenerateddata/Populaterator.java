@@ -5,13 +5,16 @@ import static java.util.stream.Collectors.joining;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.api.health.r4.api.resources.Questionnaire;
+import gov.va.api.health.r4.api.resources.QuestionnaireResponse;
 import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -101,6 +104,7 @@ public final class Populaterator {
     liquibase(db);
     var connection = db.connection();
     questionnaire(connection);
+    questionnaireResponse(connection);
     connection.commit();
     connection.close();
     log("Finished " + db.name());
@@ -109,6 +113,7 @@ public final class Populaterator {
   @SneakyThrows
   private static void questionnaire(@NonNull Connection connection) {
     Set<String> ids = new HashSet<>();
+    String sql = sql("app.questionnaire", List.of("id", "payload", "version"));
     for (File f : new File(baseDir() + "/src/test/resources/questionnaire").listFiles()) {
       Questionnaire questionnaire = MAPPER.readValue(f, Questionnaire.class);
       Set<ConstraintViolation<Questionnaire>> violations =
@@ -120,21 +125,50 @@ public final class Populaterator {
       checkState(!ids.contains(id), "Duplicate ID " + id);
       ids.add(id);
 
-      try (PreparedStatement statement =
-          connection.prepareStatement(
-              "insert into app.questionnaire ("
-                  + "id,"
-                  + "payload,"
-                  + "version"
-                  + ") values ("
-                  + IntStream.range(0, 3).mapToObj(v -> "?").collect(joining(","))
-                  + ")")) {
+      try (PreparedStatement statement = connection.prepareStatement(sql)) {
         statement.setObject(1, id);
         statement.setObject(2, new ObjectMapper().writeValueAsString(questionnaire));
         statement.setObject(3, 0);
         statement.execute();
       }
     }
+  }
+
+  @SneakyThrows
+  private static void questionnaireResponse(@NonNull Connection connection) {
+    Set<String> ids = new HashSet<>();
+    String sql = sql("app.QuestionnaireResponse", List.of("id", "payload", "version"));
+
+    for (File f : new File(baseDir() + "/src/test/resources/questionnaireResponse").listFiles()) {
+      QuestionnaireResponse response = MAPPER.readValue(f, QuestionnaireResponse.class);
+      Set<ConstraintViolation<QuestionnaireResponse>> violations =
+          Validation.buildDefaultValidatorFactory().getValidator().validate(response);
+      checkState(violations.isEmpty(), "Invalid payload: " + violations);
+
+      String id = response.id();
+      checkState(id != null);
+      checkState(!ids.contains(id), "Duplicate ID " + id);
+      ids.add(id);
+
+      try (PreparedStatement statement = connection.prepareStatement(sql)) {
+        statement.setObject(1, id);
+        statement.setObject(2, new ObjectMapper().writeValueAsString(response));
+        statement.setObject(3, 0);
+        statement.execute();
+      }
+    }
+  }
+
+  private static String sql(String table, Collection<String> columns) {
+    Objects.requireNonNull(table);
+    Objects.requireNonNull(columns);
+    return "insert into "
+        + table
+        + " ("
+        + columns.stream().collect(joining(","))
+        + ") values ("
+        + IntStream.range(0, columns.size()).mapToObj(v -> "?").collect(joining(","))
+        + ")";
   }
 
   @SneakyThrows

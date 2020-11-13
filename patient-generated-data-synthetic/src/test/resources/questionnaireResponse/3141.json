@@ -1,0 +1,69 @@
+{
+  "resourceType": "QuestionnaireResponse",
+  "id": "3141",
+  "text": {
+    "status": "generated",
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">      <pre>            Comorbidity? YES              Cardial Comorbidity? YES                Angina? YES                MI? NO              Vascular Comorbidity?                (no answers)              ...            Histopathology              Abdominal                pT category: 1a              ...          </pre>    </div>"
+  },
+  "status": "completed",
+  "authored": "2013-02-19T14:15:00-05:00",
+  "item": [
+    {
+      "linkId": "1",
+      "item": [
+        {
+          "linkId": "1.1",
+          "answer": [
+            {
+              "valueCoding": {
+                "system": "http://cancer.questionnaire.org/system/code/yesno",
+                "code": "1",
+                "display": "Yes"
+              },
+              "item": [
+                {
+                  "linkId": "1.1.1",
+                  "item": [
+                    {
+                      "linkId": "1.1.1.1",
+                      "answer": [
+                        {
+                          "valueCoding": {
+                            "system": "http://cancer.questionnaire.org/system/code/yesno",
+                            "code": "1"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "linkId": "1.1.1.2",
+                      "answer": [
+                        {
+                          "valueCoding": {
+                            "system": "http://cancer.questionnaire.org/system/code/yesno",
+                            "code": "1"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "linkId": "1.1.1.3",
+                      "answer": [
+                        {
+                          "valueCoding": {
+                            "system": "http://cancer.questionnaire.org/system/code/yesno",
+                            "code": "0"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
