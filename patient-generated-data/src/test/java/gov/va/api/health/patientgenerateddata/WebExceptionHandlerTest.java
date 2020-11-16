@@ -6,6 +6,7 @@ import static org.mockito.Mockito.when;
 
 import com.fasterxml.jackson.core.JsonLocation;
 import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.io.JsonEOFException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
@@ -155,6 +156,31 @@ public class WebExceptionHandlerTest {
                         OperationOutcome.Issue.builder()
                             .severity(OperationOutcome.Issue.IssueSeverity.fatal)
                             .code("exception")
+                            .build()))
+                .build());
+  }
+
+  @Test
+  void snafu_json() {
+    OperationOutcome outcome =
+        new WebExceptionHandler("")
+            .handleSnafu(
+                new JsonParseException(mock(JsonParser.class), "x"),
+                mock(HttpServletRequest.class));
+    assertThat(outcome.id(null).extension(null))
+        .isEqualTo(
+            OperationOutcome.builder()
+                .resourceType("OperationOutcome")
+                .text(
+                    Narrative.builder()
+                        .status(Narrative.NarrativeStatus.additional)
+                        .div("<div>Failure: null</div>")
+                        .build())
+                .issue(
+                    List.of(
+                        OperationOutcome.Issue.builder()
+                            .severity(OperationOutcome.Issue.IssueSeverity.fatal)
+                            .code("database")
                             .build()))
                 .build());
   }
