@@ -113,7 +113,6 @@ public final class Populaterator {
   @SneakyThrows
   private static void questionnaire(@NonNull Connection connection) {
     Set<String> ids = new HashSet<>();
-    String sql = sql("app.questionnaire", List.of("id", "payload", "version"));
     for (File f : new File(baseDir() + "/src/test/resources/questionnaire").listFiles()) {
       Questionnaire questionnaire = MAPPER.readValue(f, Questionnaire.class);
       Set<ConstraintViolation<Questionnaire>> violations =

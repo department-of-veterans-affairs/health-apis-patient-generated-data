@@ -1,6 +1,7 @@
 package gov.va.api.health.patientgenerateddata;
 
 import static com.google.common.base.Preconditions.checkState;
+import static gov.va.api.health.patientgenerateddata.SerializationUtils.deserializedPayload;
 
 import gov.va.api.health.autoconfig.configuration.JacksonConfig;
 import gov.va.api.health.autoconfig.logging.Loggable;
@@ -8,7 +9,6 @@ import gov.va.api.health.r4.api.resources.QuestionnaireResponse;
 import java.util.Optional;
 import javax.validation.Valid;
 import lombok.AllArgsConstructor;
-import lombok.NonNull;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -32,16 +32,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class QuestionnaireResponseController {
 
   private final QuestionnaireResponseRepository repository;
-
-  @SneakyThrows
-  static <T> T deserializedPayload(
-      @NonNull String id, @NonNull String payload, @NonNull Class<T> clazz) {
-    try {
-      return JacksonConfig.createMapper().readValue(payload, clazz);
-    } catch (Exception e) {
-      throw new Exceptions.InvalidPayload(id, e);
-    }
-  }
 
   @InitBinder
   void initDirectFieldAccess(DataBinder dataBinder) {
