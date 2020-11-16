@@ -38,6 +38,20 @@ databaseChangeLog:
       id: 3
       author: pteracuda
       changes:
+        # table renames are *not* case sensitive, so rename to a temporary name first
+        - renameTable:
+            schemaName: app
+            oldTableName: questionnaire
+            newTableName: questionnaire_temp
+        - renameTable:
+            schemaName: app
+            oldTableName: questionnaire_temp
+            newTableName: Questionnaire
+
+  - changeSet:
+      id: 4
+      author: pteracuda
+      changes:
         - createTable:
             tableName: QuestionnaireResponse
             schemaName: app
@@ -58,17 +72,3 @@ databaseChangeLog:
                   type: int
                   constraints:
                     nullable: false
-
-  - changeSet:
-      id: 4
-      author: pteracuda
-      changes:
-        # table renames are *not* case sensitive, so rename to a temporary name first
-        - renameTable:
-            schemaName: app
-            oldTableName: questionnaire
-            newTableName: questionnaire_temp
-        - renameTable:
-            schemaName: app
-            oldTableName: questionnaire_temp
-            newTableName: Questionnaire
