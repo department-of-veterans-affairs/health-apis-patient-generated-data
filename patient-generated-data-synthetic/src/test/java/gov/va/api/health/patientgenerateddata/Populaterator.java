@@ -14,7 +14,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -124,7 +123,7 @@ public final class Populaterator {
       checkState(!ids.contains(id), "Duplicate ID " + id);
       ids.add(id);
 
-      String sqlInsert = sqlInsert("app.questionnaire", List.of("id", "payload", "version"));
+      String sqlInsert = sqlInsert("app.Questionnaire", List.of("id", "payload", "version"));
       try (PreparedStatement statement = connection.prepareStatement(sqlInsert)) {
         statement.setObject(1, id);
         statement.setObject(2, new ObjectMapper().writeValueAsString(questionnaire));

@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @Data
 @Entity
 @Builder
-@Table(name = "questionnaire", schema = "app")
+@Table(name = "Questionnaire", schema = "app")
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
