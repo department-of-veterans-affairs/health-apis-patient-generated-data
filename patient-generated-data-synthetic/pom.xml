@@ -11,7 +11,7 @@
   <version>0.0.9-SNAPSHOT</version>
   <packaging>jar</packaging>
   <properties>
-    <fhir-resources.version>5.0.11</fhir-resources.version>
+    <fhir-resources.version>5.0.13</fhir-resources.version>
     <javax.el.version>3.0.1-b12</javax.el.version>
     <populaterator.sqlserver>false</populaterator.sqlserver>
   </properties>
