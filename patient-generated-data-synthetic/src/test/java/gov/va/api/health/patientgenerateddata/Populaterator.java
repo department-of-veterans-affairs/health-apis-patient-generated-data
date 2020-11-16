@@ -125,7 +125,8 @@ public final class Populaterator {
       checkState(!ids.contains(id), "Duplicate ID " + id);
       ids.add(id);
 
-      try (PreparedStatement statement = connection.prepareStatement(sql)) {
+      String sqlInsert = sqlInsert("app.Questionnaire", List.of("id", "payload", "version"));
+      try (PreparedStatement statement = connection.prepareStatement(sqlInsert)) {
         statement.setObject(1, id);
         statement.setObject(2, new ObjectMapper().writeValueAsString(questionnaire));
         statement.setObject(3, 0);
@@ -137,7 +138,6 @@ public final class Populaterator {
   @SneakyThrows
   private static void questionnaireResponse(@NonNull Connection connection) {
     Set<String> ids = new HashSet<>();
-    String sql = sql("app.QuestionnaireResponse", List.of("id", "payload", "version"));
 
     for (File f : new File(baseDir() + "/src/test/resources/questionnaireResponse").listFiles()) {
       QuestionnaireResponse response = MAPPER.readValue(f, QuestionnaireResponse.class);
@@ -150,7 +150,10 @@ public final class Populaterator {
       checkState(!ids.contains(id), "Duplicate ID " + id);
       ids.add(id);
 
-      try (PreparedStatement statement = connection.prepareStatement(sql)) {
+
+      String sqlInsert =
+          sqlInsert("app.QuestionnaireResponse", List.of("id", "payload", "version"));
+      try (PreparedStatement statement = connection.prepareStatement(sqlInsert)) {
         statement.setObject(1, id);
         statement.setObject(2, new ObjectMapper().writeValueAsString(response));
         statement.setObject(3, 0);
@@ -159,9 +162,8 @@ public final class Populaterator {
     }
   }
 
-  private static String sql(String table, Collection<String> columns) {
-    Objects.requireNonNull(table);
-    Objects.requireNonNull(columns);
+  private static String sqlInsert(@NonNull String table, @NonNull Collection<String> columns) {
+
     return "insert into "
         + table
         + " ("
