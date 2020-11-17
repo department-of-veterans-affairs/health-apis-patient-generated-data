@@ -3,28 +3,13 @@ package gov.va.api.health.patientgenerateddata;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptySet;
 import static java.util.stream.Collectors.toList;
-// import gov.va.api.health.dataquery.service.controller.ConfigurableBaseUrlPageLinks;
 
 import gov.va.api.health.r4.api.datatypes.CodeableConcept;
 import gov.va.api.health.r4.api.datatypes.Coding;
 import gov.va.api.health.r4.api.datatypes.ContactDetail;
 import gov.va.api.health.r4.api.datatypes.ContactPoint;
-import gov.va.api.health.r4.api.datatypes.ContactPoint.ContactPointSystem;
 import gov.va.api.health.r4.api.elements.Extension;
 import gov.va.api.health.r4.api.resources.CapabilityStatement;
-import gov.va.api.health.r4.api.resources.CapabilityStatement.CapabilityResource;
-import gov.va.api.health.r4.api.resources.CapabilityStatement.Implementation;
-import gov.va.api.health.r4.api.resources.CapabilityStatement.Kind;
-import gov.va.api.health.r4.api.resources.CapabilityStatement.ReferencePolicy;
-import gov.va.api.health.r4.api.resources.CapabilityStatement.ResourceInteraction;
-import gov.va.api.health.r4.api.resources.CapabilityStatement.Rest;
-import gov.va.api.health.r4.api.resources.CapabilityStatement.RestMode;
-import gov.va.api.health.r4.api.resources.CapabilityStatement.SearchParamType;
-import gov.va.api.health.r4.api.resources.CapabilityStatement.Security;
-import gov.va.api.health.r4.api.resources.CapabilityStatement.Software;
-import gov.va.api.health.r4.api.resources.CapabilityStatement.Status;
-import gov.va.api.health.r4.api.resources.CapabilityStatement.TypeRestfulInteraction;
-import gov.va.api.health.r4.api.resources.CapabilityStatement.Versioning;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -57,16 +42,19 @@ class MetadataController {
             .telecom(
                 List.of(
                     ContactPoint.builder()
-                        .system(ContactPointSystem.email)
+                        .system(ContactPoint.ContactPointSystem.email)
                         .value(properties.getContact().getEmail())
                         .build()))
             .build());
   }
 
-  private Implementation implementation() {
+  private CapabilityStatement.Implementation implementation() {
     // .url(pageLinks.r4Url())
     // baseUrl + "/" + r4BasePath
-    return Implementation.builder().description(properties.getR4Name()).url("url").build();
+    return CapabilityStatement.Implementation.builder()
+        .description(properties.getR4Name())
+        .url("url")
+        .build();
   }
 
   @GetMapping
@@ -78,13 +66,13 @@ class MetadataController {
         .name(properties.getR4Name())
         .title(properties.getR4Name())
         .publisher(properties.getPublisher())
-        .status(Status.active)
+        .status(CapabilityStatement.Status.active)
         .implementation(implementation())
         .experimental(!properties.isProductionUse())
         .contact(contact())
         .date(properties.getPublicationDate())
         .description(properties.getDescription())
-        .kind(Kind.capability)
+        .kind(CapabilityStatement.Kind.capability)
         .software(software())
         .fhirVersion("4.0.1")
         .format(asList("application/json", "application/fhir+json"))
@@ -92,7 +80,7 @@ class MetadataController {
         .build();
   }
 
-  private List<CapabilityResource> resources() {
+  private List<CapabilityStatement.CapabilityResource> resources() {
     return Stream.of(
             support("AllergyIntolerance")
                 .profileUrl(
@@ -180,17 +168,17 @@ class MetadataController {
         .collect(toList());
   }
 
-  private List<Rest> rest() {
+  private List<CapabilityStatement.Rest> rest() {
     return List.of(
-        Rest.builder()
-            .mode(RestMode.server)
+        CapabilityStatement.Rest.builder()
+            .mode(CapabilityStatement.RestMode.server)
             .security(restSecurity())
             .resource(resources())
             .build());
   }
 
-  private Security restSecurity() {
-    return Security.builder()
+  private CapabilityStatement.Security restSecurity() {
+    return CapabilityStatement.Security.builder()
         .cors(true)
         .description(properties.getSecurity().getDescription())
         .service(List.of(smartOnFhirCodeableConcept()))
@@ -232,8 +220,8 @@ class MetadataController {
         .build();
   }
 
-  private Software software() {
-    return Software.builder()
+  private CapabilityStatement.Software software() {
+    return CapabilityStatement.Software.builder()
         .name(buildProperties.getGroup() + ":" + buildProperties.getArtifact())
         .releaseDate(buildProperties.getTime().toString())
         .version(buildProperties.getVersion())
@@ -247,28 +235,28 @@ class MetadataController {
   @Getter
   @AllArgsConstructor
   enum SearchParam {
-    BIRTH_DATE("birthdate", SearchParamType.date),
-    CATEGORY("category", SearchParamType.string),
-    CLINICAL_STATUS("clinical-status", SearchParamType.token),
-    CODE("code", SearchParamType.token),
-    DATE("date", SearchParamType.date),
-    FAMILY("family", SearchParamType.string),
-    GENDER("gender", SearchParamType.token),
-    GIVEN("given", SearchParamType.string),
-    ID("_id", SearchParamType.string),
-    INTENT("intent", SearchParamType.string),
-    NAME("name", SearchParamType.string),
-    PATIENT("patient", SearchParamType.reference),
-    STATUS("status", SearchParamType.token),
-    TYPE("type", SearchParamType.token),
-    ADDRESS("address", SearchParamType.string),
-    ADDRESS_CITY("address-city", SearchParamType.string),
-    ADDRESS_STATE("address-state", SearchParamType.string),
-    ADDRESS_POSTALCODE("address-postalcode", SearchParamType.string);
+    BIRTH_DATE("birthdate", CapabilityStatement.SearchParamType.date),
+    CATEGORY("category", CapabilityStatement.SearchParamType.string),
+    CLINICAL_STATUS("clinical-status", CapabilityStatement.SearchParamType.token),
+    CODE("code", CapabilityStatement.SearchParamType.token),
+    DATE("date", CapabilityStatement.SearchParamType.date),
+    FAMILY("family", CapabilityStatement.SearchParamType.string),
+    GENDER("gender", CapabilityStatement.SearchParamType.token),
+    GIVEN("given", CapabilityStatement.SearchParamType.string),
+    ID("_id", CapabilityStatement.SearchParamType.string),
+    INTENT("intent", CapabilityStatement.SearchParamType.string),
+    NAME("name", CapabilityStatement.SearchParamType.string),
+    PATIENT("patient", CapabilityStatement.SearchParamType.reference),
+    STATUS("status", CapabilityStatement.SearchParamType.token),
+    TYPE("type", CapabilityStatement.SearchParamType.token),
+    ADDRESS("address", CapabilityStatement.SearchParamType.string),
+    ADDRESS_CITY("address-city", CapabilityStatement.SearchParamType.string),
+    ADDRESS_STATE("address-state", CapabilityStatement.SearchParamType.string),
+    ADDRESS_POSTALCODE("address-postalcode", CapabilityStatement.SearchParamType.string);
 
     private final String param;
 
-    private final SearchParamType type;
+    private final CapabilityStatement.SearchParamType type;
   }
 
   @Value
@@ -282,47 +270,48 @@ class MetadataController {
 
     MetadataProperties properties;
 
-    CapabilityResource asResource() {
-      return CapabilityResource.builder()
+    CapabilityStatement.CapabilityResource asResource() {
+      return CapabilityStatement.CapabilityResource.builder()
           .type(type)
           .profile(profileUrl)
           .interaction(interactions())
           .searchParam(searchParams())
-          .versioning(Versioning.no_version)
-          .referencePolicy(List.of(ReferencePolicy.literal, ReferencePolicy.local))
+          .versioning(CapabilityStatement.Versioning.no_version)
+          .referencePolicy(
+              List.of(
+                  CapabilityStatement.ReferencePolicy.literal,
+                  CapabilityStatement.ReferencePolicy.local))
           .build();
     }
 
-    private List<ResourceInteraction> interactions() {
+    private List<CapabilityStatement.ResourceInteraction> interactions() {
+      CapabilityStatement.ResourceInteraction readable =
+          CapabilityStatement.ResourceInteraction.builder()
+              .code(CapabilityStatement.TypeRestfulInteraction.read)
+              .documentation(properties.getResourceDocumentation())
+              .build();
       if (search.isEmpty()) {
-        return List.of(readable());
+        return List.of(readable);
       }
-      return List.of(searchable(), readable());
-    }
 
-    private ResourceInteraction readable() {
-      return ResourceInteraction.builder()
-          .code(TypeRestfulInteraction.read)
-          .documentation(properties.getResourceDocumentation())
-          .build();
+      CapabilityStatement.ResourceInteraction searchable =
+          CapabilityStatement.ResourceInteraction.builder()
+              .code(CapabilityStatement.TypeRestfulInteraction.search_type)
+              .documentation(properties.getResourceDocumentation())
+              .build();
+      return List.of(searchable, readable);
     }
 
     private List<CapabilityStatement.SearchParam> searchParams() {
       if (search.isEmpty()) {
         return null;
       }
-      return search.stream()
+      return search
+          .stream()
           .sorted((a, b) -> a.param().compareTo(b.param()))
           .map(
               s -> CapabilityStatement.SearchParam.builder().name(s.param()).type(s.type()).build())
           .collect(toList());
-    }
-
-    private ResourceInteraction searchable() {
-      return ResourceInteraction.builder()
-          .code(TypeRestfulInteraction.search_type)
-          .documentation(properties.getResourceDocumentation())
-          .build();
     }
   }
 }
