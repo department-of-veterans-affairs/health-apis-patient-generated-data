@@ -8,7 +8,7 @@
     <relativePath/>
   </parent>
   <artifactId>patient-generated-data</artifactId>
-  <version>0.0.10-SNAPSHOT</version>
+  <version>0.0.10</version>
   <packaging>jar</packaging>
   <properties>
     <fhir-resources.version>5.0.13</fhir-resources.version>
