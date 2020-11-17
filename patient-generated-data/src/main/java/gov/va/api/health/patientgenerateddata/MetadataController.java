@@ -1,7 +1,7 @@
 package gov.va.api.health.patientgenerateddata;
 
-import static java.util.Collections.emptySet;
 import static java.util.stream.Collectors.toList;
+import static org.springframework.util.CollectionUtils.isEmpty;
 
 import gov.va.api.health.r4.api.datatypes.ContactDetail;
 import gov.va.api.health.r4.api.datatypes.ContactPoint;
@@ -12,7 +12,6 @@ import java.util.stream.Stream;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NonNull;
 import lombok.Value;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.info.BuildProperties;
@@ -120,7 +119,7 @@ class MetadataController {
 
     String profileUrl;
 
-    @Builder.Default @NonNull Set<SearchParam> search = emptySet();
+    Set<SearchParam> searches;
 
     CapabilityStatement.CapabilityResource asResource() {
       return CapabilityStatement.CapabilityResource.builder()
@@ -142,9 +141,13 @@ class MetadataController {
               .code(CapabilityStatement.TypeRestfulInteraction.read)
               .documentation(RESOURCE_DOCUMENTATION)
               .build();
-
-      if (search.isEmpty()) {
-        return List.of(readable);
+      CapabilityStatement.ResourceInteraction updatable =
+          CapabilityStatement.ResourceInteraction.builder()
+              .code(CapabilityStatement.TypeRestfulInteraction.update)
+              .documentation(RESOURCE_DOCUMENTATION)
+              .build();
+      if (isEmpty(searches)) {
+        return List.of(readable, updatable);
       }
 
       CapabilityStatement.ResourceInteraction searchable =
@@ -152,14 +155,14 @@ class MetadataController {
               .code(CapabilityStatement.TypeRestfulInteraction.search_type)
               .documentation(RESOURCE_DOCUMENTATION)
               .build();
-      return List.of(searchable, readable);
+      return List.of(readable, updatable, searchable);
     }
 
     private List<CapabilityStatement.SearchParam> searchParams() {
-      if (search.isEmpty()) {
+      if (isEmpty(searches)) {
         return null;
       }
-      return search.stream()
+      return searches.stream()
           .sorted((a, b) -> a.param().compareTo(b.param()))
           .map(
               s -> CapabilityStatement.SearchParam.builder().name(s.param()).type(s.type()).build())

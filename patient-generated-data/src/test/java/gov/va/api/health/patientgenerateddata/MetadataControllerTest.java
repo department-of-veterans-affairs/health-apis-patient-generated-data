@@ -74,6 +74,13 @@ public class MetadataControllerTest {
                                                             .read)
                                                     .documentation(
                                                         "Implemented per specification. See http://hl7.org/fhir/R4/http.html")
+                                                    .build(),
+                                                CapabilityStatement.ResourceInteraction.builder()
+                                                    .code(
+                                                        CapabilityStatement.TypeRestfulInteraction
+                                                            .update)
+                                                    .documentation(
+                                                        "Implemented per specification. See http://hl7.org/fhir/R4/http.html")
                                                     .build()))
                                         .versioning(CapabilityStatement.Versioning.no_version)
                                         .referencePolicy(
@@ -93,6 +100,13 @@ public class MetadataControllerTest {
                                                             .read)
                                                     .documentation(
                                                         "Implemented per specification. See http://hl7.org/fhir/R4/http.html")
+                                                    .build(),
+                                                CapabilityStatement.ResourceInteraction.builder()
+                                                    .code(
+                                                        CapabilityStatement.TypeRestfulInteraction
+                                                            .update)
+                                                    .documentation(
+                                                        "Implemented per specification. See http://hl7.org/fhir/R4/http.html")
                                                     .build()))
                                         .versioning(CapabilityStatement.Versioning.no_version)
                                         .referencePolicy(
@@ -110,7 +124,7 @@ public class MetadataControllerTest {
             MetadataController.SupportedResource.builder()
                 .type("type")
                 .profileUrl("url")
-                .search(Set.of(MetadataController.SearchParam.PATIENT))
+                .searches(Set.of(MetadataController.SearchParam.PATIENT))
                 .build()
                 .asResource())
         .isEqualTo(
@@ -120,12 +134,17 @@ public class MetadataControllerTest {
                 .interaction(
                     List.of(
                         CapabilityStatement.ResourceInteraction.builder()
-                            .code(CapabilityStatement.TypeRestfulInteraction.search_type)
+                            .code(CapabilityStatement.TypeRestfulInteraction.read)
                             .documentation(
                                 "Implemented per specification. See http://hl7.org/fhir/R4/http.html")
                             .build(),
                         CapabilityStatement.ResourceInteraction.builder()
-                            .code(CapabilityStatement.TypeRestfulInteraction.read)
+                            .code(CapabilityStatement.TypeRestfulInteraction.update)
+                            .documentation(
+                                "Implemented per specification. See http://hl7.org/fhir/R4/http.html")
+                            .build(),
+                        CapabilityStatement.ResourceInteraction.builder()
+                            .code(CapabilityStatement.TypeRestfulInteraction.search_type)
                             .documentation(
                                 "Implemented per specification. See http://hl7.org/fhir/R4/http.html")
                             .build()))
