@@ -127,6 +127,7 @@ public final class Populaterator {
     var connection = db.connection();
     questionnaire(connection);
     questionnaireResponse(connection);
+    observation(connection);
     connection.commit();
     connection.close();
     log("Finished " + db.name());
