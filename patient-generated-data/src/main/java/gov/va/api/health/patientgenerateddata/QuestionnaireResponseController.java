@@ -5,7 +5,7 @@ import static gov.va.api.health.patientgenerateddata.SerializationUtils.deserial
 
 import gov.va.api.health.autoconfig.configuration.JacksonConfig;
 import gov.va.api.health.autoconfig.logging.Loggable;
-import gov.va.api.health.r4.api.resources.Questionnaire;
+import gov.va.api.health.r4.api.resources.QuestionnaireResponse;
 import java.util.Optional;
 import javax.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -26,11 +26,12 @@ import org.springframework.web.bind.annotation.RestController;
 @Validated
 @RestController
 @RequestMapping(
-    value = "/r4/Questionnaire",
+    value = "/r4/QuestionnaireResponse",
     produces = {"application/json", "application/fhir+json"})
-@AllArgsConstructor(onConstructor = @__({@Autowired}))
-public class QuestionnaireController {
-  private final QuestionnaireRepository repository;
+@AllArgsConstructor(onConstructor_ = @Autowired)
+public class QuestionnaireResponseController {
+
+  private final QuestionnaireResponseRepository repository;
 
   @InitBinder
   void initDirectFieldAccess(DataBinder dataBinder) {
@@ -38,27 +39,28 @@ public class QuestionnaireController {
   }
 
   @GetMapping(value = "/{id}")
-  Questionnaire read(@PathVariable("id") String id) {
-    Optional<QuestionnaireEntity> maybeEntity = repository.findById(id);
-    QuestionnaireEntity entity = maybeEntity.orElseThrow(() -> new Exceptions.NotFound(id));
-    return deserializedPayload(id, entity.payload(), Questionnaire.class);
+  QuestionnaireResponse read(@PathVariable("id") String id) {
+    Optional<QuestionnaireResponseEntity> maybeEntity = repository.findById(id);
+    QuestionnaireResponseEntity entity = maybeEntity.orElseThrow(() -> new Exceptions.NotFound(id));
+    return deserializedPayload(id, entity.payload(), QuestionnaireResponse.class);
   }
 
   @SneakyThrows
   @PutMapping(value = "/{id}")
   @Loggable(arguments = false)
   ResponseEntity<Void> update(
-      @PathVariable("id") String id, @Valid @RequestBody Questionnaire questionnaire) {
-    String payload = JacksonConfig.createMapper().writeValueAsString(questionnaire);
-    checkState(id.equals(questionnaire.id()), "%s != %s", id, questionnaire.id());
-    Optional<QuestionnaireEntity> maybeEntity = repository.findById(id);
+      @PathVariable("id") String id,
+      @Valid @RequestBody QuestionnaireResponse questionnaireResponse) {
+    String payload = JacksonConfig.createMapper().writeValueAsString(questionnaireResponse);
+    checkState(id.equals(questionnaireResponse.id()), "%s != %s", id, questionnaireResponse.id());
+    Optional<QuestionnaireResponseEntity> maybeEntity = repository.findById(id);
     if (maybeEntity.isPresent()) {
-      QuestionnaireEntity entity = maybeEntity.get();
+      QuestionnaireResponseEntity entity = maybeEntity.get();
       entity.payload(payload);
       repository.save(entity);
       return ResponseEntity.ok().build();
     }
-    repository.save(QuestionnaireEntity.builder().id(id).payload(payload).build());
+    repository.save(QuestionnaireResponseEntity.builder().id(id).payload(payload).build());
     return ResponseEntity.status(HttpStatus.CREATED).build();
   }
 }

@@ -18,13 +18,6 @@ import org.springframework.validation.DataBinder;
 
 public class QuestionnaireControllerTest {
   @Test
-  void badPayload() {
-    assertThrows(
-        Exceptions.InvalidPayload.class,
-        () -> QuestionnaireController.deserializedPayload("x", "notjson", Questionnaire.class));
-  }
-
-  @Test
   void initDirectFieldAccess() {
     new QuestionnaireController(mock(QuestionnaireRepository.class))
         .initDirectFieldAccess(mock(DataBinder.class));
