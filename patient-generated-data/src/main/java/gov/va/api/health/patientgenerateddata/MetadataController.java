@@ -2,6 +2,7 @@ package gov.va.api.health.patientgenerateddata;
 
 import static java.util.Collections.emptySet;
 import static java.util.stream.Collectors.toList;
+
 import gov.va.api.health.r4.api.datatypes.ContactDetail;
 import gov.va.api.health.r4.api.datatypes.ContactPoint;
 import gov.va.api.health.r4.api.resources.CapabilityStatement;
@@ -114,7 +115,7 @@ class MetadataController {
 
   @Value
   @Builder
-  private static final class SupportedResource {
+  static final class SupportedResource {
     String type;
 
     String profileUrl;
@@ -141,6 +142,7 @@ class MetadataController {
               .code(CapabilityStatement.TypeRestfulInteraction.read)
               .documentation(RESOURCE_DOCUMENTATION)
               .build();
+
       if (search.isEmpty()) {
         return List.of(readable);
       }
@@ -157,8 +159,7 @@ class MetadataController {
       if (search.isEmpty()) {
         return null;
       }
-      return search
-          .stream()
+      return search.stream()
           .sorted((a, b) -> a.param().compareTo(b.param()))
           .map(
               s -> CapabilityStatement.SearchParam.builder().name(s.param()).type(s.type()).build())
