@@ -4,6 +4,7 @@ import static com.google.common.base.Preconditions.checkState;
 import static java.util.stream.Collectors.joining;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import gov.va.api.health.r4.api.resources.Observation;
 import gov.va.api.health.r4.api.resources.Questionnaire;
 import gov.va.api.health.r4.api.resources.QuestionnaireResponse;
 import java.io.File;
@@ -96,12 +97,38 @@ public final class Populaterator {
   }
 
   @SneakyThrows
+  public static void observation(@NonNull Connection connection) {
+    Set<String> ids = new HashSet<>();
+
+    for (File f : new File(baseDir() + "/src/test/resources/observation").listFiles()) {
+      Observation observation = MAPPER.readValue(f, Observation.class);
+      Set<ConstraintViolation<Observation>> violations =
+          Validation.buildDefaultValidatorFactory().getValidator().validate(observation);
+      checkState(violations.isEmpty(), "Invalid payload: " + violations);
+
+      String id = observation.id();
+      checkState(id != null);
+      checkState(!ids.contains(id), "Duplicate ID " + id);
+      ids.add(id);
+
+      String sqlInsert = sqlInsert("app.Observation", List.of("id", "payload", "version"));
+      try (PreparedStatement statement = connection.prepareStatement(sqlInsert)) {
+        statement.setObject(1, id);
+        statement.setObject(2, MAPPER.writeValueAsString(observation));
+        statement.setObject(3, 0);
+        statement.execute();
+      }
+    }
+  }
+
+  @SneakyThrows
   private static void populate(@NonNull Db db) {
     log("Populating " + db.name());
     waitForStartup(db);
     bootstrap(db);
     liquibase(db);
     var connection = db.connection();
+    observation(connection);
     questionnaire(connection);
     questionnaireResponse(connection);
     connection.commit();
@@ -112,6 +139,7 @@ public final class Populaterator {
   @SneakyThrows
   private static void questionnaire(@NonNull Connection connection) {
     Set<String> ids = new HashSet<>();
+
     for (File f : new File(baseDir() + "/src/test/resources/questionnaire").listFiles()) {
       Questionnaire questionnaire = MAPPER.readValue(f, Questionnaire.class);
       Set<ConstraintViolation<Questionnaire>> violations =
@@ -126,7 +154,7 @@ public final class Populaterator {
       String sqlInsert = sqlInsert("app.Questionnaire", List.of("id", "payload", "version"));
       try (PreparedStatement statement = connection.prepareStatement(sqlInsert)) {
         statement.setObject(1, id);
-        statement.setObject(2, new ObjectMapper().writeValueAsString(questionnaire));
+        statement.setObject(2, MAPPER.writeValueAsString(questionnaire));
         statement.setObject(3, 0);
         statement.execute();
       }
@@ -137,7 +165,7 @@ public final class Populaterator {
   private static void questionnaireResponse(@NonNull Connection connection) {
     Set<String> ids = new HashSet<>();
 
-    for (File f : new File(baseDir() + "/src/test/resources/questionnaireResponse").listFiles()) {
+    for (File f : new File(baseDir() + "/src/test/resources/questionnaire-response").listFiles()) {
       QuestionnaireResponse response = MAPPER.readValue(f, QuestionnaireResponse.class);
       Set<ConstraintViolation<QuestionnaireResponse>> violations =
           Validation.buildDefaultValidatorFactory().getValidator().validate(response);
@@ -152,7 +180,7 @@ public final class Populaterator {
           sqlInsert("app.QuestionnaireResponse", List.of("id", "payload", "version"));
       try (PreparedStatement statement = connection.prepareStatement(sqlInsert)) {
         statement.setObject(1, id);
-        statement.setObject(2, new ObjectMapper().writeValueAsString(response));
+        statement.setObject(2, MAPPER.writeValueAsString(response));
         statement.setObject(3, 0);
         statement.execute();
       }
