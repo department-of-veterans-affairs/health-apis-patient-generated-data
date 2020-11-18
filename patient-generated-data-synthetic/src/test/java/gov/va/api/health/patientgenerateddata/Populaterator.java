@@ -111,7 +111,7 @@ public final class Populaterator {
       String sqlInsert = sqlInsert("app.Observation", List.of("id", "payload", "version"));
       try (PreparedStatement statement = connection.prepareStatement(sqlInsert)) {
         statement.setObject(1, id);
-        statement.setObject(2, new ObjectMapper().writeValueAsString(observation));
+        statement.setObject(2, MAPPER.writeValueAsString(observation));
         statement.setObject(3, 0);
         statement.execute();
       }
@@ -125,9 +125,9 @@ public final class Populaterator {
     bootstrap(db);
     liquibase(db);
     var connection = db.connection();
+    observation(connection);
     questionnaire(connection);
     questionnaireResponse(connection);
-    observation(connection);
     connection.commit();
     connection.close();
     log("Finished " + db.name());
@@ -148,7 +148,7 @@ public final class Populaterator {
       String sqlInsert = sqlInsert("app.Questionnaire", List.of("id", "payload", "version"));
       try (PreparedStatement statement = connection.prepareStatement(sqlInsert)) {
         statement.setObject(1, id);
-        statement.setObject(2, new ObjectMapper().writeValueAsString(questionnaire));
+        statement.setObject(2, MAPPER.writeValueAsString(questionnaire));
         statement.setObject(3, 0);
         statement.execute();
       }
@@ -171,7 +171,7 @@ public final class Populaterator {
           sqlInsert("app.QuestionnaireResponse", List.of("id", "payload", "version"));
       try (PreparedStatement statement = connection.prepareStatement(sqlInsert)) {
         statement.setObject(1, id);
-        statement.setObject(2, new ObjectMapper().writeValueAsString(response));
+        statement.setObject(2, MAPPER.writeValueAsString(response));
         statement.setObject(3, 0);
         statement.execute();
       }
