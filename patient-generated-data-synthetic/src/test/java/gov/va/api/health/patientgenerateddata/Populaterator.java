@@ -158,7 +158,7 @@ public final class Populaterator {
   @SneakyThrows
   private static void questionnaireResponse(@NonNull Connection connection) {
     Set<String> ids = new HashSet<>();
-    for (File f : new File(baseDir() + "/src/test/resources/questionnaireResponse").listFiles()) {
+    for (File f : new File(baseDir() + "/src/test/resources/questionnaire-response").listFiles()) {
       QuestionnaireResponse response = MAPPER.readValue(f, QuestionnaireResponse.class);
       Set<ConstraintViolation<QuestionnaireResponse>> violations =
           Validation.buildDefaultValidatorFactory().getValidator().validate(response);
