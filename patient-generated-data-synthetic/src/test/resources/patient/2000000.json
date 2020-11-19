@@ -1,111 +1,111 @@
 {
-  "resourceType": "Patient",
-  "id": "2000000",
-  "text": {
-    "status": "generated",
-    "div": "<div></div>"
+  "resourceType" : "Patient",
+  "id" : "2000000",
+  "text" : {
+    "status" : "generated",
+    "div" : "<div></div>"
   },
-  "identifier": [
+  "identifier" : [
     {
-      "use": "usual",
-      "type": {
-        "coding": [
+      "use" : "usual",
+      "type" : {
+        "coding" : [
           {
-            "system": "http://hl7.org/fhir/v2/0203",
-            "code": "MR"
+            "system" : "http://hl7.org/fhir/v2/0203",
+            "code" : "MR"
           }
         ]
       },
-      "system": "http://va.gov/mvi",
-      "value": "2000000"
+      "system" : "http://va.gov/mvi",
+      "value" : "2000000"
     }
   ],
-  "active": true,
-  "name": [
+  "active" : true,
+  "name" : [
     {
-      "use": "official",
-      "text": "Dr. Jane200 Doe200, MD",
-      "family": "Doe200",
-      "given": [
+      "use" : "official",
+      "text" : "Dr. Jane200 Doe200, MD",
+      "family" : "Doe200",
+      "given" : [
         "Jane200"
       ],
-      "prefix": [
+      "prefix" : [
         "Dr."
       ],
-      "suffix": [
+      "suffix" : [
         "MD"
       ]
     }
   ],
-  "telecom": [
+  "telecom" : [
     {
-      "system": "phone",
-      "value": "+31612345678",
-      "use": "mobile"
+      "system" : "phone",
+      "value" : "+31612345678",
+      "use" : "mobile"
     },
     {
-      "system": "phone",
-      "value": "+31201234567",
-      "use": "home"
+      "system" : "phone",
+      "value" : "+31201234567",
+      "use" : "home"
     }
   ],
-  "gender": "female",
-  "birthDate": "1960-03-13",
-  "deceasedBoolean": false,
-  "address": [
+  "gender" : "female",
+  "birthDate" : "1960-03-13",
+  "deceasedBoolean" : false,
+  "address" : [
     {
-      "use": "home",
-      "line": [
+      "use" : "home",
+      "line" : [
         "222 Rohan Highlands"
       ],
-      "city": "Denver",
-      "state": "Colorado",
-      "postalCode": "80014"
+      "city" : "Denver",
+      "state" : "Colorado",
+      "postalCode" : "80014"
     }
   ],
-  "maritalStatus": {
-    "coding": [
+  "maritalStatus" : {
+    "coding" : [
       {
-        "system": "http://snomed.info/sct",
-        "code": "36629006",
-        "display": "Legally married"
+        "system" : "http://snomed.info/sct",
+        "code" : "36629006",
+        "display" : "Legally married"
       },
       {
-        "system": "http://terminology.hl7.org/CodeSystem/v3-MaritalStatus",
-        "code": "M"
+        "system" : "http://terminology.hl7.org/CodeSystem/v3-MaritalStatus",
+        "code" : "M"
       }
     ]
   },
-  "multipleBirthBoolean": false,
-  "contact": [
+  "multipleBirthBoolean" : false,
+  "contact" : [
     {
-      "relationship": [
+      "relationship" : [
         {
-          "coding": [
+          "coding" : [
             {
-              "system": "http://hl7.org/fhir/patient-contact-relationship",
-              "code": "family",
-              "display": "Family"
+              "system" : "http://hl7.org/fhir/patient-contact-relationship",
+              "code" : "family",
+              "display" : "Family"
             }
           ],
-          "text": "FAMILY"
+          "text" : "FAMILY"
         }
       ],
-      "name": {
-        "use": "usual",
-        "text": "Ariadne Bor-Jansma"
+      "name" : {
+        "use" : "usual",
+        "text" : "Ariadne Bor-Jansma"
       },
-      "telecom": [
+      "telecom" : [
         {
-          "system": "phone",
-          "value": "+31201234567",
-          "use": "home"
+          "system" : "phone",
+          "value" : "+31201234567",
+          "use" : "home"
         }
       ]
     }
   ],
-  "managingOrganization": {
-    "reference": "Organization/f201",
-    "display": "AUMC"
+  "managingOrganization" : {
+    "reference" : "Organization/f201",
+    "display" : "AUMC"
   }
 }

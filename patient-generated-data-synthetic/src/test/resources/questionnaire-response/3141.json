@@ -3,14 +3,14 @@
   "id" : "3141",
   "text" : {
     "status" : "generated",
-    "div": "<div></div>"
+    "div" : "<div></div>"
   },
   "status" : "completed",
-  "subject": {
-    "reference": "Patient/2000000"
+  "subject" : {
+    "reference" : "Patient/2000000"
   },
-  "author": {
-    "reference": "Practitioner/1000000"
+  "author" : {
+    "reference" : "Practitioner/1000000"
   },
   "authored" : "2013-02-19T14:15:00-05:00",
   "item" : [
