@@ -5,6 +5,7 @@ import static java.util.stream.Collectors.joining;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.api.health.r4.api.resources.Observation;
+import gov.va.api.health.r4.api.resources.Patient;
 import gov.va.api.health.r4.api.resources.Questionnaire;
 import gov.va.api.health.r4.api.resources.QuestionnaireResponse;
 import java.io.File;
@@ -128,6 +129,7 @@ public final class Populaterator {
     bootstrap(db);
     liquibase(db);
     var connection = db.connection();
+    patient(connection);
     observation(connection);
     questionnaire(connection);
     questionnaireResponse(connection);
@@ -155,6 +157,31 @@ public final class Populaterator {
       try (PreparedStatement statement = connection.prepareStatement(sqlInsert)) {
         statement.setObject(1, id);
         statement.setObject(2, MAPPER.writeValueAsString(questionnaire));
+        statement.setObject(3, 0);
+        statement.execute();
+      }
+    }
+  }
+
+  @SneakyThrows
+  private static void patient(@NonNull Connection connection) {
+    Set<String> ids = new HashSet<>();
+
+    for (File f : new File(baseDir() + "/src/test/resources/patient").listFiles()) {
+      Patient patient = MAPPER.readValue(f, Patient.class);
+      Set<ConstraintViolation<Patient>> violations =
+          Validation.buildDefaultValidatorFactory().getValidator().validate(patient);
+      checkState(violations.isEmpty(), "Invalid payload: " + violations);
+
+      String id = patient.id();
+      checkState(id != null);
+      checkState(!ids.contains(id), "Duplicate ID " + id);
+      ids.add(id);
+
+      String sqlInsert = sqlInsert("app.Patient", List.of("id", "payload", "version"));
+      try (PreparedStatement statement = connection.prepareStatement(sqlInsert)) {
+        statement.setObject(1, id);
+        statement.setObject(2, MAPPER.writeValueAsString(patient));
         statement.setObject(3, 0);
         statement.execute();
       }
