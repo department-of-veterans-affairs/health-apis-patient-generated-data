@@ -64,6 +64,31 @@ public class MetadataControllerTest {
                             .resource(
                                 List.of(
                                     CapabilityStatement.CapabilityResource.builder()
+                                        .type("Observation")
+                                        .profile("https://www.hl7.org/fhir/r4/observation.html")
+                                        .interaction(
+                                            List.of(
+                                                CapabilityStatement.ResourceInteraction.builder()
+                                                    .code(
+                                                        CapabilityStatement.TypeRestfulInteraction
+                                                            .read)
+                                                    .documentation(
+                                                        "Implemented per specification. See http://hl7.org/fhir/R4/http.html")
+                                                    .build(),
+                                                CapabilityStatement.ResourceInteraction.builder()
+                                                    .code(
+                                                        CapabilityStatement.TypeRestfulInteraction
+                                                            .update)
+                                                    .documentation(
+                                                        "Implemented per specification. See http://hl7.org/fhir/R4/http.html")
+                                                    .build()))
+                                        .versioning(CapabilityStatement.Versioning.no_version)
+                                        .referencePolicy(
+                                            List.of(
+                                                CapabilityStatement.ReferencePolicy.literal,
+                                                CapabilityStatement.ReferencePolicy.local))
+                                        .build(),
+                                    CapabilityStatement.CapabilityResource.builder()
                                         .type("Questionnaire")
                                         .profile("https://www.hl7.org/fhir/r4/questionnaire.html")
                                         .interaction(

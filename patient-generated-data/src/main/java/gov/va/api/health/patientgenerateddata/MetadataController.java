@@ -75,6 +75,10 @@ class MetadataController {
   private List<CapabilityStatement.CapabilityResource> resources() {
     return Stream.of(
             SupportedResource.builder()
+                .type("Observation")
+                .profileUrl("https://www.hl7.org/fhir/r4/observation.html")
+                .build(),
+            SupportedResource.builder()
                 .type("Questionnaire")
                 .profileUrl("https://www.hl7.org/fhir/r4/questionnaire.html")
                 .build(),
