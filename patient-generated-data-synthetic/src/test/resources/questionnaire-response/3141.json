@@ -3,9 +3,15 @@
   "id" : "3141",
   "text" : {
     "status" : "generated",
-    "div" : "<div xmlns=\"http://www.w3.org/1999/xhtml\">      <pre>            Comorbidity? YES              Cardial Comorbidity? YES                Angina? YES                MI? NO              Vascular Comorbidity?                (no answers)              ...            Histopathology              Abdominal                pT category: 1a              ...          </pre>    </div>"
+    "div": "<div></div>"
   },
   "status" : "completed",
+  "subject": {
+    "reference": "Patient/2000000"
+  },
+  "author": {
+    "reference": "Practitioner/1000000"
+  },
   "authored" : "2013-02-19T14:15:00-05:00",
   "item" : [
     {
