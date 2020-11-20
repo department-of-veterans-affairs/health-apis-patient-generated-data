@@ -15,15 +15,10 @@ public class RequestUtils {
 
   public static ExpectedResponse makeRequest(
       String acceptHeader, String request, Integer expectedStatus) {
-    return makeRequest(acceptHeader, request, expectedStatus, log);
-  }
-
-  public static ExpectedResponse makeRequest(
-      String acceptHeader, String request, Integer expectedStatus, Logger logger) {
     SystemDefinitions.Service svc = systemDefinition().r4();
     RequestSpecification spec =
         RestAssured.given().baseUri(svc.url()).port(svc.port()).relaxedHTTPSValidation();
-    logger.info(
+    log.info(
         "Expect {} with accept header ({}) is status code ({})",
         svc.apiPath() + request,
         acceptHeader,

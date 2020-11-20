@@ -4,11 +4,9 @@ import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.makeRequ
 import static gov.va.api.health.sentinel.EnvironmentAssumptions.assumeEnvironmentIn;
 
 import gov.va.api.health.sentinel.Environment;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-@Slf4j
 public class QuestionnaireIT {
   @BeforeAll
   static void assumeEnvironment() {
@@ -17,13 +15,13 @@ public class QuestionnaireIT {
 
   @Test
   void read() {
-    makeRequest(null, "Questionnaire/c18", 200, log);
-    makeRequest("application/json", "Questionnaire/c18", 200, log);
-    makeRequest("application/fhir+json", "Questionnaire/c18", 200, log);
+    makeRequest(null, "Questionnaire/c18", 200);
+    makeRequest("application/json", "Questionnaire/c18", 200);
+    makeRequest("application/fhir+json", "Questionnaire/c18", 200);
   }
 
   @Test
   void read_notFound() {
-    makeRequest("application/json", "Questionnaire/5555555", 404, log);
+    makeRequest("application/json", "Questionnaire/5555555", 404);
   }
 }
