@@ -35,8 +35,8 @@ checkForUnsetValues() {
 }
 
 makeConfig patient-generated-data $PROFILE
-configValue patient-generated-data $PROFILE public-url 'http://localhost:8095'
 configValue patient-generated-data $PROFILE public-r4-base-path 'r4'
+configValue patient-generated-data $PROFILE public-url 'http://localhost:8095'
 configValue patient-generated-data $PROFILE spring.datasource.password '<YourStrong!Passw0rd>'
 configValue patient-generated-data $PROFILE spring.datasource.url 'jdbc:sqlserver://localhost:1633;database=pgd;sendStringParametersAsUnicode=false'
 configValue patient-generated-data $PROFILE spring.datasource.username 'SA'
