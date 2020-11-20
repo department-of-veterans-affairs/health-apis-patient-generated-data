@@ -1,0 +1,103 @@
+{
+  "resourceType" : "Patient",
+  "id" : "1000000",
+  "text" : {
+    "status" : "generated",
+    "div" : "<div></div>"
+  },
+  "identifier" : [
+    {
+      "use" : "usual",
+      "type" : {
+        "coding" : [
+          {
+            "system" : "http://hl7.org/fhir/v2/0203",
+            "code" : "MR"
+          }
+        ]
+      },
+      "system" : "http://va.gov/mvi",
+      "value" : "1000000"
+    }
+  ],
+  "active" : true,
+  "name" : [
+    {
+      "use" : "usual",
+      "family" : "Smith100",
+      "given" : [
+        "John100"
+      ],
+      "text" : "Mr. John100 Smith100"
+    }
+  ],
+  "telecom" : [
+    {
+      "system" : "phone",
+      "value" : "0648352638",
+      "use" : "mobile"
+    },
+    {
+      "system" : "email",
+      "value" : "john100.smith100@email.example",
+      "use" : "home"
+    }
+  ],
+  "gender" : "male",
+  "birthDate" : "1944-11-17",
+  "deceasedBoolean" : false,
+  "address" : [
+    {
+      "use" : "home",
+      "line" : [
+        "909 Rohan Highlands"
+      ],
+      "city" : "Mesa",
+      "state" : "Arizona",
+      "postalCode" : "85120"
+    }
+  ],
+  "maritalStatus" : {
+    "coding" : [
+      {
+        "system" : "http://terminology.hl7.org/CodeSystem/v3-MaritalStatus",
+        "code" : "M",
+        "display" : "Married"
+      }
+    ],
+    "text" : "Married"
+  },
+  "multipleBirthBoolean" : true,
+  "contact" : [
+    {
+      "relationship" : [
+        {
+          "coding" : [
+            {
+              "system" : "http://terminology.hl7.org/CodeSystem/v2-0131",
+              "code" : "C"
+            }
+          ]
+        }
+      ],
+      "name" : {
+        "use" : "usual",
+        "family" : "Abels",
+        "given" : [
+          "Sarah"
+        ]
+      },
+      "telecom" : [
+        {
+          "system" : "phone",
+          "value" : "0690383372",
+          "use" : "mobile"
+        }
+      ]
+    }
+  ],
+  "managingOrganization" : {
+    "reference" : "Organization/f001",
+    "display" : "Burgers University Medical Centre"
+  }
+}
