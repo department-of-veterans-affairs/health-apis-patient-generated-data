@@ -127,10 +127,12 @@ public final class Populaterator {
       Set<ConstraintViolation<Patient>> violations =
           Validation.buildDefaultValidatorFactory().getValidator().validate(patient);
       checkState(violations.isEmpty(), "Invalid payload: " + violations);
+
       String id = patient.id();
       checkState(id != null);
       checkState(!ids.contains(id), "Duplicate ID " + id);
       ids.add(id);
+
       String sqlInsert = sqlInsert("app.Patient", List.of("id", "payload", "version"));
       try (PreparedStatement statement = connection.prepareStatement(sqlInsert)) {
         statement.setObject(1, id);
@@ -150,6 +152,7 @@ public final class Populaterator {
     var connection = db.connection();
     patient(connection);
     observation(connection);
+    patient(connection);
     questionnaire(connection);
     questionnaireResponse(connection);
     connection.commit();
