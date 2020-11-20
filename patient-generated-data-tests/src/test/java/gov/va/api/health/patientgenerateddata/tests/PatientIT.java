@@ -6,7 +6,6 @@ import static gov.va.api.health.sentinel.EnvironmentAssumptions.assumeEnvironmen
 import gov.va.api.health.sentinel.Environment;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 @Slf4j
@@ -17,7 +16,6 @@ public class PatientIT {
   }
 
   @Test
-  @Disabled
   void read() {
     makeRequest(null, "Patient/1000000", 200, log);
     makeRequest(null, "Patient/2000000", 200, log);
@@ -27,7 +25,6 @@ public class PatientIT {
   }
 
   @Test
-  @Disabled
   void read_notFound() {
     makeRequest("application/json", "Patient/5555555", 404, log);
   }
