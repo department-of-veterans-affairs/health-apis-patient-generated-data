@@ -5,6 +5,7 @@ import static java.util.stream.Collectors.joining;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.api.health.r4.api.resources.Observation;
+import gov.va.api.health.r4.api.resources.Patient;
 import gov.va.api.health.r4.api.resources.Questionnaire;
 import gov.va.api.health.r4.api.resources.QuestionnaireResponse;
 import java.io.File;
@@ -99,7 +100,6 @@ public final class Populaterator {
   @SneakyThrows
   public static void observation(@NonNull Connection connection) {
     Set<String> ids = new HashSet<>();
-
     for (File f : new File(baseDir() + "/src/test/resources/observation").listFiles()) {
       Observation observation = MAPPER.readValue(f, Observation.class);
       Set<ConstraintViolation<Observation>> violations =
@@ -122,13 +122,39 @@ public final class Populaterator {
   }
 
   @SneakyThrows
+  private static void patient(@NonNull Connection connection) {
+    Set<String> ids = new HashSet<>();
+    for (File f : new File(baseDir() + "/src/test/resources/patient").listFiles()) {
+      Patient patient = MAPPER.readValue(f, Patient.class);
+      Set<ConstraintViolation<Patient>> violations =
+          Validation.buildDefaultValidatorFactory().getValidator().validate(patient);
+      checkState(violations.isEmpty(), "Invalid payload: " + violations);
+
+      String id = patient.id();
+      checkState(id != null);
+      checkState(!ids.contains(id), "Duplicate ID " + id);
+      ids.add(id);
+
+      String sqlInsert = sqlInsert("app.Patient", List.of("id", "payload", "version"));
+      try (PreparedStatement statement = connection.prepareStatement(sqlInsert)) {
+        statement.setObject(1, id);
+        statement.setObject(2, MAPPER.writeValueAsString(patient));
+        statement.setObject(3, 0);
+        statement.execute();
+      }
+    }
+  }
+
+  @SneakyThrows
   private static void populate(@NonNull Db db) {
     log("Populating " + db.name());
     waitForStartup(db);
     bootstrap(db);
     liquibase(db);
     var connection = db.connection();
+
     observation(connection);
+    patient(connection);
     questionnaire(connection);
     questionnaireResponse(connection);
     connection.commit();
@@ -139,7 +165,6 @@ public final class Populaterator {
   @SneakyThrows
   private static void questionnaire(@NonNull Connection connection) {
     Set<String> ids = new HashSet<>();
-
     for (File f : new File(baseDir() + "/src/test/resources/questionnaire").listFiles()) {
       Questionnaire questionnaire = MAPPER.readValue(f, Questionnaire.class);
       Set<ConstraintViolation<Questionnaire>> violations =
@@ -164,7 +189,6 @@ public final class Populaterator {
   @SneakyThrows
   private static void questionnaireResponse(@NonNull Connection connection) {
     Set<String> ids = new HashSet<>();
-
     for (File f : new File(baseDir() + "/src/test/resources/questionnaire-response").listFiles()) {
       QuestionnaireResponse response = MAPPER.readValue(f, QuestionnaireResponse.class);
       Set<ConstraintViolation<QuestionnaireResponse>> violations =
