@@ -6,6 +6,7 @@ import static gov.va.api.health.patientgenerateddata.SerializationUtils.deserial
 import gov.va.api.health.autoconfig.configuration.JacksonConfig;
 import gov.va.api.health.autoconfig.logging.Loggable;
 import gov.va.api.health.patientgenerateddata.Exceptions;
+import gov.va.api.health.patientgenerateddata.ReferenceQualifier;
 import gov.va.api.health.r4.api.resources.Questionnaire;
 import java.util.Optional;
 import javax.validation.Valid;

@@ -6,6 +6,7 @@ import static gov.va.api.health.patientgenerateddata.SerializationUtils.deserial
 import gov.va.api.health.autoconfig.configuration.JacksonConfig;
 import gov.va.api.health.autoconfig.logging.Loggable;
 import gov.va.api.health.patientgenerateddata.Exceptions;
+import gov.va.api.health.patientgenerateddata.ReferenceQualifier;
 import gov.va.api.health.r4.api.resources.Patient;
 import java.util.Optional;
 import javax.validation.Valid;
@@ -33,6 +34,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class PatientController {
   private final PatientRepository repository;
 
+  private final ReferenceQualifier referenceQualifier;
+
   @InitBinder
   void initDirectFieldAccess(DataBinder dataBinder) {
     dataBinder.initDirectFieldAccess();
@@ -42,6 +45,7 @@ public class PatientController {
   Patient read(@PathVariable("id") String id) {
     Optional<PatientEntity> maybeEntity = repository.findById(id);
     PatientEntity entity = maybeEntity.orElseThrow(() -> new Exceptions.NotFound(id));
+    referenceQualifier.serializeAsField(entity.payload());
     return deserializedPayload(id, entity.payload(), Patient.class);
   }
 
