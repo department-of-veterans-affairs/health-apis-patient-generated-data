@@ -4,7 +4,7 @@ import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public final class Exceptions {
-  static final class InvalidPayload extends RuntimeException {
+  public static final class InvalidPayload extends RuntimeException {
     public InvalidPayload(String id, Throwable cause) {
       super(String.format("Resource %s has invalid payload", id), cause);
     }
