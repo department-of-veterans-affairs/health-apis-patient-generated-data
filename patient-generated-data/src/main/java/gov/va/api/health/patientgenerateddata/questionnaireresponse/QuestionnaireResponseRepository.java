@@ -1,4 +1,4 @@
-package gov.va.api.health.patientgenerateddata;
+package gov.va.api.health.patientgenerateddata.questionnaireresponse;
 
 import gov.va.api.health.autoconfig.logging.Loggable;
 import org.springframework.data.repository.CrudRepository;
@@ -7,4 +7,5 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Loggable
 @Transactional(isolation = Isolation.READ_UNCOMMITTED)
-public interface QuestionnaireRepository extends CrudRepository<QuestionnaireEntity, String> {}
+public interface QuestionnaireResponseRepository
+    extends CrudRepository<QuestionnaireResponseEntity, String> {}

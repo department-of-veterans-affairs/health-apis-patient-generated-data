@@ -1,4 +1,4 @@
-package gov.va.api.health.patientgenerateddata;
+package gov.va.api.health.patientgenerateddata.observation;
 
 import javax.persistence.Basic;
 import javax.persistence.Entity;
@@ -17,11 +17,11 @@ import lombok.NoArgsConstructor;
 @Data
 @Entity
 @Builder
-@Table(name = "Questionnaire", schema = "app")
+@Table(name = "Observation", schema = "app")
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class QuestionnaireEntity {
+public class ObservationEntity {
   @Id @EqualsAndHashCode.Include private String id;
 
   @Lob

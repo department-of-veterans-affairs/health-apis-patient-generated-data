@@ -8,6 +8,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import gov.va.api.health.autoconfig.configuration.JacksonConfig;
+import gov.va.api.health.patientgenerateddata.questionnaire.QuestionnaireEntity;
+import gov.va.api.health.patientgenerateddata.questionnaire.QuestionnaireRepository;
 import gov.va.api.health.r4.api.resources.Questionnaire;
 import java.util.Optional;
 import lombok.SneakyThrows;
