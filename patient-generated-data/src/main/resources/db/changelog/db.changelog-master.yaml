@@ -97,7 +97,6 @@ databaseChangeLog:
                   type: int
                   constraints:
                     nullable: false
-                    
   - changeSet:
       id: 6
       author: pteracuda
