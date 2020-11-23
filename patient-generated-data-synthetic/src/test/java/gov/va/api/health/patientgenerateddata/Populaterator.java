@@ -150,7 +150,6 @@ public final class Populaterator {
     bootstrap(db);
     liquibase(db);
     var connection = db.connection();
-    patient(connection);
     observation(connection);
     patient(connection);
     questionnaire(connection);
