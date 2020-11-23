@@ -34,14 +34,16 @@ public class PatientControllerTest {
         JacksonConfig.createMapper().writeValueAsString(Patient.builder().id("x").build());
     when(repo.findById("x"))
         .thenReturn(Optional.of(PatientEntity.builder().id("x").payload(payload).build()));
-    assertThat(new PatientController(repo, qualifier).read("x")).isEqualTo(Patient.builder().id("x").build());
+    assertThat(new PatientController(repo, qualifier).read("x"))
+        .isEqualTo(Patient.builder().id("x").build());
   }
 
   @Test
   void read_notFound() {
     PatientRepository repo = mock(PatientRepository.class);
     ReferenceQualifier qualifier = mock(ReferenceQualifier.class);
-    assertThrows(Exceptions.NotFound.class, () -> new PatientController(repo, qualifier).read("notfound"));
+    assertThrows(
+        Exceptions.NotFound.class, () -> new PatientController(repo, qualifier).read("notfound"));
   }
 
   @Test

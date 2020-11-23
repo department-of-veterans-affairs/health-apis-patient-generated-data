@@ -1,15 +1,17 @@
 package gov.va.api.health.patientgenerateddata;
 
-import gov.va.api.health.fhir.api.IsReference;
-import lombok.SneakyThrows;
-import org.apache.commons.lang3.StringUtils;
+import static org.apache.commons.lang3.StringUtils.isBlank;
+
+import gov.va.api.health.r4.api.elements.Reference;
+import java.util.Collection;
+import java.util.stream.Stream;
+import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
 public class ReferenceQualifier {
-
   private final String baseUrl;
 
   private final String r4BasePath;
@@ -21,27 +23,29 @@ public class ReferenceQualifier {
     this.r4BasePath = r4BasePath;
   }
 
-  private String qualify(String reference) {
-    if (StringUtils.isBlank(reference)) {
-      return null;
-    }
-    if (reference.startsWith("http")) {
-      return reference;
-    }
-    if (reference.startsWith("/")) {
-      return baseUrl + "/" + r4BasePath + reference;
-    }
-    return baseUrl + "/" + r4BasePath + "/" + reference;
+  public static <T> Stream<T> stream(Collection<T> collection) {
+    return collection == null ? Stream.empty() : collection.stream();
   }
 
-  /** Converts the reference to a string. */
-  @SneakyThrows
-  public String serializeAsField(Object shouldBeReference) {
-    if (!(shouldBeReference instanceof IsReference)) {
-      throw new IllegalArgumentException(
-          "Qualified reference writer cannot serialize: " + shouldBeReference);
+  private void qualify(Reference wrapper) {
+    if (wrapper == null) {
+      return;
     }
-    IsReference reference = (IsReference) shouldBeReference;
-    return qualify(reference.reference());
+    String reference = wrapper.reference();
+    if (isBlank(reference)) {
+      return;
+    }
+    if (reference.startsWith("http")) {
+      return;
+    }
+    if (reference.startsWith("/")) {
+      wrapper.reference(baseUrl + "/" + r4BasePath + reference);
+      return;
+    }
+    wrapper.reference(baseUrl + "/" + r4BasePath + "/" + reference);
+  }
+
+  public void qualify(@NonNull Stream<Reference> references) {
+    references.forEach(r -> qualify(r));
   }
 }

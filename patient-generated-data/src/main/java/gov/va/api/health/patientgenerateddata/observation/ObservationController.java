@@ -9,6 +9,7 @@ import gov.va.api.health.patientgenerateddata.Exceptions;
 import gov.va.api.health.patientgenerateddata.ReferenceQualifier;
 import gov.va.api.health.r4.api.resources.Observation;
 import java.util.Optional;
+import java.util.stream.Stream;
 import javax.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
@@ -32,7 +33,6 @@ import org.springframework.web.bind.annotation.RestController;
     produces = {"application/json", "application/fhir+json"})
 @AllArgsConstructor(onConstructor_ = @Autowired)
 public class ObservationController {
-
   private final ObservationRepository repository;
 
   private final ReferenceQualifier referenceQualifier;
@@ -46,7 +46,8 @@ public class ObservationController {
   Observation read(@PathVariable("id") String id) {
     Optional<ObservationEntity> maybeEntity = repository.findById(id);
     ObservationEntity entity = maybeEntity.orElseThrow(() -> new Exceptions.NotFound(id));
-    referenceQualifier.serializeAsField(entity.payload());
+    // referenceQualifier.serializeAsField(entity.payload());
+    referenceQualifier.qualify(Stream.empty());
     return deserializedPayload(id, entity.payload(), Observation.class);
   }
 

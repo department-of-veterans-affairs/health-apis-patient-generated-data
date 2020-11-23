@@ -19,7 +19,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.DataBinder;
 
 public class QuestionnaireResponseControllerTest {
-
   @Test
   void initDirectFieldAccess() {
     new QuestionnaireResponseController(

@@ -9,6 +9,7 @@ import gov.va.api.health.patientgenerateddata.Exceptions;
 import gov.va.api.health.patientgenerateddata.ReferenceQualifier;
 import gov.va.api.health.r4.api.resources.Patient;
 import java.util.Optional;
+import java.util.stream.Stream;
 import javax.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
@@ -45,7 +46,8 @@ public class PatientController {
   Patient read(@PathVariable("id") String id) {
     Optional<PatientEntity> maybeEntity = repository.findById(id);
     PatientEntity entity = maybeEntity.orElseThrow(() -> new Exceptions.NotFound(id));
-    referenceQualifier.serializeAsField(entity.payload());
+    // referenceQualifier.serializeAsField(entity.payload());
+    referenceQualifier.qualify(Stream.empty());
     return deserializedPayload(id, entity.payload(), Patient.class);
   }
 
