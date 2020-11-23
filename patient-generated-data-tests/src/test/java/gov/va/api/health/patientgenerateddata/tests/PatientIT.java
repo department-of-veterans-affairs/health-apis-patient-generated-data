@@ -7,7 +7,7 @@ import gov.va.api.health.sentinel.Environment;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-public class QuestionnaireIT {
+public class PatientIT {
   @BeforeAll
   static void assumeEnvironment() {
     assumeEnvironmentIn(Environment.LOCAL);
@@ -15,13 +15,15 @@ public class QuestionnaireIT {
 
   @Test
   void read() {
-    makeRequest(null, "Questionnaire/c18", 200);
-    makeRequest("application/json", "Questionnaire/c18", 200);
-    makeRequest("application/fhir+json", "Questionnaire/c18", 200);
+    makeRequest(null, "Patient/1000000", 200);
+    makeRequest(null, "Patient/2000000", 200);
+    makeRequest(null, "Patient/3000000", 200);
+    makeRequest("application/json", "Patient/1000000", 200);
+    makeRequest("application/fhir+json", "Patient/1000000", 200);
   }
 
   @Test
   void read_notFound() {
-    makeRequest("application/json", "Questionnaire/5555555", 404);
+    makeRequest("application/json", "Patient/5555555", 404);
   }
 }

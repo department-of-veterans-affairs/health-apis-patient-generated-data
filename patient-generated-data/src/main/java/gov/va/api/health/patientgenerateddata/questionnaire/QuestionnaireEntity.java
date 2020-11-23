@@ -1,4 +1,4 @@
-package gov.va.api.health.patientgenerateddata;
+package gov.va.api.health.patientgenerateddata.questionnaire;
 
 import javax.persistence.Basic;
 import javax.persistence.Entity;

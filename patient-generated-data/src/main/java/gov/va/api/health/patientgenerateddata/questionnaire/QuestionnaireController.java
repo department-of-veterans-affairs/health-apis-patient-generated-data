@@ -1,11 +1,12 @@
-package gov.va.api.health.patientgenerateddata;
+package gov.va.api.health.patientgenerateddata.questionnaire;
 
 import static com.google.common.base.Preconditions.checkState;
 import static gov.va.api.health.patientgenerateddata.SerializationUtils.deserializedPayload;
 
 import gov.va.api.health.autoconfig.configuration.JacksonConfig;
 import gov.va.api.health.autoconfig.logging.Loggable;
-import gov.va.api.health.r4.api.resources.Observation;
+import gov.va.api.health.patientgenerateddata.Exceptions;
+import gov.va.api.health.r4.api.resources.Questionnaire;
 import java.util.Optional;
 import javax.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -26,12 +27,11 @@ import org.springframework.web.bind.annotation.RestController;
 @Validated
 @RestController
 @RequestMapping(
-    value = "/r4/Observation",
+    value = "/r4/Questionnaire",
     produces = {"application/json", "application/fhir+json"})
-@AllArgsConstructor(onConstructor_ = @Autowired)
-public class ObservationController {
-
-  private final ObservationRepository repository;
+@AllArgsConstructor(onConstructor = @__({@Autowired}))
+public class QuestionnaireController {
+  private final QuestionnaireRepository repository;
 
   private final ReferenceQualifier referenceQualifier;
 
@@ -41,28 +41,28 @@ public class ObservationController {
   }
 
   @GetMapping(value = "/{id}")
-  Observation read(@PathVariable("id") String id) {
-    Optional<ObservationEntity> maybeEntity = repository.findById(id);
-    ObservationEntity entity = maybeEntity.orElseThrow(() -> new Exceptions.NotFound(id));
+  Questionnaire read(@PathVariable("id") String id) {
+    Optional<QuestionnaireEntity> maybeEntity = repository.findById(id);
+    QuestionnaireEntity entity = maybeEntity.orElseThrow(() -> new Exceptions.NotFound(id));
     referenceQualifier.serializeAsField(entity.payload());
-    return deserializedPayload(id, entity.payload(), Observation.class);
+    return deserializedPayload(id, entity.payload(), Questionnaire.class);
   }
 
   @SneakyThrows
   @PutMapping(value = "/{id}")
   @Loggable(arguments = false)
   ResponseEntity<Void> update(
-      @PathVariable("id") String id, @Valid @RequestBody Observation observation) {
-    String payload = JacksonConfig.createMapper().writeValueAsString(observation);
-    checkState(id.equals(observation.id()), "%s != %s", id, observation.id());
-    Optional<ObservationEntity> maybeEntity = repository.findById(id);
+      @PathVariable("id") String id, @Valid @RequestBody Questionnaire questionnaire) {
+    String payload = JacksonConfig.createMapper().writeValueAsString(questionnaire);
+    checkState(id.equals(questionnaire.id()), "%s != %s", id, questionnaire.id());
+    Optional<QuestionnaireEntity> maybeEntity = repository.findById(id);
     if (maybeEntity.isPresent()) {
-      ObservationEntity entity = maybeEntity.get();
+      QuestionnaireEntity entity = maybeEntity.get();
       entity.payload(payload);
       repository.save(entity);
       return ResponseEntity.ok().build();
     }
-    repository.save(ObservationEntity.builder().id(id).payload(payload).build());
+    repository.save(QuestionnaireEntity.builder().id(id).payload(payload).build());
     return ResponseEntity.status(HttpStatus.CREATED).build();
   }
 }
