@@ -9,8 +9,6 @@ import static org.mockito.Mockito.when;
 
 import gov.va.api.health.autoconfig.configuration.JacksonConfig;
 import gov.va.api.health.patientgenerateddata.Exceptions;
-import gov.va.api.health.patientgenerateddata.questionnaireresponse.QuestionnaireResponseEntity;
-import gov.va.api.health.patientgenerateddata.questionnaireresponse.QuestionnaireResponseRepository;
 import gov.va.api.health.r4.api.resources.QuestionnaireResponse;
 import java.util.Optional;
 import lombok.SneakyThrows;
