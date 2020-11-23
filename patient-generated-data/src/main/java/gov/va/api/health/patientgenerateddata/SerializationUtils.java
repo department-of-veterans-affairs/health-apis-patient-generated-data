@@ -5,8 +5,9 @@ import lombok.NonNull;
 import lombok.SneakyThrows;
 
 public class SerializationUtils {
+  /** Deserialized Payload. */
   @SneakyThrows
-  static <T> T deserializedPayload(
+  public static <T> T deserializedPayload(
       @NonNull String id, @NonNull String payload, @NonNull Class<T> clazz) {
     try {
       return JacksonConfig.createMapper().readValue(payload, clazz);
