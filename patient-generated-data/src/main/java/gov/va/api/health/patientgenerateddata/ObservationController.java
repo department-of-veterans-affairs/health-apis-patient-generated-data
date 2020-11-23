@@ -33,6 +33,8 @@ public class ObservationController {
 
   private final ObservationRepository repository;
 
+  private final ReferenceQualifier referenceQualifier;
+
   @InitBinder
   void initDirectFieldAccess(DataBinder dataBinder) {
     dataBinder.initDirectFieldAccess();
@@ -42,6 +44,7 @@ public class ObservationController {
   Observation read(@PathVariable("id") String id) {
     Optional<ObservationEntity> maybeEntity = repository.findById(id);
     ObservationEntity entity = maybeEntity.orElseThrow(() -> new Exceptions.NotFound(id));
+    referenceQualifier.serializeAsField(entity.payload());
     return deserializedPayload(id, entity.payload(), Observation.class);
   }
 
