@@ -32,6 +32,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class QuestionnaireController {
   private final QuestionnaireRepository repository;
 
+  private final ReferenceQualifier referenceQualifier;
+
   @InitBinder
   void initDirectFieldAccess(DataBinder dataBinder) {
     dataBinder.initDirectFieldAccess();
@@ -41,6 +43,7 @@ public class QuestionnaireController {
   Questionnaire read(@PathVariable("id") String id) {
     Optional<QuestionnaireEntity> maybeEntity = repository.findById(id);
     QuestionnaireEntity entity = maybeEntity.orElseThrow(() -> new Exceptions.NotFound(id));
+    referenceQualifier.serializeAsField(entity.payload());
     return deserializedPayload(id, entity.payload(), Questionnaire.class);
   }
 

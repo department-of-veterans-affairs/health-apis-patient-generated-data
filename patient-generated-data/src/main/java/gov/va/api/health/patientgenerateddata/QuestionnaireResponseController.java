@@ -33,6 +33,8 @@ public class QuestionnaireResponseController {
 
   private final QuestionnaireResponseRepository repository;
 
+  private final ReferenceQualifier referenceQualifier;
+
   @InitBinder
   void initDirectFieldAccess(DataBinder dataBinder) {
     dataBinder.initDirectFieldAccess();
@@ -42,6 +44,7 @@ public class QuestionnaireResponseController {
   QuestionnaireResponse read(@PathVariable("id") String id) {
     Optional<QuestionnaireResponseEntity> maybeEntity = repository.findById(id);
     QuestionnaireResponseEntity entity = maybeEntity.orElseThrow(() -> new Exceptions.NotFound(id));
+    referenceQualifier.serializeAsField(entity.payload());
     return deserializedPayload(id, entity.payload(), QuestionnaireResponse.class);
   }
 
