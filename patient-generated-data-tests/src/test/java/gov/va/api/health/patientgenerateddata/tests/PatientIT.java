@@ -10,7 +10,8 @@ import org.junit.jupiter.api.Test;
 public class PatientIT {
   @BeforeAll
   static void assumeEnvironment() {
-	  assumeEnvironmentIn(Environment.LOCAL, Environment.QA, Environment.STAGING, Environment.STAGING_LAB);
+    assumeEnvironmentIn(
+        Environment.LOCAL, Environment.QA, Environment.STAGING, Environment.STAGING_LAB);
   }
 
   @Test
