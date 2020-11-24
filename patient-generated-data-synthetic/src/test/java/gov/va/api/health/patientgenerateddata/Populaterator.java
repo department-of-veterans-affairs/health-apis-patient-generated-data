@@ -105,10 +105,12 @@ public final class Populaterator {
       Set<ConstraintViolation<Observation>> violations =
           Validation.buildDefaultValidatorFactory().getValidator().validate(observation);
       checkState(violations.isEmpty(), "Invalid payload: " + violations);
+
       String id = observation.id();
       checkState(id != null);
       checkState(!ids.contains(id), "Duplicate ID " + id);
       ids.add(id);
+
       String sqlInsert = sqlInsert("app.Observation", List.of("id", "payload", "version"));
       try (PreparedStatement statement = connection.prepareStatement(sqlInsert)) {
         statement.setObject(1, id);
@@ -150,6 +152,7 @@ public final class Populaterator {
     bootstrap(db);
     liquibase(db);
     var connection = db.connection();
+
     observation(connection);
     patient(connection);
     questionnaire(connection);
@@ -167,10 +170,12 @@ public final class Populaterator {
       Set<ConstraintViolation<Questionnaire>> violations =
           Validation.buildDefaultValidatorFactory().getValidator().validate(questionnaire);
       checkState(violations.isEmpty(), "Invalid payload: " + violations);
+
       String id = questionnaire.id();
       checkState(id != null);
       checkState(!ids.contains(id), "Duplicate ID " + id);
       ids.add(id);
+
       String sqlInsert = sqlInsert("app.Questionnaire", List.of("id", "payload", "version"));
       try (PreparedStatement statement = connection.prepareStatement(sqlInsert)) {
         statement.setObject(1, id);
@@ -189,10 +194,12 @@ public final class Populaterator {
       Set<ConstraintViolation<QuestionnaireResponse>> violations =
           Validation.buildDefaultValidatorFactory().getValidator().validate(response);
       checkState(violations.isEmpty(), "Invalid payload: " + violations);
+
       String id = response.id();
       checkState(id != null);
       checkState(!ids.contains(id), "Duplicate ID " + id);
       ids.add(id);
+
       String sqlInsert =
           sqlInsert("app.QuestionnaireResponse", List.of("id", "payload", "version"));
       try (PreparedStatement statement = connection.prepareStatement(sqlInsert)) {
