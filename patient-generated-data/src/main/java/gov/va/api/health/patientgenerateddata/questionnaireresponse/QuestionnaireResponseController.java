@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
     produces = {"application/json", "application/fhir+json"})
 @AllArgsConstructor(onConstructor_ = @Autowired)
 public class QuestionnaireResponseController {
+
   private final QuestionnaireResponseRepository repository;
 
   @InitBinder
