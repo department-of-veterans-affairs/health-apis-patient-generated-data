@@ -12,6 +12,7 @@
   <packaging>jar</packaging>
   <properties>
     <fhir-resources.version>5.0.14</fhir-resources.version>
+    <swagger-maven-plugin.version>2.1.5</swagger-maven-plugin.version>
     <vulcan.version>1.0.0</vulcan.version>
   </properties>
   <dependencies>
@@ -42,4 +43,58 @@
       <artifactId>spring-boot-starter-data-jpa</artifactId>
     </dependency>
   </dependencies>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>io.swagger.core.v3</groupId>
+        <artifactId>swagger-maven-plugin</artifactId>
+        <version>${swagger-maven-plugin.version}</version>
+        <executions>
+          <execution>
+            <id>open-api</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>resolve</goal>
+            </goals>
+            <configuration>
+              <resourceClasses>
+                <resourceClass>gov.va.api.health.patientgenerateddata.OpenApi</resourceClass>
+              </resourceClasses>
+              <outputFileName>openapi</outputFileName>
+              <outputPath>${project.build.outputDirectory}</outputPath>
+              <outputFormat>JSON</outputFormat>
+              <prettyPrint>true</prettyPrint>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>gov.va.plugin.maven</groupId>
+        <artifactId>swagger-examples-maven-plugin</artifactId>
+        <version>2.0.0</version>
+        <dependencies>
+          <dependency>
+            <groupId>gov.va.api.health</groupId>
+            <artifactId>us-core-r4-examples</artifactId>
+            <version>${fhir-resources.version}</version>
+            <scope>runtime</scope>
+          </dependency>
+        </dependencies>
+        <executions>
+          <execution>
+            <id>inject-examples</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>inject</goal>
+            </goals>
+            <configuration>
+              <files>
+                <file file="${project.build.outputDirectory}/openapi.json" format="JSON"/>
+              </files>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 </project>

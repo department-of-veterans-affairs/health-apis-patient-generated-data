@@ -1,9 +1,9 @@
 package gov.va.api.health.patientgenerateddata;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.SneakyThrows;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import lombok.SneakyThrows;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StreamUtils;
@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
-public class HomeController {
+public class OpenApiController {
   private static final Object OPEN_API = initOpenApi();
 
   @SneakyThrows
