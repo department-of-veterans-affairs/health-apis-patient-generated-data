@@ -4,11 +4,11 @@
   <parent>
     <groupId>gov.va.api.health</groupId>
     <artifactId>service-starter</artifactId>
-    <version>7.0.16</version>
+    <version>7.0.18</version>
     <relativePath/>
   </parent>
   <artifactId>patient-generated-data</artifactId>
-  <version>0.0.19-SNAPSHOT</version>
+  <version>0.0.19</version>
   <packaging>jar</packaging>
   <properties>
     <fhir-resources.version>5.0.14</fhir-resources.version>
