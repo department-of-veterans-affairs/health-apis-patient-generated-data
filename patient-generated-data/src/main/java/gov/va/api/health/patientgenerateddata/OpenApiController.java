@@ -12,16 +12,16 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 public class OpenApiController {
-  private static final Object OPEN_API = initOpenApi();
+  private static final String OPEN_API = initOpenApi();
 
   @SneakyThrows
   private static String initOpenApi() {
     ObjectMapper mapper = new ObjectMapper();
-    return mapper.writeValueAsString(mapper.readTree(readOpenApi()));
+    return mapper.writeValueAsString(mapper.readTree(loadOpenApi()));
   }
 
   @SneakyThrows
-  private static String readOpenApi() {
+  private static String loadOpenApi() {
     try (InputStream is = new ClassPathResource("openapi.json").getInputStream()) {
       return StreamUtils.copyToString(is, StandardCharsets.UTF_8);
     }
@@ -31,7 +31,7 @@ public class OpenApiController {
   @GetMapping(
       value = {"r4/", "r4/openapi.json"},
       produces = "application/json")
-  public Object openApi() {
+  public String openApi() {
     return OPEN_API;
   }
 }
