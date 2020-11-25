@@ -2,7 +2,6 @@ package gov.va.api.health.patientgenerateddata;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.BeanDescription;
-import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationConfig;
 import com.fasterxml.jackson.databind.SerializerProvider;
@@ -96,19 +95,6 @@ public class MagicReferenceConfig {
                 applyReferenceWriter(beanProperties);
               }
               return super.changeProperties(serialConfig, beanDesc, beanProperties);
-            }
-
-            @Override
-            @SuppressWarnings("unchecked")
-            public JsonSerializer<?> modifySerializer(
-                SerializationConfig serialConfig,
-                BeanDescription beanDesc,
-                JsonSerializer<?> serializer) {
-              //              if (IsReference.class.isAssignableFrom(beanDesc.getBeanClass())) {
-              //                return new
-              // OptionalReferenceSerializer<>((JsonSerializer<IsReference>) serializer);
-              //              }
-              return super.modifySerializer(serialConfig, beanDesc, serializer);
             }
           });
     }
