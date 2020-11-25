@@ -7,12 +7,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class PatientGeneratedDataJacksonMapper {
+public class JacksonMapperConfig {
 
   private final MagicReferenceConfig magicReferences;
 
   @Autowired
-  public PatientGeneratedDataJacksonMapper(MagicReferenceConfig magicReferences) {
+  public JacksonMapperConfig(MagicReferenceConfig magicReferences) {
     this.magicReferences = magicReferences;
   }
 

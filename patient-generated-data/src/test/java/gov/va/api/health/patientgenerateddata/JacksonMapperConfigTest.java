@@ -7,7 +7,6 @@ import gov.va.api.health.autoconfig.configuration.JacksonConfig;
 import gov.va.api.health.r4.api.DataAbsentReason;
 import gov.va.api.health.r4.api.elements.Extension;
 import gov.va.api.health.r4.api.elements.Reference;
-import gov.va.api.health.validation.api.ExactlyOneOf;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -18,7 +17,10 @@ import lombok.Singular;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 
-public class R4JacksonMapperTest {
+public class JacksonMapperConfigTest {
+  private static Reference reference(String path) {
+    return Reference.builder().display("display-value").reference(path).id("id-value").build();
+  }
 
   @Test
   @SneakyThrows
@@ -36,17 +38,13 @@ public class R4JacksonMapperTest {
             ._nope(DataAbsentReason.of(DataAbsentReason.Reason.error))
             .build();
     String serializedJson =
-        new PatientGeneratedDataJacksonMapper(new MagicReferenceConfig("https://example.com", "r4"))
+        new JacksonMapperConfig(new MagicReferenceConfig("https://example.com", "r4"))
             .objectMapper()
             .writerWithDefaultPrettyPrinter()
             .writeValueAsString(input);
     FugaziReferenceMajig actual =
         JacksonConfig.createMapper().readValue(serializedJson, FugaziReferenceMajig.class);
     assertThat(actual).isEqualTo(expected);
-  }
-
-  private Reference reference(String path) {
-    return Reference.builder().display("display-value").reference(path).id("id-value").build();
   }
 
   @Test
@@ -111,7 +109,7 @@ public class R4JacksonMapperTest {
                     .build())
             .build();
     String qualifiedJson =
-        new PatientGeneratedDataJacksonMapper(new MagicReferenceConfig("https://example.com", "r4"))
+        new JacksonMapperConfig(new MagicReferenceConfig("https://example.com", "r4"))
             .objectMapper()
             .writerWithDefaultPrettyPrinter()
             .writeValueAsString(input);
@@ -138,24 +136,10 @@ public class R4JacksonMapperTest {
 
     @Singular List<Reference> things;
 
-    R4JacksonMapperTest.FugaziReferenceMajig inner;
+    JacksonMapperConfigTest.FugaziReferenceMajig inner;
 
     String whocares;
 
     Boolean me;
-  }
-
-  @Data
-  @Builder
-  @NoArgsConstructor(access = AccessLevel.PRIVATE)
-  @AllArgsConstructor
-  @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
-  @ExactlyOneOf(
-      fields = {"required", "_required"},
-      message = "Exactly one required field must be specified")
-  static final class FugaziRequiredReferenceMajig {
-    Reference required;
-
-    Extension _required;
   }
 }
