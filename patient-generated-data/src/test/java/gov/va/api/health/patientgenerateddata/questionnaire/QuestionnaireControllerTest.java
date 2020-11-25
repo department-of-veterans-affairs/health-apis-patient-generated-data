@@ -9,7 +9,6 @@ import static org.mockito.Mockito.when;
 
 import gov.va.api.health.autoconfig.configuration.JacksonConfig;
 import gov.va.api.health.patientgenerateddata.Exceptions;
-import gov.va.api.health.patientgenerateddata.ReferenceQualifier;
 import gov.va.api.health.r4.api.elements.Reference;
 import gov.va.api.health.r4.api.resources.Questionnaire;
 import java.util.List;
@@ -23,7 +22,7 @@ import org.springframework.validation.DataBinder;
 public class QuestionnaireControllerTest {
   @Test
   void initDirectFieldAccess() {
-    new QuestionnaireController(mock(QuestionnaireRepository.class), mock(ReferenceQualifier.class))
+    new QuestionnaireController(mock(QuestionnaireRepository.class))
         .initDirectFieldAccess(mock(DataBinder.class));
   }
 
@@ -67,48 +66,43 @@ public class QuestionnaireControllerTest {
             .build();
 
     QuestionnaireRepository repo = mock(QuestionnaireRepository.class);
-    ReferenceQualifier qualifier = new ReferenceQualifier("http://foo", "r4");
     String payload = JacksonConfig.createMapper().writeValueAsString(q);
     when(repo.findById("x"))
         .thenReturn(Optional.of(QuestionnaireEntity.builder().id("x").payload(payload).build()));
     System.out.println(
         JacksonConfig.createMapper()
             .writerWithDefaultPrettyPrinter()
-            .writeValueAsString(new QuestionnaireController(repo, qualifier).read("x")));
+            .writeValueAsString(new QuestionnaireController(repo).read("x")));
   }
 
   @Test
   @SneakyThrows
   void read() {
     QuestionnaireRepository repo = mock(QuestionnaireRepository.class);
-    ReferenceQualifier qualifier = mock(ReferenceQualifier.class);
     String payload =
         JacksonConfig.createMapper().writeValueAsString(Questionnaire.builder().id("x").build());
     when(repo.findById("x"))
         .thenReturn(Optional.of(QuestionnaireEntity.builder().id("x").payload(payload).build()));
-    assertThat(new QuestionnaireController(repo, qualifier).read("x"))
+    assertThat(new QuestionnaireController(repo).read("x"))
         .isEqualTo(Questionnaire.builder().id("x").build());
   }
 
   @Test
   void read_notFound() {
     QuestionnaireRepository repo = mock(QuestionnaireRepository.class);
-    ReferenceQualifier qualifier = mock(ReferenceQualifier.class);
     assertThrows(
-        Exceptions.NotFound.class,
-        () -> new QuestionnaireController(repo, qualifier).read("notfound"));
+        Exceptions.NotFound.class, () -> new QuestionnaireController(repo).read("notfound"));
   }
 
   @Test
   @SneakyThrows
   void update_existing() {
     QuestionnaireRepository repo = mock(QuestionnaireRepository.class);
-    ReferenceQualifier qualifier = mock(ReferenceQualifier.class);
     Questionnaire questionnaire = Questionnaire.builder().id("x").build();
     String payload = JacksonConfig.createMapper().writeValueAsString(questionnaire);
     when(repo.findById("x"))
         .thenReturn(Optional.of(QuestionnaireEntity.builder().id("x").payload(payload).build()));
-    assertThat(new QuestionnaireController(repo, qualifier).update("x", questionnaire))
+    assertThat(new QuestionnaireController(repo).update("x", questionnaire))
         .isEqualTo(ResponseEntity.ok().build());
     verify(repo, times(1)).save(QuestionnaireEntity.builder().id("x").payload(payload).build());
   }
@@ -117,10 +111,9 @@ public class QuestionnaireControllerTest {
   @SneakyThrows
   void update_new() {
     QuestionnaireRepository repo = mock(QuestionnaireRepository.class);
-    ReferenceQualifier qualifier = mock(ReferenceQualifier.class);
     Questionnaire questionnaire = Questionnaire.builder().id("x").build();
     String payload = JacksonConfig.createMapper().writeValueAsString(questionnaire);
-    assertThat(new QuestionnaireController(repo, qualifier).update("x", questionnaire))
+    assertThat(new QuestionnaireController(repo).update("x", questionnaire))
         .isEqualTo(ResponseEntity.status(HttpStatus.CREATED).build());
     verify(repo, times(1)).save(QuestionnaireEntity.builder().id("x").payload(payload).build());
   }

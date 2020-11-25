@@ -58,8 +58,8 @@ public class R4JacksonMapperTest {
             .me(true)
             .ref(reference("AllergyIntolerance/1234"))
             .nope(reference("https://example.com/r4/Location/1234"))
-            .alsoNo(reference("https://example.com/r4/Location/ 1234"))
-            .thing(null)
+            ._nope(DataAbsentReason.of(DataAbsentReason.Reason.unsupported))
+            .alsoNo(reference("https://example.com/r4/Location/1234"))
             .thing(reference(null))
             .thing(reference(""))
             .thing(reference("http://qualified.is.not/touched"))
@@ -81,12 +81,13 @@ public class R4JacksonMapperTest {
                             .build())
                     .build())
             .build();
-
     FugaziReferenceMajig expected =
         FugaziReferenceMajig.builder()
             .whocares("noone")
             .me(true)
+            .nope(reference("https://example.com/r4/Location/1234"))
             ._nope(DataAbsentReason.of(DataAbsentReason.Reason.unsupported))
+            .alsoNo(reference("https://example.com/r4/Location/1234"))
             .ref(reference("https://example.com/r4/AllergyIntolerance/1234"))
             .thing(reference(null))
             .thing(reference(null))
@@ -94,6 +95,8 @@ public class R4JacksonMapperTest {
             .thing(reference("https://example.com/r4/no/slash"))
             .thing(reference("https://example.com/r4/cool/a/slash"))
             .thing(reference("https://example.com/r4/Location"))
+            .thing(reference("https://example.com/r4/Location/1234"))
+            .thing(reference("https://example.com/r4/Location/1234"))
             .thing(reference("https://example.com/r4/Organization"))
             .thing(reference("https://example.com/r4/Organization/1234"))
             .thing(reference("https://example.com/r4/Organization/1234"))
@@ -107,7 +110,6 @@ public class R4JacksonMapperTest {
                             .build())
                     .build())
             .build();
-
     String qualifiedJson =
         new PatientGeneratedDataJacksonMapper(new MagicReferenceConfig("https://example.com", "r4"))
             .objectMapper()
@@ -115,29 +117,6 @@ public class R4JacksonMapperTest {
             .writeValueAsString(input);
     FugaziReferenceMajig actual =
         JacksonConfig.createMapper().readValue(qualifiedJson, FugaziReferenceMajig.class);
-    assertThat(actual).isEqualTo(expected);
-  }
-
-  @Test
-  @SneakyThrows
-  public void requiredReferencesEmitDar() {
-    FugaziRequiredReferenceMajig input =
-        FugaziRequiredReferenceMajig.builder()
-            .required(reference("https://example.com/api/r4/Location/1234"))
-            ._required(DataAbsentReason.of(DataAbsentReason.Reason.unknown))
-            .build();
-    FugaziRequiredReferenceMajig expected =
-        FugaziRequiredReferenceMajig.builder()
-            .required(null)
-            ._required(DataAbsentReason.of(DataAbsentReason.Reason.unknown))
-            .build();
-    String qualifiedJson =
-        new PatientGeneratedDataJacksonMapper(new MagicReferenceConfig("https://example.com", "r4"))
-            .objectMapper()
-            .writerWithDefaultPrettyPrinter()
-            .writeValueAsString(input);
-    FugaziRequiredReferenceMajig actual =
-        JacksonConfig.createMapper().readValue(qualifiedJson, FugaziRequiredReferenceMajig.class);
     assertThat(actual).isEqualTo(expected);
   }
 
@@ -150,12 +129,19 @@ public class R4JacksonMapperTest {
       isGetterVisibility = JsonAutoDetect.Visibility.NONE)
   static final class FugaziReferenceMajig {
     Reference ref;
+
     Reference nope;
+
     Extension _nope;
+
     Reference alsoNo;
+
     @Singular List<Reference> things;
+
     R4JacksonMapperTest.FugaziReferenceMajig inner;
+
     String whocares;
+
     Boolean me;
   }
 
@@ -169,6 +155,7 @@ public class R4JacksonMapperTest {
       message = "Exactly one required field must be specified")
   static final class FugaziRequiredReferenceMajig {
     Reference required;
+
     Extension _required;
   }
 }

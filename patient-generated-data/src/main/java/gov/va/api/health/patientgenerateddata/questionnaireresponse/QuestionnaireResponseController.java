@@ -6,10 +6,8 @@ import static gov.va.api.health.patientgenerateddata.SerializationUtils.deserial
 import gov.va.api.health.autoconfig.configuration.JacksonConfig;
 import gov.va.api.health.autoconfig.logging.Loggable;
 import gov.va.api.health.patientgenerateddata.Exceptions;
-import gov.va.api.health.patientgenerateddata.ReferenceQualifier;
 import gov.va.api.health.r4.api.resources.QuestionnaireResponse;
 import java.util.Optional;
-import java.util.stream.Stream;
 import javax.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
@@ -35,8 +33,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class QuestionnaireResponseController {
   private final QuestionnaireResponseRepository repository;
 
-  private final ReferenceQualifier referenceQualifier;
-
   @InitBinder
   void initDirectFieldAccess(DataBinder dataBinder) {
     dataBinder.initDirectFieldAccess();
@@ -46,8 +42,6 @@ public class QuestionnaireResponseController {
   QuestionnaireResponse read(@PathVariable("id") String id) {
     Optional<QuestionnaireResponseEntity> maybeEntity = repository.findById(id);
     QuestionnaireResponseEntity entity = maybeEntity.orElseThrow(() -> new Exceptions.NotFound(id));
-    // referenceQualifier.serializeAsField(entity.payload());
-    referenceQualifier.qualify(Stream.empty());
     return deserializedPayload(id, entity.payload(), QuestionnaireResponse.class);
   }
 
