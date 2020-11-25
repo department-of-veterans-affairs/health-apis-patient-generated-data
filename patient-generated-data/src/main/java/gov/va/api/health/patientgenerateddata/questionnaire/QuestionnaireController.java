@@ -42,8 +42,7 @@ public class QuestionnaireController {
   Questionnaire read(@PathVariable("id") String id) {
     Optional<QuestionnaireEntity> maybeEntity = repository.findById(id);
     QuestionnaireEntity entity = maybeEntity.orElseThrow(() -> new Exceptions.NotFound(id));
-    Questionnaire fhir = deserializedPayload(id, entity.payload(), Questionnaire.class);
-    return fhir;
+    return deserializedPayload(id, entity.payload(), Questionnaire.class);
   }
 
   @SneakyThrows
