@@ -1,26 +1,32 @@
 package gov.va.api.health.patientgenerateddata;
 
+import static com.google.common.base.Preconditions.checkState;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+
 import lombok.Builder;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+@Getter
 @Component
-@Builder
 public class UrlPageLinks {
+  private final String r4Url;
 
-  private final String baseUrl;
-
-  private final String r4BasePath;
-
+  @Builder
   @Autowired
-  public UrlPageLinks(
+  UrlPageLinks(
       @Value("${public-url}") String baseUrl, @Value("${public-r4-base-path}") String r4BasePath) {
-    this.baseUrl = baseUrl.endsWith("/") ? baseUrl : baseUrl + "/";
-    this.r4BasePath = r4BasePath;
-  }
-
-  public String r4Url() {
-    return baseUrl + r4BasePath;
+    checkState(!"unset".equals(baseUrl));
+    checkState(!"unset".equals(r4BasePath));
+    String stripUrl = baseUrl.replaceAll("/$", "");
+    checkState(isNotBlank(stripUrl));
+    String stripR4 = r4BasePath.replaceAll("^/", "").replaceAll("/$", "");
+    String combined = stripUrl;
+    if (!stripR4.isEmpty()) {
+      combined += "/" + stripR4;
+    }
+    r4Url = combined;
   }
 }
