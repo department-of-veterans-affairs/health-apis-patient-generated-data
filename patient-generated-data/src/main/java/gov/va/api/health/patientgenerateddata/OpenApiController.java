@@ -29,7 +29,7 @@ public class OpenApiController {
 
   @ResponseBody
   @GetMapping(
-      value = {"r4/", "r4/openapi.json"},
+      value = {"r4", "r4/openapi.json"},
       produces = "application/json")
   public String openApi() {
     return OPEN_API;
