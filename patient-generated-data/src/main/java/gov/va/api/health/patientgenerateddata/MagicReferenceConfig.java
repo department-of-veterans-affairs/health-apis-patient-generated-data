@@ -19,15 +19,13 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class MagicReferenceConfig {
-  private final String baseUrl;
 
-  private final String r4BasePath;
+  private final UrlPageLinks pageLinks;
 
   @Autowired
   public MagicReferenceConfig(
       @Value("${public-url}") String baseUrl, @Value("${public-r4-base-path}") String r4BasePath) {
-    this.baseUrl = baseUrl;
-    this.r4BasePath = r4BasePath;
+    this.pageLinks = UrlPageLinks.builder().baseUrl(baseUrl).r4BasePath(r4BasePath).build();
   }
 
   /** Configures and returns the mapper to support magic references. */
@@ -50,9 +48,9 @@ public class MagicReferenceConfig {
         return reference;
       }
       if (reference.startsWith("/")) {
-        return baseUrl + "/" + r4BasePath + reference;
+        return pageLinks.r4Url() + reference;
       }
-      return baseUrl + "/" + r4BasePath + "/" + reference;
+      return pageLinks.r4Url() + "/" + reference;
     }
 
     @Override
