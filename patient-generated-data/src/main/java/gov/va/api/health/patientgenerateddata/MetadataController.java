@@ -32,6 +32,8 @@ class MetadataController {
 
   private final BuildProperties buildProperties;
 
+  private final UrlPageLinks pageLinks;
+
   private List<ContactDetail> contact() {
     return List.of(
         ContactDetail.builder()
@@ -46,7 +48,10 @@ class MetadataController {
   }
 
   private CapabilityStatement.Implementation implementation() {
-    return CapabilityStatement.Implementation.builder().description(NAME).build();
+    return CapabilityStatement.Implementation.builder()
+        .description(NAME)
+        .url(pageLinks.r4Url())
+        .build();
   }
 
   @GetMapping
