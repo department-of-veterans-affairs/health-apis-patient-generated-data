@@ -16,11 +16,11 @@ public class UrlPageLinks {
   @Autowired
   public UrlPageLinks(
       @Value("${public-url}") String baseUrl, @Value("${public-r4-base-path}") String r4BasePath) {
-    this.baseUrl = baseUrl;
+    this.baseUrl = baseUrl.endsWith("/") ? baseUrl : baseUrl + "/";
     this.r4BasePath = r4BasePath;
   }
 
   public String r4Url() {
-    return baseUrl.endsWith("/") ? baseUrl + r4BasePath : baseUrl + "/" + r4BasePath;
+    return baseUrl + r4BasePath;
   }
 }
