@@ -12,7 +12,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.info.BuildProperties;
 
 public class MetadataControllerTest {
-
   @Test
   void read() {
     Properties properties = new Properties();
@@ -191,5 +190,19 @@ public class MetadataControllerTest {
                             .type(CapabilityStatement.SearchParamType.reference)
                             .build()))
                 .build());
+  }
+
+  @Test
+  void urlBuiltCorrectlyWithTrailingSlash() {
+    UrlPageLinks pageLinks =
+        UrlPageLinks.builder().baseUrl("http://va.gov/").r4BasePath("api/gov").build();
+    assertThat(pageLinks.r4Url()).isEqualTo("http://va.gov/api/gov");
+  }
+
+  @Test
+  void urlBuiltCorrectlyWithoutTrailingSlash() {
+    UrlPageLinks pageLinks =
+        UrlPageLinks.builder().baseUrl("http://va.gov").r4BasePath("api/gov").build();
+    assertThat(pageLinks.r4Url()).isEqualTo("http://va.gov/api/gov");
   }
 }
