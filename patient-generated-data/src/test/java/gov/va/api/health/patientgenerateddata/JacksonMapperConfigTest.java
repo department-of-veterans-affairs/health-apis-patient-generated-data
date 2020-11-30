@@ -38,7 +38,9 @@ public class JacksonMapperConfigTest {
             ._nope(DataAbsentReason.of(DataAbsentReason.Reason.error))
             .build();
     String serializedJson =
-        new JacksonMapperConfig(new MagicReferenceConfig("https://example.com", "r4"))
+        new JacksonMapperConfig(
+                new MagicReferenceConfig(
+                    UrlPageLinks.builder().baseUrl("https://example.com").r4BasePath("r4").build()))
             .objectMapper()
             .writerWithDefaultPrettyPrinter()
             .writeValueAsString(input);
@@ -109,7 +111,9 @@ public class JacksonMapperConfigTest {
                     .build())
             .build();
     String qualifiedJson =
-        new JacksonMapperConfig(new MagicReferenceConfig("https://example.com", "r4"))
+        new JacksonMapperConfig(
+                new MagicReferenceConfig(
+                    UrlPageLinks.builder().baseUrl("https://example.com").r4BasePath("r4").build()))
             .objectMapper()
             .writerWithDefaultPrettyPrinter()
             .writeValueAsString(input);
