@@ -20,7 +20,11 @@ public class MetadataControllerTest {
     properties.setProperty("version", "3.14159");
     properties.setProperty("time", "2005-01-21T07:57:00Z");
     BuildProperties buildProperties = new BuildProperties(properties);
-    assertThat(new MetadataController(buildProperties).read())
+    assertThat(
+            new MetadataController(
+                    buildProperties,
+                    UrlPageLinks.builder().baseUrl("http://va.gov").r4BasePath("api/r4").build())
+                .read())
         .isEqualTo(
             CapabilityStatement.builder()
                 .id("patient-generated-data-capability-statement")
@@ -54,6 +58,7 @@ public class MetadataControllerTest {
                 .implementation(
                     CapabilityStatement.Implementation.builder()
                         .description("API Management Platform | Patient Generated Data - R4")
+                        .url("http://va.gov/api/r4")
                         .build())
                 .fhirVersion("4.0.1")
                 .format(List.of("application/json", "application/fhir+json"))

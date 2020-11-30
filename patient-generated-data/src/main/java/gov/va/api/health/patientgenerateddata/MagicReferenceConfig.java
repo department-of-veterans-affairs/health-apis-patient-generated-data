@@ -11,24 +11,16 @@ import com.fasterxml.jackson.databind.ser.BeanSerializerModifier;
 import gov.va.api.health.fhir.api.IsReference;
 import gov.va.api.health.r4.api.elements.Reference;
 import java.util.List;
+import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
+@AllArgsConstructor(onConstructor_ = @Autowired)
 public class MagicReferenceConfig {
-  private final String baseUrl;
-
-  private final String r4BasePath;
-
-  @Autowired
-  public MagicReferenceConfig(
-      @Value("${public-url}") String baseUrl, @Value("${public-r4-base-path}") String r4BasePath) {
-    this.baseUrl = baseUrl;
-    this.r4BasePath = r4BasePath;
-  }
+  private final UrlPageLinks pageLinks;
 
   /** Configures and returns the mapper to support magic references. */
   public ObjectMapper configure(ObjectMapper mapper) {
@@ -50,9 +42,9 @@ public class MagicReferenceConfig {
         return reference;
       }
       if (reference.startsWith("/")) {
-        return baseUrl + "/" + r4BasePath + reference;
+        return pageLinks.r4Url() + reference;
       }
-      return baseUrl + "/" + r4BasePath + "/" + reference;
+      return pageLinks.r4Url() + "/" + reference;
     }
 
     @Override
