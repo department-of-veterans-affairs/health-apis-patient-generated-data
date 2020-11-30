@@ -18,10 +18,10 @@ public class UrlPageLinks {
   @Autowired
   UrlPageLinks(
       @Value("${public-url}") String baseUrl, @Value("${public-r4-base-path}") String r4BasePath) {
-    checkState(!"unset".equals(baseUrl));
-    checkState(!"unset".equals(r4BasePath));
+    checkState(!"unset".equals(baseUrl), "public-url is unset");
+    checkState(!"unset".equals(r4BasePath), "public-r4-base-path is unset");
     String stripUrl = baseUrl.replaceAll("/$", "");
-    checkState(isNotBlank(stripUrl));
+    checkState(isNotBlank(stripUrl), "public-url is blank");
     String stripR4 = r4BasePath.replaceAll("^/", "").replaceAll("/$", "");
     String combined = stripUrl;
     if (!stripR4.isEmpty()) {
