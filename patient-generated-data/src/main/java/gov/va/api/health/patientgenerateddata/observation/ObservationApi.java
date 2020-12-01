@@ -7,12 +7,11 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import javax.validation.Valid;
 import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
 
 public interface ObservationApi {
   @Operation(
@@ -55,15 +54,12 @@ public interface ObservationApi {
       summary = "Observation Update",
       description = "https://www.hl7.org/fhir/r4/observation.html",
       tags = {"Observation"})
-  @GET
+  @PUT
   @Path("Observation/{id}")
   @ApiResponse(
       responseCode = "200",
       description = "Record found",
-      content =
-          @Content(
-              mediaType = "application/fhir+json",
-              schema = @Schema(implementation = ResponseEntity.class)))
+      content = @Content(mediaType = "application/fhir+json"))
   @ApiResponse(
       responseCode = "400",
       description = "Bad request",
@@ -78,13 +74,13 @@ public interface ObservationApi {
           @Content(
               mediaType = "application/fhir+json",
               schema = @Schema(implementation = OperationOutcome.class)))
-  ResponseEntity<Void> observationUpdate(
+  void observationUpdate(
       @Parameter(
               in = ParameterIn.PATH,
               name = "id",
               required = true,
               description =
-                  "The logical id of the resource." + "Once assigned, this value never changes.")
+                  "The logical id of the resource." + " Once assigned, this value never changes.")
           String id,
-      @Valid @RequestBody Observation observation);
+      @RequestBody Observation observation);
 }
