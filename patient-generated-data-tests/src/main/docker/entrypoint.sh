@@ -11,7 +11,7 @@ if [ -z "${SENTINEL_ENV:-}" ]; then SENTINEL_ENV=$K8S_ENVIRONMENT; fi
 java-tests \
   --module-name "patient-generated-data-tests" \
   --regression-test-pattern ".*IT\$" \
-  --smoke-test-pattern ".*Smoke.*IT\$" \
+  --smoke-test-pattern ".*OpenApiIT\$" \
   -Dsentinel="$SENTINEL_ENV" \
   $@
 
