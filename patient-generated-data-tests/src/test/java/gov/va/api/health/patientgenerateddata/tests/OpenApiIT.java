@@ -6,7 +6,12 @@ import org.junit.jupiter.api.Test;
 
 public class OpenApiIT {
   @Test
-  void openApi() {
+  void openApi_json() {
+    makeRequest("application/json", "openapi.json", 200);
+  }
+
+  @Test
+  void openApi_null() {
     makeRequest(null, "openapi.json", 200);
   }
 }
