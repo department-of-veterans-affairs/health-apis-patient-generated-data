@@ -18,4 +18,4 @@ import javax.ws.rs.Path;
             description = "US Core Implementation Guide",
             url = "https://build.fhir.org/ig/HL7/US-Core-R4/index.html"))
 @Path("/")
-public interface OpenApi extends PatientApi, ObservationApi {}
+public interface OpenApi extends ObservationApi, PatientApi {}
