@@ -3,10 +3,9 @@ package gov.va.api.health.patientgenerateddata.tests;
 import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.makeRequest;
 import static gov.va.api.health.sentinel.EnvironmentAssumptions.assumeEnvironmentIn;
 
+import gov.va.api.health.sentinel.Environment;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-
-import gov.va.api.health.sentinel.Environment;
 
 public class OpenApiIT {
   @BeforeAll
