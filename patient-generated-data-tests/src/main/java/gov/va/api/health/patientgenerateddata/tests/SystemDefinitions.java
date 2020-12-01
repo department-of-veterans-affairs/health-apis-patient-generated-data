@@ -14,9 +14,7 @@ class SystemDefinitions {
         .internal(
             serviceDefinition(
                 "internal", "https://blue.lab.lighthouse.va.gov", 443, "/patient-generated-data/"))
-        .r4(
-            serviceDefinition(
-                "r4", "https://blue.lab.lighthouse.va.gov", 443, "/services/pgd/v0/r4/"))
+        .r4(serviceDefinition("r4", "https://blue.lab.lighthouse.va.gov", 443, "/pgd/v0/r4/"))
         .build();
   }
 
@@ -37,7 +35,7 @@ class SystemDefinitions {
                 "/patient-generated-data/"))
         .r4(
             serviceDefinition(
-                "r4", "https://blue.production.lighthouse.va.gov", 443, "/services/pgd/v0/r4/"))
+                "r4", "https://blue.production.lighthouse.va.gov", 443, "/pgd/v0/r4/"))
         .build();
   }
 
