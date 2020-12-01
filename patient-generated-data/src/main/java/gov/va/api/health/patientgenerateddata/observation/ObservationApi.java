@@ -61,15 +61,12 @@ public interface ObservationApi {
       description = "Record found",
       content = @Content(mediaType = "application/fhir+json"))
   @ApiResponse(
+      responseCode = "201",
+      description = "New record created",
+      content = @Content(mediaType = "application/fhir+json"))
+  @ApiResponse(
       responseCode = "400",
       description = "Bad request",
-      content =
-          @Content(
-              mediaType = "application/fhir+json",
-              schema = @Schema(implementation = OperationOutcome.class)))
-  @ApiResponse(
-      responseCode = "404",
-      description = "Not found",
       content =
           @Content(
               mediaType = "application/fhir+json",
