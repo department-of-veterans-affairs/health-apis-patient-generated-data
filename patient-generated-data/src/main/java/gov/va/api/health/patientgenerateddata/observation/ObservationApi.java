@@ -79,5 +79,5 @@ public interface ObservationApi {
               description =
                   "The logical id of the resource." + " Once assigned, this value never changes.")
           String id,
-      @RequestBody Observation observation);
+      @Parameter(required = true) @RequestBody Observation observation);
 }
