@@ -5,19 +5,14 @@ import static gov.va.api.health.sentinel.EnvironmentAssumptions.assumeEnvironmen
 
 import gov.va.api.health.sentinel.Environment;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 @Slf4j
 public class OpenApiIT {
-  @BeforeAll
-  static void assumeEnvironment() {
-    assumeEnvironmentIn(
-        Environment.LOCAL, Environment.QA, Environment.STAGING, Environment.STAGING_LAB);
-  }
-
   @Test
   void openApi_json() {
+    assumeEnvironmentIn(
+        Environment.LOCAL, Environment.QA, Environment.STAGING, Environment.STAGING_LAB);
     makeRequest("application/json", "openapi.json", 200);
   }
 
@@ -33,6 +28,8 @@ public class OpenApiIT {
 
   @Test
   void openApi_null() {
+    assumeEnvironmentIn(
+        Environment.LOCAL, Environment.QA, Environment.STAGING, Environment.STAGING_LAB);
     makeRequest(null, "openapi.json", 200);
   }
 }
