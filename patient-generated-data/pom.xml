@@ -11,7 +11,7 @@
   <version>0.0.31-SNAPSHOT</version>
   <packaging>jar</packaging>
   <properties>
-    <fhir-resources.version>5.0.14</fhir-resources.version>
+    <fhir-resources.version>5.0.15</fhir-resources.version>
     <swagger-maven-plugin.version>2.1.5</swagger-maven-plugin.version>
     <vulcan.version>1.0.0</vulcan.version>
   </properties>
