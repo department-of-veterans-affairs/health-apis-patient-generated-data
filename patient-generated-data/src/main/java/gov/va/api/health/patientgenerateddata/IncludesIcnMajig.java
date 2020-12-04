@@ -1,15 +1,11 @@
 package gov.va.api.health.patientgenerateddata;
 
-import static org.apache.commons.lang3.StringUtils.isBlank;
 
 import gov.va.api.health.r4.api.elements.Reference;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.security.InvalidParameterException;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import javax.servlet.http.HttpServletResponse;
 import lombok.Builder;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpHeaders;
@@ -50,21 +46,6 @@ public final class IncludesIcnMajig<T, B> implements ResponseBodyAdvice<Object> 
         || headers.get(INCLUDES_ICN_HEADER).isEmpty()) {
       serverHttpResponse.getHeaders().add(INCLUDES_ICN_HEADER, usersCsv);
     }
-  }
-
-  /** Add the X-VA-INCLUDES-ICN header if it does not already exist. */
-  public static void addHeader(HttpServletResponse serverHttpResponse, String usersCsv) {
-    if (isBlank(serverHttpResponse.getHeader(INCLUDES_ICN_HEADER))) {
-      serverHttpResponse.addHeader(INCLUDES_ICN_HEADER, usersCsv);
-    }
-  }
-
-  public static void addHeaderForNoPatients(HttpServletResponse serverHttpResponse) {
-    addHeader(serverHttpResponse, "NONE");
-  }
-
-  public static String encodeHeaderValue(String value) {
-    return URLEncoder.encode(value, StandardCharsets.UTF_8);
   }
 
   /** Extract patient ICN from reference. */
