@@ -11,7 +11,11 @@ public class ObservationIT {
   @BeforeAll
   static void assumeEnvironment() {
     assumeEnvironmentIn(
-        Environment.LOCAL, Environment.QA, Environment.STAGING, Environment.STAGING_LAB);
+        Environment.LOCAL,
+        Environment.QA,
+        Environment.STAGING,
+        Environment.STAGING_LAB,
+        Environment.LAB);
   }
 
   @Test

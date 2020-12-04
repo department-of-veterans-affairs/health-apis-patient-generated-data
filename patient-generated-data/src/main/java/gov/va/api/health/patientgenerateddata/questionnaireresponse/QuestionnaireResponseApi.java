@@ -1,7 +1,7 @@
-package gov.va.api.health.patientgenerateddata.patient;
+package gov.va.api.health.patientgenerateddata.questionnaireresponse;
 
 import gov.va.api.health.r4.api.resources.OperationOutcome;
-import gov.va.api.health.r4.api.resources.Patient;
+import gov.va.api.health.r4.api.resources.QuestionnaireResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -13,21 +13,20 @@ import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 
-public interface PatientApi {
+public interface QuestionnaireResponseApi {
   @Operation(
-      summary = "Patient Read",
-      description =
-          "https://build.fhir.org/ig/HL7/US-Core-R4/StructureDefinition-us-core-patient.html",
-      tags = {"Patient"})
+      summary = "QuestionnaireResponse Read",
+      description = "https://www.hl7.org/fhir/R4/questionnaireresponse.html",
+      tags = {"QuestionnaireResponse"})
   @GET
-  @Path("Patient/{id}")
+  @Path("QuestionnaireResponse/{id}")
   @ApiResponse(
       responseCode = "200",
       description = "Record found",
       content =
           @Content(
               mediaType = "application/fhir+json",
-              schema = @Schema(implementation = Patient.class)))
+              schema = @Schema(implementation = QuestionnaireResponse.class)))
   @ApiResponse(
       responseCode = "400",
       description = "Bad request",
@@ -42,33 +41,35 @@ public interface PatientApi {
           @Content(
               mediaType = "application/fhir+json",
               schema = @Schema(implementation = OperationOutcome.class)))
-  Patient patientRead(
+  QuestionnaireResponse questionnaireResponseRead(
       @Parameter(
               in = ParameterIn.PATH,
               name = "id",
               required = true,
               description =
-                  "The logical id of the resource."
-                      + " Once assigned, this value never changes."
-                      + " For Patients this id is an Integration Control Number (ICN)"
-                      + " assigned by the Master Veteran Index (MVI).")
+                  "The logical id of the resource. Once assigned, this value never changes.")
           String id);
 
   @Operation(
-      summary = "Patient Update",
-      description =
-          "https://build.fhir.org/ig/HL7/US-Core-R4/StructureDefinition-us-core-patient.html",
-      tags = {"Patient"})
+      summary = "QuestionnaireResponse Update",
+      description = "https://www.hl7.org/fhir/R4/questionnaireresponse.html",
+      tags = {"QuestionnaireResponse"})
   @PUT
-  @Path("Patient/{id}")
+  @Path("QuestionnaireResponse/{id}")
   @ApiResponse(
       responseCode = "200",
       description = "Record updated",
-      content = @Content(mediaType = "application/fhir+json"))
+      content =
+          @Content(
+              mediaType = "application/fhir+json",
+              schema = @Schema(implementation = QuestionnaireResponse.class)))
   @ApiResponse(
       responseCode = "201",
-      description = "New record created",
-      content = @Content(mediaType = "application/fhir+json"))
+      description = "Record created",
+      content =
+          @Content(
+              mediaType = "application/fhir+json",
+              schema = @Schema(implementation = QuestionnaireResponse.class)))
   @ApiResponse(
       responseCode = "400",
       description = "Bad request",
@@ -76,14 +77,14 @@ public interface PatientApi {
           @Content(
               mediaType = "application/fhir+json",
               schema = @Schema(implementation = OperationOutcome.class)))
-  Patient patientUpdate(
+  QuestionnaireResponse questionnaireResponseUpdate(
       @Parameter(
               in = ParameterIn.PATH,
               name = "id",
               required = true,
               description =
-                  "The logical id of the resource." + " Once assigned, this value never changes.")
+                  "The logical id of the resource. Once assigned, this value never changes.")
           String id,
       @RequestBody(required = true, description = "The FHIR resource in JSON format.")
-          Patient body);
+          QuestionnaireResponse body);
 }
