@@ -59,10 +59,10 @@ public interface PatientApi {
           "https://build.fhir.org/ig/HL7/US-Core-R4/StructureDefinition-us-core-patient.html",
       tags = {"Patient"})
   @PUT
-  @Path("Patient/c{id}")
+  @Path("Patient/{id}")
   @ApiResponse(
       responseCode = "200",
-      description = "Record found",
+      description = "Record updated",
       content = @Content(mediaType = "application/fhir+json"))
   @ApiResponse(
       responseCode = "201",
