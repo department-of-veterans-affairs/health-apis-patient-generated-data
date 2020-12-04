@@ -3,7 +3,9 @@ package gov.va.api.health.patientgenerateddata;
 import gov.va.api.health.autoconfig.configuration.JacksonConfig;
 import lombok.NonNull;
 import lombok.SneakyThrows;
+import lombok.experimental.UtilityClass;
 
+@UtilityClass
 public class SerializationUtils {
   /** Deserialized Payload. */
   @SneakyThrows
