@@ -4,10 +4,10 @@
   <parent>
     <groupId>gov.va.api.health</groupId>
     <artifactId>health-apis-parent</artifactId>
-    <version>7.0.18</version>
+    <version>7.0.19</version>
   </parent>
   <artifactId>patient-generated-data-parent</artifactId>
-  <version>0.0.35-SNAPSHOT</version>
+  <version>0.0.35</version>
   <packaging>pom</packaging>
   <modules>
     <module>patient-generated-data</module>
