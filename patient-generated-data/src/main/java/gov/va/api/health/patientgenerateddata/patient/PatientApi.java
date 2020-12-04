@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
@@ -82,5 +83,7 @@ public interface PatientApi {
               required = true,
               description =
                   "The logical id of the resource." + " Once assigned, this value never changes.")
-          String id);
+          String id,
+      @RequestBody(required = true, description = "The FHIR resource in JSON format.")
+          Patient body);
 }
