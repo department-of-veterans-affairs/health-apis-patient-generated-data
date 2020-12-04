@@ -8,10 +8,6 @@ import lombok.experimental.Delegate;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
-/**
- * Intercept all Patient RequestMapping payloads. Extract ICNs with the provided function. These
- * will be used to populate the X-VA-INCLUDES-ICN header.
- */
 @ControllerAdvice
 public class PatientIncludesIcnMajig implements ResponseBodyAdvice<Object> {
   @Delegate
