@@ -12,6 +12,11 @@ import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAccessor;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -105,12 +110,10 @@ public final class Populaterator {
       Set<ConstraintViolation<Observation>> violations =
           Validation.buildDefaultValidatorFactory().getValidator().validate(observation);
       checkState(violations.isEmpty(), "Invalid payload: " + violations);
-
       String id = observation.id();
       checkState(id != null);
       checkState(!ids.contains(id), "Duplicate ID " + id);
       ids.add(id);
-
       String sqlInsert = sqlInsert("app.Observation", List.of("id", "payload", "version"));
       try (PreparedStatement statement = connection.prepareStatement(sqlInsert)) {
         statement.setObject(1, id);
@@ -121,6 +124,34 @@ public final class Populaterator {
     }
   }
 
+  private static Instant parseDateTime(String datetime) {
+    if (datetime == null || datetime.trim().isEmpty()) {
+      return null;
+    }
+    String str = datetime.trim();
+    if (str.endsWith("Z")) {
+      return parseDateTimeUtc(str);
+    }
+    // Assume time zone offset is provided
+    return parseDateTimeOffset(str);
+  }
+
+  private static Instant parseDateTimeOffset(String datetime) {
+    if (datetime == null || datetime.trim().isEmpty()) {
+      return null;
+    }
+    OffsetDateTime odt = OffsetDateTime.parse(datetime);
+    return odt.toInstant();
+  }
+
+  private static Instant parseDateTimeUtc(String datetime) {
+    if (datetime == null || datetime.trim().isEmpty()) {
+      return null;
+    }
+    TemporalAccessor ta = DateTimeFormatter.ISO_INSTANT.parse(datetime);
+    return Instant.from(ta);
+  }
+
   @SneakyThrows
   private static void patient(@NonNull Connection connection) {
     Set<String> ids = new HashSet<>();
@@ -129,12 +160,10 @@ public final class Populaterator {
       Set<ConstraintViolation<Patient>> violations =
           Validation.buildDefaultValidatorFactory().getValidator().validate(patient);
       checkState(violations.isEmpty(), "Invalid payload: " + violations);
-
       String id = patient.id();
       checkState(id != null);
       checkState(!ids.contains(id), "Duplicate ID " + id);
       ids.add(id);
-
       String sqlInsert = sqlInsert("app.Patient", List.of("id", "payload", "version"));
       try (PreparedStatement statement = connection.prepareStatement(sqlInsert)) {
         statement.setObject(1, id);
@@ -152,7 +181,6 @@ public final class Populaterator {
     bootstrap(db);
     liquibase(db);
     var connection = db.connection();
-
     observation(connection);
     patient(connection);
     questionnaire(connection);
@@ -170,12 +198,10 @@ public final class Populaterator {
       Set<ConstraintViolation<Questionnaire>> violations =
           Validation.buildDefaultValidatorFactory().getValidator().validate(questionnaire);
       checkState(violations.isEmpty(), "Invalid payload: " + violations);
-
       String id = questionnaire.id();
       checkState(id != null);
       checkState(!ids.contains(id), "Duplicate ID " + id);
       ids.add(id);
-
       String sqlInsert = sqlInsert("app.Questionnaire", List.of("id", "payload", "version"));
       try (PreparedStatement statement = connection.prepareStatement(sqlInsert)) {
         statement.setObject(1, id);
@@ -194,18 +220,17 @@ public final class Populaterator {
       Set<ConstraintViolation<QuestionnaireResponse>> violations =
           Validation.buildDefaultValidatorFactory().getValidator().validate(response);
       checkState(violations.isEmpty(), "Invalid payload: " + violations);
-
       String id = response.id();
       checkState(id != null);
       checkState(!ids.contains(id), "Duplicate ID " + id);
       ids.add(id);
-
       String sqlInsert =
-          sqlInsert("app.QuestionnaireResponse", List.of("id", "payload", "version"));
+          sqlInsert("app.QuestionnaireResponse", List.of("id", "payload", "version", "authored"));
       try (PreparedStatement statement = connection.prepareStatement(sqlInsert)) {
         statement.setObject(1, id);
         statement.setObject(2, MAPPER.writeValueAsString(response));
         statement.setObject(3, 0);
+        statement.setTimestamp(4, timestamp(parseDateTime(response.authored())));
         statement.execute();
       }
     }
@@ -219,6 +244,13 @@ public final class Populaterator {
         + ") values ("
         + IntStream.range(0, columns.size()).mapToObj(v -> "?").collect(joining(","))
         + ")";
+  }
+
+  private static Timestamp timestamp(Instant instant) {
+    if (instant == null) {
+      return null;
+    }
+    return new Timestamp(instant.toEpochMilli());
   }
 
   @SneakyThrows

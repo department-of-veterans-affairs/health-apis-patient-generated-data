@@ -2,12 +2,22 @@ package gov.va.api.health.patientgenerateddata.questionnaireresponse;
 
 import static com.google.common.base.Preconditions.checkState;
 import static gov.va.api.health.patientgenerateddata.SerializationUtils.deserializedPayload;
+import static gov.va.api.lighthouse.vulcan.Rules.atLeastOneParameterOf;
+import static gov.va.api.lighthouse.vulcan.Vulcan.returnNothing;
 
 import gov.va.api.health.autoconfig.configuration.JacksonConfig;
 import gov.va.api.health.autoconfig.logging.Loggable;
 import gov.va.api.health.patientgenerateddata.Exceptions;
+import gov.va.api.health.patientgenerateddata.vulcanizer.Bundling;
+import gov.va.api.health.patientgenerateddata.vulcanizer.LinkProperties;
+import gov.va.api.health.patientgenerateddata.vulcanizer.VulcanizedBundler;
 import gov.va.api.health.r4.api.resources.QuestionnaireResponse;
+import gov.va.api.health.r4.api.resources.QuestionnaireResponse.Bundle;
+import gov.va.api.lighthouse.vulcan.Vulcan;
+import gov.va.api.lighthouse.vulcan.VulcanConfiguration;
+import gov.va.api.lighthouse.vulcan.mappings.Mappings;
 import java.util.Optional;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
@@ -31,8 +41,24 @@ import org.springframework.web.bind.annotation.RestController;
     produces = {"application/json", "application/fhir+json"})
 @AllArgsConstructor(onConstructor_ = @Autowired)
 public class QuestionnaireResponseController {
+  private final LinkProperties linkProperties;
 
   private final QuestionnaireResponseRepository repository;
+
+  private VulcanConfiguration<QuestionnaireResponseEntity> configuration() {
+    return VulcanConfiguration.forEntity(QuestionnaireResponseEntity.class)
+        .paging(
+            linkProperties.pagingConfiguration(
+                "QuestionnaireResponse", QuestionnaireResponseEntity.naturalOrder()))
+        .mappings(
+            Mappings.forEntity(QuestionnaireResponseEntity.class)
+                .value("_id", "id")
+                .dateAsInstant("authored", "authored")
+                .get())
+        .defaultQuery(returnNothing())
+        .rule(atLeastOneParameterOf("_id", "authored"))
+        .build();
+  }
 
   @InitBinder
   void initDirectFieldAccess(DataBinder dataBinder) {
@@ -44,6 +70,28 @@ public class QuestionnaireResponseController {
     Optional<QuestionnaireResponseEntity> maybeEntity = repository.findById(id);
     QuestionnaireResponseEntity entity = maybeEntity.orElseThrow(() -> new Exceptions.NotFound(id));
     return deserializedPayload(id, entity.payload(), QuestionnaireResponse.class);
+  }
+
+  /** QuestionnaireResponse Search. */
+  @GetMapping
+  public QuestionnaireResponse.Bundle search(HttpServletRequest request) {
+    return Vulcan.forRepo(repository)
+        .config(configuration())
+        .build()
+        .search(request)
+        .map(toBundle());
+  }
+
+  VulcanizedBundler<
+          QuestionnaireResponseEntity, QuestionnaireResponse, QuestionnaireResponse.Entry, Bundle>
+      toBundle() {
+    return VulcanizedBundler.forEntity(QuestionnaireResponseEntity.class)
+        .bundling(
+            Bundling.newBundle(QuestionnaireResponse.Bundle::new)
+                .newEntry(QuestionnaireResponse.Entry::new)
+                .linkProperties(linkProperties)
+                .build())
+        .build();
   }
 
   @SneakyThrows
