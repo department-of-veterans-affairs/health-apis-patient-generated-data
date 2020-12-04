@@ -84,6 +84,10 @@ class MetadataController {
                 .profileUrl("https://www.hl7.org/fhir/r4/observation.html")
                 .build(),
             SupportedResource.builder()
+                .type("Patient")
+                .profileUrl("https://www.hl7.org/fhir/r4/patient.html")
+                .build(),
+            SupportedResource.builder()
                 .type("Questionnaire")
                 .profileUrl("https://www.hl7.org/fhir/r4/questionnaire.html")
                 .build(),
