@@ -1,0 +1,33 @@
+{
+  "id" : "1011537977V693883",
+  "resourceType" : "Patient",
+  "identifier" : [
+    {
+      "use" : "usual",
+      "type" : {
+        "coding" : [
+          {
+            "system" : "http://hl7.org/fhir/v2/0203",
+            "code" : "MR"
+          }
+        ]
+      },
+      "system" : "http://va.gov/mvi",
+      "value" : "1011537977V693883",
+      "assigner" : {
+        "display" : "Master Veteran Index"
+      }
+    }
+  ],
+  "name" : [
+    {
+      "use" : "usual",
+      "text" : "Ms. Carlita746 Kautzer186",
+      "family" : "Kautzer186",
+      "given" : [
+        "Carlita746"
+      ]
+    }
+  ],
+  "gender" : "female"
+}
