@@ -5,16 +5,15 @@
 
 # For some reason, liquibase fails to download with Maven.
 # When Maven checks the available remote repositories, it will check Health
-# API Nexus repository, The VA network will reject the HTTP request will
+# API Nexus repository. The VA network will reject the HTTP request with
 # a webpage that indicates you should submit a Service Now ticket. Since,
 # the response is still a 200, Maven thinks it succeeded downloading
-# the file.
-
+# the jar or pom. The build will fail later when it tries to load the jar.
 
 #
-# We can explicitly get it if we disable the Health API Nexus server
+# We can explicitly get dependency if we disable the Health API Nexus server.
+# To do that, we'll create a fake project that no ties to Health API.
 #
-
 
 FAKE_PROJECT=$(dirname $(readlink -f $0))/target/initialize-build
 if [ ! -d $FAKE_PROJECT ]; then mkdir -p $FAKE_PROJECT; fi
