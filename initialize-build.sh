@@ -29,6 +29,6 @@ cat >pom.xml<<EOF
 </project>
 EOF
 
-mvn dependency:get \
+mvn dependency:get -B \
   -P'!gov.va.api.health' \
   -Dartifact=org.liquibase:liquibase-core:3.8.9:jar
