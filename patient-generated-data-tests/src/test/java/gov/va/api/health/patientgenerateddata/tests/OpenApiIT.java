@@ -9,10 +9,14 @@ import org.junit.jupiter.api.Test;
 
 @Slf4j
 public class OpenApiIT {
+	private static void assumeEnvironment() {
+		assumeEnvironmentIn(
+	        Environment.LOCAL, Environment.QA, Environment.STAGING, Environment.STAGING_LAB);
+	}
+	
   @Test
   void openApi_json() {
-    assumeEnvironmentIn(
-        Environment.LOCAL, Environment.QA, Environment.STAGING, Environment.STAGING_LAB);
+    assumeEnvironment();
     makeRequest("application/json", "openapi.json", 200);
   }
 
@@ -28,8 +32,7 @@ public class OpenApiIT {
 
   @Test
   void openApi_null() {
-    assumeEnvironmentIn(
-        Environment.LOCAL, Environment.QA, Environment.STAGING, Environment.STAGING_LAB);
+    assumeEnvironment();
     makeRequest(null, "openapi.json", 200);
   }
 }
