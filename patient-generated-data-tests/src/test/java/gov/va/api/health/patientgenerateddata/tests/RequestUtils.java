@@ -11,12 +11,15 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class RequestUtils {
-
   public static ExpectedResponse makeRequest(
       String acceptHeader, String request, Integer expectedStatus) {
     SystemDefinitions.Service svc = systemDefinition().r4();
     RequestSpecification spec =
-        RestAssured.given().baseUri(svc.url()).port(svc.port()).relaxedHTTPSValidation();
+        RestAssured.given()
+            .baseUri(svc.url())
+            .port(svc.port())
+            .relaxedHTTPSValidation()
+            .header("Authorization", "Bearer " + System.getProperty("access-token", "unset"));
     log.info(
         "Expect {} with accept header ({}) is status code ({})",
         svc.apiPath() + request,
