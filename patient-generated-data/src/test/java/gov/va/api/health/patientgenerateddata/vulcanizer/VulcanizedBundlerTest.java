@@ -57,6 +57,7 @@ public class VulcanizedBundlerTest {
                 .newEntry(FooEntry::new)
                 .linkProperties(LinkProperties.builder().urlPageLinks(pageLinks).build())
                 .build())
+        .toResource(FooEntity::deserializePayload)
         .build();
   }
 }

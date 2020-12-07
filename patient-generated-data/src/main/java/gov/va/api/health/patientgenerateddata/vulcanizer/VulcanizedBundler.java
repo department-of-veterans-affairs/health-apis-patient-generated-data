@@ -26,6 +26,8 @@ public class VulcanizedBundler<
     implements Function<VulcanResult<EntityT>, BundleT> {
   private final Bundling<ResourceT, EntryT, BundleT> bundling;
 
+  private final Function<EntityT, ResourceT> toResource;
+
   /** Builder helper to infer generic types. */
   public static <
           EntityT extends PayloadEntity,
@@ -41,9 +43,7 @@ public class VulcanizedBundler<
 
   @Override
   public BundleT apply(VulcanResult<EntityT> result) {
-    @SuppressWarnings("unchecked")
-    List<ResourceT> payloads =
-        result.entities().map(e -> (ResourceT) e.deserializePayload()).collect(toList());
+    List<ResourceT> payloads = result.entities().map(toResource).collect(toList());
     List<EntryT> entries = payloads.stream().map(this::toEntry).collect(toList());
     BundleT bundle = bundling.newBundle().get();
     bundle.resourceType("Bundle");
