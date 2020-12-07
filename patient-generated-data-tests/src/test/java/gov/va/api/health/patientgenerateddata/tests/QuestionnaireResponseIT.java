@@ -11,12 +11,11 @@ public class QuestionnaireResponseIT {
   @BeforeAll
   static void assumeEnvironment() {
     assumeEnvironmentIn(
-    		Environment.LOCAL, 
-    		Environment.QA,
-            Environment.STAGING,
-            Environment.STAGING_LAB,
-            Environment.LAB
-    		);
+        Environment.LOCAL,
+        Environment.QA,
+        Environment.STAGING,
+        Environment.STAGING_LAB,
+        Environment.LAB);
   }
 
   @Test

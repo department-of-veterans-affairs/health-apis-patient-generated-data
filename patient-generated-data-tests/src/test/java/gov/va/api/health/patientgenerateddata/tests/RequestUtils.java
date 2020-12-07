@@ -15,8 +15,11 @@ public class RequestUtils {
       String acceptHeader, String request, Integer expectedStatus) {
     SystemDefinitions.Service svc = systemDefinition().r4();
     RequestSpecification spec =
-        RestAssured.given().baseUri(svc.url()).port(svc.port()).relaxedHTTPSValidation()
-        .header("Authorization", "Bearer " + System.getProperty("access-token", "unset")    );
+        RestAssured.given()
+            .baseUri(svc.url())
+            .port(svc.port())
+            .relaxedHTTPSValidation()
+            .header("Authorization", "Bearer " + System.getProperty("access-token", "unset"));
     log.info(
         "Expect {} with accept header ({}) is status code ({})",
         svc.apiPath() + request,

@@ -2,6 +2,7 @@ package gov.va.api.health.patientgenerateddata.tests;
 
 import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.makeRequest;
 import static gov.va.api.health.sentinel.EnvironmentAssumptions.assumeEnvironmentIn;
+import static gov.va.api.health.sentinel.EnvironmentAssumptions.assumeEnvironmentNotIn;
 
 import gov.va.api.health.sentinel.Environment;
 import org.junit.jupiter.api.BeforeAll;
@@ -11,12 +12,11 @@ public class PatientIT {
   @BeforeAll
   static void assumeEnvironment() {
     assumeEnvironmentIn(
-    		Environment.LOCAL, 
-    		Environment.QA,
-            Environment.STAGING,
-            Environment.STAGING_LAB,
-            Environment.LAB
-    		);
+        Environment.LOCAL,
+        Environment.QA,
+        Environment.STAGING,
+        Environment.STAGING_LAB,
+        Environment.LAB);
   }
 
   @Test
@@ -28,8 +28,10 @@ public class PatientIT {
 
   @Test
   void read_notMe() {
-	  makeRequest("application/json", "Patient/1000000", 403);
-	  // does not exist
-      makeRequest("application/json", "Patient/5555555", 403);
+    // Kong required
+    assumeEnvironmentNotIn(Environment.LOCAL);
+    makeRequest("application/json", "Patient/1000000", 403);
+    // does not exist
+    makeRequest("application/json", "Patient/5555555", 403);
   }
 }

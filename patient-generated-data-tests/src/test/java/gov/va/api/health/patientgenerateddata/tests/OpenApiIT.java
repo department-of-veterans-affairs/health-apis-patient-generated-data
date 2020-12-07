@@ -9,11 +9,11 @@ import org.junit.jupiter.api.Test;
 
 @Slf4j
 public class OpenApiIT {
-	private static void assumeEnvironment() {
-		assumeEnvironmentIn(
-	        Environment.LOCAL, Environment.QA, Environment.STAGING, Environment.STAGING_LAB);
-	}
-	
+  private static void assumeEnvironment() {
+    assumeEnvironmentIn(
+        Environment.LOCAL, Environment.QA, Environment.STAGING, Environment.STAGING_LAB);
+  }
+
   @Test
   void openApi_json() {
     assumeEnvironment();
