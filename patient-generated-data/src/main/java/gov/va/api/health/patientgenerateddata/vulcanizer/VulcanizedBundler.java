@@ -24,12 +24,19 @@ public class VulcanizedBundler<
         EntryT extends AbstractEntry<ResourceT>,
         BundleT extends AbstractBundle<EntryT>>
     implements Function<VulcanResult<EntityT>, BundleT> {
-
   private final Bundling<ResourceT, EntryT, BundleT> bundling;
 
-  public static <EntityT extends PayloadEntity> VulcanizedBundlerPart1<EntityT> forEntity(
-      Class<EntityT> clazz) {
-    return VulcanizedBundlerPart1.<EntityT>builder().entity(clazz).build();
+  /** Builder helper to infer generic types. */
+  public static <
+          EntityT extends PayloadEntity,
+          ResourceT extends Resource,
+          EntryT extends AbstractEntry<ResourceT>,
+          BundleT extends AbstractBundle<EntryT>>
+      VulcanizedBundlerBuilder<EntityT, ResourceT, EntryT, BundleT> forBundling(
+          Class<EntityT> entity, Bundling<ResourceT, EntryT, BundleT> bundling) {
+    // Only need entity for sake of inferring generic types, so just null-check it.
+    checkState(entity != null);
+    return VulcanizedBundler.<EntityT, ResourceT, EntryT, BundleT>builder().bundling(bundling);
   }
 
   @Override
@@ -67,18 +74,5 @@ public class VulcanizedBundler<
     paging.nextPageUrl().map(toLink(LinkRelation.next)).ifPresent(links::add);
     paging.lastPageUrl().map(toLink(LinkRelation.last)).ifPresent(links::add);
     return links.isEmpty() ? null : links;
-  }
-
-  @Builder
-  public static class VulcanizedBundlerPart1<E extends PayloadEntity> {
-    private final Class<E> entity;
-
-    /** Set the bundling. */
-    public <R extends Resource, N extends AbstractEntry<R>, B extends AbstractBundle<N>>
-        VulcanizedBundlerBuilder<E, R, N, B> bundling(Bundling<R, N, B> bundling) {
-      // do something with entity?
-      checkState(entity != null);
-      return VulcanizedBundler.<E, R, N, B>builder().bundling(bundling);
-    }
   }
 }

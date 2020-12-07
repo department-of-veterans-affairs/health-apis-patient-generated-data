@@ -85,8 +85,9 @@ public class QuestionnaireResponseController {
   VulcanizedBundler<
           QuestionnaireResponseEntity, QuestionnaireResponse, QuestionnaireResponse.Entry, Bundle>
       toBundle() {
-    return VulcanizedBundler.forEntity(QuestionnaireResponseEntity.class)
-        .bundling(
+
+    return VulcanizedBundler.forBundling(
+            QuestionnaireResponseEntity.class,
             Bundling.newBundle(QuestionnaireResponse.Bundle::new)
                 .newEntry(QuestionnaireResponse.Entry::new)
                 .linkProperties(linkProperties)
