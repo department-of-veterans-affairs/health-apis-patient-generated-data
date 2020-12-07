@@ -5,9 +5,11 @@ import static gov.va.api.health.sentinel.EnvironmentAssumptions.assumeEnvironmen
 import static gov.va.api.health.sentinel.EnvironmentAssumptions.assumeEnvironmentNotIn;
 
 import gov.va.api.health.sentinel.Environment;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+@Slf4j
 public class PatientIT {
   @BeforeAll
   static void assumeEnvironment() {
@@ -28,10 +30,23 @@ public class PatientIT {
 
   @Test
   void read_notMe() {
+    assumeEnvironmentNotIn(Environment.LAB);
+
     // Kong required
     assumeEnvironmentNotIn(Environment.LOCAL);
     makeRequest("application/json", "Patient/1000000", 403);
     // does not exist
     makeRequest("application/json", "Patient/5555555", 403);
+  }
+
+  @Test
+  void read_notMe_lab() {
+    assumeEnvironmentIn(Environment.LAB);
+    try {
+      makeRequest("application/json", "Patient/1000000", 403);
+      makeRequest("application/json", "Patient/5555555", 403);
+    } catch (Throwable tr) {
+      log.warn("exception", tr);
+    }
   }
 }
