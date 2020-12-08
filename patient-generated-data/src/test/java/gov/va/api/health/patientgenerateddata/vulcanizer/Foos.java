@@ -21,7 +21,7 @@ class Foos {
     String payload;
 
     @Override
-    public Resource deserializePayload() {
+    public FooResource deserializePayload() {
       return FooResource.builder().id(id).build();
     }
 

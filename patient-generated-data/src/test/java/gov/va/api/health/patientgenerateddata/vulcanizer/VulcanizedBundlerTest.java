@@ -51,12 +51,18 @@ public class VulcanizedBundlerTest {
   }
 
   VulcanizedBundler<FooEntity, FooResource, FooEntry, FooBundle> bundler() {
-    return VulcanizedBundler.forEntity(FooEntity.class)
-        .bundling(
+    return VulcanizedBundler.forBundling(
+            FooEntity.class,
             Bundling.newBundle(FooBundle::new)
                 .newEntry(FooEntry::new)
-                .linkProperties(LinkProperties.builder().urlPageLinks(pageLinks).build())
+                .linkProperties(
+                    LinkProperties.builder()
+                        .urlPageLinks(pageLinks)
+                        .defaultPageSize(20)
+                        .maxPageSize(500)
+                        .build())
                 .build())
+        .toResource(FooEntity::deserializePayload)
         .build();
   }
 }
