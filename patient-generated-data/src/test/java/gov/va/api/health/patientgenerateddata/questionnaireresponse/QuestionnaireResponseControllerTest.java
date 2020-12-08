@@ -12,6 +12,7 @@ import gov.va.api.health.autoconfig.configuration.JacksonConfig;
 import gov.va.api.health.patientgenerateddata.Exceptions;
 import gov.va.api.health.patientgenerateddata.UrlPageLinks;
 import gov.va.api.health.patientgenerateddata.vulcanizer.LinkProperties;
+import gov.va.api.health.r4.api.elements.Reference;
 import gov.va.api.health.r4.api.resources.QuestionnaireResponse;
 import java.util.List;
 import java.util.Optional;
@@ -76,11 +77,38 @@ public class QuestionnaireResponseControllerTest {
         () -> new QuestionnaireResponseController(mockLinkProperties, repo).read("notfound"));
   }
 
+  @ParameterizedTest
+  @ValueSource(strings = {"?_id=1"})
+  @SneakyThrows
+  void searchByReference(String query) {
+    QuestionnaireResponseRepository repo = mock(QuestionnaireResponseRepository.class);
+    QuestionnaireResponseController controller =
+        new QuestionnaireResponseController(
+            LinkProperties.builder().urlPageLinks(pageLinks).build(), repo);
+    when(repo.findAll(any(Specification.class), any(Pageable.class)))
+        .thenAnswer(
+            i ->
+                new PageImpl(
+                    List.of(
+                        QuestionnaireResponseEntity.builder()
+                            .author("John Smith")
+                            .build()
+                            .id("1")
+                            .payload("{ \"id\": 1}")),
+                    i.getArgument(1, Pageable.class),
+                    1));
+    var r = requestFromUri("http://fonzy.com/r4/QuestionnaireResponse" + query);
+    var actual = controller.search(r);
+    assertThat(actual.entry()).hasSize(1);
+  }
+
   @Test
   @SneakyThrows
   void update_existing() {
     QuestionnaireResponseRepository repo = mock(QuestionnaireResponseRepository.class);
-    QuestionnaireResponse questionnaireResponse = QuestionnaireResponse.builder().id("x").build();
+    Reference ref = Reference.builder().display("John Smith").build();
+    QuestionnaireResponse questionnaireResponse =
+        QuestionnaireResponse.builder().id("x").author(ref).build();
     String payload = JacksonConfig.createMapper().writeValueAsString(questionnaireResponse);
     when(repo.findById("x"))
         .thenReturn(
@@ -97,7 +125,9 @@ public class QuestionnaireResponseControllerTest {
   @SneakyThrows
   void update_new() {
     QuestionnaireResponseRepository repo = mock(QuestionnaireResponseRepository.class);
-    QuestionnaireResponse questionnaireResponse = QuestionnaireResponse.builder().id("x").build();
+    Reference ref = Reference.builder().display("John Smith").build();
+    QuestionnaireResponse questionnaireResponse =
+        QuestionnaireResponse.builder().id("x").author(ref).build();
     String payload = JacksonConfig.createMapper().writeValueAsString(questionnaireResponse);
     assertThat(
             new QuestionnaireResponseController(mockLinkProperties, repo)

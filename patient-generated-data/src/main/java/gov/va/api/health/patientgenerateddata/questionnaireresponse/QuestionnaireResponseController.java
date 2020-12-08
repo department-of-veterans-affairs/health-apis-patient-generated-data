@@ -8,14 +8,17 @@ import static gov.va.api.lighthouse.vulcan.Vulcan.returnNothing;
 import gov.va.api.health.autoconfig.configuration.JacksonConfig;
 import gov.va.api.health.autoconfig.logging.Loggable;
 import gov.va.api.health.patientgenerateddata.Exceptions;
+import gov.va.api.health.patientgenerateddata.ParseUtils;
 import gov.va.api.health.patientgenerateddata.vulcanizer.Bundling;
 import gov.va.api.health.patientgenerateddata.vulcanizer.LinkProperties;
 import gov.va.api.health.patientgenerateddata.vulcanizer.VulcanizedBundler;
+import gov.va.api.health.r4.api.elements.Reference;
 import gov.va.api.health.r4.api.resources.QuestionnaireResponse;
 import gov.va.api.health.r4.api.resources.QuestionnaireResponse.Bundle;
 import gov.va.api.lighthouse.vulcan.Vulcan;
 import gov.va.api.lighthouse.vulcan.VulcanConfiguration;
 import gov.va.api.lighthouse.vulcan.mappings.Mappings;
+import java.time.Instant;
 import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -53,10 +56,11 @@ public class QuestionnaireResponseController {
         .mappings(
             Mappings.forEntity(QuestionnaireResponseEntity.class)
                 .value("_id", "id")
+                .value("author", "author")
                 .dateAsInstant("authored", "authored")
                 .get())
         .defaultQuery(returnNothing())
-        .rule(atLeastOneParameterOf("_id", "authored"))
+        .rule(atLeastOneParameterOf("_id", "authored", "author"))
         .build();
   }
 
@@ -102,14 +106,24 @@ public class QuestionnaireResponseController {
       @Valid @RequestBody QuestionnaireResponse questionnaireResponse) {
     String payload = JacksonConfig.createMapper().writeValueAsString(questionnaireResponse);
     checkState(id.equals(questionnaireResponse.id()), "%s != %s", id, questionnaireResponse.id());
+    Reference author = questionnaireResponse.author();
+    Instant authored = ParseUtils.parseDateTime(questionnaireResponse.authored());
     Optional<QuestionnaireResponseEntity> maybeEntity = repository.findById(id);
     if (maybeEntity.isPresent()) {
       QuestionnaireResponseEntity entity = maybeEntity.get();
       entity.payload(payload);
+      entity.author(author.display());
+      entity.authored(authored);
       repository.save(entity);
       return ResponseEntity.ok().build();
     }
-    repository.save(QuestionnaireResponseEntity.builder().id(id).payload(payload).build());
+    repository.save(
+        QuestionnaireResponseEntity.builder()
+            .id(id)
+            .payload(payload)
+            .author(author.display())
+            .authored(authored)
+            .build());
     return ResponseEntity.status(HttpStatus.CREATED).build();
   }
 }
