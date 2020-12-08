@@ -12,6 +12,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.Sort;
@@ -24,7 +25,10 @@ import org.springframework.data.domain.Sort;
 @AllArgsConstructor
 @Builder
 public class LinkProperties {
+  @Value("${default-page-size}")
   private int defaultPageSize;
+
+  @Value("${max-page-size}")
   private int maxPageSize;
 
   @Autowired private UrlPageLinks urlPageLinks;
