@@ -55,7 +55,12 @@ public class VulcanizedBundlerTest {
             FooEntity.class,
             Bundling.newBundle(FooBundle::new)
                 .newEntry(FooEntry::new)
-                .linkProperties(LinkProperties.builder().urlPageLinks(pageLinks).build())
+                .linkProperties(
+                    LinkProperties.builder()
+                        .urlPageLinks(pageLinks)
+                        .defaultPageSize(20)
+                        .maxPageSize(500)
+                        .build())
                 .build())
         .toResource(FooEntity::deserializePayload)
         .build();

@@ -114,7 +114,12 @@ public class QuestionnaireResponseControllerTest {
     QuestionnaireResponseRepository repo = mock(QuestionnaireResponseRepository.class);
     QuestionnaireResponseController controller =
         new QuestionnaireResponseController(
-            LinkProperties.builder().urlPageLinks(pageLinks).build(), repo);
+            LinkProperties.builder()
+                .urlPageLinks(pageLinks)
+                .maxPageSize(20)
+                .defaultPageSize(500)
+                .build(),
+            repo);
     when(repo.findAll(any(Specification.class), any(Pageable.class)))
         .thenAnswer(
             i ->

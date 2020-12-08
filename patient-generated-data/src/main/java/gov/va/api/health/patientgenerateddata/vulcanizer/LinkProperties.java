@@ -12,20 +12,20 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.Sort;
 
 @Configuration
+@EnableConfigurationProperties
 @Data
 @Accessors(fluent = false)
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class LinkProperties {
-  // TODO load from properties
-  private static final int defaultPageSize = 15;
-
-  private static final int maxPageSize = 100;
+  private int defaultPageSize;
+  private int maxPageSize;
 
   @Autowired private UrlPageLinks urlPageLinks;
 
