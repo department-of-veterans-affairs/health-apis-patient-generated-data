@@ -53,6 +53,46 @@ public class QuestionnaireResponseIT {
   }
 
   @Test
+  void search_authored() {
+    var id = systemDefinition().ids().questionnaireResponse();
+    String date = "1999-02-02T12:00:00Z";
+    QuestionnaireResponse qr = questionnaireResponse(id).authored(date);
+    makePutRequest(
+        "QuestionnaireResponse/" + id, serializePayload(qr), "set authored to 1999", true);
+    String query = String.format("?authored=%s", date);
+    var response = makeRequest("application/json", "QuestionnaireResponse/" + query, 200);
+    QuestionnaireResponse.Bundle bundle = response.expectValid(QuestionnaireResponse.Bundle.class);
+    assertThat(bundle.entry()).hasSize(1);
+
+    // less than
+    query = "?authored=lt2000-01-01T00:00:00Z";
+    response = makeRequest("application/json", "QuestionnaireResponse/" + query, 200);
+    bundle = response.expectValid(QuestionnaireResponse.Bundle.class);
+    assertThat(bundle.entry()).hasSizeGreaterThan(0);
+    // in between
+    query =
+        String.format(
+            "?authored=gt%s&authored=lt%s", "1999-01-01T00:00:00Z", "1999-03-01T00:00:00Z");
+    response = makeRequest("application/json", "QuestionnaireResponse/" + query, 200);
+    bundle = response.expectValid(QuestionnaireResponse.Bundle.class);
+    assertThat(bundle.entry()).hasSizeGreaterThan(0);
+    // in between, nothing found
+    query =
+        String.format(
+            "?authored=gt%s&authored=lt%s", "1998-01-01T00:00:00Z", "1998-01-01T01:00:00Z");
+    response = makeRequest("application/json", "QuestionnaireResponse/" + query, 200);
+    bundle = response.expectValid(QuestionnaireResponse.Bundle.class);
+    assertThat(bundle.entry()).hasSize(0);
+  }
+
+  @Test
+  void search_id() {
+    var id = systemDefinition().ids().questionnaireResponse();
+    var response = makeRequest("application/json", "QuestionnaireResponse/?_id=" + id, 200);
+    response.expectValid(QuestionnaireResponse.Bundle.class);
+  }
+
+  @Test
   void update_authored() {
     var id = systemDefinition().ids().questionnaireResponse();
     Instant now = Instant.now().with(ChronoField.NANO_OF_SECOND, 0);
