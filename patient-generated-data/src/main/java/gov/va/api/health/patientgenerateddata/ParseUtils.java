@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeParseException;
 import lombok.experimental.UtilityClass;
+import org.apache.commons.lang3.StringUtils;
 
 @UtilityClass
 public class ParseUtils {
@@ -27,7 +28,7 @@ public class ParseUtils {
    * https://www.hl7.org/fhir/datatypes.html#dateTime
    */
   public static Instant parseDateTime(String datetime) {
-    if (datetime == null || datetime.trim().isEmpty()) {
+    if (StringUtils.isBlank(datetime)) {
       return null;
     }
     String str = datetime.trim().toUpperCase();
@@ -57,7 +58,7 @@ public class ParseUtils {
    * </pre>
    */
   public static Instant parseDateTimeOffset(String datetime) {
-    if (datetime == null || datetime.trim().isEmpty()) {
+    if (StringUtils.isBlank(datetime)) {
       return null;
     }
     OffsetDateTime odt = OffsetDateTime.parse(datetime);
@@ -72,7 +73,7 @@ public class ParseUtils {
    * </pre>
    */
   public static Instant parseDateTimeUtc(String datetime) {
-    if (datetime == null || datetime.trim().isEmpty()) {
+    if (StringUtils.isBlank(datetime)) {
       return null;
     }
     return Instant.parse(datetime);
