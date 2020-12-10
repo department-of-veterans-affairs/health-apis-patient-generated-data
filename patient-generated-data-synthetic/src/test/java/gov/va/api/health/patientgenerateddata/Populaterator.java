@@ -233,7 +233,7 @@ public final class Populaterator {
         statement.setObject(2, MAPPER.writeValueAsString(response));
         statement.setObject(3, 0);
         statement.setTimestamp(4, timestamp(parseDateTime(response.authored())));
-        statement.setObject(5, response.author().display());
+        statement.setObject(5, response.author().id());
         statement.execute();
       }
     }

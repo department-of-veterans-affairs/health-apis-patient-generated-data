@@ -19,12 +19,16 @@ import gov.va.api.lighthouse.vulcan.Vulcan;
 import gov.va.api.lighthouse.vulcan.VulcanConfiguration;
 import gov.va.api.lighthouse.vulcan.mappings.Mappings;
 import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.DataBinder;
@@ -34,7 +38,9 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @Validated
@@ -86,6 +92,27 @@ public class QuestionnaireResponseController {
         .map(toBundle());
   }
 
+  /** QuestionnaireResponse Search By Author. */
+  @GetMapping(params = "author")
+  public List<QuestionnaireResponse> searchByAuthor(
+      @RequestHeader("author") String author,
+      @RequestParam(value = "page", defaultValue = "1") @Min(1) int page,
+      @Min(0) int count) {
+    //    MultiValueMap<String, String> parameters =
+    //        Parameters.builder().add("author", author).add("page", page).add("_count",
+    // count).build();
+    Specification<QuestionnaireResponseEntity> spec =
+        QuestionnaireResponseRepository.AuthorSpecification.builder().author(author).build();
+    List<QuestionnaireResponseEntity> all = repository.findAll(spec);
+    int firstIndex = Math.min(page * count, all.size());
+    int lastIndex = Math.min(firstIndex + count, all.size());
+    List<QuestionnaireResponse> pageOfResults =
+        all.subList(firstIndex, lastIndex).stream()
+            .map(QuestionnaireResponseEntity::deserializePayload)
+            .collect(Collectors.toList());
+    return pageOfResults;
+  }
+
   VulcanizedBundler<
           QuestionnaireResponseEntity, QuestionnaireResponse, QuestionnaireResponse.Entry, Bundle>
       toBundle() {
@@ -113,7 +140,6 @@ public class QuestionnaireResponseController {
     if (maybeEntity.isPresent()) {
       QuestionnaireResponseEntity entity = maybeEntity.get();
       entity.payload(payload);
-
       entity.author(author.display());
       entity.authored(authored);
       repository.save(entity);

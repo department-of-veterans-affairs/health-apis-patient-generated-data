@@ -36,6 +36,8 @@ public class QuestionnaireResponseEntity implements PayloadEntity {
 
   private Instant authored;
 
+  private String author;
+
   public static Sort naturalOrder() {
     return Sort.by("id").ascending();
   }
