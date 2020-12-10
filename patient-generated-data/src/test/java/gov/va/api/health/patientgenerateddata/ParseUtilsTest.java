@@ -23,6 +23,8 @@ public class ParseUtilsTest {
       strings = {
         "foo",
         "2013-",
+        "2013-06-18T00:00:00",
+        "2013-06-18T00:00:00.599",
         "2013-06-18T00:00:00X",
         "2013-06-18T00:00:00/02:00",
         "2013-06-18T00:00:00+02"
@@ -42,10 +44,11 @@ public class ParseUtilsTest {
     // Year month day
     assertThat(ParseUtils.parseDateTime("2013-03-04").toString()).isEqualTo("2013-03-04T00:00:00Z");
     // UTC time
-    assertThat(ParseUtils.parseDateTime("2013-06-18T00:00:00").toString())
-        .isEqualTo("2013-06-18T00:00:00Z");
     assertThat(ParseUtils.parseDateTime("2013-06-18T00:00:00Z").toString())
         .isEqualTo("2013-06-18T00:00:00Z");
+    // UTC with nanoseconds
+    assertThat(ParseUtils.parseDateTime("2013-06-18T00:00:00.599Z").toString())
+        .isEqualTo("2013-06-18T00:00:00.599Z");
     // Offsets
     assertThat(ParseUtils.parseDateTime("2013-06-18T00:00:00+01:00").toString())
         .isEqualTo("2013-06-17T23:00:00Z");

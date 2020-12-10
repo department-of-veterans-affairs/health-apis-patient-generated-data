@@ -2,10 +2,9 @@ package gov.va.api.health.patientgenerateddata;
 
 import java.time.Instant;
 import java.time.OffsetDateTime;
-import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.time.temporal.TemporalAccessor;
 import lombok.experimental.UtilityClass;
+import org.apache.commons.lang3.StringUtils;
 
 @UtilityClass
 public class ParseUtils {
@@ -16,10 +15,10 @@ public class ParseUtils {
   private static final int YEAR_MONTH = 7;
   // YYYY-MM-DD
   private static final int YEAR_MONTH_DAY = 10;
-  // YYYY-MM-DD'T'HH:MM:SS
-  private static final int UTC = 19;
-  //  YYYY-MM-DD'T'HH:MM:SSZ
+  // YYYY-MM-DD'T'HH:MM:SSZ
   private static final int UTC_Z = 20;
+  // YYYY-MM-DD'T'HH:MM:SS.nnn'Z'
+  private static final int UTC_Z_NANOS = 24;
   // YYYY-MM-DD'T'HH:MM:SS-HH:MM
   // YYYY-MM-DD'T'HH:MM:SS+HH:MM
   private static final int TIME_ZONE_OFFSET = 25;
@@ -29,7 +28,7 @@ public class ParseUtils {
    * https://www.hl7.org/fhir/datatypes.html#dateTime
    */
   public static Instant parseDateTime(String datetime) {
-    if (datetime == null || datetime.trim().isEmpty()) {
+    if (StringUtils.isBlank(datetime)) {
       return null;
     }
     String str = datetime.trim().toUpperCase();
@@ -40,9 +39,8 @@ public class ParseUtils {
         return parseDateTimeUtc(String.format("%s-01T00:00:00Z", str));
       case YEAR_MONTH_DAY:
         return parseDateTimeUtc(String.format("%sT00:00:00Z", str));
-      case UTC:
-        return parseDateTimeUtc(str + "Z");
       case UTC_Z:
+      case UTC_Z_NANOS:
         return parseDateTimeUtc(str);
       case TIME_ZONE_OFFSET:
         return parseDateTimeOffset(str);
@@ -60,7 +58,7 @@ public class ParseUtils {
    * </pre>
    */
   public static Instant parseDateTimeOffset(String datetime) {
-    if (datetime == null || datetime.trim().isEmpty()) {
+    if (StringUtils.isBlank(datetime)) {
       return null;
     }
     OffsetDateTime odt = OffsetDateTime.parse(datetime);
@@ -68,18 +66,16 @@ public class ParseUtils {
   }
 
   /**
-   * Attempt to parse a datetime string at UTC Timezone, according to the formats below.
+   * Attempt to parse a datetime string at UTC Timezone, according to the format below.
    *
    * <pre>
-   * - YYYY-MM-DD'T'HH:MM:SS-HH:MM
    * - YYYY-MM-DD'T'HH:MM:SS+HH:MM'Z'
    * </pre>
    */
   public static Instant parseDateTimeUtc(String datetime) {
-    if (datetime == null || datetime.trim().isEmpty()) {
+    if (StringUtils.isBlank(datetime)) {
       return null;
     }
-    TemporalAccessor ta = DateTimeFormatter.ISO_INSTANT.parse(datetime);
-    return Instant.from(ta);
+    return Instant.parse(datetime);
   }
 }

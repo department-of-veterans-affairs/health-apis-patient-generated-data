@@ -1,12 +1,15 @@
 package gov.va.api.health.patientgenerateddata.tests;
 
-import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.makeRequest;
+import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.doGet;
 import static gov.va.api.health.sentinel.EnvironmentAssumptions.assumeEnvironmentIn;
+import static gov.va.api.health.sentinel.EnvironmentAssumptions.assumeEnvironmentNotIn;
 
 import gov.va.api.health.sentinel.Environment;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+@Slf4j
 public class PatientIT {
   @BeforeAll
   static void assumeEnvironment() {
@@ -20,15 +23,30 @@ public class PatientIT {
 
   @Test
   void read() {
-    makeRequest(null, "Patient/1000000", 200);
-    makeRequest(null, "Patient/2000000", 200);
-    makeRequest(null, "Patient/3000000", 200);
-    makeRequest("application/json", "Patient/1000000", 200);
-    makeRequest("application/fhir+json", "Patient/1000000", 200);
+    doGet(null, "Patient/1011537977V693883", 200);
+    doGet("application/json", "Patient/1011537977V693883", 200);
+    doGet("application/fhir+json", "Patient/1011537977V693883", 200);
   }
 
   @Test
-  void read_notFound() {
-    makeRequest("application/json", "Patient/5555555", 404);
+  void read_notMe() {
+    assumeEnvironmentNotIn(Environment.LAB);
+
+    // Kong required
+    assumeEnvironmentNotIn(Environment.LOCAL);
+    doGet("application/json", "Patient/1000000", 403);
+    // does not exist
+    doGet("application/json", "Patient/5555555", 403);
+  }
+
+  @Test
+  void read_notMe_lab() {
+    assumeEnvironmentIn(Environment.LAB);
+    try {
+      doGet("application/json", "Patient/1000000", 403);
+      doGet("application/json", "Patient/5555555", 403);
+    } catch (Throwable tr) {
+      log.warn("exception", tr);
+    }
   }
 }

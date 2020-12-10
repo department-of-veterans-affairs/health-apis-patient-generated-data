@@ -14,9 +14,31 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class RequestUtils {
 
-  public static ExpectedResponse makePutRequest(
+  public static ExpectedResponse doGet(
+      String acceptHeader, String request, Integer expectedStatus) {
+    SystemDefinitions.Service svc = systemDefinition().r4();
+    RequestSpecification spec =
+        RestAssured.given()
+            .baseUri(svc.url())
+            .port(svc.port())
+            .relaxedHTTPSValidation()
+            .header("Authorization", "Bearer " + System.getProperty("access-token", "unset"));
+    log.info(
+        "Expect {} with accept header ({}) is status code ({})",
+        svc.apiPath() + request,
+        acceptHeader,
+        expectedStatus);
+    if (acceptHeader != null) {
+      spec = spec.accept(acceptHeader);
+    }
+    return ExpectedResponse.of(spec.request(Method.GET, svc.urlWithApiPath() + request))
+        .logAction(logAllWithTruncatedBody(2000))
+        .expect(expectedStatus);
+  }
+
+  public static ExpectedResponse doPut(
       String request, String payload, String changes, boolean checkForSuccess) {
-    ExpectedResponse response = makePutRequest(request, payload, changes, null);
+    ExpectedResponse response = doPut(request, payload, changes, null);
     int status = response.response().statusCode();
     if (checkForSuccess && (status < 200 || status >= 300)) {
       throw new AssertionError(
@@ -25,7 +47,7 @@ public class RequestUtils {
     return response;
   }
 
-  public static ExpectedResponse makePutRequest(
+  public static ExpectedResponse doPut(
       String request, String payload, String changes, Integer expectedStatus) {
     SystemDefinitions.Service svc = systemDefinition().r4();
     RequestSpecification spec =
@@ -41,24 +63,6 @@ public class RequestUtils {
       response.expect(expectedStatus);
     }
     return response;
-  }
-
-  public static ExpectedResponse makeRequest(
-      String acceptHeader, String request, Integer expectedStatus) {
-    SystemDefinitions.Service svc = systemDefinition().r4();
-    RequestSpecification spec =
-        RestAssured.given().baseUri(svc.url()).port(svc.port()).relaxedHTTPSValidation();
-    log.info(
-        "Expect {} with accept header ({}) is status code ({})",
-        svc.apiPath() + request,
-        acceptHeader,
-        expectedStatus);
-    if (acceptHeader != null) {
-      spec = spec.accept(acceptHeader);
-    }
-    return ExpectedResponse.of(spec.request(Method.GET, svc.urlWithApiPath() + request))
-        .logAction(logAllWithTruncatedBody(2000))
-        .expect(expectedStatus);
   }
 
   @SneakyThrows

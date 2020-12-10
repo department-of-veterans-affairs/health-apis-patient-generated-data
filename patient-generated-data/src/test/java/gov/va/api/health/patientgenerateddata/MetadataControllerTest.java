@@ -96,6 +96,31 @@ public class MetadataControllerTest {
                                                 CapabilityStatement.ReferencePolicy.local))
                                         .build(),
                                     CapabilityStatement.CapabilityResource.builder()
+                                        .type("Patient")
+                                        .profile("https://www.hl7.org/fhir/r4/patient.html")
+                                        .interaction(
+                                            List.of(
+                                                CapabilityStatement.ResourceInteraction.builder()
+                                                    .code(
+                                                        CapabilityStatement.TypeRestfulInteraction
+                                                            .read)
+                                                    .documentation(
+                                                        "Implemented per specification. See http://hl7.org/fhir/R4/http.html")
+                                                    .build(),
+                                                CapabilityStatement.ResourceInteraction.builder()
+                                                    .code(
+                                                        CapabilityStatement.TypeRestfulInteraction
+                                                            .update)
+                                                    .documentation(
+                                                        "Implemented per specification. See http://hl7.org/fhir/R4/http.html")
+                                                    .build()))
+                                        .versioning(CapabilityStatement.Versioning.no_version)
+                                        .referencePolicy(
+                                            List.of(
+                                                CapabilityStatement.ReferencePolicy.literal,
+                                                CapabilityStatement.ReferencePolicy.local))
+                                        .build(),
+                                    CapabilityStatement.CapabilityResource.builder()
                                         .type("Questionnaire")
                                         .profile("https://www.hl7.org/fhir/r4/questionnaire.html")
                                         .interaction(
@@ -154,7 +179,7 @@ public class MetadataControllerTest {
                                             List.of(
                                                 CapabilityStatement.SearchParam.builder()
                                                     .name("_id")
-                                                    .type(SearchParamType.string)
+                                                    .type(SearchParamType.token)
                                                     .build(),
                                                 CapabilityStatement.SearchParam.builder()
                                                     .name("authored")
