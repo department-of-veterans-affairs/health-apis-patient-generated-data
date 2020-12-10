@@ -13,37 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class RequestUtils {
-
-  public static ExpectedResponse makePutRequest(
-      String request, String payload, String changes, boolean checkForSuccess) {
-    ExpectedResponse response = makePutRequest(request, payload, changes, null);
-    int status = response.response().statusCode();
-    if (checkForSuccess && (status < 200 || status >= 300)) {
-      throw new AssertionError(
-          String.format("Failed to '%s', received status code %s", changes, status));
-    }
-    return response;
-  }
-
-  public static ExpectedResponse makePutRequest(
-      String request, String payload, String changes, Integer expectedStatus) {
-    SystemDefinitions.Service svc = systemDefinition().r4();
-    RequestSpecification spec =
-        RestAssured.given().baseUri(svc.url()).port(svc.port()).relaxedHTTPSValidation();
-    spec.header("Content-Type", "application/json");
-    spec.body(payload);
-    log.info(
-        "Expect {} PUT '{}' is status code ({})", svc.apiPath() + request, changes, expectedStatus);
-    ExpectedResponse response =
-        ExpectedResponse.of(spec.request(Method.PUT, svc.urlWithApiPath() + request))
-            .logAction(logAllWithTruncatedBody(2000));
-    if (expectedStatus != null) {
-      response.expect(expectedStatus);
-    }
-    return response;
-  }
-
-  public static ExpectedResponse makeRequest(
+  public static ExpectedResponse doGet(
       String acceptHeader, String request, Integer expectedStatus) {
     SystemDefinitions.Service svc = systemDefinition().r4();
     RequestSpecification spec =
@@ -59,6 +29,35 @@ public class RequestUtils {
     return ExpectedResponse.of(spec.request(Method.GET, svc.urlWithApiPath() + request))
         .logAction(logAllWithTruncatedBody(2000))
         .expect(expectedStatus);
+  }
+
+  public static ExpectedResponse doPut(
+      String request, String payload, String changes, boolean checkForSuccess) {
+    ExpectedResponse response = doPut(request, payload, changes, null);
+    int status = response.response().statusCode();
+    if (checkForSuccess && (status < 200 || status >= 300)) {
+      throw new AssertionError(
+          String.format("Failed to '%s', received status code %s", changes, status));
+    }
+    return response;
+  }
+
+  public static ExpectedResponse doPut(
+      String request, String payload, String changes, Integer expectedStatus) {
+    SystemDefinitions.Service svc = systemDefinition().r4();
+    RequestSpecification spec =
+        RestAssured.given().baseUri(svc.url()).port(svc.port()).relaxedHTTPSValidation();
+    spec.header("Content-Type", "application/json");
+    spec.body(payload);
+    log.info(
+        "Expect {} PUT '{}' is status code ({})", svc.apiPath() + request, changes, expectedStatus);
+    ExpectedResponse response =
+        ExpectedResponse.of(spec.request(Method.PUT, svc.urlWithApiPath() + request))
+            .logAction(logAllWithTruncatedBody(2000));
+    if (expectedStatus != null) {
+      response.expect(expectedStatus);
+    }
+    return response;
   }
 
   @SneakyThrows

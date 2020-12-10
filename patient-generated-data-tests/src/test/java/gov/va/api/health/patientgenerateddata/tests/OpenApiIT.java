@@ -1,6 +1,6 @@
 package gov.va.api.health.patientgenerateddata.tests;
 
-import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.makeRequest;
+import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.doGet;
 import static gov.va.api.health.sentinel.EnvironmentAssumptions.assumeEnvironmentIn;
 
 import gov.va.api.health.sentinel.Environment;
@@ -13,14 +13,14 @@ public class OpenApiIT {
   void openApi_json() {
     assumeEnvironmentIn(
         Environment.LOCAL, Environment.QA, Environment.STAGING, Environment.STAGING_LAB);
-    makeRequest("application/json", "openapi.json", 200);
+    doGet("application/json", "openapi.json", 200);
   }
 
   @Test
   void openApi_lab() {
     assumeEnvironmentIn(Environment.LAB);
     try {
-      makeRequest("application/json", "openapi.json", 200);
+      doGet("application/json", "openapi.json", 200);
     } catch (Throwable tr) {
       log.warn("exception", tr);
     }
@@ -30,6 +30,6 @@ public class OpenApiIT {
   void openApi_null() {
     assumeEnvironmentIn(
         Environment.LOCAL, Environment.QA, Environment.STAGING, Environment.STAGING_LAB);
-    makeRequest(null, "openapi.json", 200);
+    doGet(null, "openapi.json", 200);
   }
 }
