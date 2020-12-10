@@ -5,6 +5,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import gov.va.api.health.r4.api.datatypes.ContactDetail;
 import gov.va.api.health.r4.api.datatypes.ContactPoint;
 import gov.va.api.health.r4.api.resources.CapabilityStatement;
+import gov.va.api.health.r4.api.resources.CapabilityStatement.SearchParamType;
+import gov.va.api.health.r4.api.resources.CapabilityStatement.TypeRestfulInteraction;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
@@ -137,12 +139,27 @@ public class MetadataControllerTest {
                                                             .update)
                                                     .documentation(
                                                         "Implemented per specification. See http://hl7.org/fhir/R4/http.html")
+                                                    .build(),
+                                                CapabilityStatement.ResourceInteraction.builder()
+                                                    .code(TypeRestfulInteraction.search_type)
+                                                    .documentation(
+                                                        "Implemented per specification. See http://hl7.org/fhir/R4/http.html")
                                                     .build()))
                                         .versioning(CapabilityStatement.Versioning.no_version)
                                         .referencePolicy(
                                             List.of(
                                                 CapabilityStatement.ReferencePolicy.literal,
                                                 CapabilityStatement.ReferencePolicy.local))
+                                        .searchParam(
+                                            List.of(
+                                                CapabilityStatement.SearchParam.builder()
+                                                    .name("_id")
+                                                    .type(SearchParamType.string)
+                                                    .build(),
+                                                CapabilityStatement.SearchParam.builder()
+                                                    .name("authored")
+                                                    .type(SearchParamType.date)
+                                                    .build()))
                                         .build()))
                             .build()))
                 .build());
