@@ -25,10 +25,10 @@ import org.springframework.data.domain.Sort;
 @AllArgsConstructor
 @Builder
 public class LinkProperties {
-  @Value("${default-page-size}")
+  @Value("${page-size-default}")
   private int defaultPageSize;
 
-  @Value("${max-page-size}")
+  @Value("${page-size-max}")
   private int maxPageSize;
 
   @Autowired private UrlPageLinks urlPageLinks;
