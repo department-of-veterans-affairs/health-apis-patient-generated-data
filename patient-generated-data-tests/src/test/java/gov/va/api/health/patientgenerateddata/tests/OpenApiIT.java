@@ -4,32 +4,26 @@ import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.doGet;
 import static gov.va.api.health.sentinel.EnvironmentAssumptions.assumeEnvironmentIn;
 
 import gov.va.api.health.sentinel.Environment;
-import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-@Slf4j
 public class OpenApiIT {
-  @Test
-  void openApi_json() {
+  @BeforeAll
+  static void assumeEnvironment() {
     assumeEnvironmentIn(
-        Environment.LOCAL, Environment.QA, Environment.STAGING, Environment.STAGING_LAB);
-    doGet("application/json", "openapi.json", 200);
+        Environment.LOCAL,
+        Environment.STAGING,
+        Environment.STAGING_LAB,
+        Environment.LAB);
   }
 
   @Test
-  void openApi_lab() {
-    assumeEnvironmentIn(Environment.LAB);
-    try {
+  void openApi_json() {
       doGet("application/json", "openapi.json", 200);
-    } catch (Throwable tr) {
-      log.warn("exception", tr);
-    }
   }
 
   @Test
   void openApi_null() {
-    assumeEnvironmentIn(
-        Environment.LOCAL, Environment.QA, Environment.STAGING, Environment.STAGING_LAB);
     doGet(null, "openapi.json", 200);
   }
 }
