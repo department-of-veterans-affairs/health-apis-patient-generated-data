@@ -88,6 +88,11 @@ public interface QuestionnaireResponseApi {
           String id,
       @Parameter(
               in = ParameterIn.QUERY,
+              name = "author",
+              description = "The reference to the author of the response")
+          String author,
+      @Parameter(
+              in = ParameterIn.QUERY,
               name = "authored",
               description =
                   "A date or range of dates (maximum of 2) that describes "

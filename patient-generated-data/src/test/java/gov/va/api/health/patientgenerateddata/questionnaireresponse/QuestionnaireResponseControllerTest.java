@@ -77,31 +77,6 @@ public class QuestionnaireResponseControllerTest {
         () -> new QuestionnaireResponseController(mockLinkProperties, repo).read("notfound"));
   }
 
-  @ParameterizedTest
-  @ValueSource(strings = {"?_id=1"})
-  @SneakyThrows
-  void searchByReference(String query) {
-    QuestionnaireResponseRepository repo = mock(QuestionnaireResponseRepository.class);
-    QuestionnaireResponseController controller =
-        new QuestionnaireResponseController(
-            LinkProperties.builder().urlPageLinks(pageLinks).build(), repo);
-    when(repo.findAll(any(Specification.class), any(Pageable.class)))
-        .thenAnswer(
-            i ->
-                new PageImpl(
-                    List.of(
-                        QuestionnaireResponseEntity.builder()
-                            .author("John Smith")
-                            .build()
-                            .id("1")
-                            .payload("{ \"id\": 1}")),
-                    i.getArgument(1, Pageable.class),
-                    1));
-    var r = requestFromUri("http://fonzy.com/r4/QuestionnaireResponse" + query);
-    var actual = controller.search(r);
-    assertThat(actual.entry()).hasSize(1);
-  }
-
   @Test
   @SneakyThrows
   void update_existing() {
@@ -138,7 +113,7 @@ public class QuestionnaireResponseControllerTest {
   }
 
   @ParameterizedTest
-  @ValueSource(strings = {"?_id=1"})
+  @ValueSource(strings = {"?_id=1", "?author=John Smith"})
   @SneakyThrows
   void validSearch(String query) {
     QuestionnaireResponseRepository repo = mock(QuestionnaireResponseRepository.class);
@@ -156,6 +131,7 @@ public class QuestionnaireResponseControllerTest {
                 new PageImpl(
                     List.of(
                         QuestionnaireResponseEntity.builder()
+                            .author("John Smith")
                             .build()
                             .id("1")
                             .payload("{ \"id\": 1}")),
