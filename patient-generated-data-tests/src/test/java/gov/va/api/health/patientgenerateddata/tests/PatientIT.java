@@ -34,17 +34,17 @@ public class PatientIT {
 
     // Kong required
     assumeEnvironmentNotIn(Environment.LOCAL);
-    makeRequest("application/json", "Patient/1000000", 403);
+    doGet("application/json", "Patient/1000000", 403);
     // does not exist
-    makeRequest("application/json", "Patient/5555555", 403);
+    doGet("application/json", "Patient/5555555", 403);
   }
 
   @Test
   void read_notMe_lab() {
     assumeEnvironmentIn(Environment.LAB);
     try {
-      makeRequest("application/json", "Patient/1000000", 403);
-      makeRequest("application/json", "Patient/5555555", 403);
+      doGet("application/json", "Patient/1000000", 403);
+      doGet("application/json", "Patient/5555555", 403);
     } catch (Throwable tr) {
       log.warn("exception", tr);
     }

@@ -11,15 +11,12 @@ public class OpenApiIT {
   @BeforeAll
   static void assumeEnvironment() {
     assumeEnvironmentIn(
-        Environment.LOCAL,
-        Environment.STAGING,
-        Environment.STAGING_LAB,
-        Environment.LAB);
+        Environment.LOCAL, Environment.STAGING, Environment.STAGING_LAB, Environment.LAB);
   }
 
   @Test
   void openApi_json() {
-      doGet("application/json", "openapi.json", 200);
+    doGet("application/json", "openapi.json", 200);
   }
 
   @Test
