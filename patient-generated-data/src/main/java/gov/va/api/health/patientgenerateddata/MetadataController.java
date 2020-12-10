@@ -6,7 +6,6 @@ import static org.springframework.util.CollectionUtils.isEmpty;
 import gov.va.api.health.r4.api.datatypes.ContactDetail;
 import gov.va.api.health.r4.api.datatypes.ContactPoint;
 import gov.va.api.health.r4.api.resources.CapabilityStatement;
-import gov.va.api.health.r4.api.resources.CapabilityStatement.SearchParamType;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -116,8 +115,8 @@ class MetadataController {
   @Getter
   @AllArgsConstructor
   enum SearchParam {
-    AUTHORED("authored", SearchParamType.date),
-    ID("_id", CapabilityStatement.SearchParamType.string),
+    AUTHORED("authored", CapabilityStatement.SearchParamType.date),
+    ID("_id", CapabilityStatement.SearchParamType.token),
     PATIENT("patient", CapabilityStatement.SearchParamType.reference);
 
     private final String param;

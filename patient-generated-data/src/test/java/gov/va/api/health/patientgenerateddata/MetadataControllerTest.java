@@ -154,7 +154,7 @@ public class MetadataControllerTest {
                                             List.of(
                                                 CapabilityStatement.SearchParam.builder()
                                                     .name("_id")
-                                                    .type(SearchParamType.string)
+                                                    .type(SearchParamType.token)
                                                     .build(),
                                                 CapabilityStatement.SearchParam.builder()
                                                     .name("authored")
