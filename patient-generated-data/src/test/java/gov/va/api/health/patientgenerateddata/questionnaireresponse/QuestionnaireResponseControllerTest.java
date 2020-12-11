@@ -1,6 +1,7 @@
 package gov.va.api.health.patientgenerateddata.questionnaireresponse;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -13,6 +14,7 @@ import gov.va.api.health.patientgenerateddata.Exceptions;
 import gov.va.api.health.patientgenerateddata.UrlPageLinks;
 import gov.va.api.health.patientgenerateddata.vulcanizer.LinkProperties;
 import gov.va.api.health.r4.api.resources.QuestionnaireResponse;
+import gov.va.api.lighthouse.vulcan.InvalidRequest;
 import java.util.List;
 import java.util.Optional;
 import lombok.SneakyThrows;
@@ -47,11 +49,34 @@ public class QuestionnaireResponseControllerTest {
     return request;
   }
 
+  private QuestionnaireResponseController controller() {
+    QuestionnaireResponseRepository repo = mock(QuestionnaireResponseRepository.class);
+    return controller(repo);
+  }
+
+  private QuestionnaireResponseController controller(QuestionnaireResponseRepository repo) {
+    return new QuestionnaireResponseController(
+        LinkProperties.builder()
+            .urlPageLinks(pageLinks)
+            .maxPageSize(20)
+            .defaultPageSize(500)
+            .build(),
+        repo);
+  }
+
   @Test
   void initDirectFieldAccess() {
     new QuestionnaireResponseController(
             mock(LinkProperties.class), mock(QuestionnaireResponseRepository.class))
         .initDirectFieldAccess(mock(DataBinder.class));
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"", "?_id=123&authored=2000-01-01T00:00:00Z"})
+  @SneakyThrows
+  void invalidRequests(String query) {
+    var r = requestFromUri("http://fonzy.com/r4/QuestionnaireResponse" + query);
+    assertThatExceptionOfType(InvalidRequest.class).isThrownBy(() -> controller().search(r));
   }
 
   @Test
@@ -112,14 +137,7 @@ public class QuestionnaireResponseControllerTest {
   @SneakyThrows
   void validSearch(String query) {
     QuestionnaireResponseRepository repo = mock(QuestionnaireResponseRepository.class);
-    QuestionnaireResponseController controller =
-        new QuestionnaireResponseController(
-            LinkProperties.builder()
-                .urlPageLinks(pageLinks)
-                .maxPageSize(20)
-                .defaultPageSize(500)
-                .build(),
-            repo);
+    QuestionnaireResponseController controller = controller(repo);
     when(repo.findAll(any(Specification.class), any(Pageable.class)))
         .thenAnswer(
             i ->
