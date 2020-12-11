@@ -182,6 +182,10 @@ public class MetadataControllerTest {
                                                     .type(SearchParamType.token)
                                                     .build(),
                                                 CapabilityStatement.SearchParam.builder()
+                                                    .name("author")
+                                                    .type(SearchParamType.string)
+                                                    .build(),
+                                                CapabilityStatement.SearchParam.builder()
                                                     .name("authored")
                                                     .type(SearchParamType.date)
                                                     .build()))

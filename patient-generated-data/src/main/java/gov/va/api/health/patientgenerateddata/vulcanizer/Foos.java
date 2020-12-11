@@ -1,0 +1,48 @@
+package gov.va.api.health.patientgenerateddata.vulcanizer;
+
+import gov.va.api.health.patientgenerateddata.PayloadEntity;
+import gov.va.api.health.r4.api.bundle.AbstractBundle;
+import gov.va.api.health.r4.api.bundle.AbstractEntry;
+import gov.va.api.health.r4.api.elements.Meta;
+import gov.va.api.health.r4.api.resources.Resource;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+
+class Foos {
+  @Builder
+  static class FooBundle extends AbstractBundle<FooEntry> {}
+
+  @AllArgsConstructor
+  @Data
+  static class FooEntity implements PayloadEntity {
+    String id;
+
+    String payload;
+
+    @Override
+    public FooResource deserializePayload() {
+      return FooResource.builder().id(id).build();
+    }
+
+    public String payload() {
+      return payload;
+    }
+  }
+
+  static class FooEntry extends AbstractEntry<FooResource> {}
+
+  @Data
+  @Builder
+  static class FooResource implements Resource {
+    String id;
+
+    String implicitRules;
+
+    String language;
+
+    Meta meta;
+
+    String ref;
+  }
+}
