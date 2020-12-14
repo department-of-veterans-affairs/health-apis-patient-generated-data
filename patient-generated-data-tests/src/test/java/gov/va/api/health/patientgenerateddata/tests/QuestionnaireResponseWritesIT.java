@@ -27,7 +27,7 @@ public class QuestionnaireResponseWritesIT {
   }
 
   private static void loadInitialResource() {
-    var id = systemDefinition().ids().questionnaireResponse();
+    var id = systemDefinition().idsGenerated().questionnaireResponse();
     QuestionnaireResponse qr = questionnaireResponse(id);
     RequestUtils.doPut(
         "QuestionnaireResponse/" + id, serializePayload(qr), "load initial resource", true);
@@ -39,7 +39,7 @@ public class QuestionnaireResponseWritesIT {
 
   @Test
   void update_authored() {
-    var id = systemDefinition().ids().questionnaireResponse();
+    var id = systemDefinition().idsGenerated().questionnaireResponse();
     Instant now = Instant.now().with(ChronoField.NANO_OF_SECOND, 0);
     QuestionnaireResponse qr = questionnaireResponse(id).authored(now.toString());
     doPut("QuestionnaireResponse/" + id, serializePayload(qr), "update authored date", 200);

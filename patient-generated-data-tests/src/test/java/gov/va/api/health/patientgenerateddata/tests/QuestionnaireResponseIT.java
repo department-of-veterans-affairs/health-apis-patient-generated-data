@@ -23,7 +23,7 @@ public class QuestionnaireResponseIT {
 
   @Test
   void read() {
-    var id = systemDefinition().ids().questionnaireResponseSynthetic();
+    var id = systemDefinition().ids().questionnaireResponse();
     doGet(null, "QuestionnaireResponse/" + id, 200);
     doGet("application/json", "QuestionnaireResponse/" + id, 200);
     doGet("application/fhir+json", "QuestionnaireResponse/" + id, 200);
@@ -36,7 +36,7 @@ public class QuestionnaireResponseIT {
 
   @Test
   void search_authored() {
-    var id = systemDefinition().ids().questionnaireResponseSynthetic();
+    var id = systemDefinition().ids().questionnaireResponse();
     String date = "2013-02-19T19:15:00Z";
     String query = String.format("?authored=%s", date);
     var response = doGet("application/json", "QuestionnaireResponse/" + query, 200);
