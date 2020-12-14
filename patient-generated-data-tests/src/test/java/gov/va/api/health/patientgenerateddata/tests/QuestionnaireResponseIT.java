@@ -36,7 +36,6 @@ public class QuestionnaireResponseIT {
 
   @Test
   void search_authored() {
-    var id = systemDefinition().ids().questionnaireResponse();
     String date = "2013-02-19T19:15:00Z";
     String query = String.format("?authored=%s", date);
     var response = doGet("application/json", "QuestionnaireResponse/" + query, 200);
@@ -54,6 +53,7 @@ public class QuestionnaireResponseIT {
     response = doGet("application/json", "QuestionnaireResponse/" + query, 200);
     bundle = response.expectValid(QuestionnaireResponse.Bundle.class);
     assertThat(bundle.entry()).hasSizeGreaterThan(0);
+
     // in between
     query =
         String.format(
@@ -61,6 +61,7 @@ public class QuestionnaireResponseIT {
     response = doGet("application/json", "QuestionnaireResponse/" + query, 200);
     bundle = response.expectValid(QuestionnaireResponse.Bundle.class);
     assertThat(bundle.entry()).hasSizeGreaterThan(0);
+
     // in between, nothing found
     query =
         String.format(

@@ -30,36 +30,31 @@ public class RequestUtils {
     if (acceptHeader != null) {
       spec = spec.accept(acceptHeader);
     }
-    return ExpectedResponse.of(spec.request(Method.GET, svc.urlWithApiPath() + request))
-        .logAction(logAllWithTruncatedBody(2000))
-        .expect(expectedStatus);
-  }
-
-  public static ExpectedResponse doPut(
-      String request, String payload, String changes, boolean checkForSuccess) {
-    ExpectedResponse response = doPut(request, payload, changes, null);
-    int status = response.response().statusCode();
-    if (checkForSuccess && (status < 200 || status >= 300)) {
-      throw new AssertionError(
-          String.format("Failed to '%s', received status code %s", changes, status));
+    ExpectedResponse response =
+        ExpectedResponse.of(spec.request(Method.GET, svc.urlWithApiPath() + request))
+            .logAction(logAllWithTruncatedBody(2000));
+    if (expectedStatus != null) {
+      response.expect(expectedStatus);
     }
     return response;
   }
 
   public static ExpectedResponse doPut(
-      String request, String payload, String changes, Integer expectedStatus) {
+      String request, String payload, String description, Integer expectedStatus) {
     SystemDefinitions.Service svc = systemDefinition().r4();
     RequestSpecification spec =
         RestAssured.given()
             .baseUri(svc.url())
             .port(svc.port())
             .relaxedHTTPSValidation()
-            .header("Authorization", "Bearer " + System.getProperty("access-token", "unset"));
-    ;
-    spec.header("Content-Type", "application/json");
-    spec.body(payload);
+            .header("Authorization", "Bearer " + System.getProperty("access-token", "unset"))
+            .header("Content-Type", "application/json")
+            .body(payload);
     log.info(
-        "Expect {} PUT '{}' is status code ({})", svc.apiPath() + request, changes, expectedStatus);
+        "Expect {} PUT '{}' is status code ({})",
+        svc.apiPath() + request,
+        description,
+        expectedStatus);
     ExpectedResponse response =
         ExpectedResponse.of(spec.request(Method.PUT, svc.urlWithApiPath() + request))
             .logAction(logAllWithTruncatedBody(2000));

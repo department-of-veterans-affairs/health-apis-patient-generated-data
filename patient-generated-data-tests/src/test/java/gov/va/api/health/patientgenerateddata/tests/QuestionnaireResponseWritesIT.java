@@ -17,24 +17,23 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 public class QuestionnaireResponseWritesIT {
-
-  @BeforeAll
-  static void assumeEnvironment() {
-    // Anything but LAB
-    assumeEnvironmentIn(
-        Environment.LOCAL, Environment.QA, Environment.STAGING, Environment.STAGING_LAB);
-    loadInitialResource();
-  }
-
-  private static void loadInitialResource() {
-    var id = systemDefinition().idsGenerated().questionnaireResponse();
-    QuestionnaireResponse qr = questionnaireResponse(id);
-    RequestUtils.doPut(
-        "QuestionnaireResponse/" + id, serializePayload(qr), "load initial resource", true);
-  }
-
   static QuestionnaireResponse questionnaireResponse(String id) {
     return QuestionnaireResponse.builder().id(id).status(Status.completed).build();
+  }
+
+  @BeforeAll
+  static void setup() {
+    // These tests alter data, but do not infinitely create more
+    // Do not run in SLA'd environments
+    assumeEnvironmentIn(
+        Environment.LOCAL, Environment.QA, Environment.STAGING, Environment.STAGING_LAB);
+
+    var id = systemDefinition().idsGenerated().questionnaireResponse();
+    ExpectedResponse existing = doGet("application/json", "QuestionnaireResponse/" + id, null);
+    if (existing.response().statusCode() == 404) {
+      QuestionnaireResponse qr = questionnaireResponse(id);
+      doPut("QuestionnaireResponse/" + id, serializePayload(qr), "load initial resource", 201);
+    }
   }
 
   @Test
