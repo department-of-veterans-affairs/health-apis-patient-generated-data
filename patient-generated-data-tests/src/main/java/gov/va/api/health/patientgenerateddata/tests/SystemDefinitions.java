@@ -10,20 +10,11 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 class SystemDefinitions {
   private static Ids ids() {
-<<<<<<< HEAD
-    return Ids.builder()
-        .observation("ekg")
-        .questionnaire("q101")
-        .questionnaireResponse("qr202")
-        .patient("p555")
-        .build();
-=======
     return Ids.builder().questionnaireResponse("3141").build();
   }
 
   private static Ids idsGenerated() {
     return Ids.builder().questionnaireResponse("qr202").build();
->>>>>>> d222bd08b3fb857bd197c612ba932fe59df172aa
   }
 
   private static SystemDefinition lab() {
