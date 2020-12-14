@@ -58,14 +58,14 @@ public interface ObservationApi {
   @Path("Observation/{id}")
   @ApiResponse(
       responseCode = "200",
-      description = "Record found",
+      description = "Record updated",
       content =
           @Content(
               mediaType = "application/fhir+json",
               schema = @Schema(implementation = Observation.class)))
   @ApiResponse(
       responseCode = "201",
-      description = "New record created",
+      description = "Record created",
       content =
           @Content(
               mediaType = "application/fhir+json",

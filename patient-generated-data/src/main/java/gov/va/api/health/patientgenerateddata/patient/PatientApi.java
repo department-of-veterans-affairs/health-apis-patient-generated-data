@@ -70,7 +70,7 @@ public interface PatientApi {
               schema = @Schema(implementation = Patient.class)))
   @ApiResponse(
       responseCode = "201",
-      description = "New record created",
+      description = "Record created",
       content =
           @Content(
               mediaType = "application/fhir+json",
