@@ -1,13 +1,11 @@
-package gov.va.api.health.patientgenerateddata.vulcanizer;
+package gov.va.api.health.patientgenerateddata;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import gov.va.api.health.patientgenerateddata.LinkProperties;
-import gov.va.api.health.patientgenerateddata.VulcanizedBundler;
-import gov.va.api.health.patientgenerateddata.vulcanizer.Foos.FooBundle;
-import gov.va.api.health.patientgenerateddata.vulcanizer.Foos.FooEntity;
-import gov.va.api.health.patientgenerateddata.vulcanizer.Foos.FooEntry;
-import gov.va.api.health.patientgenerateddata.vulcanizer.Foos.FooResource;
+import gov.va.api.health.patientgenerateddata.Foos.FooBundle;
+import gov.va.api.health.patientgenerateddata.Foos.FooEntity;
+import gov.va.api.health.patientgenerateddata.Foos.FooEntry;
+import gov.va.api.health.patientgenerateddata.Foos.FooResource;
 import gov.va.api.lighthouse.vulcan.VulcanResult;
 import gov.va.api.lighthouse.vulcan.VulcanResult.Paging;
 import java.util.Optional;
