@@ -1,5 +1,6 @@
-package gov.va.api.health.patientgenerateddata;
+package gov.va.api.health.patientgenerateddata.vulcanizer;
 
+import gov.va.api.health.patientgenerateddata.PayloadEntity;
 import gov.va.api.health.r4.api.bundle.AbstractBundle;
 import gov.va.api.health.r4.api.bundle.AbstractEntry;
 import gov.va.api.health.r4.api.elements.Meta;
