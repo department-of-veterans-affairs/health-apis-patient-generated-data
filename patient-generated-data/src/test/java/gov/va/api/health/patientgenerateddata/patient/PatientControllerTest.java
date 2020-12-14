@@ -61,11 +61,13 @@ public class PatientControllerTest {
   @Test
   @SneakyThrows
   void update_new() {
+    LinkProperties pageLinks =
+        LinkProperties.builder().baseUrl("http://foo.com").r4BasePath("r4").build();
     PatientRepository repo = mock(PatientRepository.class);
     Patient patient = Patient.builder().id("x").build();
     String payload = JacksonConfig.createMapper().writeValueAsString(patient);
-    assertThat(new PatientController(mock(LinkProperties.class), repo).update("x", patient))
-        .isEqualTo(ResponseEntity.created(URI.create("/r4/Patient/x")).body(patient));
+    assertThat(new PatientController(pageLinks, repo).update("x", patient))
+        .isEqualTo(ResponseEntity.created(URI.create("http://foo.com/r4/Patient/x")).body(patient));
     verify(repo, times(1)).save(PatientEntity.builder().id("x").payload(payload).build());
   }
 }

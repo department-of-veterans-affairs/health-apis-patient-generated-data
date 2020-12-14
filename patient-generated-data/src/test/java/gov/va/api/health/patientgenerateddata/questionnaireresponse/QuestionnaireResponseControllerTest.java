@@ -14,6 +14,8 @@ import gov.va.api.health.patientgenerateddata.Exceptions;
 import gov.va.api.health.patientgenerateddata.LinkProperties;
 import gov.va.api.health.r4.api.resources.QuestionnaireResponse;
 import gov.va.api.lighthouse.vulcan.InvalidRequest;
+
+import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 import lombok.SneakyThrows;
@@ -109,7 +111,7 @@ public class QuestionnaireResponseControllerTest {
             Optional.of(QuestionnaireResponseEntity.builder().id("x").payload(payload).build()));
     assertThat(
             new QuestionnaireResponseController(pageLinks, repo).update("x", questionnaireResponse))
-        .isEqualTo(ResponseEntity.ok().build());
+        .isEqualTo(ResponseEntity.ok(questionnaireResponse));
     verify(repo, times(1))
         .save(QuestionnaireResponseEntity.builder().id("x").payload(payload).build());
   }
@@ -122,7 +124,9 @@ public class QuestionnaireResponseControllerTest {
     String payload = JacksonConfig.createMapper().writeValueAsString(questionnaireResponse);
     assertThat(
             new QuestionnaireResponseController(pageLinks, repo).update("x", questionnaireResponse))
-        .isEqualTo(ResponseEntity.status(HttpStatus.CREATED).build());
+        .isEqualTo(
+            ResponseEntity.created(URI.create("http://foo.com/r4/QuestionnaireResponse/x"))
+                .body(questionnaireResponse));
     verify(repo, times(1))
         .save(QuestionnaireResponseEntity.builder().id("x").payload(payload).build());
   }

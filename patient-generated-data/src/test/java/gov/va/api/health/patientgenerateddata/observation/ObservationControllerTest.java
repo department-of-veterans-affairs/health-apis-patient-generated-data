@@ -11,6 +11,8 @@ import gov.va.api.health.autoconfig.configuration.JacksonConfig;
 import gov.va.api.health.patientgenerateddata.Exceptions;
 import gov.va.api.health.patientgenerateddata.LinkProperties;
 import gov.va.api.health.r4.api.resources.Observation;
+
+import java.net.URI;
 import java.util.Optional;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
@@ -54,18 +56,22 @@ public class ObservationControllerTest {
     when(repo.findById("x"))
         .thenReturn(Optional.of(ObservationEntity.builder().id("x").payload(payload).build()));
     assertThat(new ObservationController(mock(LinkProperties.class), repo).update("x", observation))
-        .isEqualTo(ResponseEntity.ok().build());
+        .isEqualTo(ResponseEntity.ok(observation));
     verify(repo, times(1)).save(ObservationEntity.builder().id("x").payload(payload).build());
   }
 
   @Test
   @SneakyThrows
   void update_new() {
+    LinkProperties pageLinks =
+        LinkProperties.builder().baseUrl("http://foo.com").r4BasePath("r4").build();
     ObservationRepository repo = mock(ObservationRepository.class);
     Observation observation = Observation.builder().id("x").build();
     String payload = JacksonConfig.createMapper().writeValueAsString(observation);
-    assertThat(new ObservationController(mock(LinkProperties.class), repo).update("x", observation))
-        .isEqualTo(ResponseEntity.status(HttpStatus.CREATED).build());
+    assertThat(new ObservationController(pageLinks, repo).update("x", observation))
+        .isEqualTo(
+            ResponseEntity.created(URI.create("http://foo.com/r4/Observation/x"))
+                .body(observation));
     verify(repo, times(1)).save(ObservationEntity.builder().id("x").payload(payload).build());
   }
 }

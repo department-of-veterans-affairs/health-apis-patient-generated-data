@@ -63,7 +63,7 @@ public class ObservationController {
       return ResponseEntity.ok(observation);
     }
     repository.save(ObservationEntity.builder().id(id).payload(payload).build());
-    return ResponseEntity.created(URI.create(linkProperties.r4Url() + "r4/Observation/" + id))
+    return ResponseEntity.created(URI.create(linkProperties.r4Url() + "/Observation/" + id))
         .body(observation);
   }
 }

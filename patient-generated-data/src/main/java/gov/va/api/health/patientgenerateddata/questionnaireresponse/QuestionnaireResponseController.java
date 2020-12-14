@@ -12,12 +12,10 @@ import gov.va.api.health.patientgenerateddata.Exceptions;
 import gov.va.api.health.patientgenerateddata.LinkProperties;
 import gov.va.api.health.patientgenerateddata.ParseUtils;
 import gov.va.api.health.patientgenerateddata.VulcanizedBundler;
-import gov.va.api.health.r4.api.resources.Patient;
 import gov.va.api.health.r4.api.resources.QuestionnaireResponse;
 import gov.va.api.lighthouse.vulcan.Vulcan;
 import gov.va.api.lighthouse.vulcan.VulcanConfiguration;
 import gov.va.api.lighthouse.vulcan.mappings.Mappings;
-
 import java.net.URI;
 import java.time.Instant;
 import java.util.Optional;
@@ -26,7 +24,6 @@ import javax.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.DataBinder;
 import org.springframework.validation.annotation.Validated;
@@ -123,7 +120,7 @@ public class QuestionnaireResponseController {
     repository.save(
         QuestionnaireResponseEntity.builder().id(id).payload(payload).authored(authored).build());
     return ResponseEntity.created(
-            URI.create(linkProperties.r4Url() + "r4/QuestionnaireResponse/" + id))
+            URI.create(linkProperties.r4Url() + "/QuestionnaireResponse/" + id))
         .body(questionnaireResponse);
   }
 }

@@ -63,7 +63,7 @@ public class PatientController {
       return ResponseEntity.ok(patient);
     }
     repository.save(PatientEntity.builder().id(id).payload(payload).build());
-    return ResponseEntity.created(URI.create(linkProperties.r4Url() + "r4/Patient/" + id))
+    return ResponseEntity.created(URI.create(linkProperties.r4Url() + "/Patient/" + id))
         .body(patient);
   }
 }

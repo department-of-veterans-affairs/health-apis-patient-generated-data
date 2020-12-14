@@ -2,6 +2,7 @@ package gov.va.api.health.patientgenerateddata.questionnaire;
 
 import static com.google.common.base.Preconditions.checkState;
 import static gov.va.api.health.patientgenerateddata.SerializationUtils.deserializedPayload;
+
 import gov.va.api.health.autoconfig.configuration.JacksonConfig;
 import gov.va.api.health.autoconfig.logging.Loggable;
 import gov.va.api.health.patientgenerateddata.Exceptions;
@@ -62,7 +63,7 @@ public class QuestionnaireController {
       return ResponseEntity.ok(questionnaire);
     }
     repository.save(QuestionnaireEntity.builder().id(id).payload(payload).build());
-    return ResponseEntity.created(URI.create(linkProperties.r4Url() + "r4/Questionnaire/" + id))
+    return ResponseEntity.created(URI.create(linkProperties.r4Url() + "/Questionnaire/" + id))
         .body(questionnaire);
   }
 }
