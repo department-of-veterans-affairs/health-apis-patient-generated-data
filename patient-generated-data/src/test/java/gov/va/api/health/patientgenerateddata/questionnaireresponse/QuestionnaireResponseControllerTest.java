@@ -20,6 +20,7 @@ import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.mockito.ArgumentMatchers;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -132,7 +133,8 @@ public class QuestionnaireResponseControllerTest {
   void validSearch(String query) {
     QuestionnaireResponseRepository repo = mock(QuestionnaireResponseRepository.class);
     QuestionnaireResponseController controller = controller(repo);
-    when(repo.findAll(any(Specification.class), any(Pageable.class)))
+    var anySpec = ArgumentMatchers.<Specification<QuestionnaireResponseEntity>>any();
+    when(repo.findAll(anySpec, any(Pageable.class)))
         .thenAnswer(
             i ->
                 new PageImpl<QuestionnaireResponseEntity>(
