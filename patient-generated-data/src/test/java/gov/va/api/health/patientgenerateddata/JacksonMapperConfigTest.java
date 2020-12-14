@@ -40,7 +40,10 @@ public class JacksonMapperConfigTest {
     String serializedJson =
         new JacksonMapperConfig(
                 new MagicReferenceConfig(
-                    UrlPageLinks.builder().baseUrl("https://example.com").r4BasePath("r4").build()))
+                    LinkProperties.builder()
+                        .baseUrl("https://example.com")
+                        .r4BasePath("r4")
+                        .build()))
             .objectMapper()
             .writerWithDefaultPrettyPrinter()
             .writeValueAsString(input);
@@ -113,7 +116,10 @@ public class JacksonMapperConfigTest {
     String qualifiedJson =
         new JacksonMapperConfig(
                 new MagicReferenceConfig(
-                    UrlPageLinks.builder().baseUrl("https://example.com").r4BasePath("r4").build()))
+                    LinkProperties.builder()
+                        .baseUrl("https://example.com")
+                        .r4BasePath("r4")
+                        .build()))
             .objectMapper()
             .writerWithDefaultPrettyPrinter()
             .writeValueAsString(input);

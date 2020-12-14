@@ -32,7 +32,7 @@ class MetadataController {
 
   private final BuildProperties buildProperties;
 
-  private final UrlPageLinks pageLinks;
+  private final LinkProperties pageLinks;
 
   private List<ContactDetail> contact() {
     return List.of(
@@ -94,6 +94,7 @@ class MetadataController {
             SupportedResource.builder()
                 .type("QuestionnaireResponse")
                 .profileUrl("https://www.hl7.org/fhir/r4/questionnaireresponse.html")
+
                 .searches(Set.of(SearchParam.ID, SearchParam.AUTHOR, SearchParam.AUTHORED))
                 .build())
         .map(SupportedResource::asResource)

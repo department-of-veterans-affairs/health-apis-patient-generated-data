@@ -1,6 +1,7 @@
 package gov.va.api.health.patientgenerateddata.questionnaireresponse;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -10,16 +11,17 @@ import static org.mockito.Mockito.when;
 
 import gov.va.api.health.autoconfig.configuration.JacksonConfig;
 import gov.va.api.health.patientgenerateddata.Exceptions;
-import gov.va.api.health.patientgenerateddata.UrlPageLinks;
-import gov.va.api.health.patientgenerateddata.vulcanizer.LinkProperties;
+import gov.va.api.health.patientgenerateddata.LinkProperties;
 import gov.va.api.health.r4.api.elements.Reference;
 import gov.va.api.health.r4.api.resources.QuestionnaireResponse;
+import gov.va.api.lighthouse.vulcan.InvalidRequest;
 import java.util.List;
 import java.util.Optional;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.mockito.ArgumentMatchers;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -30,10 +32,14 @@ import org.springframework.validation.DataBinder;
 import org.springframework.web.util.UriComponentsBuilder;
 
 public class QuestionnaireResponseControllerTest {
-  LinkProperties mockLinkProperties = mock(LinkProperties.class);
 
-  UrlPageLinks pageLinks =
-      UrlPageLinks.builder().baseUrl("http://foo.com").r4BasePath("r4").build();
+  LinkProperties pageLinks =
+      LinkProperties.builder()
+          .defaultPageSize(500)
+          .maxPageSize(20)
+          .baseUrl("http://foo.com")
+          .r4BasePath("r4")
+          .build();
 
   private static MockHttpServletRequest requestFromUri(String uri) {
     var u = UriComponentsBuilder.fromUriString(uri).build();
@@ -48,11 +54,28 @@ public class QuestionnaireResponseControllerTest {
     return request;
   }
 
+  private QuestionnaireResponseController controller() {
+    QuestionnaireResponseRepository repo = mock(QuestionnaireResponseRepository.class);
+    return controller(repo);
+  }
+
+  private QuestionnaireResponseController controller(QuestionnaireResponseRepository repo) {
+    return new QuestionnaireResponseController(pageLinks, repo);
+  }
+
   @Test
   void initDirectFieldAccess() {
     new QuestionnaireResponseController(
             mock(LinkProperties.class), mock(QuestionnaireResponseRepository.class))
         .initDirectFieldAccess(mock(DataBinder.class));
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"", "?_id=123&authored=2000-01-01T00:00:00Z"})
+  @SneakyThrows
+  void invalidRequests(String query) {
+    var r = requestFromUri("http://fonzy.com/r4/QuestionnaireResponse" + query);
+    assertThatExceptionOfType(InvalidRequest.class).isThrownBy(() -> controller().search(r));
   }
 
   @Test
@@ -65,7 +88,8 @@ public class QuestionnaireResponseControllerTest {
     when(repo.findById("x"))
         .thenReturn(
             Optional.of(QuestionnaireResponseEntity.builder().id("x").payload(payload).build()));
-    assertThat(new QuestionnaireResponseController(mockLinkProperties, repo).read("x"))
+
+    assertThat(new QuestionnaireResponseController(pageLinks, repo).read("x"))
         .isEqualTo(QuestionnaireResponse.builder().id("x").build());
   }
 
@@ -74,7 +98,7 @@ public class QuestionnaireResponseControllerTest {
     QuestionnaireResponseRepository repo = mock(QuestionnaireResponseRepository.class);
     assertThrows(
         Exceptions.NotFound.class,
-        () -> new QuestionnaireResponseController(mockLinkProperties, repo).read("notfound"));
+        () -> new QuestionnaireResponseController(pageLinks, repo).read("notfound"));
   }
 
   @Test
@@ -89,8 +113,7 @@ public class QuestionnaireResponseControllerTest {
         .thenReturn(
             Optional.of(QuestionnaireResponseEntity.builder().id("x").payload(payload).build()));
     assertThat(
-            new QuestionnaireResponseController(mockLinkProperties, repo)
-                .update("x", questionnaireResponse))
+            new QuestionnaireResponseController(pageLinks, repo).update("x", questionnaireResponse))
         .isEqualTo(ResponseEntity.ok().build());
     verify(repo, times(1))
         .save(QuestionnaireResponseEntity.builder().id("x").payload(payload).build());
@@ -105,8 +128,7 @@ public class QuestionnaireResponseControllerTest {
         QuestionnaireResponse.builder().id("x").author(ref).build();
     String payload = JacksonConfig.createMapper().writeValueAsString(questionnaireResponse);
     assertThat(
-            new QuestionnaireResponseController(mockLinkProperties, repo)
-                .update("x", questionnaireResponse))
+            new QuestionnaireResponseController(pageLinks, repo).update("x", questionnaireResponse))
         .isEqualTo(ResponseEntity.status(HttpStatus.CREATED).build());
     verify(repo, times(1))
         .save(QuestionnaireResponseEntity.builder().id("x").payload(payload).build());
@@ -117,21 +139,14 @@ public class QuestionnaireResponseControllerTest {
   @SneakyThrows
   void validSearch(String query) {
     QuestionnaireResponseRepository repo = mock(QuestionnaireResponseRepository.class);
-    QuestionnaireResponseController controller =
-        new QuestionnaireResponseController(
-            LinkProperties.builder()
-                .urlPageLinks(pageLinks)
-                .maxPageSize(20)
-                .defaultPageSize(500)
-                .build(),
-            repo);
-    when(repo.findAll(any(Specification.class), any(Pageable.class)))
+    QuestionnaireResponseController controller = controller(repo);
+    var anySpec = ArgumentMatchers.<Specification<QuestionnaireResponseEntity>>any();
+    when(repo.findAll(anySpec, any(Pageable.class)))
         .thenAnswer(
             i ->
-                new PageImpl(
+                new PageImpl<QuestionnaireResponseEntity>(
                     List.of(
                         QuestionnaireResponseEntity.builder()
-                            .author("John Smith")
                             .build()
                             .id("1")
                             .payload("{ \"id\": 1}")),

@@ -20,7 +20,7 @@ import org.springframework.stereotype.Component;
 @Component
 @AllArgsConstructor(onConstructor_ = @Autowired)
 public class MagicReferenceConfig {
-  private final UrlPageLinks pageLinks;
+  private final LinkProperties pageLinks;
 
   /** Configures and returns the mapper to support magic references. */
   public ObjectMapper configure(ObjectMapper mapper) {

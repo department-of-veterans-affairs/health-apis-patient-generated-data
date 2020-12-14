@@ -15,8 +15,6 @@ import java.sql.PreparedStatement;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.OffsetDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.TemporalAccessor;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -38,6 +36,7 @@ import lombok.Builder;
 import lombok.NonNull;
 import lombok.SneakyThrows;
 import lombok.Value;
+import org.apache.commons.lang3.StringUtils;
 
 public final class Populaterator {
   private static final ObjectMapper MAPPER = new ObjectMapper();
@@ -125,31 +124,15 @@ public final class Populaterator {
   }
 
   private static Instant parseDateTime(String datetime) {
-    if (datetime == null || datetime.trim().isEmpty()) {
+    if (StringUtils.isBlank(datetime)) {
       return null;
     }
     String str = datetime.trim();
     if (str.endsWith("Z")) {
-      return parseDateTimeUtc(str);
+      return Instant.parse(datetime);
     }
     // Assume time zone offset is provided
-    return parseDateTimeOffset(str);
-  }
-
-  private static Instant parseDateTimeOffset(String datetime) {
-    if (datetime == null || datetime.trim().isEmpty()) {
-      return null;
-    }
-    OffsetDateTime odt = OffsetDateTime.parse(datetime);
-    return odt.toInstant();
-  }
-
-  private static Instant parseDateTimeUtc(String datetime) {
-    if (datetime == null || datetime.trim().isEmpty()) {
-      return null;
-    }
-    TemporalAccessor ta = DateTimeFormatter.ISO_INSTANT.parse(datetime);
-    return Instant.from(ta);
+    return OffsetDateTime.parse(datetime).toInstant();
   }
 
   @SneakyThrows
@@ -225,15 +208,12 @@ public final class Populaterator {
       checkState(!ids.contains(id), "Duplicate ID " + id);
       ids.add(id);
       String sqlInsert =
-          sqlInsert(
-              "app.QuestionnaireResponse",
-              List.of("id", "payload", "version", "authored", "author"));
+          sqlInsert("app.QuestionnaireResponse", List.of("id", "payload", "version", "authored"));
       try (PreparedStatement statement = connection.prepareStatement(sqlInsert)) {
         statement.setObject(1, id);
         statement.setObject(2, MAPPER.writeValueAsString(response));
         statement.setObject(3, 0);
         statement.setTimestamp(4, timestamp(parseDateTime(response.authored())));
-        statement.setObject(5, response.author().id());
         statement.execute();
       }
     }

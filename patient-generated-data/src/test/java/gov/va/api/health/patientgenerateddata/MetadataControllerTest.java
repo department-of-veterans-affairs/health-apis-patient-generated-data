@@ -25,7 +25,7 @@ public class MetadataControllerTest {
     assertThat(
             new MetadataController(
                     buildProperties,
-                    UrlPageLinks.builder().baseUrl("http://va.gov").r4BasePath("api/r4").build())
+                    LinkProperties.builder().baseUrl("http://va.gov").r4BasePath("api/r4").build())
                 .read())
         .isEqualTo(
             CapabilityStatement.builder()
@@ -166,7 +166,9 @@ public class MetadataControllerTest {
                                                         "Implemented per specification. See http://hl7.org/fhir/R4/http.html")
                                                     .build(),
                                                 CapabilityStatement.ResourceInteraction.builder()
-                                                    .code(TypeRestfulInteraction.search_type)
+                                                    .code(
+                                                        CapabilityStatement.TypeRestfulInteraction
+                                                            .search_type)
                                                     .documentation(
                                                         "Implemented per specification. See http://hl7.org/fhir/R4/http.html")
                                                     .build()))

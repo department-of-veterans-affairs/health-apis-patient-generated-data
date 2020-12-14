@@ -3,18 +3,17 @@ package gov.va.api.health.patientgenerateddata.questionnaireresponse;
 import static com.google.common.base.Preconditions.checkState;
 import static gov.va.api.health.patientgenerateddata.SerializationUtils.deserializedPayload;
 import static gov.va.api.lighthouse.vulcan.Rules.atLeastOneParameterOf;
+import static gov.va.api.lighthouse.vulcan.Rules.parametersNeverSpecifiedTogether;
 import static gov.va.api.lighthouse.vulcan.Vulcan.returnNothing;
 
 import gov.va.api.health.autoconfig.configuration.JacksonConfig;
 import gov.va.api.health.autoconfig.logging.Loggable;
 import gov.va.api.health.patientgenerateddata.Exceptions;
+import gov.va.api.health.patientgenerateddata.LinkProperties;
 import gov.va.api.health.patientgenerateddata.ParseUtils;
-import gov.va.api.health.patientgenerateddata.vulcanizer.Bundling;
-import gov.va.api.health.patientgenerateddata.vulcanizer.LinkProperties;
-import gov.va.api.health.patientgenerateddata.vulcanizer.VulcanizedBundler;
+import gov.va.api.health.patientgenerateddata.VulcanizedBundler;
 import gov.va.api.health.r4.api.elements.Reference;
 import gov.va.api.health.r4.api.resources.QuestionnaireResponse;
-import gov.va.api.health.r4.api.resources.QuestionnaireResponse.Bundle;
 import gov.va.api.lighthouse.vulcan.Vulcan;
 import gov.va.api.lighthouse.vulcan.VulcanConfiguration;
 import gov.va.api.lighthouse.vulcan.mappings.Mappings;
@@ -61,6 +60,7 @@ public class QuestionnaireResponseController {
                 .get())
         .defaultQuery(returnNothing())
         .rule(atLeastOneParameterOf("_id", "authored", "author"))
+        .rule(parametersNeverSpecifiedTogether("_id", "authored"))
         .build();
   }
 
@@ -87,11 +87,14 @@ public class QuestionnaireResponseController {
   }
 
   VulcanizedBundler<
-          QuestionnaireResponseEntity, QuestionnaireResponse, QuestionnaireResponse.Entry, Bundle>
+          QuestionnaireResponseEntity,
+          QuestionnaireResponse,
+          QuestionnaireResponse.Entry,
+          QuestionnaireResponse.Bundle>
       toBundle() {
     return VulcanizedBundler.forBundling(
             QuestionnaireResponseEntity.class,
-            Bundling.newBundle(QuestionnaireResponse.Bundle::new)
+            VulcanizedBundler.Bundling.newBundle(QuestionnaireResponse.Bundle::new)
                 .newEntry(QuestionnaireResponse.Entry::new)
                 .linkProperties(linkProperties)
                 .build())
@@ -105,9 +108,9 @@ public class QuestionnaireResponseController {
   ResponseEntity<Void> update(
       @PathVariable("id") String id,
       @Valid @RequestBody QuestionnaireResponse questionnaireResponse) {
-    String payload = JacksonConfig.createMapper().writeValueAsString(questionnaireResponse);
     checkState(id.equals(questionnaireResponse.id()), "%s != %s", id, questionnaireResponse.id());
     Reference author = questionnaireResponse.author();
+    String payload = JacksonConfig.createMapper().writeValueAsString(questionnaireResponse);
     Instant authored = ParseUtils.parseDateTime(questionnaireResponse.authored());
     Optional<QuestionnaireResponseEntity> maybeEntity = repository.findById(id);
     if (maybeEntity.isPresent()) {

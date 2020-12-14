@@ -1,14 +1,11 @@
 package gov.va.api.health.patientgenerateddata.tests;
 
 import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.doGet;
-import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.doPut;
-import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.serializePayload;
 import static gov.va.api.health.patientgenerateddata.tests.SystemDefinitions.systemDefinition;
 import static gov.va.api.health.sentinel.EnvironmentAssumptions.assumeEnvironmentIn;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import gov.va.api.health.r4.api.resources.QuestionnaireResponse;
-import gov.va.api.health.r4.api.resources.QuestionnaireResponse.Status;
 import gov.va.api.health.sentinel.Environment;
 import gov.va.api.health.sentinel.ExpectedResponse;
 import java.time.Instant;
@@ -25,18 +22,6 @@ public class QuestionnaireResponseIT {
         Environment.STAGING,
         Environment.STAGING_LAB,
         Environment.LAB);
-    loadInitialResource();
-  }
-
-  private static void loadInitialResource() {
-    var id = systemDefinition().ids().questionnaireResponse();
-    QuestionnaireResponse qr = questionnaireResponse(id);
-    RequestUtils.doPut(
-        "QuestionnaireResponse/" + id, serializePayload(qr), "load initial resource", true);
-  }
-
-  static QuestionnaireResponse questionnaireResponse(String id) {
-    return QuestionnaireResponse.builder().id(id).status(Status.completed).build();
   }
 
   @Test
@@ -54,28 +39,32 @@ public class QuestionnaireResponseIT {
 
   @Test
   void search_authored() {
-    var id = systemDefinition().ids().questionnaireResponse();
-    String date = "1999-02-02T12:00:00Z";
-    QuestionnaireResponse qr = questionnaireResponse(id).authored(date);
-    RequestUtils.doPut(
-        "QuestionnaireResponse/" + id, serializePayload(qr), "set authored to 1999", true);
+    String date = "2013-02-19T19:15:00Z";
     String query = String.format("?authored=%s", date);
     var response = doGet("application/json", "QuestionnaireResponse/" + query, 200);
     QuestionnaireResponse.Bundle bundle = response.expectValid(QuestionnaireResponse.Bundle.class);
     assertThat(bundle.entry()).hasSize(1);
 
+    // offset timezone
+    query = "?authored=2013-02-19T14:15:00-05:00";
+    response = doGet("application/json", "QuestionnaireResponse/" + query, 200);
+    bundle = response.expectValid(QuestionnaireResponse.Bundle.class);
+    assertThat(bundle.entry()).hasSize(1);
+
     // less than
-    query = "?authored=lt2000-01-01T00:00:00Z";
+    query = "?authored=lt2014-01-01T00:00:00Z";
     response = doGet("application/json", "QuestionnaireResponse/" + query, 200);
     bundle = response.expectValid(QuestionnaireResponse.Bundle.class);
     assertThat(bundle.entry()).hasSizeGreaterThan(0);
+
     // in between
     query =
         String.format(
-            "?authored=gt%s&authored=lt%s", "1999-01-01T00:00:00Z", "1999-03-01T00:00:00Z");
+            "?authored=gt%s&authored=lt%s", "2013-02-19T00:00:00Z", "2013-02-19T23:59:00Z");
     response = doGet("application/json", "QuestionnaireResponse/" + query, 200);
     bundle = response.expectValid(QuestionnaireResponse.Bundle.class);
     assertThat(bundle.entry()).hasSizeGreaterThan(0);
+
     // in between, nothing found
     query =
         String.format(
@@ -90,17 +79,5 @@ public class QuestionnaireResponseIT {
     var id = systemDefinition().ids().questionnaireResponse();
     var response = doGet("application/json", "QuestionnaireResponse/?_id=" + id, 200);
     response.expectValid(QuestionnaireResponse.Bundle.class);
-  }
-
-  @Test
-  void update_authored() {
-    var id = systemDefinition().ids().questionnaireResponse();
-    Instant now = Instant.now().with(ChronoField.NANO_OF_SECOND, 0);
-    QuestionnaireResponse qr = questionnaireResponse(id).authored(now.toString());
-    doPut("QuestionnaireResponse/" + id, serializePayload(qr), "update authored date", 200);
-    ExpectedResponse persistedResponse =
-        doGet("application/json", "QuestionnaireResponse/" + id, 200);
-    QuestionnaireResponse persisted = persistedResponse.response().as(QuestionnaireResponse.class);
-    assertThat(persisted.authored()).isEqualTo(now.toString());
   }
 }

@@ -10,12 +10,20 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 class SystemDefinitions {
   private static Ids ids() {
+<<<<<<< HEAD
     return Ids.builder()
         .observation("ekg")
         .questionnaire("q101")
         .questionnaireResponse("qr202")
         .patient("p555")
         .build();
+=======
+    return Ids.builder().questionnaireResponse("3141").build();
+  }
+
+  private static Ids idsGenerated() {
+    return Ids.builder().questionnaireResponse("qr202").build();
+>>>>>>> d222bd08b3fb857bd197c612ba932fe59df172aa
   }
 
   private static SystemDefinition lab() {
@@ -25,6 +33,7 @@ class SystemDefinitions {
                 "internal", "https://blue.lab.lighthouse.va.gov", 443, "/patient-generated-data/"))
         .r4(serviceDefinition("r4", "https://blue.lab.lighthouse.va.gov", 443, "/pgd/v0/r4/"))
         .ids(ids())
+        .idsGenerated(idsGenerated())
         .build();
   }
 
@@ -33,6 +42,7 @@ class SystemDefinitions {
         .internal(serviceDefinition("internal", "http://localhost", 8095, "/"))
         .r4(serviceDefinition("r4", "http://localhost", 8095, "/r4/"))
         .ids(ids())
+        .idsGenerated(idsGenerated())
         .build();
   }
 
@@ -48,6 +58,7 @@ class SystemDefinitions {
             serviceDefinition(
                 "r4", "https://blue.production.lighthouse.va.gov", 443, "/pgd/v0/r4/"))
         .ids(ids())
+        .idsGenerated(idsGenerated())
         .build();
   }
 
@@ -58,6 +69,7 @@ class SystemDefinitions {
                 "internal", "https://blue.qa.lighthouse.va.gov", 443, "/patient-generated-data/"))
         .r4(serviceDefinition("r4", "https://blue.qa.lighthouse.va.gov", 443, "/pgd/v0/r4/"))
         .ids(ids())
+        .idsGenerated(idsGenerated())
         .build();
   }
 
@@ -79,6 +91,7 @@ class SystemDefinitions {
                 "/patient-generated-data/"))
         .r4(serviceDefinition("r4", "https://blue.staging.lighthouse.va.gov", 443, "/pgd/v0/r4/"))
         .ids(ids())
+        .idsGenerated(idsGenerated())
         .build();
   }
 
@@ -94,6 +107,7 @@ class SystemDefinitions {
             serviceDefinition(
                 "r4", "https://blue.staging-lab.lighthouse.va.gov", 443, "/pgd/v0/r4/"))
         .ids(ids())
+        .idsGenerated(idsGenerated())
         .build();
   }
 
@@ -120,12 +134,6 @@ class SystemDefinitions {
   @Value
   @Builder
   static final class Ids {
-    @NonNull String observation;
-
-    @NonNull String patient;
-
-    @NonNull String questionnaire;
-
     @NonNull String questionnaireResponse;
   }
 
@@ -159,5 +167,7 @@ class SystemDefinitions {
     @NonNull Service r4;
 
     @NonNull Ids ids;
+
+    @NonNull Ids idsGenerated;
   }
 }

@@ -15,13 +15,11 @@ import gov.va.api.health.r4.api.datatypes.Signature;
 import gov.va.api.health.r4.api.elements.Extension;
 import gov.va.api.health.r4.api.elements.Meta;
 import gov.va.api.health.r4.api.resources.Resource;
-import java.security.InvalidParameterException;
 import java.util.List;
 import java.util.stream.Stream;
 import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.Delegate;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.core.MethodParameter;
@@ -30,13 +28,6 @@ import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
 public class IncludesIcnMajigTest {
-  @Test
-  public void beforeBodyWriteThrowsExceptionForUnsupportedType() {
-    Assertions.assertThrows(
-        InvalidParameterException.class,
-        () -> new FakeMajg().beforeBodyWrite(null, null, null, null, null, null));
-  }
-
   @Test
   public void icnHeaderIsPresentForResource() {
     ServerHttpResponse mockResponse = mock(ServerHttpResponse.class);
