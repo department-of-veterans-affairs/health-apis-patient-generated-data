@@ -35,6 +35,14 @@ public class QuestionnaireResponseIT {
   }
 
   @Test
+  void search_author() {
+    String query = "?author=1011537977V693883";
+    var response = doGet("application/json", "QuestionnaireResponse/" + query, 200);
+    QuestionnaireResponse.Bundle bundle = response.expectValid(QuestionnaireResponse.Bundle.class);
+    assertThat(bundle.entry()).hasSizeGreaterThan(0);
+  }
+
+  @Test
   void search_authored() {
     String date = "2013-02-19T19:15:00Z";
     String query = String.format("?authored=%s", date);

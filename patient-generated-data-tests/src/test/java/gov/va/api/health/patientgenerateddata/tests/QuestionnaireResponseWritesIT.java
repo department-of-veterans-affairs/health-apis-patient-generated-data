@@ -7,6 +7,7 @@ import static gov.va.api.health.patientgenerateddata.tests.SystemDefinitions.sys
 import static gov.va.api.health.sentinel.EnvironmentAssumptions.assumeEnvironmentIn;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import gov.va.api.health.r4.api.elements.Reference;
 import gov.va.api.health.r4.api.resources.QuestionnaireResponse;
 import gov.va.api.health.r4.api.resources.QuestionnaireResponse.Status;
 import gov.va.api.health.sentinel.Environment;
@@ -34,6 +35,18 @@ public class QuestionnaireResponseWritesIT {
       QuestionnaireResponse qr = questionnaireResponse(id);
       doPut("QuestionnaireResponse/" + id, serializePayload(qr), "load initial resource", 201);
     }
+  }
+
+  @Test
+  void update_author() {
+    var id = systemDefinition().idsGenerated().questionnaireResponse();
+    Reference ref = Reference.builder().id("1011537977V693883").build();
+    QuestionnaireResponse qr = questionnaireResponse(id).author(ref);
+    doPut("QuestionnaireResponse/" + id, serializePayload(qr), "update author", 200);
+    ExpectedResponse persistedResponse =
+            doGet("application/json", "QuestionnaireResponse/" + id, 200);
+    QuestionnaireResponse persisted = persistedResponse.response().as(QuestionnaireResponse.class);
+    assertThat(persisted.author()).isEqualTo(ref);
   }
 
   @Test
