@@ -64,11 +64,17 @@ public interface PatientApi {
   @ApiResponse(
       responseCode = "200",
       description = "Record updated",
-      content = @Content(mediaType = "application/fhir+json"))
+      content =
+          @Content(
+              mediaType = "application/fhir+json",
+              schema = @Schema(implementation = Patient.class)))
   @ApiResponse(
       responseCode = "201",
       description = "New record created",
-      content = @Content(mediaType = "application/fhir+json"))
+      content =
+          @Content(
+              mediaType = "application/fhir+json",
+              schema = @Schema(implementation = Patient.class)))
   @ApiResponse(
       responseCode = "400",
       description = "Bad request",
