@@ -107,8 +107,8 @@ public class QuestionnaireResponseController {
   ResponseEntity<Void> update(
       @PathVariable("id") String id,
       @Valid @RequestBody QuestionnaireResponse questionnaireResponse) {
-    String payload = JacksonConfig.createMapper().writeValueAsString(questionnaireResponse);
     checkState(id.equals(questionnaireResponse.id()), "%s != %s", id, questionnaireResponse.id());
+    String payload = JacksonConfig.createMapper().writeValueAsString(questionnaireResponse);
     Instant authored = ParseUtils.parseDateTime(questionnaireResponse.authored());
     Optional<QuestionnaireResponseEntity> maybeEntity = repository.findById(id);
     if (maybeEntity.isPresent()) {
