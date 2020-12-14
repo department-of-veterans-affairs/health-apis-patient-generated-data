@@ -113,7 +113,7 @@ public class QuestionnaireResponseController {
     if (maybeEntity.isPresent()) {
       QuestionnaireResponseEntity entity = maybeEntity.get();
       entity.payload(payload);
-      entity.author(author.id());
+      entity.author(author != null ? author.id() : null);
       entity.authored(authored);
       repository.save(entity);
       return ResponseEntity.ok().build();
@@ -122,7 +122,7 @@ public class QuestionnaireResponseController {
         QuestionnaireResponseEntity.builder()
             .id(id)
             .payload(payload)
-            .author(author.id())
+            .author(author != null ? author.id() : null)
             .authored(authored)
             .build());
     return ResponseEntity.status(HttpStatus.CREATED).build();
