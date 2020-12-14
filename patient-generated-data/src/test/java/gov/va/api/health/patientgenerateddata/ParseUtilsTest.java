@@ -27,7 +27,6 @@ public class ParseUtilsTest {
         "2013-06-18T00:00:00.599",
         "2013-06-18T00:00:00X",
         "2013-06-18T00:00:00/02:00",
-        "2013-06-18T00:00:00+02"
       })
   @SneakyThrows
   public void invalidDates(String datetime) {
@@ -51,6 +50,8 @@ public class ParseUtilsTest {
         .isEqualTo("2013-06-18T00:00:00.599Z");
     // Offsets
     assertThat(ParseUtils.parseDateTime("2013-06-18T00:00:00+01:00").toString())
+        .isEqualTo("2013-06-17T23:00:00Z");
+    assertThat(ParseUtils.parseDateTime("2013-06-18T00:00:00+01").toString())
         .isEqualTo("2013-06-17T23:00:00Z");
     assertThat(ParseUtils.parseDateTime("2013-06-18T00:00:00-01:00").toString())
         .isEqualTo("2013-06-18T01:00:00Z");

@@ -2,7 +2,6 @@ package gov.va.api.health.patientgenerateddata;
 
 import java.time.Instant;
 import java.time.OffsetDateTime;
-import java.time.format.DateTimeParseException;
 import lombok.experimental.UtilityClass;
 import org.apache.commons.lang3.StringUtils;
 
@@ -15,13 +14,6 @@ public class ParseUtils {
   private static final int YEAR_MONTH = 7;
   // YYYY-MM-DD
   private static final int YEAR_MONTH_DAY = 10;
-  // YYYY-MM-DD'T'HH:MM:SSZ
-  private static final int UTC_Z = 20;
-  // YYYY-MM-DD'T'HH:MM:SS.nnn'Z'
-  private static final int UTC_Z_NANOS = 24;
-  // YYYY-MM-DD'T'HH:MM:SS-HH:MM
-  // YYYY-MM-DD'T'HH:MM:SS+HH:MM
-  private static final int TIME_ZONE_OFFSET = 25;
 
   /**
    * Parses a FHIR dateTime string into a Java Instant, according to formats defined in
@@ -39,13 +31,12 @@ public class ParseUtils {
         return parseDateTimeUtc(String.format("%s-01T00:00:00Z", str));
       case YEAR_MONTH_DAY:
         return parseDateTimeUtc(String.format("%sT00:00:00Z", str));
-      case UTC_Z:
-      case UTC_Z_NANOS:
-        return parseDateTimeUtc(str);
-      case TIME_ZONE_OFFSET:
-        return parseDateTimeOffset(str);
       default:
-        throw new DateTimeParseException("Text '" + str + "' could not be parsed.", str, 0);
+        if (str.endsWith("Z")) {
+          return parseDateTimeUtc(str);
+        } else {
+          return parseDateTimeOffset(str);
+        }
     }
   }
 
@@ -57,7 +48,7 @@ public class ParseUtils {
    * - YYYY-MM-DD'T'HH:MM:SS+HH:MM
    * </pre>
    */
-  public static Instant parseDateTimeOffset(String datetime) {
+  private static Instant parseDateTimeOffset(String datetime) {
     if (StringUtils.isBlank(datetime)) {
       return null;
     }
@@ -72,7 +63,7 @@ public class ParseUtils {
    * - YYYY-MM-DD'T'HH:MM:SS+HH:MM'Z'
    * </pre>
    */
-  public static Instant parseDateTimeUtc(String datetime) {
+  private static Instant parseDateTimeUtc(String datetime) {
     if (StringUtils.isBlank(datetime)) {
       return null;
     }

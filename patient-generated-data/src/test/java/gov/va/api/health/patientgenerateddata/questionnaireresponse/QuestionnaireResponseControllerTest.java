@@ -135,7 +135,7 @@ public class QuestionnaireResponseControllerTest {
     when(repo.findAll(any(Specification.class), any(Pageable.class)))
         .thenAnswer(
             i ->
-                new PageImpl(
+                new PageImpl<QuestionnaireResponseEntity>(
                     List.of(
                         QuestionnaireResponseEntity.builder()
                             .build()
