@@ -14,7 +14,6 @@ import gov.va.api.health.patientgenerateddata.vulcanizer.Bundling;
 import gov.va.api.health.patientgenerateddata.vulcanizer.LinkProperties;
 import gov.va.api.health.patientgenerateddata.vulcanizer.VulcanizedBundler;
 import gov.va.api.health.r4.api.resources.QuestionnaireResponse;
-import gov.va.api.health.r4.api.resources.QuestionnaireResponse.Bundle;
 import gov.va.api.lighthouse.vulcan.Vulcan;
 import gov.va.api.lighthouse.vulcan.VulcanConfiguration;
 import gov.va.api.lighthouse.vulcan.mappings.Mappings;
@@ -87,7 +86,10 @@ public class QuestionnaireResponseController {
   }
 
   VulcanizedBundler<
-          QuestionnaireResponseEntity, QuestionnaireResponse, QuestionnaireResponse.Entry, Bundle>
+          QuestionnaireResponseEntity,
+          QuestionnaireResponse,
+          QuestionnaireResponse.Entry,
+          QuestionnaireResponse.Bundle>
       toBundle() {
     return VulcanizedBundler.forBundling(
             QuestionnaireResponseEntity.class,
