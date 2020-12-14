@@ -6,7 +6,6 @@ import gov.va.api.health.r4.api.datatypes.ContactDetail;
 import gov.va.api.health.r4.api.datatypes.ContactPoint;
 import gov.va.api.health.r4.api.resources.CapabilityStatement;
 import gov.va.api.health.r4.api.resources.CapabilityStatement.SearchParamType;
-import gov.va.api.health.r4.api.resources.CapabilityStatement.TypeRestfulInteraction;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;

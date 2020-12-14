@@ -7,9 +7,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import gov.va.api.health.r4.api.resources.QuestionnaireResponse;
 import gov.va.api.health.sentinel.Environment;
-import gov.va.api.health.sentinel.ExpectedResponse;
-import java.time.Instant;
-import java.time.temporal.ChronoField;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 

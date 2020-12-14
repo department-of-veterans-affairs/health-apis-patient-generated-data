@@ -13,7 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class RequestUtils {
-
   public static ExpectedResponse doGet(
       String acceptHeader, String request, Integer expectedStatus) {
     SystemDefinitions.Service svc = systemDefinition().r4();
@@ -69,16 +68,4 @@ public class RequestUtils {
   public static String serializePayload(Object payload) {
     return JacksonConfig.createMapper().writeValueAsString(payload);
   }
-
-  public static ExpectedResponse doPut(
-      String request, String payload, String changes, boolean checkForSuccess) {
-    ExpectedResponse response = doPut(request, payload, changes, null);
-    int status = response.response().statusCode();
-    if (checkForSuccess && (status < 200 || status >= 300)) {
-      throw new AssertionError(
-          String.format("Failed to '%s', received status code %s", changes, status));
-    }
-    return response;
-  }
-
 }
