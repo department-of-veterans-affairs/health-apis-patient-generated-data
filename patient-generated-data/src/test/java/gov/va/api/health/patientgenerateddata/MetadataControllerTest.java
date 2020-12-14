@@ -23,7 +23,7 @@ public class MetadataControllerTest {
     assertThat(
             new MetadataController(
                     buildProperties,
-                    UrlPageLinks.builder().baseUrl("http://va.gov").r4BasePath("api/r4").build())
+                    LinkProperties.builder().baseUrl("http://va.gov").r4BasePath("api/r4").build())
                 .read())
         .isEqualTo(
             CapabilityStatement.builder()
@@ -162,12 +162,29 @@ public class MetadataControllerTest {
                                                             .update)
                                                     .documentation(
                                                         "Implemented per specification. See http://hl7.org/fhir/R4/http.html")
+                                                    .build(),
+                                                CapabilityStatement.ResourceInteraction.builder()
+                                                    .code(
+                                                        CapabilityStatement.TypeRestfulInteraction
+                                                            .search_type)
+                                                    .documentation(
+                                                        "Implemented per specification. See http://hl7.org/fhir/R4/http.html")
                                                     .build()))
                                         .versioning(CapabilityStatement.Versioning.no_version)
                                         .referencePolicy(
                                             List.of(
                                                 CapabilityStatement.ReferencePolicy.literal,
                                                 CapabilityStatement.ReferencePolicy.local))
+                                        .searchParam(
+                                            List.of(
+                                                CapabilityStatement.SearchParam.builder()
+                                                    .name("_id")
+                                                    .type(CapabilityStatement.SearchParamType.token)
+                                                    .build(),
+                                                CapabilityStatement.SearchParam.builder()
+                                                    .name("authored")
+                                                    .type(CapabilityStatement.SearchParamType.date)
+                                                    .build()))
                                         .build()))
                             .build()))
                 .build());

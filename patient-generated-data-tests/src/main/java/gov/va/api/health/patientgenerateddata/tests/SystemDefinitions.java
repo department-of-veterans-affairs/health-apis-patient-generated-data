@@ -9,12 +9,22 @@ import lombok.experimental.UtilityClass;
 
 @UtilityClass
 class SystemDefinitions {
+  private static Ids ids() {
+    return Ids.builder().questionnaireResponse("3141").build();
+  }
+
+  private static Ids idsGenerated() {
+    return Ids.builder().questionnaireResponse("qr202").build();
+  }
+
   private static SystemDefinition lab() {
     return SystemDefinition.builder()
         .internal(
             serviceDefinition(
                 "internal", "https://blue.lab.lighthouse.va.gov", 443, "/patient-generated-data/"))
         .r4(serviceDefinition("r4", "https://blue.lab.lighthouse.va.gov", 443, "/pgd/v0/r4/"))
+        .ids(ids())
+        .idsGenerated(idsGenerated())
         .build();
   }
 
@@ -22,6 +32,8 @@ class SystemDefinitions {
     return SystemDefinition.builder()
         .internal(serviceDefinition("internal", "http://localhost", 8095, "/"))
         .r4(serviceDefinition("r4", "http://localhost", 8095, "/r4/"))
+        .ids(ids())
+        .idsGenerated(idsGenerated())
         .build();
   }
 
@@ -36,6 +48,8 @@ class SystemDefinitions {
         .r4(
             serviceDefinition(
                 "r4", "https://blue.production.lighthouse.va.gov", 443, "/pgd/v0/r4/"))
+        .ids(ids())
+        .idsGenerated(idsGenerated())
         .build();
   }
 
@@ -45,6 +59,8 @@ class SystemDefinitions {
             serviceDefinition(
                 "internal", "https://blue.qa.lighthouse.va.gov", 443, "/patient-generated-data/"))
         .r4(serviceDefinition("r4", "https://blue.qa.lighthouse.va.gov", 443, "/pgd/v0/r4/"))
+        .ids(ids())
+        .idsGenerated(idsGenerated())
         .build();
   }
 
@@ -65,6 +81,8 @@ class SystemDefinitions {
                 443,
                 "/patient-generated-data/"))
         .r4(serviceDefinition("r4", "https://blue.staging.lighthouse.va.gov", 443, "/pgd/v0/r4/"))
+        .ids(ids())
+        .idsGenerated(idsGenerated())
         .build();
   }
 
@@ -79,6 +97,8 @@ class SystemDefinitions {
         .r4(
             serviceDefinition(
                 "r4", "https://blue.staging-lab.lighthouse.va.gov", 443, "/pgd/v0/r4/"))
+        .ids(ids())
+        .idsGenerated(idsGenerated())
         .build();
   }
 
@@ -100,6 +120,12 @@ class SystemDefinitions {
         throw new IllegalArgumentException(
             "Unsupported sentinel environment: " + Environment.get());
     }
+  }
+
+  @Value
+  @Builder
+  static final class Ids {
+    @NonNull String questionnaireResponse;
   }
 
   @Value
@@ -130,5 +156,9 @@ class SystemDefinitions {
     @NonNull Service internal;
 
     @NonNull Service r4;
+
+    @NonNull Ids ids;
+
+    @NonNull Ids idsGenerated;
   }
 }
