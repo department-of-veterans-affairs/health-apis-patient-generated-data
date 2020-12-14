@@ -2,7 +2,6 @@ package gov.va.api.health.patientgenerateddata.vulcanizer;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import gov.va.api.health.patientgenerateddata.Bundling;
 import gov.va.api.health.patientgenerateddata.LinkProperties;
 import gov.va.api.health.patientgenerateddata.VulcanizedBundler;
 import gov.va.api.health.patientgenerateddata.vulcanizer.Foos.FooBundle;
@@ -60,7 +59,7 @@ public class VulcanizedBundlerTest {
   VulcanizedBundler<FooEntity, FooResource, FooEntry, FooBundle> bundler() {
     return VulcanizedBundler.forBundling(
             FooEntity.class,
-            Bundling.newBundle(FooBundle::new)
+            VulcanizedBundler.Bundling.newBundle(FooBundle::new)
                 .newEntry(FooEntry::new)
                 .linkProperties(pageLinks)
                 .build())

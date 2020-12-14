@@ -11,11 +11,13 @@ import gov.va.api.lighthouse.vulcan.VulcanResult;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import lombok.Builder;
 import lombok.NonNull;
+import lombok.Value;
 
 @Builder
-public class VulcanizedBundler<
+public final class VulcanizedBundler<
         EntityT extends PayloadEntity,
         ResourceT extends Resource,
         EntryT extends AbstractEntry<ResourceT>,
@@ -71,5 +73,26 @@ public class VulcanizedBundler<
     paging.nextPageUrl().map(toLink(BundleLink.LinkRelation.next)).ifPresent(links::add);
     paging.lastPageUrl().map(toLink(BundleLink.LinkRelation.last)).ifPresent(links::add);
     return links.isEmpty() ? null : links;
+  }
+
+  @Value
+  @Builder
+  public static final class Bundling<
+      ResourceT extends Resource,
+      EntryT extends AbstractEntry<ResourceT>,
+      BundleT extends AbstractBundle<EntryT>> {
+    @NonNull private final Supplier<BundleT> newBundle;
+
+    @NonNull private final Supplier<EntryT> newEntry;
+
+    @NonNull private final LinkProperties linkProperties;
+
+    public static <
+            ResourceT extends Resource,
+            EntryT extends AbstractEntry<ResourceT>,
+            BundleT extends AbstractBundle<EntryT>>
+        BundlingBuilder<ResourceT, EntryT, BundleT> newBundle(Supplier<BundleT> newBundle) {
+      return Bundling.<ResourceT, EntryT, BundleT>builder().newBundle(newBundle);
+    }
   }
 }

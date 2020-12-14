@@ -8,7 +8,6 @@ import static gov.va.api.lighthouse.vulcan.Vulcan.returnNothing;
 
 import gov.va.api.health.autoconfig.configuration.JacksonConfig;
 import gov.va.api.health.autoconfig.logging.Loggable;
-import gov.va.api.health.patientgenerateddata.Bundling;
 import gov.va.api.health.patientgenerateddata.Exceptions;
 import gov.va.api.health.patientgenerateddata.LinkProperties;
 import gov.va.api.health.patientgenerateddata.ParseUtils;
@@ -93,7 +92,7 @@ public class QuestionnaireResponseController {
       toBundle() {
     return VulcanizedBundler.forBundling(
             QuestionnaireResponseEntity.class,
-            Bundling.newBundle(QuestionnaireResponse.Bundle::new)
+            VulcanizedBundler.Bundling.newBundle(QuestionnaireResponse.Bundle::new)
                 .newEntry(QuestionnaireResponse.Entry::new)
                 .linkProperties(linkProperties)
                 .build())
