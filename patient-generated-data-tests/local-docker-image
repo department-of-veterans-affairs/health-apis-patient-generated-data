@@ -23,12 +23,7 @@ build() {
 }
 
 run() {
-  echo $(uname)
-  case $(uname) in
-    Darwin) THIS_MACHINE="docker.for.mac.localhost";;
-    Linux) THIS_MACHINE="localhost";;
-    *) echo "Add support for your operating system: $(uname)"; exit 1;;
-  esac
+  THIS_MACHINE="localhost"
   docker run \
     --rm \
     --network="host" \
