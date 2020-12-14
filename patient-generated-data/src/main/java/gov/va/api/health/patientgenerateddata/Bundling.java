@@ -1,4 +1,4 @@
-package gov.va.api.health.patientgenerateddata.vulcanizer;
+package gov.va.api.health.patientgenerateddata;
 
 import gov.va.api.health.r4.api.bundle.AbstractBundle;
 import gov.va.api.health.r4.api.bundle.AbstractEntry;

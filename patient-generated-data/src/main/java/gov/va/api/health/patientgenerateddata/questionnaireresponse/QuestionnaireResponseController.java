@@ -8,11 +8,11 @@ import static gov.va.api.lighthouse.vulcan.Vulcan.returnNothing;
 
 import gov.va.api.health.autoconfig.configuration.JacksonConfig;
 import gov.va.api.health.autoconfig.logging.Loggable;
+import gov.va.api.health.patientgenerateddata.Bundling;
 import gov.va.api.health.patientgenerateddata.Exceptions;
+import gov.va.api.health.patientgenerateddata.LinkProperties;
 import gov.va.api.health.patientgenerateddata.ParseUtils;
-import gov.va.api.health.patientgenerateddata.vulcanizer.Bundling;
-import gov.va.api.health.patientgenerateddata.vulcanizer.LinkProperties;
-import gov.va.api.health.patientgenerateddata.vulcanizer.VulcanizedBundler;
+import gov.va.api.health.patientgenerateddata.VulcanizedBundler;
 import gov.va.api.health.r4.api.resources.QuestionnaireResponse;
 import gov.va.api.lighthouse.vulcan.Vulcan;
 import gov.va.api.lighthouse.vulcan.VulcanConfiguration;

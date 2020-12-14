@@ -32,7 +32,7 @@ class MetadataController {
 
   private final BuildProperties buildProperties;
 
-  private final UrlPageLinks pageLinks;
+  private final LinkProperties pageLinks;
 
   private List<ContactDetail> contact() {
     return List.of(

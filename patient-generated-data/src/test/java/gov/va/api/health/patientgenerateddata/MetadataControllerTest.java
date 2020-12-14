@@ -23,7 +23,7 @@ public class MetadataControllerTest {
     assertThat(
             new MetadataController(
                     buildProperties,
-                    UrlPageLinks.builder().baseUrl("http://va.gov").r4BasePath("api/r4").build())
+                    LinkProperties.builder().baseUrl("http://va.gov").r4BasePath("api/r4").build())
                 .read())
         .isEqualTo(
             CapabilityStatement.builder()

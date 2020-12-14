@@ -2,7 +2,9 @@ package gov.va.api.health.patientgenerateddata.vulcanizer;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import gov.va.api.health.patientgenerateddata.UrlPageLinks;
+import gov.va.api.health.patientgenerateddata.Bundling;
+import gov.va.api.health.patientgenerateddata.LinkProperties;
+import gov.va.api.health.patientgenerateddata.VulcanizedBundler;
 import gov.va.api.health.patientgenerateddata.vulcanizer.Foos.FooBundle;
 import gov.va.api.health.patientgenerateddata.vulcanizer.Foos.FooEntity;
 import gov.va.api.health.patientgenerateddata.vulcanizer.Foos.FooEntry;
@@ -14,8 +16,13 @@ import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
 
 public class VulcanizedBundlerTest {
-  UrlPageLinks pageLinks =
-      UrlPageLinks.builder().baseUrl("http://foo.com").r4BasePath("r4").build();
+  LinkProperties pageLinks =
+      LinkProperties.builder()
+          .defaultPageSize(20)
+          .maxPageSize(500)
+          .baseUrl("http://foo.com")
+          .r4BasePath("r4")
+          .build();
 
   private static Paging paging(
       String urlFormat, int first, int prev, int current, int next, int last, int count) {
@@ -55,12 +62,7 @@ public class VulcanizedBundlerTest {
             FooEntity.class,
             Bundling.newBundle(FooBundle::new)
                 .newEntry(FooEntry::new)
-                .linkProperties(
-                    LinkProperties.builder()
-                        .urlPageLinks(pageLinks)
-                        .defaultPageSize(20)
-                        .maxPageSize(500)
-                        .build())
+                .linkProperties(pageLinks)
                 .build())
         .toResource(FooEntity::deserializePayload)
         .build();

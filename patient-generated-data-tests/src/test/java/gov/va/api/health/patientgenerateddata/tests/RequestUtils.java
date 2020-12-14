@@ -13,7 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class RequestUtils {
-
   public static ExpectedResponse doGet(
       String acceptHeader, String request, Integer expectedStatus) {
     SystemDefinitions.Service svc = systemDefinition().r4();

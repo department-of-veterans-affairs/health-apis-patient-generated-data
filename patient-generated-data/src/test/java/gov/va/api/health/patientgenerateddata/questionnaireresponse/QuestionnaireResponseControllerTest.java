@@ -11,8 +11,7 @@ import static org.mockito.Mockito.when;
 
 import gov.va.api.health.autoconfig.configuration.JacksonConfig;
 import gov.va.api.health.patientgenerateddata.Exceptions;
-import gov.va.api.health.patientgenerateddata.UrlPageLinks;
-import gov.va.api.health.patientgenerateddata.vulcanizer.LinkProperties;
+import gov.va.api.health.patientgenerateddata.LinkProperties;
 import gov.va.api.health.r4.api.resources.QuestionnaireResponse;
 import gov.va.api.lighthouse.vulcan.InvalidRequest;
 import java.util.List;
@@ -31,10 +30,13 @@ import org.springframework.validation.DataBinder;
 import org.springframework.web.util.UriComponentsBuilder;
 
 public class QuestionnaireResponseControllerTest {
-  LinkProperties mockLinkProperties = mock(LinkProperties.class);
-
-  UrlPageLinks pageLinks =
-      UrlPageLinks.builder().baseUrl("http://foo.com").r4BasePath("r4").build();
+  LinkProperties pageLinks =
+      LinkProperties.builder()
+          .defaultPageSize(500)
+          .maxPageSize(20)
+          .baseUrl("http://foo.com")
+          .r4BasePath("r4")
+          .build();
 
   private static MockHttpServletRequest requestFromUri(String uri) {
     var u = UriComponentsBuilder.fromUriString(uri).build();
@@ -55,13 +57,7 @@ public class QuestionnaireResponseControllerTest {
   }
 
   private QuestionnaireResponseController controller(QuestionnaireResponseRepository repo) {
-    return new QuestionnaireResponseController(
-        LinkProperties.builder()
-            .urlPageLinks(pageLinks)
-            .maxPageSize(20)
-            .defaultPageSize(500)
-            .build(),
-        repo);
+    return new QuestionnaireResponseController(pageLinks, repo);
   }
 
   @Test
@@ -89,7 +85,7 @@ public class QuestionnaireResponseControllerTest {
     when(repo.findById("x"))
         .thenReturn(
             Optional.of(QuestionnaireResponseEntity.builder().id("x").payload(payload).build()));
-    assertThat(new QuestionnaireResponseController(mockLinkProperties, repo).read("x"))
+    assertThat(new QuestionnaireResponseController(pageLinks, repo).read("x"))
         .isEqualTo(QuestionnaireResponse.builder().id("x").build());
   }
 
@@ -98,7 +94,7 @@ public class QuestionnaireResponseControllerTest {
     QuestionnaireResponseRepository repo = mock(QuestionnaireResponseRepository.class);
     assertThrows(
         Exceptions.NotFound.class,
-        () -> new QuestionnaireResponseController(mockLinkProperties, repo).read("notfound"));
+        () -> new QuestionnaireResponseController(pageLinks, repo).read("notfound"));
   }
 
   @Test
@@ -111,8 +107,7 @@ public class QuestionnaireResponseControllerTest {
         .thenReturn(
             Optional.of(QuestionnaireResponseEntity.builder().id("x").payload(payload).build()));
     assertThat(
-            new QuestionnaireResponseController(mockLinkProperties, repo)
-                .update("x", questionnaireResponse))
+            new QuestionnaireResponseController(pageLinks, repo).update("x", questionnaireResponse))
         .isEqualTo(ResponseEntity.ok().build());
     verify(repo, times(1))
         .save(QuestionnaireResponseEntity.builder().id("x").payload(payload).build());
@@ -125,8 +120,7 @@ public class QuestionnaireResponseControllerTest {
     QuestionnaireResponse questionnaireResponse = QuestionnaireResponse.builder().id("x").build();
     String payload = JacksonConfig.createMapper().writeValueAsString(questionnaireResponse);
     assertThat(
-            new QuestionnaireResponseController(mockLinkProperties, repo)
-                .update("x", questionnaireResponse))
+            new QuestionnaireResponseController(pageLinks, repo).update("x", questionnaireResponse))
         .isEqualTo(ResponseEntity.status(HttpStatus.CREATED).build());
     verify(repo, times(1))
         .save(QuestionnaireResponseEntity.builder().id("x").payload(payload).build());

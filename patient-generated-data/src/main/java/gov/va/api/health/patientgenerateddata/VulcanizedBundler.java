@@ -1,9 +1,8 @@
-package gov.va.api.health.patientgenerateddata.vulcanizer;
+package gov.va.api.health.patientgenerateddata;
 
 import static com.google.common.base.Preconditions.checkState;
 import static java.util.stream.Collectors.toList;
 
-import gov.va.api.health.patientgenerateddata.PayloadEntity;
 import gov.va.api.health.r4.api.bundle.AbstractBundle;
 import gov.va.api.health.r4.api.bundle.AbstractEntry;
 import gov.va.api.health.r4.api.bundle.BundleLink;
@@ -55,7 +54,7 @@ public class VulcanizedBundler<
   private EntryT toEntry(ResourceT resource) {
     EntryT entry = bundling.newEntry().get();
     entry.resource(resource);
-    entry.fullUrl(bundling.linkProperties().r4().readUrl(resource));
+    entry.fullUrl(bundling.linkProperties().r4ReadUrl(resource));
     entry.search(AbstractEntry.Search.builder().mode(AbstractEntry.SearchMode.match).build());
     return entry;
   }
