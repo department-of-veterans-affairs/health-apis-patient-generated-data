@@ -6,6 +6,7 @@ import static gov.va.api.health.patientgenerateddata.SerializationUtils.deserial
 import gov.va.api.health.autoconfig.configuration.JacksonConfig;
 import gov.va.api.health.autoconfig.logging.Loggable;
 import gov.va.api.health.patientgenerateddata.Exceptions;
+import gov.va.api.health.patientgenerateddata.LinkProperties;
 import gov.va.api.health.r4.api.resources.Patient;
 import java.net.URI;
 import java.util.Optional;
@@ -31,6 +32,8 @@ import org.springframework.web.bind.annotation.RestController;
     produces = {"application/json", "application/fhir+json"})
 @AllArgsConstructor(onConstructor_ = @Autowired)
 public class PatientController {
+  private final LinkProperties linkProperties;
+
   private final PatientRepository repository;
 
   @InitBinder
@@ -60,8 +63,7 @@ public class PatientController {
       return ResponseEntity.ok(patient);
     }
     repository.save(PatientEntity.builder().id(id).payload(payload).build());
-    // return ResponseEntity.status(HttpStatus.CREATED).build();
-    // TODO populate full URL: pageLinks.r4Url() + "r4/Patient/" + id
-    return ResponseEntity.created(URI.create("/r4/Patient/" + id)).body(patient);
+    return ResponseEntity.created(URI.create(linkProperties.r4Url() + "r4/Patient/" + id))
+        .body(patient);
   }
 }

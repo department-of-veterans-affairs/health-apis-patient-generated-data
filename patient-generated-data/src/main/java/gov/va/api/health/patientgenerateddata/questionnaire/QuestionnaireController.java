@@ -2,17 +2,17 @@ package gov.va.api.health.patientgenerateddata.questionnaire;
 
 import static com.google.common.base.Preconditions.checkState;
 import static gov.va.api.health.patientgenerateddata.SerializationUtils.deserializedPayload;
-
 import gov.va.api.health.autoconfig.configuration.JacksonConfig;
 import gov.va.api.health.autoconfig.logging.Loggable;
 import gov.va.api.health.patientgenerateddata.Exceptions;
+import gov.va.api.health.patientgenerateddata.LinkProperties;
 import gov.va.api.health.r4.api.resources.Questionnaire;
+import java.net.URI;
 import java.util.Optional;
 import javax.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.DataBinder;
 import org.springframework.validation.annotation.Validated;
@@ -31,6 +31,8 @@ import org.springframework.web.bind.annotation.RestController;
     produces = {"application/json", "application/fhir+json"})
 @AllArgsConstructor(onConstructor = @__({@Autowired}))
 public class QuestionnaireController {
+  private final LinkProperties linkProperties;
+
   private final QuestionnaireRepository repository;
 
   @InitBinder
@@ -48,7 +50,7 @@ public class QuestionnaireController {
   @SneakyThrows
   @PutMapping(value = "/{id}")
   @Loggable(arguments = false)
-  ResponseEntity<Void> update(
+  ResponseEntity<Questionnaire> update(
       @PathVariable("id") String id, @Valid @RequestBody Questionnaire questionnaire) {
     String payload = JacksonConfig.createMapper().writeValueAsString(questionnaire);
     checkState(id.equals(questionnaire.id()), "%s != %s", id, questionnaire.id());
@@ -57,9 +59,10 @@ public class QuestionnaireController {
       QuestionnaireEntity entity = maybeEntity.get();
       entity.payload(payload);
       repository.save(entity);
-      return ResponseEntity.ok().build();
+      return ResponseEntity.ok(questionnaire);
     }
     repository.save(QuestionnaireEntity.builder().id(id).payload(payload).build());
-    return ResponseEntity.status(HttpStatus.CREATED).build();
+    return ResponseEntity.created(URI.create(linkProperties.r4Url() + "r4/Questionnaire/" + id))
+        .body(questionnaire);
   }
 }
