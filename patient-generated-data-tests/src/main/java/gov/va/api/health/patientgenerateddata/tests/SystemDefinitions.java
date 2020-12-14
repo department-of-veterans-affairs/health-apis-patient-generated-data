@@ -11,10 +11,8 @@ import lombok.experimental.UtilityClass;
 class SystemDefinitions {
   private static Ids ids() {
     return Ids.builder()
-        .observation("ekg")
-        .questionnaire("q101")
+        .questionnaireResponseSynthetic("3141")
         .questionnaireResponse("qr202")
-        .patient("p555")
         .build();
   }
 
@@ -120,13 +118,8 @@ class SystemDefinitions {
   @Value
   @Builder
   static final class Ids {
-    @NonNull String observation;
-
-    @NonNull String patient;
-
-    @NonNull String questionnaire;
-
     @NonNull String questionnaireResponse;
+    @NonNull String questionnaireResponseSynthetic;
   }
 
   @Value

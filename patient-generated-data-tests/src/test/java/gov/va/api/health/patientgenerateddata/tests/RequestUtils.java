@@ -50,7 +50,12 @@ public class RequestUtils {
       String request, String payload, String changes, Integer expectedStatus) {
     SystemDefinitions.Service svc = systemDefinition().r4();
     RequestSpecification spec =
-        RestAssured.given().baseUri(svc.url()).port(svc.port()).relaxedHTTPSValidation();
+        RestAssured.given()
+            .baseUri(svc.url())
+            .port(svc.port())
+            .relaxedHTTPSValidation()
+            .header("Authorization", "Bearer " + System.getProperty("access-token", "unset"));
+    ;
     spec.header("Content-Type", "application/json");
     spec.body(payload);
     log.info(
