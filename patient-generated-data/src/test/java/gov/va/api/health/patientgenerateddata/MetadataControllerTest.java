@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import gov.va.api.health.r4.api.datatypes.ContactDetail;
 import gov.va.api.health.r4.api.datatypes.ContactPoint;
 import gov.va.api.health.r4.api.resources.CapabilityStatement;
-import gov.va.api.health.r4.api.resources.CapabilityStatement.SearchParamType;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
@@ -180,15 +179,15 @@ public class MetadataControllerTest {
                                             List.of(
                                                 CapabilityStatement.SearchParam.builder()
                                                     .name("_id")
-                                                    .type(SearchParamType.token)
+                                                    .type(CapabilityStatement.SearchParamType.token)
                                                     .build(),
                                                 CapabilityStatement.SearchParam.builder()
                                                     .name("author")
-                                                    .type(SearchParamType.string)
+                                                    .type(CapabilityStatement.SearchParamType.string)
                                                     .build(),
                                                 CapabilityStatement.SearchParam.builder()
                                                     .name("authored")
-                                                    .type(SearchParamType.date)
+                                                    .type(CapabilityStatement.SearchParamType.date)
                                                     .build()))
                                         .build()))
                             .build()))
