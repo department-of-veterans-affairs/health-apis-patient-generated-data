@@ -4,7 +4,7 @@ import static gov.va.api.lighthouse.vulcan.Vulcan.useUrl;
 
 import gov.va.api.health.patientgenerateddata.UrlPageLinks;
 import gov.va.api.health.r4.api.resources.Resource;
-import gov.va.api.lighthouse.vulcan.VulcanConfiguration.PagingConfiguration;
+import gov.va.api.lighthouse.vulcan.VulcanConfiguration;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -37,8 +37,9 @@ public class LinkProperties {
    * Create standard page configuration for use for Vulcan based controllers. This is expecting a
    * resource name, e.g. Questionnaire and sorting, which is defined on the Resource entities.
    */
-  public PagingConfiguration pagingConfiguration(String resource, Sort sorting) {
-    return PagingConfiguration.builder()
+  public VulcanConfiguration.PagingConfiguration pagingConfiguration(
+      String resource, Sort sorting) {
+    return VulcanConfiguration.PagingConfiguration.builder()
         .baseUrlStrategy(useUrl(r4().resourceUrl(resource)))
         .pageParameter("page")
         .countParameter("_count")

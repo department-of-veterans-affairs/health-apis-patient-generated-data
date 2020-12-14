@@ -5,13 +5,10 @@ import static java.util.stream.Collectors.toList;
 
 import gov.va.api.health.patientgenerateddata.PayloadEntity;
 import gov.va.api.health.r4.api.bundle.AbstractBundle;
-import gov.va.api.health.r4.api.bundle.AbstractBundle.BundleType;
 import gov.va.api.health.r4.api.bundle.AbstractEntry;
 import gov.va.api.health.r4.api.bundle.BundleLink;
-import gov.va.api.health.r4.api.bundle.BundleLink.LinkRelation;
 import gov.va.api.health.r4.api.resources.Resource;
 import gov.va.api.lighthouse.vulcan.VulcanResult;
-import gov.va.api.lighthouse.vulcan.VulcanResult.Paging;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
@@ -47,7 +44,7 @@ public class VulcanizedBundler<
     List<EntryT> entries = payloads.stream().map(this::toEntry).collect(toList());
     BundleT bundle = bundling.newBundle().get();
     bundle.resourceType("Bundle");
-    bundle.type(BundleType.searchset);
+    bundle.type(AbstractBundle.BundleType.searchset);
     bundle.total((int) result.paging().totalRecords());
     bundle.link(toLinks(result.paging()));
     bundle.entry(entries);
@@ -66,13 +63,13 @@ public class VulcanizedBundler<
     return url -> BundleLink.builder().relation(relation).url(url).build();
   }
 
-  List<BundleLink> toLinks(Paging paging) {
+  List<BundleLink> toLinks(VulcanResult.Paging paging) {
     List<BundleLink> links = new ArrayList<>(5);
-    paging.firstPageUrl().map(toLink(LinkRelation.first)).ifPresent(links::add);
-    paging.previousPageUrl().map(toLink(LinkRelation.prev)).ifPresent(links::add);
-    paging.thisPageUrl().map(toLink(LinkRelation.self)).ifPresent(links::add);
-    paging.nextPageUrl().map(toLink(LinkRelation.next)).ifPresent(links::add);
-    paging.lastPageUrl().map(toLink(LinkRelation.last)).ifPresent(links::add);
+    paging.firstPageUrl().map(toLink(BundleLink.LinkRelation.first)).ifPresent(links::add);
+    paging.previousPageUrl().map(toLink(BundleLink.LinkRelation.prev)).ifPresent(links::add);
+    paging.thisPageUrl().map(toLink(BundleLink.LinkRelation.self)).ifPresent(links::add);
+    paging.nextPageUrl().map(toLink(BundleLink.LinkRelation.next)).ifPresent(links::add);
+    paging.lastPageUrl().map(toLink(BundleLink.LinkRelation.last)).ifPresent(links::add);
     return links.isEmpty() ? null : links;
   }
 }
