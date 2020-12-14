@@ -41,6 +41,11 @@ public class QuestionnaireResponseIT {
 
   @Test
   void search_authored() {
+    assumeEnvironmentIn(Environment.LOCAL, Environment.QA);
+    // Environment.STAGING,
+    // Environment.STAGING_LAB,
+    // Environment.LAB
+
     String expectedId = systemDefinition().ids().questionnaireResponse();
     String date = "2013-02-19T19:15:00Z";
     String query = String.format("?authored=%s", date);
@@ -79,6 +84,11 @@ public class QuestionnaireResponseIT {
 
   @Test
   void search_id() {
+    assumeEnvironmentIn(Environment.LOCAL, Environment.QA);
+    // Environment.STAGING,
+    // Environment.STAGING_LAB,
+    // Environment.LAB
+
     var id = systemDefinition().ids().questionnaireResponse();
     var response = doGet("application/json", "QuestionnaireResponse?_id=" + id, 200);
     response.expectValid(QuestionnaireResponse.Bundle.class);
