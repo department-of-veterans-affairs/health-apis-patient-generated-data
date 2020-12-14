@@ -9,6 +9,7 @@ import static org.mockito.Mockito.when;
 
 import gov.va.api.health.autoconfig.configuration.JacksonConfig;
 import gov.va.api.health.patientgenerateddata.Exceptions;
+import gov.va.api.health.patientgenerateddata.LinkProperties;
 import gov.va.api.health.r4.api.resources.Observation;
 import java.util.Optional;
 import lombok.SneakyThrows;
@@ -20,7 +21,7 @@ import org.springframework.validation.DataBinder;
 public class ObservationControllerTest {
   @Test
   void initDirectFieldAccess() {
-    new ObservationController(mock(ObservationRepository.class))
+    new ObservationController(mock(LinkProperties.class), mock(ObservationRepository.class))
         .initDirectFieldAccess(mock(DataBinder.class));
   }
 
@@ -32,14 +33,16 @@ public class ObservationControllerTest {
         JacksonConfig.createMapper().writeValueAsString(Observation.builder().id("x").build());
     when(repo.findById("x"))
         .thenReturn(Optional.of(ObservationEntity.builder().id("x").payload(payload).build()));
-    assertThat(new ObservationController(repo).read("x"))
+    assertThat(new ObservationController(mock(LinkProperties.class), repo).read("x"))
         .isEqualTo(Observation.builder().id("x").build());
   }
 
   @Test
   void read_notFound() {
     ObservationRepository repo = mock(ObservationRepository.class);
-    assertThrows(Exceptions.NotFound.class, () -> new ObservationController(repo).read("notfound"));
+    assertThrows(
+        Exceptions.NotFound.class,
+        () -> new ObservationController(mock(LinkProperties.class), repo).read("notfound"));
   }
 
   @Test
@@ -50,7 +53,7 @@ public class ObservationControllerTest {
     String payload = JacksonConfig.createMapper().writeValueAsString(observation);
     when(repo.findById("x"))
         .thenReturn(Optional.of(ObservationEntity.builder().id("x").payload(payload).build()));
-    assertThat(new ObservationController(repo).update("x", observation))
+    assertThat(new ObservationController(mock(LinkProperties.class), repo).update("x", observation))
         .isEqualTo(ResponseEntity.ok().build());
     verify(repo, times(1)).save(ObservationEntity.builder().id("x").payload(payload).build());
   }
@@ -61,7 +64,7 @@ public class ObservationControllerTest {
     ObservationRepository repo = mock(ObservationRepository.class);
     Observation observation = Observation.builder().id("x").build();
     String payload = JacksonConfig.createMapper().writeValueAsString(observation);
-    assertThat(new ObservationController(repo).update("x", observation))
+    assertThat(new ObservationController(mock(LinkProperties.class), repo).update("x", observation))
         .isEqualTo(ResponseEntity.status(HttpStatus.CREATED).build());
     verify(repo, times(1)).save(ObservationEntity.builder().id("x").payload(payload).build());
   }

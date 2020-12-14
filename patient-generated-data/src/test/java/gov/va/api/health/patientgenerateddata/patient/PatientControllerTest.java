@@ -9,6 +9,7 @@ import static org.mockito.Mockito.when;
 
 import gov.va.api.health.autoconfig.configuration.JacksonConfig;
 import gov.va.api.health.patientgenerateddata.Exceptions;
+import gov.va.api.health.patientgenerateddata.LinkProperties;
 import gov.va.api.health.r4.api.resources.Patient;
 import java.net.URI;
 import java.util.Optional;
@@ -20,7 +21,7 @@ import org.springframework.validation.DataBinder;
 public class PatientControllerTest {
   @Test
   void initDirectFieldAccess() {
-    new PatientController(mock(PatientRepository.class))
+    new PatientController(mock(LinkProperties.class), mock(PatientRepository.class))
         .initDirectFieldAccess(mock(DataBinder.class));
   }
 
@@ -32,13 +33,16 @@ public class PatientControllerTest {
         JacksonConfig.createMapper().writeValueAsString(Patient.builder().id("x").build());
     when(repo.findById("x"))
         .thenReturn(Optional.of(PatientEntity.builder().id("x").payload(payload).build()));
-    assertThat(new PatientController(repo).read("x")).isEqualTo(Patient.builder().id("x").build());
+    assertThat(new PatientController(mock(LinkProperties.class), repo).read("x"))
+        .isEqualTo(Patient.builder().id("x").build());
   }
 
   @Test
   void read_notFound() {
     PatientRepository repo = mock(PatientRepository.class);
-    assertThrows(Exceptions.NotFound.class, () -> new PatientController(repo).read("notfound"));
+    assertThrows(
+        Exceptions.NotFound.class,
+        () -> new PatientController(mock(LinkProperties.class), repo).read("notfound"));
   }
 
   @Test
@@ -49,7 +53,7 @@ public class PatientControllerTest {
     String payload = JacksonConfig.createMapper().writeValueAsString(patient);
     when(repo.findById("x"))
         .thenReturn(Optional.of(PatientEntity.builder().id("x").payload(payload).build()));
-    assertThat(new PatientController(repo).update("x", patient))
+    assertThat(new PatientController(mock(LinkProperties.class), repo).update("x", patient))
         .isEqualTo(ResponseEntity.ok(patient));
     verify(repo, times(1)).save(PatientEntity.builder().id("x").payload(payload).build());
   }
@@ -60,7 +64,7 @@ public class PatientControllerTest {
     PatientRepository repo = mock(PatientRepository.class);
     Patient patient = Patient.builder().id("x").build();
     String payload = JacksonConfig.createMapper().writeValueAsString(patient);
-    assertThat(new PatientController(repo).update("x", patient))
+    assertThat(new PatientController(mock(LinkProperties.class), repo).update("x", patient))
         .isEqualTo(ResponseEntity.created(URI.create("/r4/Patient/x")).body(patient));
     verify(repo, times(1)).save(PatientEntity.builder().id("x").payload(payload).build());
   }
