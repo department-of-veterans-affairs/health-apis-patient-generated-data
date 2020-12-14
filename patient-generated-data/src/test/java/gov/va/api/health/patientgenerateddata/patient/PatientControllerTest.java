@@ -10,10 +10,10 @@ import static org.mockito.Mockito.when;
 import gov.va.api.health.autoconfig.configuration.JacksonConfig;
 import gov.va.api.health.patientgenerateddata.Exceptions;
 import gov.va.api.health.r4.api.resources.Patient;
+import java.net.URI;
 import java.util.Optional;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.DataBinder;
 
@@ -50,7 +50,7 @@ public class PatientControllerTest {
     when(repo.findById("x"))
         .thenReturn(Optional.of(PatientEntity.builder().id("x").payload(payload).build()));
     assertThat(new PatientController(repo).update("x", patient))
-        .isEqualTo(ResponseEntity.ok().build());
+        .isEqualTo(ResponseEntity.ok(patient));
     verify(repo, times(1)).save(PatientEntity.builder().id("x").payload(payload).build());
   }
 
@@ -61,7 +61,7 @@ public class PatientControllerTest {
     Patient patient = Patient.builder().id("x").build();
     String payload = JacksonConfig.createMapper().writeValueAsString(patient);
     assertThat(new PatientController(repo).update("x", patient))
-        .isEqualTo(ResponseEntity.status(HttpStatus.CREATED).build());
+        .isEqualTo(ResponseEntity.created(URI.create("/r4/Patient/x")).body(patient));
     verify(repo, times(1)).save(PatientEntity.builder().id("x").payload(payload).build());
   }
 }

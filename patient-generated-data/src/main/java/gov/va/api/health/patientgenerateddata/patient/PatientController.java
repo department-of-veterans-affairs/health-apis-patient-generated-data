@@ -7,12 +7,12 @@ import gov.va.api.health.autoconfig.configuration.JacksonConfig;
 import gov.va.api.health.autoconfig.logging.Loggable;
 import gov.va.api.health.patientgenerateddata.Exceptions;
 import gov.va.api.health.r4.api.resources.Patient;
+import java.net.URI;
 import java.util.Optional;
 import javax.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.DataBinder;
 import org.springframework.validation.annotation.Validated;
@@ -48,7 +48,8 @@ public class PatientController {
   @SneakyThrows
   @PutMapping(value = "/{id}")
   @Loggable(arguments = false)
-  ResponseEntity<Void> update(@PathVariable("id") String id, @Valid @RequestBody Patient patient) {
+  ResponseEntity<Patient> update(
+      @PathVariable("id") String id, @Valid @RequestBody Patient patient) {
     String payload = JacksonConfig.createMapper().writeValueAsString(patient);
     checkState(id.equals(patient.id()), "%s != %s", id, patient.id());
     Optional<PatientEntity> maybeEntity = repository.findById(id);
@@ -56,9 +57,11 @@ public class PatientController {
       PatientEntity entity = maybeEntity.get();
       entity.payload(payload);
       repository.save(entity);
-      return ResponseEntity.ok().build();
+      return ResponseEntity.ok(patient);
     }
     repository.save(PatientEntity.builder().id(id).payload(payload).build());
-    return ResponseEntity.status(HttpStatus.CREATED).build();
+    // return ResponseEntity.status(HttpStatus.CREATED).build();
+    // TODO populate full URL: pageLinks.r4Url() + "r4/Patient/" + id
+    return ResponseEntity.created(URI.create("/r4/Patient/" + id)).body(patient);
   }
 }
