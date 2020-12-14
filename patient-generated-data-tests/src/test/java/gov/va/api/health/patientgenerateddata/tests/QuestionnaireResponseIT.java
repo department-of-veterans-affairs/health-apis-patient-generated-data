@@ -21,6 +21,11 @@ public class QuestionnaireResponseIT {
         Environment.LAB);
   }
 
+  private boolean bundleIncludesEntryWithId(QuestionnaireResponse.Bundle bundle, String id) {
+    var count = bundle.entry().stream().filter((e) -> e.resource().id().equals(id)).count();
+    return count > 0;
+  }
+
   @Test
   void read() {
     var id = systemDefinition().ids().questionnaireResponse();
@@ -36,37 +41,38 @@ public class QuestionnaireResponseIT {
 
   @Test
   void search_authored() {
+    String expectedId = systemDefinition().ids().questionnaireResponse();
     String date = "2013-02-19T19:15:00Z";
     String query = String.format("?authored=%s", date);
-    var response = doGet("application/json", "QuestionnaireResponse/" + query, 200);
+    var response = doGet("application/json", "QuestionnaireResponse" + query, 200);
     QuestionnaireResponse.Bundle bundle = response.expectValid(QuestionnaireResponse.Bundle.class);
-    assertThat(bundle.entry()).hasSize(1);
-
+    assertThat(bundle.entry()).hasSizeGreaterThan(0);
+    assertThat(bundleIncludesEntryWithId(bundle, expectedId)).isTrue();
     // offset timezone
     query = "?authored=2013-02-19T14:15:00-05:00";
-    response = doGet("application/json", "QuestionnaireResponse/" + query, 200);
-    bundle = response.expectValid(QuestionnaireResponse.Bundle.class);
-    assertThat(bundle.entry()).hasSize(1);
-
-    // less than
-    query = "?authored=lt2014-01-01T00:00:00Z";
-    response = doGet("application/json", "QuestionnaireResponse/" + query, 200);
+    response = doGet("application/json", "QuestionnaireResponse" + query, 200);
     bundle = response.expectValid(QuestionnaireResponse.Bundle.class);
     assertThat(bundle.entry()).hasSizeGreaterThan(0);
-
+    assertThat(bundleIncludesEntryWithId(bundle, expectedId)).isTrue();
+    // less than
+    query = "?authored=lt2014-01-01T00:00:00Z";
+    response = doGet("application/json", "QuestionnaireResponse" + query, 200);
+    bundle = response.expectValid(QuestionnaireResponse.Bundle.class);
+    assertThat(bundle.entry()).hasSizeGreaterThan(0);
+    assertThat(bundleIncludesEntryWithId(bundle, expectedId)).isTrue();
     // in between
     query =
         String.format(
             "?authored=gt%s&authored=lt%s", "2013-02-19T00:00:00Z", "2013-02-19T23:59:00Z");
-    response = doGet("application/json", "QuestionnaireResponse/" + query, 200);
+    response = doGet("application/json", "QuestionnaireResponse" + query, 200);
     bundle = response.expectValid(QuestionnaireResponse.Bundle.class);
     assertThat(bundle.entry()).hasSizeGreaterThan(0);
-
+    assertThat(bundleIncludesEntryWithId(bundle, expectedId)).isTrue();
     // in between, nothing found
     query =
         String.format(
             "?authored=gt%s&authored=lt%s", "1998-01-01T00:00:00Z", "1998-01-01T01:00:00Z");
-    response = doGet("application/json", "QuestionnaireResponse/" + query, 200);
+    response = doGet("application/json", "QuestionnaireResponse" + query, 200);
     bundle = response.expectValid(QuestionnaireResponse.Bundle.class);
     assertThat(bundle.entry()).hasSize(0);
   }
@@ -74,7 +80,7 @@ public class QuestionnaireResponseIT {
   @Test
   void search_id() {
     var id = systemDefinition().ids().questionnaireResponse();
-    var response = doGet("application/json", "QuestionnaireResponse/?_id=" + id, 200);
+    var response = doGet("application/json", "QuestionnaireResponse?_id=" + id, 200);
     response.expectValid(QuestionnaireResponse.Bundle.class);
   }
 }
