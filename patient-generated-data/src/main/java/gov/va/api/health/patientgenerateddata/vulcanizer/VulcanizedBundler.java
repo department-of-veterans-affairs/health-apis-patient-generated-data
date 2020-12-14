@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 import lombok.Builder;
+import lombok.NonNull;
 
 @Builder
 public class VulcanizedBundler<
@@ -21,9 +22,9 @@ public class VulcanizedBundler<
         EntryT extends AbstractEntry<ResourceT>,
         BundleT extends AbstractBundle<EntryT>>
     implements Function<VulcanResult<EntityT>, BundleT> {
-  private final Bundling<ResourceT, EntryT, BundleT> bundling;
+  @NonNull private final Bundling<ResourceT, EntryT, BundleT> bundling;
 
-  private final Function<EntityT, ResourceT> toResource;
+  @NonNull private final Function<EntityT, ResourceT> toResource;
 
   /** Builder helper to infer generic types. */
   public static <

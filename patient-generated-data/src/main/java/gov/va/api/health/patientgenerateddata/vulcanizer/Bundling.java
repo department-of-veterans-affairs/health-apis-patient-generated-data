@@ -6,6 +6,7 @@ import gov.va.api.health.r4.api.resources.Resource;
 import java.util.function.Supplier;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NonNull;
 
 @Builder
 @Getter
@@ -15,13 +16,13 @@ public class Bundling<
     BundleT extends AbstractBundle<EntryT>> {
 
   /** How to create a new Bundle instance, typically a method reference to `new`. */
-  private final Supplier<BundleT> newBundle;
+  @NonNull private final Supplier<BundleT> newBundle;
 
   /** How to create a new Entry instance, typically a method reference to `new`. */
-  private final Supplier<EntryT> newEntry;
+  @NonNull private final Supplier<EntryT> newEntry;
 
   /** The properties that will be used to create links. */
-  private final LinkProperties linkProperties;
+  @NonNull private final LinkProperties linkProperties;
 
   public static <
           ResourceT extends Resource,
