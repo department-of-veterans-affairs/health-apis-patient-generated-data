@@ -36,7 +36,8 @@ public class QuestionnaireResponseIT {
 
   @Test
   void search_author() {
-    String query = "?author=1011537977V693883";
+    String author = systemDefinition().ids().questionnaireResponseAuthor();
+    String query = String.format("?author=%s", author);
     var response = doGet("application/json", "QuestionnaireResponse/" + query, 200);
     QuestionnaireResponse.Bundle bundle = response.expectValid(QuestionnaireResponse.Bundle.class);
     assertThat(bundle.entry()).hasSizeGreaterThan(0);

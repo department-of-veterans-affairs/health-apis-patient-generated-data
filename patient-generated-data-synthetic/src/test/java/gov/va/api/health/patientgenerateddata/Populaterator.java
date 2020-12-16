@@ -208,12 +208,16 @@ public final class Populaterator {
       checkState(!ids.contains(id), "Duplicate ID " + id);
       ids.add(id);
       String sqlInsert =
-          sqlInsert("app.QuestionnaireResponse", List.of("id", "payload", "version", "authored"));
+          sqlInsert(
+              "app.QuestionnaireResponse",
+              List.of("id", "payload", "version", "authored", "author"));
       try (PreparedStatement statement = connection.prepareStatement(sqlInsert)) {
         statement.setObject(1, id);
         statement.setObject(2, MAPPER.writeValueAsString(response));
         statement.setObject(3, 0);
         statement.setTimestamp(4, timestamp(parseDateTime(response.authored())));
+        int lastSlashLocation = response.author().reference().lastIndexOf("/") + 1;
+        statement.setObject(5, response.author().reference().substring(lastSlashLocation));
         statement.execute();
       }
     }

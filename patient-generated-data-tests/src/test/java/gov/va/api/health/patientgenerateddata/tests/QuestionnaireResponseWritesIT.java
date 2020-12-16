@@ -40,11 +40,12 @@ public class QuestionnaireResponseWritesIT {
   @Test
   void update_author() {
     var id = systemDefinition().idsGenerated().questionnaireResponse();
-    Reference ref = Reference.builder().id("1011537977V693883").build();
+    Reference ref =
+        Reference.builder().id(systemDefinition().ids().questionnaireResponseAuthor()).build();
     QuestionnaireResponse qr = questionnaireResponse(id).author(ref);
     doPut("QuestionnaireResponse/" + id, serializePayload(qr), "update author", 200);
     ExpectedResponse persistedResponse =
-            doGet("application/json", "QuestionnaireResponse/" + id, 200);
+        doGet("application/json", "QuestionnaireResponse/" + id, 200);
     QuestionnaireResponse persisted = persistedResponse.response().as(QuestionnaireResponse.class);
     assertThat(persisted.author()).isEqualTo(ref);
   }

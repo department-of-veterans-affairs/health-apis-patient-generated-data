@@ -105,7 +105,7 @@ public class QuestionnaireResponseControllerTest {
   @SneakyThrows
   void update_existing() {
     QuestionnaireResponseRepository repo = mock(QuestionnaireResponseRepository.class);
-    Reference ref = Reference.builder().display("John Smith").build();
+    Reference ref = Reference.builder().id("1011537977V693883").build();
     QuestionnaireResponse questionnaireResponse =
         QuestionnaireResponse.builder().id("x").author(ref).build();
     String payload = JacksonConfig.createMapper().writeValueAsString(questionnaireResponse);
@@ -123,7 +123,7 @@ public class QuestionnaireResponseControllerTest {
   @SneakyThrows
   void update_new() {
     QuestionnaireResponseRepository repo = mock(QuestionnaireResponseRepository.class);
-    Reference ref = Reference.builder().display("John Smith").build();
+    Reference ref = Reference.builder().id("1011537977V693883").build();
     QuestionnaireResponse questionnaireResponse =
         QuestionnaireResponse.builder().id("x").author(ref).build();
     String payload = JacksonConfig.createMapper().writeValueAsString(questionnaireResponse);
@@ -135,7 +135,7 @@ public class QuestionnaireResponseControllerTest {
   }
 
   @ParameterizedTest
-  @ValueSource(strings = {"?_id=1", "?author=John Smith"})
+  @ValueSource(strings = {"?_id=1", "?author=1011537977V693883"})
   @SneakyThrows
   void validSearch(String query) {
     QuestionnaireResponseRepository repo = mock(QuestionnaireResponseRepository.class);

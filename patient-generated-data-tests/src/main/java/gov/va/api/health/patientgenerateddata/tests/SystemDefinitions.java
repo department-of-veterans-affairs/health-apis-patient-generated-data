@@ -10,11 +10,17 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 class SystemDefinitions {
   private static Ids ids() {
-    return Ids.builder().questionnaireResponse("3141").build();
+    return Ids.builder()
+        .questionnaireResponse("3141")
+        .questionnaireResponseAuthor("1011537977V693883")
+        .build();
   }
 
   private static Ids idsGenerated() {
-    return Ids.builder().questionnaireResponse("qr202").build();
+    return Ids.builder()
+        .questionnaireResponse("qr202")
+        .questionnaireResponseAuthor("1011537977V693883")
+        .build();
   }
 
   private static SystemDefinition lab() {
@@ -126,6 +132,7 @@ class SystemDefinitions {
   @Builder
   static final class Ids {
     @NonNull String questionnaireResponse;
+    @NonNull String questionnaireResponseAuthor;
   }
 
   @Value
