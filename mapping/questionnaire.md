@@ -16,6 +16,41 @@ Questionnaire
   "title" : "VA GOV Pre-Visit Agenda Questionnaire",
   "status" : "active",
   "publisher" : "clipboard.gov.va",
+  "useContext" : [
+    {
+      "code": {
+        "system": "http://terminology.hl7.org/CodeSystem/usage-context-type",
+        "code": "venue"
+      },
+      "valueReference": {
+        "identifier": {
+          "system": "http://va.gov/.../foo-facility",
+          "value": "some-facility-id-123"
+        }
+      }
+    },
+    {
+      "code": {
+        "system": "http://terminology.hl7.org/CodeSystem/usage-context-type",
+        "code": "venue"
+      },
+      "valueReference": {
+        "identifier": {
+          "system": "http://va.gov/.../foo-clinic",
+          "value": "12334568274"
+        }
+      }
+    },
+    {
+      "code": {
+        "system": "http://terminology.hl7.org/CodeSystem/usage-context-type",
+        "code": "venue"
+      },
+      "valueReference": {
+        "reference": "http://va.gov/.../clipboard/.../Organization/12334568274"
+      }
+    }
+  ],
   "item" : [
     {
       "linkId" : "01",
@@ -25,7 +60,7 @@ Questionnaire
     {
       "linkId" : "02",
       "type" : "text",
-      "text" : "Are there any additional details you’d like to share with your provider about this appointment?"
+      "text" : "Are there any additional details youâ€™d like to share with your provider about this appointment?"
     },
     {
       "linkId" : "03",
