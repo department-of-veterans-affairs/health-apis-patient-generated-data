@@ -1,6 +1,6 @@
 Questionnaire
 
-[Composite](https://www.hl7.org/fhir/r4/search.html#composite) search for questionnaires ([context-type-value](https://www.hl7.org/fhir/r4/questionnaire.html#search)) in clinic `12975` (`vha_534`):
+[Composite](https://www.hl7.org/fhir/r4/search.html#composite) search for questionnaires ([context-type-value](https://www.hl7.org/fhir/r4/questionnaire.html#search)) in clinic `https://veteran.apps.va.gov/cdw/v3/facilities/534/clinics/12975`:
 
 `GET [base]/Questionnaire?context-type-value=venue$https://staff.apps.va.gov/VistaEmrService/clinics|534-12975`
 
