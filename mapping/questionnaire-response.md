@@ -22,7 +22,7 @@ QuestionnaireResponse
   "subject" : {
     "reference" : "Patient/1008596379V859838"
   },
-  "author" : {
+  "encounter" : {
     "identifier" : {
       "system" : "https://veteran.apps.va.gov/appointments/v1",
       "value" : "202008211400983000084800000000000000"
