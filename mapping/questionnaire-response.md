@@ -41,7 +41,7 @@ QuestionnaireResponse
     },
     {
       "linkId" : "02",
-      "text" : "Are there any additional details you’d like to share with your provider about this appointment?",
+      "text" : "Are there any additional details you'd like to share with your provider about this appointment?",
       "answer" : [
         {
           "valueString" : "cant look into the sun"
