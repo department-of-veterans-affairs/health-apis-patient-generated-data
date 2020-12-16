@@ -1,6 +1,6 @@
 QuestionnaireResponse
 
-[Search](https://www.hl7.org/fhir/questionnaireresponse.html#search) by authored date:
+[Search](https://www.hl7.org/fhir/r4/questionnaireresponse.html#search) by authored date:
 
 `GET [base]/QuestionnaireResponse?authored=2013-02-19T14:15:00-05:00`
 
