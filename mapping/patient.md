@@ -2,6 +2,8 @@ Patient
 
 ```
 {
+  "id" : "1012845331V153043",
+  "resourceType" : "Patient",
   "meta" : {
     "tag" : [
       {
@@ -11,18 +13,6 @@ Patient
       }
     ]
   },
-  "id" : "1012845331V153043",
-  "resourceType" : "Patient",
-  "name" : [
-    {
-      "use" : "usual",
-      "text" : "Judy Morrison",
-      "family" : "Morrison",
-      "given" : [
-        "Judy"
-      ]
-    }
-  ],
   "identifier" : [
     {
       "use" : "usual",
@@ -39,6 +29,16 @@ Patient
       "assigner" : {
         "display" : "Master Veteran Index"
       }
+    }
+  ],
+  "name" : [
+    {
+      "use" : "usual",
+      "text" : "Judy Morrison",
+      "family" : "Morrison",
+      "given" : [
+        "Judy"
+      ]
     }
   ],
   "gender" : "female"

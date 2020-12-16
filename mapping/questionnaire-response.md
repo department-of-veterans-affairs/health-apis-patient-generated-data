@@ -29,8 +29,8 @@ Search by encounter (appointment):
     "status" : "generated",
     "div" : "<div><h1>Pre-Visit Questionnaire</h1></div>"
   },
+  "questionnaire" : "Questionnaire/a4edd60a-f142-4547-8a9e-02a6bba76bcc",
   "status" : "completed",
-  "authored" : "2020-08-20",
   "subject" : {
     "reference" : "Patient/1008596379V859838"
   },
@@ -40,7 +40,7 @@ Search by encounter (appointment):
       "value" : "202008211400983000084800000000000000"
     }
   },
-  "questionnaire" : "Questionnaire/a4edd60a-f142-4547-8a9e-02a6bba76bcc",
+  "authored" : "2020-08-20",
   "item" : [
     {
       "linkId" : "01",

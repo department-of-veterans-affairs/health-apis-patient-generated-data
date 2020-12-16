@@ -39,23 +39,23 @@ Questionnaire
   "item" : [
     {
       "linkId" : "01",
-      "type" : "string",
-      "text" : "What is the reason for this appointment?"
+      "text" : "What is the reason for this appointment?",
+      "type" : "string"
     },
     {
       "linkId" : "02",
-      "type" : "text",
-      "text" : "Are there any additional details you'd like to share with your provider about this appointment?"
+      "text" : "Are there any additional details you'd like to share with your provider about this appointment?",
+      "type" : "text"
     },
     {
       "linkId" : "03",
-      "type" : "text",
-      "text" : "Are there any life events that are positively or negatively affecting your health?"
+      "text" : "Are there any life events that are positively or negatively affecting your health?",
+      "type" : "text"
     },
     {
       "linkId" : "04",
-      "type" : "text",
-      "text" : "Do you have other questions you want to ask your provider?"
+      "text" : "Do you have other questions you want to ask your provider?",
+      "type" : "text"
     }
   ]
 }
