@@ -4,6 +4,10 @@ Search by authored date:
 
 `GET [base]/QuestionnaireResponse?authored=2013-02-19T14:15:00-05:00`
 
+Searcy by subject (patient):
+
+`GET [base]/QuestionnaireResponse?subject=1008596379V859838`
+
 ```
 {
   "resourceType" : "QuestionnaireResponse",
