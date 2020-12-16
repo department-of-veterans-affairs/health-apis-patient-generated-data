@@ -19,6 +19,12 @@ Questionnaire
       }
     ]
   },
+  "identifier" : [
+    {
+      "system" : "https://api.va.gov/services/va_facilities/v0/facilities",
+      "value" : "vha_534"
+    }
+  ],
   "title" : "VA GOV Pre-Visit Agenda Questionnaire",
   "status" : "active",
   "publisher" : "clipboard.gov.va",
