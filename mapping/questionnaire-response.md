@@ -1,12 +1,16 @@
 QuestionnaireResponse
 
-Search by authored date:
+[Search](https://www.hl7.org/fhir/questionnaireresponse.html#search) by authored date:
 
 `GET [base]/QuestionnaireResponse?authored=2013-02-19T14:15:00-05:00`
 
-Searcy by subject (patient):
+Search by subject (patient):
 
 `GET [base]/QuestionnaireResponse?subject=1008596379V859838`
+
+Search by encounter (appointment):
+
+`GET [base]/QuestionnaireResponse?encounter=202008211400983000084800000000000000`
 
 ```
 {
