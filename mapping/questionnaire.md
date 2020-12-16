@@ -1,5 +1,9 @@
 Questionnaire
 
+Search for questionnaires in clinic `12975` (`vha_534`):
+
+`GET [base]/Questionnaire?context-type-value=venue$https://staff.apps.va.gov/VistaEmrService/clinics|534-12975`
+
 ```
 {
   "resourceType" : "Questionnaire",
