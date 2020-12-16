@@ -18,36 +18,17 @@ Questionnaire
   "publisher" : "clipboard.gov.va",
   "useContext" : [
     {
-      "code": {
-        "system": "http://terminology.hl7.org/CodeSystem/usage-context-type",
-        "code": "venue"
+      "code" : {
+        "system" : "http://terminology.hl7.org/CodeSystem/usage-context-type",
+        "code" : "venue"
       },
-      "valueReference": {
-        "identifier": {
-          "system": "http://va.gov/.../foo-facility",
-          "value": "some-facility-id-123"
-        }
-      }
-    },
-    {
-      "code": {
-        "system": "http://terminology.hl7.org/CodeSystem/usage-context-type",
-        "code": "venue"
-      },
-      "valueReference": {
-        "identifier": {
-          "system": "http://va.gov/.../foo-clinic",
-          "value": "12334568274"
-        }
-      }
-    },
-    {
-      "code": {
-        "system": "http://terminology.hl7.org/CodeSystem/usage-context-type",
-        "code": "venue"
-      },
-      "valueReference": {
-        "reference": "http://va.gov/.../clipboard/.../Organization/12334568274"
+      "valueCodeableConcept" : {
+        "coding" : [
+          {
+            "system" : "https://staff.apps.va.gov/VistaEmrService/clinics",
+            "code" : "534-12975"
+          }
+        ]
       }
     }
   ],
@@ -60,7 +41,7 @@ Questionnaire
     {
       "linkId" : "02",
       "type" : "text",
-      "text" : "Are there any additional details you’d like to share with your provider about this appointment?"
+      "text" : "Are there any additional details you'd like to share with your provider about this appointment?"
     },
     {
       "linkId" : "03",
