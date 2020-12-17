@@ -2,13 +2,13 @@
 
 **Create new resource:**
 
-Include FHIR Resource in request body in json format.
+Include FHIR Resource in request body in json format
 
 `POST [base]/QuestionnaireResponse`
 
 **Update existing resource:**
 
-Include FHIR Resource in request body in json format.
+Include FHIR Resource in request body in json format
 
 `PUT [base]/QuestionnaireResponse/e4601c4c-34bd-4ecc-ba2a-ce39502ed6b9`
 
@@ -38,7 +38,7 @@ Include FHIR Resource in request body in json format.
       {
         "system" : "https://veteran.apps.va.gov/appointments/v1",
         "code" : "202008211400983000084800000000000000",
-        "display" : "MAP APPOINTMENT REFERENCE"
+        "display" : "MAP APPOINTMENT"
       }
     ]
   },
