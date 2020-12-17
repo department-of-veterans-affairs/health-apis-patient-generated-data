@@ -8,9 +8,9 @@ Search by subject (patient):
 
 `GET [base]/QuestionnaireResponse?subject=1008596379V859838`
 
-Search by encounter (appointment):
+Search by appointment meta tag:
 
-`GET [base]/QuestionnaireResponse?encounter=202008211400983000084800000000000000`
+`GET [base]/QuestionnaireResponse?_tag=https://veteran.apps.va.gov/appointments/v1|202008211400983000084800000000000000`
 
 ```
 {
@@ -22,6 +22,11 @@ Search by encounter (appointment):
         "system" : "https://api.va.gov/services/pgd",
         "code" : "66a5960c-68ee-4689-88ae-4c7cccf7ca79",
         "display" : "VA GOV CLIPBOARD"
+      },
+      {
+        "system" : "https://veteran.apps.va.gov/appointments/v1",
+        "code" : "202008211400983000084800000000000000",
+        "display" : "MAP APPOINTMENT REFERENCE"
       }
     ]
   },
@@ -29,16 +34,10 @@ Search by encounter (appointment):
     "status" : "generated",
     "div" : "<div><h1>Pre-Visit Questionnaire</h1></div>"
   },
-  "questionnaire" : "Questionnaire/a4edd60a-f142-4547-8a9e-02a6bba76bcc",
+  "questionnaire" : "[base]/Questionnaire/a4edd60a-f142-4547-8a9e-02a6bba76bcc",
   "status" : "completed",
   "subject" : {
-    "reference" : "Patient/1008596379V859838"
-  },
-  "encounter" : {
-    "identifier" : {
-      "system" : "https://veteran.apps.va.gov/appointments/v1",
-      "value" : "202008211400983000084800000000000000"
-    }
+    "reference" : "[base]/Patient/1008596379V859838"
   },
   "authored" : "2020-08-20",
   "item" : [
