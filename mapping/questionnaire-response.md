@@ -6,6 +6,8 @@ Include FHIR Resource in request body in json format
 
 `POST [base]/QuestionnaireResponse`
 
+(resource is saved with a server-generated UUID)
+
 **Update existing resource:**
 
 Include FHIR Resource in request body in json format
