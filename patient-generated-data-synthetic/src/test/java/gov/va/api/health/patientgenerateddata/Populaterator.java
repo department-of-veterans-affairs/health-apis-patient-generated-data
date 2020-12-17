@@ -62,12 +62,6 @@ public final class Populaterator {
     conn.close();
   }
 
-  private static String extractAuthorReference(Reference author) {
-    checkState(author.reference().contains("/"));
-    int lastSlashLocation = author.reference().lastIndexOf("/") + 1;
-    return author.reference().substring(lastSlashLocation);
-  }
-
   @SneakyThrows
   private static void liquibase(@NonNull Db db) {
     var connection = db.connection();
@@ -223,10 +217,16 @@ public final class Populaterator {
         statement.setObject(2, MAPPER.writeValueAsString(response));
         statement.setObject(3, 0);
         statement.setTimestamp(4, timestamp(parseDateTime(response.authored())));
-        statement.setObject(5, extractAuthorReference(response.author()));
+        statement.setObject(5, resourceId(response.author()));
         statement.execute();
       }
     }
+  }
+
+  private static String resourceId(Reference author) {
+    checkState(author.reference().contains("/"));
+    int lastSlashLocation = author.reference().lastIndexOf("/") + 1;
+    return author.reference().substring(lastSlashLocation);
   }
 
   private static String sqlInsert(@NonNull String table, @NonNull Collection<String> columns) {
