@@ -1,6 +1,6 @@
 {
-  "resourceType" : "Patient",
   "id" : "3000000",
+  "resourceType" : "Patient",
   "text" : {
     "status" : "generated",
     "div" : "<div></div>"
@@ -64,7 +64,8 @@
         "code" : "UNK",
         "display" : "unknown"
       }
-    ]
+    ],
+    "text" : "unknown"
   },
   "multipleBirthBoolean" : false
 }

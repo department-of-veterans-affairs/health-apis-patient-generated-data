@@ -9,10 +9,10 @@
   "subject" : {
     "reference" : "Patient/1011537977V693883"
   },
+  "authored" : "2013-02-19T14:15:00-05:00",
   "author" : {
     "reference" : "Practitioner/1000000"
   },
-  "authored" : "2013-02-19T14:15:00-05:00",
   "item" : [
     {
       "linkId" : "1",

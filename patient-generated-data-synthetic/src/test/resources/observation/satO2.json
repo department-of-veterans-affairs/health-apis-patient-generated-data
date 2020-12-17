@@ -51,7 +51,8 @@
         "code" : "150456",
         "display" : "MDC_PULS_OXIM_SAT_O2"
       }
-    ]
+    ],
+    "text" : "Oxygen saturation in Arterial blood"
   },
   "subject" : {
     "reference" : "Patient/1011537977V693883"

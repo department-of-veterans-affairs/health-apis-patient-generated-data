@@ -14,7 +14,8 @@
           "code" : "procedure",
           "display" : "Procedure"
         }
-      ]
+      ],
+      "text" : "Procedure"
     }
   ],
   "code" : {
@@ -24,7 +25,8 @@
         "code" : "131328",
         "display" : "MDC_ECG_ELEC_POTL"
       }
-    ]
+    ],
+    "text" : "MDC_ECG_ELEC_POTL"
   },
   "subject" : {
     "reference" : "Patient/1011537977V693883",
@@ -49,7 +51,8 @@
             "code" : "131329",
             "display" : "MDC_ECG_ELEC_POTL_I"
           }
-        ]
+        ],
+        "text" : "MDC_ECG_ELEC_POTL_I"
       },
       "valueSampledData" : {
         "origin" : {
@@ -71,7 +74,8 @@
             "code" : "131330",
             "display" : "MDC_ECG_ELEC_POTL_II"
           }
-        ]
+        ],
+        "text" : "MDC_ECG_ELEC_POTL_II"
       },
       "valueSampledData" : {
         "origin" : {
@@ -93,7 +97,8 @@
             "code" : "131389",
             "display" : "MDC_ECG_ELEC_POTL_III"
           }
-        ]
+        ],
+        "text" : "MDC_ECG_ELEC_POTL_III"
       },
       "valueSampledData" : {
         "origin" : {
