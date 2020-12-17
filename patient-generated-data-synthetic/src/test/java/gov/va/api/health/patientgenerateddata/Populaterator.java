@@ -4,6 +4,7 @@ import static com.google.common.base.Preconditions.checkState;
 import static java.util.stream.Collectors.joining;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import gov.va.api.health.r4.api.elements.Reference;
 import gov.va.api.health.r4.api.resources.Observation;
 import gov.va.api.health.r4.api.resources.Patient;
 import gov.va.api.health.r4.api.resources.Questionnaire;
@@ -59,6 +60,12 @@ public final class Populaterator {
     }
     conn.commit();
     conn.close();
+  }
+
+  private static String extractAuthorReference(Reference author) {
+    checkState(author.reference().contains("/"));
+    int lastSlashLocation = author.reference().lastIndexOf("/") + 1;
+    return author.reference().substring(lastSlashLocation);
   }
 
   @SneakyThrows
@@ -216,8 +223,7 @@ public final class Populaterator {
         statement.setObject(2, MAPPER.writeValueAsString(response));
         statement.setObject(3, 0);
         statement.setTimestamp(4, timestamp(parseDateTime(response.authored())));
-        int lastSlashLocation = response.author().reference().lastIndexOf("/") + 1;
-        statement.setObject(5, response.author().reference().substring(lastSlashLocation));
+        statement.setObject(5, extractAuthorReference(response.author()));
         statement.execute();
       }
     }

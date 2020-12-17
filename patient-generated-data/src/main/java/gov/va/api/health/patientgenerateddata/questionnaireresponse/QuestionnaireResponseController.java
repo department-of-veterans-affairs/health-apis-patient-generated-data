@@ -11,6 +11,7 @@ import gov.va.api.health.autoconfig.logging.Loggable;
 import gov.va.api.health.patientgenerateddata.Exceptions;
 import gov.va.api.health.patientgenerateddata.LinkProperties;
 import gov.va.api.health.patientgenerateddata.ParseUtils;
+import gov.va.api.health.patientgenerateddata.ReferenceUtils;
 import gov.va.api.health.patientgenerateddata.VulcanizedBundler;
 import gov.va.api.health.r4.api.elements.Reference;
 import gov.va.api.health.r4.api.resources.QuestionnaireResponse;
@@ -46,23 +47,6 @@ public class QuestionnaireResponseController {
   private final LinkProperties linkProperties;
 
   private final QuestionnaireResponseRepository repository;
-
-  private static String findReferenceOrIdentifier(Reference author) {
-    if (author == null) {
-      return null;
-    }
-    if (author.reference() != null) {
-      int lastSlashLocation = author.reference().lastIndexOf("/");
-      if (lastSlashLocation == -1) {
-        return author.reference();
-      }
-      return author.reference().substring(lastSlashLocation + 1);
-    }
-    if (author.id() != null) {
-      return author.id();
-    }
-    return null;
-  }
 
   private VulcanConfiguration<QuestionnaireResponseEntity> configuration() {
     return VulcanConfiguration.forEntity(QuestionnaireResponseEntity.class)
@@ -131,7 +115,7 @@ public class QuestionnaireResponseController {
     String payload = JacksonConfig.createMapper().writeValueAsString(questionnaireResponse);
     Instant authored = ParseUtils.parseDateTime(questionnaireResponse.authored());
     Optional<QuestionnaireResponseEntity> maybeEntity = repository.findById(id);
-    String authorId = findReferenceOrIdentifier(author);
+    String authorId = ReferenceUtils.findReferenceOrIdentifier(author);
     if (maybeEntity.isPresent()) {
       QuestionnaireResponseEntity entity = maybeEntity.get();
       entity.payload(payload);
@@ -141,7 +125,12 @@ public class QuestionnaireResponseController {
       return ResponseEntity.ok(questionnaireResponse);
     }
     repository.save(
-        QuestionnaireResponseEntity.builder().id(id).payload(payload).authored(authored).build());
+        QuestionnaireResponseEntity.builder()
+            .id(id)
+            .payload(payload)
+            .author(authorId)
+            .authored(authored)
+            .build());
     return ResponseEntity.created(
             URI.create(linkProperties.r4Url() + "/QuestionnaireResponse/" + id))
         .body(questionnaireResponse);
