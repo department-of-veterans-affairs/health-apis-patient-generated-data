@@ -1,5 +1,7 @@
 # QuestionnaireResponse
 
+[base] URL is `https://sandbox-api.va.gov/services/pgd/v0/r4`
+
 **Create new resource:**
 
 Include FHIR Resource in request body in json format
