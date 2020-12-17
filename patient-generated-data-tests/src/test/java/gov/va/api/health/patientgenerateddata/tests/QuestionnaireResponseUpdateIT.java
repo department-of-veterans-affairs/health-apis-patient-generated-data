@@ -17,7 +17,7 @@ import java.time.temporal.ChronoField;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-public class QuestionnaireResponseWritesIT {
+public class QuestionnaireResponseUpdateIT {
   static QuestionnaireResponse questionnaireResponse(String id) {
     return QuestionnaireResponse.builder().id(id).status(Status.completed).build();
   }
@@ -39,15 +39,15 @@ public class QuestionnaireResponseWritesIT {
 
   @Test
   void update_author() {
+    Instant now = Instant.now();
+    Reference ref = Reference.builder().reference("Resource/" + now.toString()).build();
     var id = systemDefinition().idsGenerated().questionnaireResponse();
-    Reference ref =
-        Reference.builder().id(systemDefinition().ids().questionnaireResponseAuthor()).build();
     QuestionnaireResponse qr = questionnaireResponse(id).author(ref);
     doPut("QuestionnaireResponse/" + id, serializePayload(qr), "update author", 200);
     ExpectedResponse persistedResponse =
         doGet("application/json", "QuestionnaireResponse/" + id, 200);
     QuestionnaireResponse persisted = persistedResponse.response().as(QuestionnaireResponse.class);
-    assertThat(persisted.author()).isEqualTo(ref);
+    assertThat(persisted.author().reference()).endsWith(now.toString());
   }
 
   @Test

@@ -42,11 +42,21 @@ public class QuestionnaireResponseIT {
   @Test
   void search_author() {
     assumeEnvironmentIn(Environment.LOCAL);
+    // Environment.QA
+    // Environment.STAGING,
+    // Environment.STAGING_LAB,
+    // Environment.LAB
+
     String author = systemDefinition().ids().questionnaireResponseAuthor();
     String query = String.format("?author=%s", author);
     var response = doGet("application/json", "QuestionnaireResponse" + query, 200);
     QuestionnaireResponse.Bundle bundle = response.expectValid(QuestionnaireResponse.Bundle.class);
     assertThat(bundle.entry()).hasSizeGreaterThan(0);
+
+    query = String.format("?author=%s", "unknown");
+    response = doGet("application/json", "QuestionnaireResponse" + query, 200);
+    bundle = response.expectValid(QuestionnaireResponse.Bundle.class);
+    assertThat(bundle.entry()).isEmpty();
   }
 
   @Test
