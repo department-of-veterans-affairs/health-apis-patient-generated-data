@@ -11,6 +11,7 @@ import gov.va.api.health.autoconfig.logging.Loggable;
 import gov.va.api.health.patientgenerateddata.Exceptions;
 import gov.va.api.health.patientgenerateddata.LinkProperties;
 import gov.va.api.health.patientgenerateddata.ParseUtils;
+import gov.va.api.health.patientgenerateddata.ReferenceUtils;
 import gov.va.api.health.patientgenerateddata.VulcanizedBundler;
 import gov.va.api.health.r4.api.resources.QuestionnaireResponse;
 import gov.va.api.lighthouse.vulcan.Vulcan;
@@ -54,10 +55,12 @@ public class QuestionnaireResponseController {
         .mappings(
             Mappings.forEntity(QuestionnaireResponseEntity.class)
                 .value("_id", "id")
+                .value("author", "author")
                 .dateAsInstant("authored", "authored")
                 .get())
         .defaultQuery(returnNothing())
-        .rule(atLeastOneParameterOf("_id", "authored"))
+        .rule(atLeastOneParameterOf("_id", "author", "authored"))
+        .rule(parametersNeverSpecifiedTogether("_id", "author"))
         .rule(parametersNeverSpecifiedTogether("_id", "authored"))
         .build();
   }
@@ -108,17 +111,24 @@ public class QuestionnaireResponseController {
       @Valid @RequestBody QuestionnaireResponse questionnaireResponse) {
     checkState(id.equals(questionnaireResponse.id()), "%s != %s", id, questionnaireResponse.id());
     String payload = JacksonConfig.createMapper().writeValueAsString(questionnaireResponse);
+    String authorId = ReferenceUtils.resourceId(questionnaireResponse.author());
     Instant authored = ParseUtils.parseDateTime(questionnaireResponse.authored());
     Optional<QuestionnaireResponseEntity> maybeEntity = repository.findById(id);
     if (maybeEntity.isPresent()) {
       QuestionnaireResponseEntity entity = maybeEntity.get();
       entity.payload(payload);
+      entity.author(authorId);
       entity.authored(authored);
       repository.save(entity);
       return ResponseEntity.ok(questionnaireResponse);
     }
     repository.save(
-        QuestionnaireResponseEntity.builder().id(id).payload(payload).authored(authored).build());
+        QuestionnaireResponseEntity.builder()
+            .id(id)
+            .payload(payload)
+            .author(authorId)
+            .authored(authored)
+            .build());
     return ResponseEntity.created(
             URI.create(linkProperties.r4Url() + "/QuestionnaireResponse/" + id))
         .body(questionnaireResponse);

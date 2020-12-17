@@ -4,6 +4,7 @@ import static com.google.common.base.Preconditions.checkState;
 import static java.util.stream.Collectors.joining;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import gov.va.api.health.r4.api.elements.Reference;
 import gov.va.api.health.r4.api.resources.Observation;
 import gov.va.api.health.r4.api.resources.Patient;
 import gov.va.api.health.r4.api.resources.Questionnaire;
@@ -208,15 +209,24 @@ public final class Populaterator {
       checkState(!ids.contains(id), "Duplicate ID " + id);
       ids.add(id);
       String sqlInsert =
-          sqlInsert("app.QuestionnaireResponse", List.of("id", "payload", "version", "authored"));
+          sqlInsert(
+              "app.QuestionnaireResponse",
+              List.of("id", "payload", "version", "authored", "author"));
       try (PreparedStatement statement = connection.prepareStatement(sqlInsert)) {
         statement.setObject(1, id);
         statement.setObject(2, MAPPER.writeValueAsString(response));
         statement.setObject(3, 0);
         statement.setTimestamp(4, timestamp(parseDateTime(response.authored())));
+        statement.setObject(5, resourceId(response.author()));
         statement.execute();
       }
     }
+  }
+
+  private static String resourceId(Reference ref) {
+    checkState(ref.reference().contains("/"));
+    int lastSlashLocation = ref.reference().lastIndexOf("/") + 1;
+    return ref.reference().substring(lastSlashLocation);
   }
 
   private static String sqlInsert(@NonNull String table, @NonNull Collection<String> columns) {

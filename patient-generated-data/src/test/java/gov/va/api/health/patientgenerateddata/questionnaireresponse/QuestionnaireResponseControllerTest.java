@@ -12,6 +12,7 @@ import static org.mockito.Mockito.when;
 import gov.va.api.health.autoconfig.configuration.JacksonConfig;
 import gov.va.api.health.patientgenerateddata.Exceptions;
 import gov.va.api.health.patientgenerateddata.LinkProperties;
+import gov.va.api.health.r4.api.elements.Reference;
 import gov.va.api.health.r4.api.resources.QuestionnaireResponse;
 import gov.va.api.lighthouse.vulcan.InvalidRequest;
 import java.net.URI;
@@ -86,6 +87,7 @@ public class QuestionnaireResponseControllerTest {
     when(repo.findById("x"))
         .thenReturn(
             Optional.of(QuestionnaireResponseEntity.builder().id("x").payload(payload).build()));
+
     assertThat(new QuestionnaireResponseController(pageLinks, repo).read("x"))
         .isEqualTo(QuestionnaireResponse.builder().id("x").build());
   }
@@ -102,7 +104,9 @@ public class QuestionnaireResponseControllerTest {
   @SneakyThrows
   void update_existing() {
     QuestionnaireResponseRepository repo = mock(QuestionnaireResponseRepository.class);
-    QuestionnaireResponse questionnaireResponse = QuestionnaireResponse.builder().id("x").build();
+    Reference authorRef = Reference.builder().reference("1011537977V693883").build();
+    QuestionnaireResponse questionnaireResponse =
+        QuestionnaireResponse.builder().id("x").author(authorRef).build();
     String payload = JacksonConfig.createMapper().writeValueAsString(questionnaireResponse);
     when(repo.findById("x"))
         .thenReturn(
@@ -118,7 +122,9 @@ public class QuestionnaireResponseControllerTest {
   @SneakyThrows
   void update_new() {
     QuestionnaireResponseRepository repo = mock(QuestionnaireResponseRepository.class);
-    QuestionnaireResponse questionnaireResponse = QuestionnaireResponse.builder().id("x").build();
+    Reference authorRef = Reference.builder().reference("1011537977V693883").build();
+    QuestionnaireResponse questionnaireResponse =
+        QuestionnaireResponse.builder().id("x").author(authorRef).build();
     String payload = JacksonConfig.createMapper().writeValueAsString(questionnaireResponse);
     assertThat(
             new QuestionnaireResponseController(pageLinks, repo).update("x", questionnaireResponse))
@@ -130,7 +136,7 @@ public class QuestionnaireResponseControllerTest {
   }
 
   @ParameterizedTest
-  @ValueSource(strings = {"?_id=1"})
+  @ValueSource(strings = {"?_id=1", "?author=1011537977V693883"})
   @SneakyThrows
   void validSearch(String query) {
     QuestionnaireResponseRepository repo = mock(QuestionnaireResponseRepository.class);

@@ -94,7 +94,7 @@ class MetadataController {
             SupportedResource.builder()
                 .type("QuestionnaireResponse")
                 .profileUrl("https://www.hl7.org/fhir/r4/questionnaireresponse.html")
-                .searches(Set.of(SearchParam.ID, SearchParam.AUTHORED))
+                .searches(Set.of(SearchParam.ID, SearchParam.AUTHOR, SearchParam.AUTHORED))
                 .build())
         .map(SupportedResource::asResource)
         .collect(toList());
@@ -119,6 +119,7 @@ class MetadataController {
   @Getter
   @AllArgsConstructor
   enum SearchParam {
+    AUTHOR("author", CapabilityStatement.SearchParamType.reference),
     AUTHORED("authored", CapabilityStatement.SearchParamType.date),
     ID("_id", CapabilityStatement.SearchParamType.token),
     PATIENT("patient", CapabilityStatement.SearchParamType.reference);
