@@ -29,7 +29,7 @@ public class QuestionnaireResponseUpdateIT {
     assumeEnvironmentIn(Environment.LOCAL);
     // Environment.QA, Environment.STAGING, Environment.STAGING_LAB
 
-    var id = systemDefinition().idsGenerated().questionnaireResponse();
+    var id = systemDefinition().ids().questionnaireResponseGenerated();
     ExpectedResponse existing = doGet("application/json", "QuestionnaireResponse/" + id, null);
     if (existing.response().statusCode() == 404) {
       QuestionnaireResponse qr = questionnaireResponse(id);
@@ -41,7 +41,7 @@ public class QuestionnaireResponseUpdateIT {
   void update_author() {
     Instant now = Instant.now();
     Reference ref = Reference.builder().reference("Resource/" + now.toString()).build();
-    var id = systemDefinition().idsGenerated().questionnaireResponse();
+    var id = systemDefinition().ids().questionnaireResponseGenerated();
     QuestionnaireResponse qr = questionnaireResponse(id).author(ref);
     doPut("QuestionnaireResponse/" + id, serializePayload(qr), "update author", 200);
     ExpectedResponse persistedResponse =
@@ -52,7 +52,7 @@ public class QuestionnaireResponseUpdateIT {
 
   @Test
   void update_authored() {
-    var id = systemDefinition().idsGenerated().questionnaireResponse();
+    var id = systemDefinition().ids().questionnaireResponseGenerated();
     Instant now = Instant.now().with(ChronoField.NANO_OF_SECOND, 0);
     QuestionnaireResponse qr = questionnaireResponse(id).authored(now.toString());
     doPut("QuestionnaireResponse/" + id, serializePayload(qr), "update authored date", 200);
