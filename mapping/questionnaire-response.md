@@ -24,7 +24,7 @@ Include FHIR Resource in request body in json format
 
 `GET [base]/QuestionnaireResponse?subject=1008596379V859838`
 
-**Search by appointment meta tag:**
+**Search by meta tag (MAP appointment):**
 
 `GET [base]/QuestionnaireResponse?_tag=https://veteran.apps.va.gov/appointments/v1|202008211400983000084800000000000000`
 
