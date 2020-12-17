@@ -47,15 +47,15 @@ public class QuestionnaireResponseController {
 
   private final QuestionnaireResponseRepository repository;
 
-  private static String setReferenceOrIdentifier(Reference author) {
+  private static String findReferenceOrIdentifier(Reference author) {
     if (author == null) {
       return null;
     }
-    if (author.id() != null) {
-      return author.id();
-    }
     if (author.reference() != null) {
       return author.reference();
+    }
+    if (author.id() != null) {
+      return author.id();
     }
     return null;
   }
@@ -126,7 +126,7 @@ public class QuestionnaireResponseController {
     String payload = JacksonConfig.createMapper().writeValueAsString(questionnaireResponse);
     Instant authored = ParseUtils.parseDateTime(questionnaireResponse.authored());
     Optional<QuestionnaireResponseEntity> maybeEntity = repository.findById(id);
-    String authorId = setReferenceOrIdentifier(author);
+    String authorId = findReferenceOrIdentifier(author);
     if (maybeEntity.isPresent()) {
       QuestionnaireResponseEntity entity = maybeEntity.get();
       entity.payload(payload);
