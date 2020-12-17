@@ -7,6 +7,7 @@ import java.util.stream.Stream;
 import lombok.experimental.Delegate;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
+import com.google.common.collect.Streams;
 
 @ControllerAdvice
 public class QuestionnaireResponseIncludesIcnMajig implements ResponseBodyAdvice<Object> {
@@ -18,8 +19,9 @@ public class QuestionnaireResponseIncludesIcnMajig implements ResponseBodyAdvice
           .extractResources(bundle -> bundle.entry().stream().map(AbstractEntry::resource))
           .extractIcns(
               body ->
-                  Stream.concat(
+                  Streams.concat(
                       Stream.ofNullable(IncludesIcnMajig.icn(body.subject())),
-                      Stream.ofNullable(IncludesIcnMajig.icn(body.author()))))
+                      Stream.ofNullable(IncludesIcnMajig.icn(body.author())),
+                      Stream.ofNullable(IncludesIcnMajig.icn(body.source()))))
           .build();
 }
