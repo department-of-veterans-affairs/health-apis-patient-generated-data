@@ -4,9 +4,9 @@
   "meta" : {
     "tag" : [
       {
-        "system" : "https://wiki.mobilehealth.va.gov/display/PGDMS/Client+Provenance+Mapping",
-        "code" : "vagov-a0e116eb-faa1-4703-aafe-1a270128607a",
-        "display" : "VA GOV CLIPBOARD"
+        "system" : "https://api.va.gov/services/pgd",
+        "code" : "66a5960c-68ee-4689-88ae-4c7cccf7ca79",
+        "display" : "TEST APP"
       }
     ]
   },
@@ -21,38 +21,18 @@
     },
     {
       "linkId" : "02",
-      "text" : "What do I want to talk about at this appointment?",
+      "text" : "Are there any additional details you'd like to share with your provider about this appointment?",
       "type" : "text"
     },
     {
       "linkId" : "03",
-      "text" : "I have new symptoms.",
-      "type" : "boolean"
+      "text" : "Are there any life events that are positively or negatively affecting your health?",
+      "type" : "text"
     },
     {
       "linkId" : "04",
-      "text" : "I have medication questions.",
-      "type" : "boolean"
-    },
-    {
-      "linkId" : "05",
-      "text" : "I have questions about my diagnosis.",
-      "type" : "boolean"
-    },
-    {
-      "linkId" : "06",
-      "text" : "I have questions about my tests.",
-      "type" : "boolean"
-    },
-    {
-      "linkId" : "07",
-      "text" : "I have questions about my treatment plans.",
-      "type" : "boolean"
-    },
-    {
-      "linkId" : "08",
-      "text" : "I have other concerns or life issues to discuss.",
-      "type" : "boolean"
+      "text" : "Do you have other questions you want to ask your provider?",
+      "type" : "text"
     }
   ]
 }
