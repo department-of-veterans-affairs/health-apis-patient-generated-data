@@ -12,6 +12,10 @@ Include FHIR Resource in request body in json format
 
 `PUT [base]/QuestionnaireResponse/e4601c4c-34bd-4ecc-ba2a-ce39502ed6b9`
 
+**Read:**
+
+`GET [base]/QuestionnaireResponse/e4601c4c-34bd-4ecc-ba2a-ce39502ed6b9`
+
 **[Search](https://www.hl7.org/fhir/r4/questionnaireresponse.html#search) by authored date:**
 
 `GET [base]/QuestionnaireResponse?authored=2013-02-19T14:15:00-05:00`
