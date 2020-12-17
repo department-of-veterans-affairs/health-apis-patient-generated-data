@@ -37,8 +37,7 @@ Include FHIR Resource in request body in json format
       },
       {
         "system" : "https://veteran.apps.va.gov/appointments/v1",
-        "code" : "202008211400983000084800000000000000",
-        "display" : "MAP APPOINTMENT"
+        "code" : "202008211400983000084800000000000000"
       }
     ]
   },
@@ -46,10 +45,10 @@ Include FHIR Resource in request body in json format
     "status" : "generated",
     "div" : "<div><h1>Pre-Visit Questionnaire</h1></div>"
   },
-  "questionnaire" : "[base]/Questionnaire/a4edd60a-f142-4547-8a9e-02a6bba76bcc",
+  "questionnaire" : "Questionnaire/a4edd60a-f142-4547-8a9e-02a6bba76bcc",
   "status" : "completed",
   "subject" : {
-    "reference" : "[base]/Patient/1008596379V859838"
+    "reference" : "https://api.va.gov/services/fhir/v0/r4/Patient/1008596379V859838"
   },
   "authored" : "2020-08-20",
   "item" : [
