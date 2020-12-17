@@ -23,7 +23,7 @@
   "subject" : {
     "reference" : "https://api.va.gov/services/fhir/v0/r4/Patient/1008596379V859838"
   },
-  "authored" : "2020-08-20",
+  "authored" : "2020-08-20T22:26:06.453127500Z",
   "item" : [
     {
       "linkId" : "01",
