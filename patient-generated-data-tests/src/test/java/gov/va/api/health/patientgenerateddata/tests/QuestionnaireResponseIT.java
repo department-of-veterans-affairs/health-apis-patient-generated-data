@@ -41,6 +41,7 @@ public class QuestionnaireResponseIT {
 
   @Test
   void search_author() {
+    assumeEnvironmentIn(Environment.LOCAL);
     String author = systemDefinition().ids().questionnaireResponseAuthor();
     String query = String.format("?author=%s", author);
     var response = doGet("application/json", "QuestionnaireResponse" + query, 200);
