@@ -11,27 +11,6 @@ import lombok.experimental.UtilityClass;
 public final class ReferenceUtils {
 
   /**
-   * Extracts the relevant reference or identifier value from an author reference, based on which is
-   * present.
-   */
-  public static String findReferenceOrIdentifier(Reference ref) {
-    if (ref == null) {
-      return null;
-    }
-    if (ref.reference() != null) {
-      int lastSlashLocation = ref.reference().lastIndexOf("/");
-      if (lastSlashLocation == -1) {
-        return ref.reference();
-      }
-      return ref.reference().substring(lastSlashLocation + 1);
-    }
-    if (ref.identifier() != null) {
-      return ref.identifier().value();
-    }
-    return null;
-  }
-
-  /**
    * Extract resource ID. This is looking for any number of path elements, then a resource type
    * followed by an ID, e.g. `foo/bar/Patient/1234567890V123456`.
    */

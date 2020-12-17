@@ -115,7 +115,7 @@ public class QuestionnaireResponseController {
     String payload = JacksonConfig.createMapper().writeValueAsString(questionnaireResponse);
     Instant authored = ParseUtils.parseDateTime(questionnaireResponse.authored());
     Optional<QuestionnaireResponseEntity> maybeEntity = repository.findById(id);
-    String authorId = ReferenceUtils.findReferenceOrIdentifier(author);
+    String authorId = ReferenceUtils.resourceId(author);
     if (maybeEntity.isPresent()) {
       QuestionnaireResponseEntity entity = maybeEntity.get();
       entity.payload(payload);
