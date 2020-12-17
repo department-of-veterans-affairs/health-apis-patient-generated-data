@@ -105,9 +105,9 @@ public class QuestionnaireResponseControllerTest {
   @SneakyThrows
   void update_existing() {
     QuestionnaireResponseRepository repo = mock(QuestionnaireResponseRepository.class);
-    Reference ref = Reference.builder().id("1011537977V693883").build();
+    Reference authorRef = Reference.builder().reference("1011537977V693883").build();
     QuestionnaireResponse questionnaireResponse =
-        QuestionnaireResponse.builder().id("x").author(ref).build();
+        QuestionnaireResponse.builder().id("x").author(authorRef).build();
     String payload = JacksonConfig.createMapper().writeValueAsString(questionnaireResponse);
     when(repo.findById("x"))
         .thenReturn(
@@ -123,9 +123,9 @@ public class QuestionnaireResponseControllerTest {
   @SneakyThrows
   void update_new() {
     QuestionnaireResponseRepository repo = mock(QuestionnaireResponseRepository.class);
-    Reference ref = Reference.builder().id("1011537977V693883").build();
+    Reference authorRef = Reference.builder().reference("1011537977V693883").build();
     QuestionnaireResponse questionnaireResponse =
-        QuestionnaireResponse.builder().id("x").author(ref).build();
+        QuestionnaireResponse.builder().id("x").author(authorRef).build();
     String payload = JacksonConfig.createMapper().writeValueAsString(questionnaireResponse);
     assertThat(
             new QuestionnaireResponseController(pageLinks, repo).update("x", questionnaireResponse))
