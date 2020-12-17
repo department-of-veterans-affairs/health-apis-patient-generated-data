@@ -1,5 +1,6 @@
 package gov.va.api.health.patientgenerateddata.questionnaireresponse;
 
+import com.google.common.collect.Streams;
 import gov.va.api.health.patientgenerateddata.IncludesIcnMajig;
 import gov.va.api.health.r4.api.bundle.AbstractEntry;
 import gov.va.api.health.r4.api.resources.QuestionnaireResponse;
@@ -7,7 +8,6 @@ import java.util.stream.Stream;
 import lombok.experimental.Delegate;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
-import com.google.common.collect.Streams;
 
 @ControllerAdvice
 public class QuestionnaireResponseIncludesIcnMajig implements ResponseBodyAdvice<Object> {
