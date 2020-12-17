@@ -8,9 +8,10 @@
     <relativePath/>
   </parent>
   <artifactId>patient-generated-data-tests</artifactId>
-  <version>0.0.41-SNAPSHOT</version>
+  <version>0.0.45-SNAPSHOT</version>
   <packaging>jar</packaging>
   <properties>
+    <fhir-resources.version>5.0.17</fhir-resources.version>
     <sentinel.skipLaunch>false</sentinel.skipLaunch>
   </properties>
   <dependencies>
@@ -36,6 +37,11 @@
       <groupId>gov.va.api.health</groupId>
       <artifactId>sentinel</artifactId>
       <version>${project.parent.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>gov.va.api.health</groupId>
+      <artifactId>us-core-r4</artifactId>
+      <version>${fhir-resources.version}</version>
     </dependency>
   </dependencies>
   <build>

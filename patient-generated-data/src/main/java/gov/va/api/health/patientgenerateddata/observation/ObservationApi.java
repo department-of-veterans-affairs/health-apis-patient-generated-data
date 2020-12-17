@@ -58,12 +58,18 @@ public interface ObservationApi {
   @Path("Observation/{id}")
   @ApiResponse(
       responseCode = "200",
-      description = "Record found",
-      content = @Content(mediaType = "application/fhir+json"))
+      description = "Record updated",
+      content =
+          @Content(
+              mediaType = "application/fhir+json",
+              schema = @Schema(implementation = Observation.class)))
   @ApiResponse(
       responseCode = "201",
-      description = "New record created",
-      content = @Content(mediaType = "application/fhir+json"))
+      description = "Record created",
+      content =
+          @Content(
+              mediaType = "application/fhir+json",
+              schema = @Schema(implementation = Observation.class)))
   @ApiResponse(
       responseCode = "400",
       description = "Bad request",
@@ -71,7 +77,7 @@ public interface ObservationApi {
           @Content(
               mediaType = "application/fhir+json",
               schema = @Schema(implementation = OperationOutcome.class)))
-  void observationUpdate(
+  Observation observationUpdate(
       @Parameter(
               in = ParameterIn.PATH,
               name = "id",

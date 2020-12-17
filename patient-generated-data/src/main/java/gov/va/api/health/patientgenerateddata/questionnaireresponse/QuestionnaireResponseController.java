@@ -17,6 +17,7 @@ import gov.va.api.health.r4.api.resources.QuestionnaireResponse;
 import gov.va.api.lighthouse.vulcan.Vulcan;
 import gov.va.api.lighthouse.vulcan.VulcanConfiguration;
 import gov.va.api.lighthouse.vulcan.mappings.Mappings;
+import java.net.URI;
 import java.time.Instant;
 import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
@@ -24,7 +25,6 @@ import javax.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.DataBinder;
 import org.springframework.validation.annotation.Validated;
@@ -118,7 +118,7 @@ public class QuestionnaireResponseController {
   @SneakyThrows
   @PutMapping(value = "/{id}")
   @Loggable(arguments = false)
-  ResponseEntity<Void> update(
+  ResponseEntity<QuestionnaireResponse> update(
       @PathVariable("id") String id,
       @Valid @RequestBody QuestionnaireResponse questionnaireResponse) {
     checkState(id.equals(questionnaireResponse.id()), "%s != %s", id, questionnaireResponse.id());
@@ -133,15 +133,12 @@ public class QuestionnaireResponseController {
       entity.author(authorId);
       entity.authored(authored);
       repository.save(entity);
-      return ResponseEntity.ok().build();
+      return ResponseEntity.ok(questionnaireResponse);
     }
     repository.save(
-        QuestionnaireResponseEntity.builder()
-            .id(id)
-            .payload(payload)
-            .author(authorId)
-            .authored(authored)
-            .build());
-    return ResponseEntity.status(HttpStatus.CREATED).build();
+        QuestionnaireResponseEntity.builder().id(id).payload(payload).authored(authored).build());
+    return ResponseEntity.created(
+            URI.create(linkProperties.r4Url() + "/QuestionnaireResponse/" + id))
+        .body(questionnaireResponse);
   }
 }
