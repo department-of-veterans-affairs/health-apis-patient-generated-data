@@ -47,6 +47,19 @@ public class QuestionnaireResponseController {
 
   private final QuestionnaireResponseRepository repository;
 
+  private static String setReferenceOrIdentifier(Reference author) {
+    if (author == null) {
+      return null;
+    }
+    if (author.id() != null) {
+      return author.id();
+    }
+    if (author.reference() != null) {
+      return author.reference();
+    }
+    return null;
+  }
+
   private VulcanConfiguration<QuestionnaireResponseEntity> configuration() {
     return VulcanConfiguration.forEntity(QuestionnaireResponseEntity.class)
         .paging(
@@ -60,7 +73,7 @@ public class QuestionnaireResponseController {
                 .get())
         .defaultQuery(returnNothing())
         .rule(atLeastOneParameterOf("_id", "authored", "author"))
-        .rule(parametersNeverSpecifiedTogether("_id", "authored"))
+        .rule(parametersNeverSpecifiedTogether("_id", "authored", "author"))
         .build();
   }
 
@@ -113,10 +126,11 @@ public class QuestionnaireResponseController {
     String payload = JacksonConfig.createMapper().writeValueAsString(questionnaireResponse);
     Instant authored = ParseUtils.parseDateTime(questionnaireResponse.authored());
     Optional<QuestionnaireResponseEntity> maybeEntity = repository.findById(id);
+    String authorId = setReferenceOrIdentifier(author);
     if (maybeEntity.isPresent()) {
       QuestionnaireResponseEntity entity = maybeEntity.get();
       entity.payload(payload);
-      entity.author(author != null ? author.id() : null);
+      entity.author(authorId);
       entity.authored(authored);
       repository.save(entity);
       return ResponseEntity.ok().build();
@@ -125,7 +139,7 @@ public class QuestionnaireResponseController {
         QuestionnaireResponseEntity.builder()
             .id(id)
             .payload(payload)
-            .author(author != null ? author.id() : null)
+            .author(authorId)
             .authored(authored)
             .build());
     return ResponseEntity.status(HttpStatus.CREATED).build();
