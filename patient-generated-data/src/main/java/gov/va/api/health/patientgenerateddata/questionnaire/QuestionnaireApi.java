@@ -47,7 +47,7 @@ public interface QuestionnaireApi {
               name = "id",
               required = true,
               description =
-                  "The logical id of the resource. Once assigned, this value never changes.")
+                  "The logical ID of the resource. Once assigned, this value never changes.")
           String id);
 
   @Operation(
@@ -83,7 +83,7 @@ public interface QuestionnaireApi {
               name = "id",
               required = true,
               description =
-                  "The logical id of the resource. Once assigned, this value never changes.")
+                  "The logical ID of the resource. Once assigned, this value never changes.")
           String id,
       @RequestBody(required = true, description = "The FHIR resource in JSON format.")
           Questionnaire body);

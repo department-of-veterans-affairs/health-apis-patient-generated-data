@@ -47,7 +47,7 @@ public interface ObservationApi {
               name = "id",
               required = true,
               description =
-                  "The logical id of the resource." + " Once assigned, this value never changes.")
+                  "The logical ID of the resource. Once assigned, this value never changes.")
           String id);
 
   @Operation(
@@ -83,7 +83,7 @@ public interface ObservationApi {
               name = "id",
               required = true,
               description =
-                  "The logical id of the resource." + " Once assigned, this value never changes.")
+                  "The logical ID of the resource." + " Once assigned, this value never changes.")
           String id,
       @Parameter(required = true) @RequestBody Observation observation);
 }
