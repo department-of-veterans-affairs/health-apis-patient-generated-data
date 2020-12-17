@@ -28,15 +28,15 @@ import org.springframework.data.domain.Sort;
 public class QuestionnaireResponseEntity implements PayloadEntity {
   @Id @EqualsAndHashCode.Include private String id;
 
+  @Version private Integer version;
+
   @Lob
   @Basic(fetch = FetchType.EAGER)
   private String payload;
 
-  @Version private Integer version;
+  private String author;
 
   private Instant authored;
-
-  private String author;
 
   public static Sort naturalOrder() {
     return Sort.by("id").ascending();

@@ -223,10 +223,10 @@ public final class Populaterator {
     }
   }
 
-  private static String resourceId(Reference author) {
-    checkState(author.reference().contains("/"));
-    int lastSlashLocation = author.reference().lastIndexOf("/") + 1;
-    return author.reference().substring(lastSlashLocation);
+  private static String resourceId(Reference ref) {
+    checkState(ref.reference().contains("/"));
+    int lastSlashLocation = ref.reference().lastIndexOf("/") + 1;
+    return ref.reference().substring(lastSlashLocation);
   }
 
   private static String sqlInsert(@NonNull String table, @NonNull Collection<String> columns) {

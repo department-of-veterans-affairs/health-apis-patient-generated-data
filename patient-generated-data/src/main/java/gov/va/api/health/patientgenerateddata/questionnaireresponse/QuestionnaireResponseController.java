@@ -13,7 +13,6 @@ import gov.va.api.health.patientgenerateddata.LinkProperties;
 import gov.va.api.health.patientgenerateddata.ParseUtils;
 import gov.va.api.health.patientgenerateddata.ReferenceUtils;
 import gov.va.api.health.patientgenerateddata.VulcanizedBundler;
-import gov.va.api.health.r4.api.elements.Reference;
 import gov.va.api.health.r4.api.resources.QuestionnaireResponse;
 import gov.va.api.lighthouse.vulcan.Vulcan;
 import gov.va.api.lighthouse.vulcan.VulcanConfiguration;
@@ -60,9 +59,9 @@ public class QuestionnaireResponseController {
                 .dateAsInstant("authored", "authored")
                 .get())
         .defaultQuery(returnNothing())
-        .rule(atLeastOneParameterOf("_id", "authored", "author"))
-        .rule(parametersNeverSpecifiedTogether("_id", "authored"))
+        .rule(atLeastOneParameterOf("_id", "author", "authored"))
         .rule(parametersNeverSpecifiedTogether("_id", "author"))
+        .rule(parametersNeverSpecifiedTogether("_id", "authored"))
         .build();
   }
 
@@ -111,11 +110,10 @@ public class QuestionnaireResponseController {
       @PathVariable("id") String id,
       @Valid @RequestBody QuestionnaireResponse questionnaireResponse) {
     checkState(id.equals(questionnaireResponse.id()), "%s != %s", id, questionnaireResponse.id());
-    Reference author = questionnaireResponse.author();
     String payload = JacksonConfig.createMapper().writeValueAsString(questionnaireResponse);
+    String authorId = ReferenceUtils.resourceId(questionnaireResponse.author());
     Instant authored = ParseUtils.parseDateTime(questionnaireResponse.authored());
     Optional<QuestionnaireResponseEntity> maybeEntity = repository.findById(id);
-    String authorId = ReferenceUtils.resourceId(author);
     if (maybeEntity.isPresent()) {
       QuestionnaireResponseEntity entity = maybeEntity.get();
       entity.payload(payload);
