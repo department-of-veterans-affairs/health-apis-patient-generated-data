@@ -1,14 +1,26 @@
 QuestionnaireResponse
 
-[Search](https://www.hl7.org/fhir/r4/questionnaireresponse.html#search) by authored date:
+**Create new resource:**
+
+Include FHIR Resource in request body in json format.
+
+`POST [base]/QuestionnaireResponse`
+
+**Update existing resource:**
+
+Include FHIR Resource in request body in json format.
+
+`PUT [base]/QuestionnaireResponse/e4601c4c-34bd-4ecc-ba2a-ce39502ed6b9`
+
+**[Search](https://www.hl7.org/fhir/r4/questionnaireresponse.html#search) by authored date:**
 
 `GET [base]/QuestionnaireResponse?authored=2013-02-19T14:15:00-05:00`
 
-Search by subject (patient):
+**Search by subject (patient):**
 
 `GET [base]/QuestionnaireResponse?subject=1008596379V859838`
 
-Search by appointment meta tag:
+**Search by appointment meta tag:**
 
 `GET [base]/QuestionnaireResponse?_tag=https://veteran.apps.va.gov/appointments/v1|202008211400983000084800000000000000`
 
