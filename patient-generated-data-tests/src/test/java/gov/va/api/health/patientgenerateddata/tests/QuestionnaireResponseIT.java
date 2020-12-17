@@ -43,7 +43,7 @@ public class QuestionnaireResponseIT {
   void search_author() {
     String author = systemDefinition().ids().questionnaireResponseAuthor();
     String query = String.format("?author=%s", author);
-    var response = doGet("application/json", "QuestionnaireResponse/" + query, 200);
+    var response = doGet("application/json", "QuestionnaireResponse" + query, 200);
     QuestionnaireResponse.Bundle bundle = response.expectValid(QuestionnaireResponse.Bundle.class);
     assertThat(bundle.entry()).hasSizeGreaterThan(0);
   }

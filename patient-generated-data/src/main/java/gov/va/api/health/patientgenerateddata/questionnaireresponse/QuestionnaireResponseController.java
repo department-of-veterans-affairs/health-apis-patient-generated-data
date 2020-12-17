@@ -52,7 +52,11 @@ public class QuestionnaireResponseController {
       return null;
     }
     if (author.reference() != null) {
-      return author.reference();
+      int lastSlashLocation = author.reference().lastIndexOf("/");
+      if (lastSlashLocation == -1) {
+        return author.reference();
+      }
+      return author.reference().substring(lastSlashLocation + 1);
     }
     if (author.id() != null) {
       return author.id();
@@ -73,7 +77,8 @@ public class QuestionnaireResponseController {
                 .get())
         .defaultQuery(returnNothing())
         .rule(atLeastOneParameterOf("_id", "authored", "author"))
-        .rule(parametersNeverSpecifiedTogether("_id", "authored", "author"))
+        .rule(parametersNeverSpecifiedTogether("_id", "authored"))
+        .rule(parametersNeverSpecifiedTogether("_id", "author"))
         .build();
   }
 
