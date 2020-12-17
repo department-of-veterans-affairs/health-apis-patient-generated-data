@@ -119,7 +119,7 @@ class MetadataController {
   @Getter
   @AllArgsConstructor
   enum SearchParam {
-    AUTHOR("author", CapabilityStatement.SearchParamType.string),
+    AUTHOR("author", CapabilityStatement.SearchParamType.reference),
     AUTHORED("authored", CapabilityStatement.SearchParamType.date),
     ID("_id", CapabilityStatement.SearchParamType.token),
     PATIENT("patient", CapabilityStatement.SearchParamType.reference);

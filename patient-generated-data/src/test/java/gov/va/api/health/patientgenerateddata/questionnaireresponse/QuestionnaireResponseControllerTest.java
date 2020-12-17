@@ -32,7 +32,6 @@ import org.springframework.validation.DataBinder;
 import org.springframework.web.util.UriComponentsBuilder;
 
 public class QuestionnaireResponseControllerTest {
-
   LinkProperties pageLinks =
       LinkProperties.builder()
           .defaultPageSize(500)

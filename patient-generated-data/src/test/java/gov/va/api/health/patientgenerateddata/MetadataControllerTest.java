@@ -184,7 +184,8 @@ public class MetadataControllerTest {
                                                 CapabilityStatement.SearchParam.builder()
                                                     .name("author")
                                                     .type(
-                                                        CapabilityStatement.SearchParamType.string)
+                                                        CapabilityStatement.SearchParamType
+                                                            .reference)
                                                     .build(),
                                                 CapabilityStatement.SearchParam.builder()
                                                     .name("authored")
