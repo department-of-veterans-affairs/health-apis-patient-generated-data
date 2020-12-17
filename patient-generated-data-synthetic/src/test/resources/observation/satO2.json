@@ -55,7 +55,7 @@
     "text" : "Oxygen saturation in Arterial blood"
   },
   "subject" : {
-    "reference" : "Patient/1011537977V693883"
+    "reference" : "https://api.va.gov/services/fhir/v0/r4/Patient/1011537977V693883"
   },
   "effectiveDateTime" : "2014-12-05T09:30:10+01:00",
   "valueQuantity" : {
