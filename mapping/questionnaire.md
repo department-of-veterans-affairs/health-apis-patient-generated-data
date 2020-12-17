@@ -4,7 +4,7 @@ Questionnaire
 ([context-type-value](https://www.hl7.org/fhir/r4/questionnaire.html#search)) in clinic
 `https://veteran.apps.va.gov/cdw/v3/facilities/534/clinics/12975`:
 
-`GET [base]/Questionnaire?context-type-value=venue$https://staff.apps.va.gov/VistaEmrService/clinics|534-12975`
+`GET [base]/Questionnaire?context-type-value=venue$https://staff.apps.va.gov/VistaEmrService/clinics|534/12975`
 
 ```
 {
@@ -38,7 +38,7 @@ Questionnaire
         "coding" : [
           {
             "system" : "https://staff.apps.va.gov/VistaEmrService/clinics",
-            "code" : "534-12975"
+            "code" : "534/12975"
           }
         ]
       }
