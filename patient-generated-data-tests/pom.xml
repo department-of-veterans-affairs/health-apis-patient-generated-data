@@ -136,8 +136,7 @@
         </plugins>
       </build>
     </profile>
-    
-        <profile>
+    <profile>
       <id>synthetic-refresh</id>
       <build>
         <plugins>
@@ -161,6 +160,5 @@
         </plugins>
       </build>
     </profile>
-    
   </profiles>
 </project>

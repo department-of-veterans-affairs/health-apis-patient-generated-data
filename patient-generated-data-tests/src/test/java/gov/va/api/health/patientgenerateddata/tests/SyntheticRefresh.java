@@ -1,15 +1,9 @@
 package gov.va.api.health.patientgenerateddata.tests;
 
-import static com.google.common.base.Preconditions.checkState;
-import java.io.File;
-import java.sql.PreparedStatement;
-import java.util.List;
-import java.util.Set;
-import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.api.health.autoconfig.configuration.JacksonConfig;
 import gov.va.api.health.r4.api.resources.Observation;
+import java.io.File;
 import lombok.SneakyThrows;
 
 public class SyntheticRefresh {

@@ -4,7 +4,6 @@ import static com.google.common.base.Preconditions.checkState;
 import static java.util.stream.Collectors.joining;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import gov.va.api.health.autoconfig.configuration.JacksonConfig;
 import gov.va.api.health.r4.api.elements.Reference;
 import gov.va.api.health.r4.api.resources.Observation;
