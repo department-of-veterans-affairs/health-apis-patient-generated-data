@@ -188,7 +188,6 @@ public final class Populaterator {
         statement.setTimestamp(4, timestamp(parseDateTime(response.authored())));
         statement.setObject(5, resourceId(response.author()));
         statement.setObject(6, resourceId(response.subject()));
-        System.out.println(statement);
         statement.execute();
       }
     }
