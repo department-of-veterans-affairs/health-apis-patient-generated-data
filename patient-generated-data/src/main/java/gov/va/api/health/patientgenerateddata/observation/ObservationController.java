@@ -1,7 +1,6 @@
 package gov.va.api.health.patientgenerateddata.observation;
 
 import static com.google.common.base.Preconditions.checkState;
-import static gov.va.api.health.patientgenerateddata.SerializationUtils.deserializedPayload;
 
 import gov.va.api.health.autoconfig.configuration.JacksonConfig;
 import gov.va.api.health.autoconfig.logging.Loggable;
@@ -45,7 +44,7 @@ public class ObservationController {
   Observation read(@PathVariable("id") String id) {
     Optional<ObservationEntity> maybeEntity = repository.findById(id);
     ObservationEntity entity = maybeEntity.orElseThrow(() -> new Exceptions.NotFound(id));
-    return deserializedPayload(id, entity.payload(), Observation.class);
+    return entity.deserializePayload();
   }
 
   @SneakyThrows
