@@ -97,7 +97,7 @@
     }
   ],
   "managingOrganization" : {
-    "reference" : "Organization/f001",
+    "reference" : "https://api.va.gov/services/fhir/v0/r4/Organization/I2-U2YS4YSMVOGA4TNVOJB3RXVIQRQR7OXTDMFNC24L4YSKJKXSTCZA0000",
     "display" : "Burgers University Medical Centre"
   }
 }

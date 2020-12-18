@@ -35,7 +35,7 @@
   "effectiveDateTime" : "2015-02-19T09:30:35+01:00",
   "performer" : [
     {
-      "reference" : "Practitioner/f005",
+      "reference" : "https://api.va.gov/services/fhir/v0/r4/Practitioner/I2-6NVSMKEGQKNB3KRDXBGE7NRIEY000000",
       "display" : "A. Langeveld"
     }
   ],

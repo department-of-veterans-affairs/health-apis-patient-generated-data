@@ -18,7 +18,7 @@
   ],
   "partOf" : [
     {
-      "reference" : "Procedure/ob"
+      "reference" : "https://api.va.gov/services/fhir/v0/r4/Procedure/I2-XOBUUJIJHDENC4YDKPK524H6QC4SEIGNLQQROOTB3W52KMFUEW6Q0000"
     }
   ],
   "status" : "final",
@@ -76,9 +76,6 @@
       "text" : "Normal (applies to non-numeric results)"
     }
   ],
-  "device" : {
-    "reference" : "DeviceMetric/example"
-  },
   "referenceRange" : [
     {
       "low" : {
