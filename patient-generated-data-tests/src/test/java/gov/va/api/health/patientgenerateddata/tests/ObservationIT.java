@@ -22,7 +22,7 @@ public class ObservationIT {
 
   @Test
   void read() {
-	assumeEnvironmentNotIn( Environment.LAB);
+    assumeEnvironmentNotIn(Environment.LAB);
     String id = systemDefinition().ids().observation();
     doGet(null, "Observation/" + id, 200);
     doGet("application/json", "Observation/" + id, 200);

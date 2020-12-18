@@ -22,7 +22,7 @@ public class QuestionnaireIT {
 
   @Test
   void read() {
-	assumeEnvironmentNotIn( Environment.LAB);
+    assumeEnvironmentNotIn(Environment.LAB);
     String id = systemDefinition().ids().questionnaire();
     doGet(null, "Questionnaire/" + id, 200);
     doGet("application/json", "Questionnaire/" + id, 200);
