@@ -141,6 +141,11 @@ databaseChangeLog:
                   type: datetime2
                   constraints:
                     - nullable: true
+              - column:
+                  name: subject
+                  type: varchar
+                  constraints:
+                    - nullable: true
 
   - changeSet:
       id: 8

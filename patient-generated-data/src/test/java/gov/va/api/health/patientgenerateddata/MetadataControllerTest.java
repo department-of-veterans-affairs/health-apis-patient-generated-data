@@ -190,6 +190,12 @@ public class MetadataControllerTest {
                                                 CapabilityStatement.SearchParam.builder()
                                                     .name("authored")
                                                     .type(CapabilityStatement.SearchParamType.date)
+                                                    .build(),
+                                                CapabilityStatement.SearchParam.builder()
+                                                    .name("subject")
+                                                    .type(
+                                                        CapabilityStatement.SearchParamType
+                                                            .reference)
                                                     .build()))
                                         .build()))
                             .build()))

@@ -14,6 +14,7 @@ class SystemDefinitions {
         .questionnaireResponse("3141")
         .questionnaireResponseGenerated("qr202")
         .questionnaireResponseAuthor("1011537977V693883")
+        .questionnaireResponseSubject("1008596379V859838")
         .build();
   }
 
@@ -122,6 +123,7 @@ class SystemDefinitions {
     @NonNull String questionnaireResponse;
     @NonNull String questionnaireResponseGenerated;
     @NonNull String questionnaireResponseAuthor;
+    @NonNull String questionnaireResponseSubject;
   }
 
   @Value

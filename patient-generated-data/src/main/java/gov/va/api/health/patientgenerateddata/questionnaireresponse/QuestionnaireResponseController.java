@@ -59,9 +59,10 @@ public class QuestionnaireResponseController {
                 .dateAsInstant("authored", "authored")
                 .get())
         .defaultQuery(returnNothing())
-        .rule(atLeastOneParameterOf("_id", "author", "authored"))
+        .rule(atLeastOneParameterOf("_id", "author", "authored", "subject"))
         .rule(parametersNeverSpecifiedTogether("_id", "author"))
         .rule(parametersNeverSpecifiedTogether("_id", "authored"))
+        .rule(parametersNeverSpecifiedTogether("_id", "subject"))
         .build();
   }
 

@@ -28,7 +28,6 @@ public class QuestionnaireResponseUpdateIT {
     // Do not run in SLA'd environments
     assumeEnvironmentIn(Environment.LOCAL);
     // Environment.QA, Environment.STAGING, Environment.STAGING_LAB
-
     var id = systemDefinition().ids().questionnaireResponseGenerated();
     ExpectedResponse existing = doGet("application/json", "QuestionnaireResponse/" + id, null);
     if (existing.response().statusCode() == 404) {
@@ -60,5 +59,18 @@ public class QuestionnaireResponseUpdateIT {
         doGet("application/json", "QuestionnaireResponse/" + id, 200);
     QuestionnaireResponse persisted = persistedResponse.response().as(QuestionnaireResponse.class);
     assertThat(persisted.authored()).isEqualTo(now.toString());
+  }
+
+  @Test
+  void update_subject() {
+    Instant now = Instant.now();
+    Reference ref = Reference.builder().reference("Resource/" + now.toString()).build();
+    var id = systemDefinition().ids().questionnaireResponseGenerated();
+    QuestionnaireResponse qr = questionnaireResponse(id).subject(ref);
+    doPut("QuestionnaireResponse/" + id, serializePayload(qr), "update subject", 200);
+    ExpectedResponse persistedResponse =
+        doGet("application/json", "QuestionnaireResponse/" + id, 200);
+    QuestionnaireResponse persisted = persistedResponse.response().as(QuestionnaireResponse.class);
+    assertThat(persisted.subject().reference()).endsWith(now.toString());
   }
 }
