@@ -104,7 +104,7 @@ public final class Populaterator {
   }
 
   @SneakyThrows
-  public static void observation(@NonNull Connection connection) {
+  private static void observation(@NonNull Connection connection) {
     Set<String> ids = new HashSet<>();
     for (File f : new File(baseDir() + "/src/test/resources/observation").listFiles()) {
       Observation observation = MAPPER.readValue(f, Observation.class);
@@ -112,7 +112,7 @@ public final class Populaterator {
           Validation.buildDefaultValidatorFactory().getValidator().validate(observation);
       checkState(violations.isEmpty(), "Invalid payload: " + violations);
       String id = observation.id();
-      checkState(id != null);
+      checkState(f.getName().equals(id));
       checkState(!ids.contains(id), "Duplicate ID " + id);
       ids.add(id);
       String sqlInsert = sqlInsert("app.Observation", List.of("id", "payload", "version"));
@@ -146,7 +146,7 @@ public final class Populaterator {
           Validation.buildDefaultValidatorFactory().getValidator().validate(patient);
       checkState(violations.isEmpty(), "Invalid payload: " + violations);
       String id = patient.id();
-      checkState(id != null);
+      checkState(f.getName().equals(id));
       checkState(!ids.contains(id), "Duplicate ID " + id);
       ids.add(id);
       String sqlInsert = sqlInsert("app.Patient", List.of("id", "payload", "version"));
@@ -184,7 +184,7 @@ public final class Populaterator {
           Validation.buildDefaultValidatorFactory().getValidator().validate(questionnaire);
       checkState(violations.isEmpty(), "Invalid payload: " + violations);
       String id = questionnaire.id();
-      checkState(id != null);
+      checkState(f.getName().equals(id));
       checkState(!ids.contains(id), "Duplicate ID " + id);
       ids.add(id);
       String sqlInsert = sqlInsert("app.Questionnaire", List.of("id", "payload", "version"));
@@ -206,7 +206,7 @@ public final class Populaterator {
           Validation.buildDefaultValidatorFactory().getValidator().validate(response);
       checkState(violations.isEmpty(), "Invalid payload: " + violations);
       String id = response.id();
-      checkState(id != null);
+      checkState(f.getName().equals(id));
       checkState(!ids.contains(id), "Duplicate ID " + id);
       ids.add(id);
       String sqlInsert =
