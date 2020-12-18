@@ -141,3 +141,13 @@ databaseChangeLog:
                   type: datetime2
                   constraints:
                     - nullable: true
+
+  - changeSet:
+      id: 8
+      author: pteracuda
+      changes:
+        - modifyDataType:
+            tableName: QuestionnaireResponse
+            schemaName: app
+            columnName: author
+            newDataType: varchar(1000)
