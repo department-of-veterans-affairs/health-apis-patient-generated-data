@@ -1,7 +1,6 @@
 package gov.va.api.health.patientgenerateddata.patient;
 
 import static com.google.common.base.Preconditions.checkState;
-import static gov.va.api.health.patientgenerateddata.SerializationUtils.deserializedPayload;
 
 import gov.va.api.health.autoconfig.configuration.JacksonConfig;
 import gov.va.api.health.autoconfig.logging.Loggable;
@@ -45,7 +44,7 @@ public class PatientController {
   Patient read(@PathVariable("id") String id) {
     Optional<PatientEntity> maybeEntity = repository.findById(id);
     PatientEntity entity = maybeEntity.orElseThrow(() -> new Exceptions.NotFound(id));
-    return deserializedPayload(id, entity.payload(), Patient.class);
+    return entity.deserializePayload();
   }
 
   @SneakyThrows

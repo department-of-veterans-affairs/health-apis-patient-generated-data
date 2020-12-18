@@ -18,7 +18,7 @@ import lombok.Value;
 
 @Builder
 public final class VulcanizedBundler<
-        EntityT extends PayloadEntity,
+        EntityT extends PayloadEntity<ResourceT>,
         ResourceT extends Resource,
         EntryT extends AbstractEntry<ResourceT>,
         BundleT extends AbstractBundle<EntryT>>
@@ -29,7 +29,7 @@ public final class VulcanizedBundler<
 
   /** Builder helper to infer generic types. */
   public static <
-          EntityT extends PayloadEntity,
+          EntityT extends PayloadEntity<ResourceT>,
           ResourceT extends Resource,
           EntryT extends AbstractEntry<ResourceT>,
           BundleT extends AbstractBundle<EntryT>>
