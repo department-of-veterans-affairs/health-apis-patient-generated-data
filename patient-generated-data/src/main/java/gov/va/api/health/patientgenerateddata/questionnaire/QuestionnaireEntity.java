@@ -1,5 +1,7 @@
 package gov.va.api.health.patientgenerateddata.questionnaire;
 
+import gov.va.api.health.patientgenerateddata.PayloadEntity;
+import gov.va.api.health.r4.api.resources.Questionnaire;
 import javax.persistence.Basic;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -21,7 +23,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class QuestionnaireEntity {
+public class QuestionnaireEntity implements PayloadEntity<Questionnaire> {
   @Id @EqualsAndHashCode.Include private String id;
 
   @Lob
@@ -29,4 +31,9 @@ public class QuestionnaireEntity {
   private String payload;
 
   @Version private Integer version;
+
+  @Override
+  public Class<Questionnaire> resourceType() {
+    return Questionnaire.class;
+  }
 }

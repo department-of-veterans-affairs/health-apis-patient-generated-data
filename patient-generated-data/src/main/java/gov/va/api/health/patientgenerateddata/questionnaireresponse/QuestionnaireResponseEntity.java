@@ -25,7 +25,7 @@ import org.springframework.data.domain.Sort;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class QuestionnaireResponseEntity implements PayloadEntity {
+public class QuestionnaireResponseEntity implements PayloadEntity<QuestionnaireResponse> {
   @Id @EqualsAndHashCode.Include private String id;
 
   @Version private Integer version;
@@ -43,7 +43,7 @@ public class QuestionnaireResponseEntity implements PayloadEntity {
   }
 
   @Override
-  public QuestionnaireResponse deserializePayload() {
-    return deserializePayload(QuestionnaireResponse.class);
+  public Class<QuestionnaireResponse> resourceType() {
+    return QuestionnaireResponse.class;
   }
 }

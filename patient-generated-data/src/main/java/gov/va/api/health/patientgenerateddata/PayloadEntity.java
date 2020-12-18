@@ -1,23 +1,26 @@
 package gov.va.api.health.patientgenerateddata;
 
-import static gov.va.api.health.patientgenerateddata.SerializationUtils.deserializedPayload;
+import static com.google.common.base.Preconditions.checkState;
 
+import gov.va.api.health.autoconfig.configuration.JacksonConfig;
 import gov.va.api.health.r4.api.resources.Resource;
 import lombok.SneakyThrows;
 
-public interface PayloadEntity {
-  Resource deserializePayload();
-
+public interface PayloadEntity<R extends Resource> {
   /** Deserialize payload. */
   @SneakyThrows
-  default <T> T deserializePayload(Class<T> clazz) {
-    if (payload() == null) {
-      throw new Exceptions.InvalidPayload(id(), new NullPointerException());
+  default R deserializePayload() {
+    try {
+      checkState(payload() != null);
+      return JacksonConfig.createMapper().readValue(payload(), resourceType());
+    } catch (Exception e) {
+      throw new Exceptions.InvalidPayload(id(), e);
     }
-    return deserializedPayload(id(), payload(), clazz);
   }
 
   String id();
 
   String payload();
+
+  Class<R> resourceType();
 }
