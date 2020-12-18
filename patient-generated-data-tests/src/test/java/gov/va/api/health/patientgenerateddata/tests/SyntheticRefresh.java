@@ -3,6 +3,14 @@ package gov.va.api.health.patientgenerateddata.tests;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.api.health.autoconfig.configuration.JacksonConfig;
 import gov.va.api.health.r4.api.resources.Observation;
+import gov.va.api.health.r4.api.resources.Patient;
+import gov.va.api.health.r4.api.resources.Questionnaire;
+import gov.va.api.health.r4.api.resources.QuestionnaireResponse;
+import gov.va.api.health.r4.api.resources.Resource;
+
+import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.doPut;
+import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.serializePayload;
+
 import java.io.File;
 import lombok.SneakyThrows;
 
@@ -14,27 +22,19 @@ public class SyntheticRefresh {
   }
 
   public static void main(String[] args) {
-    String sentinel = System.getProperty("sentinel", "unset");
-    String token = System.getProperty("access-token", "unset");
-    System.out.println("sentinel is " + sentinel);
-    System.out.println("access-token is " + token);
-
-    // gather files
-    // make put call for each one
-
-    observation();
-    // patient
-    // questionnaire
-    // questionnaire-response
+    refresh("observation", Observation.class);
+    refresh("patient", Patient.class);
+    refresh("questionnaire", Questionnaire.class);
+    refresh("questionnaire-response", QuestionnaireResponse.class);
   }
 
   @SneakyThrows
-  private static void observation() {
+  private static <T extends Resource> void refresh(String folder, Class<T> clazz) {
     for (File f :
-        new File(baseDir() + "../patient-generated-data-synthetic/src/test/resources/observation")
+        new File(baseDir() + "/../patient-generated-data-synthetic/src/test/resources/" + folder)
             .listFiles()) {
-      Observation observation = MAPPER.readValue(f, Observation.class);
-      System.out.println(observation);
+      T obj = MAPPER.readValue(f, clazz);
+      doPut(clazz.getSimpleName() + "/" + obj.id(), serializePayload(obj), "refresh", null);
     }
   }
 }
