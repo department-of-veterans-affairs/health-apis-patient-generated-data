@@ -3,6 +3,7 @@ package gov.va.api.health.patientgenerateddata.tests;
 import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.doGet;
 import static gov.va.api.health.patientgenerateddata.tests.SystemDefinitions.systemDefinition;
 import static gov.va.api.health.sentinel.EnvironmentAssumptions.assumeEnvironmentIn;
+import static gov.va.api.health.sentinel.EnvironmentAssumptions.assumeEnvironmentNotIn;
 
 import gov.va.api.health.sentinel.Environment;
 import org.junit.jupiter.api.BeforeAll;
@@ -21,6 +22,7 @@ public class ObservationIT {
 
   @Test
   void read() {
+	assumeEnvironmentNotIn( Environment.LAB);
     String id = systemDefinition().ids().observation();
     doGet(null, "Observation/" + id, 200);
     doGet("application/json", "Observation/" + id, 200);

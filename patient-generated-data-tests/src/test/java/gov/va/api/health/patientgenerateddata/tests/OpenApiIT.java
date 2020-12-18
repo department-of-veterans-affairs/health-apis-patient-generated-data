@@ -11,7 +11,7 @@ public class OpenApiIT {
   @BeforeAll
   static void assumeEnvironment() {
     assumeEnvironmentIn(
-        Environment.LOCAL, Environment.STAGING, Environment.STAGING_LAB, Environment.LAB);
+        Environment.LOCAL, Environment.QA, Environment.STAGING, Environment.STAGING_LAB, Environment.LAB);
   }
 
   @Test
