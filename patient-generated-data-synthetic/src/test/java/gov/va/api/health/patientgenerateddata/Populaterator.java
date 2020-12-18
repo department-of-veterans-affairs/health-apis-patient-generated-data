@@ -225,6 +225,9 @@ public final class Populaterator {
   }
 
   private static String resourceId(Reference ref) {
+    if (ref == null) {
+      return null;
+    }
     checkState(ref.reference().contains("/"));
     int lastSlashLocation = ref.reference().lastIndexOf("/") + 1;
     return ref.reference().substring(lastSlashLocation);

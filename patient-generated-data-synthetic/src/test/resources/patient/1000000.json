@@ -1,6 +1,6 @@
 {
-  "resourceType" : "Patient",
   "id" : "1000000",
+  "resourceType" : "Patient",
   "text" : {
     "status" : "generated",
     "div" : "<div></div>"
@@ -24,11 +24,11 @@
   "name" : [
     {
       "use" : "usual",
+      "text" : "Mr. John100 Smith100",
       "family" : "Smith100",
       "given" : [
         "John100"
-      ],
-      "text" : "Mr. John100 Smith100"
+      ]
     }
   ],
   "telecom" : [
