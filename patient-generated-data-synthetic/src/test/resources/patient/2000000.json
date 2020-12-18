@@ -1,5 +1,5 @@
 {
-  "id" : "2000000",
+  "id" : "1011219613V883807",
   "resourceType" : "Patient",
   "text" : {
     "status" : "generated",
@@ -16,8 +16,8 @@
           }
         ]
       },
-      "system" : "http://va.gov/mvi",
-      "value" : "2000000"
+      "system" : "http://va.gov/mpi",
+      "value" : "1011219613V883807"
     }
   ],
   "active" : true,

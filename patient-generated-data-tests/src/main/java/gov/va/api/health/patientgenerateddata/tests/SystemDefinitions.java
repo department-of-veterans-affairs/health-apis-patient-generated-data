@@ -11,9 +11,12 @@ import lombok.experimental.UtilityClass;
 class SystemDefinitions {
   private static Ids ids() {
     return Ids.builder()
+        .observation("fc691a7f-a0f3-47b4-9d00-2786d055e8ba")
+        .patient("1011537977V693883")
+        .patientNotMe("1017283180V801730")
         .questionnaireResponse("3141")
-        .questionnaireResponseGenerated("qr202")
         .questionnaireResponseAuthor("1011537977V693883")
+        .questionnaireResponseGenerated("qr202")
         .build();
   }
 
@@ -119,9 +122,17 @@ class SystemDefinitions {
   @Value
   @Builder
   static final class Ids {
+    @NonNull String observation;
+    
+    @NonNull String patient;
+    
+    @NonNull String patientNotMe;
+    
     @NonNull String questionnaireResponse;
-    @NonNull String questionnaireResponseGenerated;
+    
     @NonNull String questionnaireResponseAuthor;
+    
+    @NonNull String questionnaireResponseGenerated;
   }
 
   @Value

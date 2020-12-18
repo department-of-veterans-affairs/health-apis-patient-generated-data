@@ -1,6 +1,7 @@
 package gov.va.api.health.patientgenerateddata.tests;
 
 import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.doGet;
+import static gov.va.api.health.patientgenerateddata.tests.SystemDefinitions.systemDefinition;
 import static gov.va.api.health.sentinel.EnvironmentAssumptions.assumeEnvironmentIn;
 
 import gov.va.api.health.sentinel.Environment;
@@ -20,9 +21,10 @@ public class ObservationIT {
 
   @Test
   void read() {
-    doGet(null, "Observation/ekg", 200);
-    doGet("application/json", "Observation/ekg", 200);
-    doGet("application/fhir+json", "Observation/ekg", 200);
+    String id = systemDefinition().ids().observation();
+    doGet(null, "Observation/" + id, 200);
+    doGet("application/json", "Observation/" + id, 200);
+    doGet("application/fhir+json", "Observation/" + id, 200);
   }
 
   @Test
