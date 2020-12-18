@@ -11,10 +11,14 @@ import lombok.experimental.UtilityClass;
 class SystemDefinitions {
   private static Ids ids() {
     return Ids.builder()
-        .questionnaireResponse("3141")
-        .questionnaireResponseGenerated("qr202")
+        .observation("fc691a7f-a0f3-47b4-9d00-2786d055e8ba")
+        .patient("1011537977V693883")
+        .patientNotMe("1017283180V801730")
+        .questionnaire("37953b72-961b-41ee-bd05-86c62bacc46b")
+        .questionnaireResponse("f003043a-9047-4c3a-b15b-a26c67f4e723")
         .questionnaireResponseAuthor("1011537977V693883")
         .questionnaireResponseSubject("1008596379V859838")
+        .questionnaireResponseGenerated("qr-generated")
         .build();
   }
 
@@ -120,10 +124,21 @@ class SystemDefinitions {
   @Value
   @Builder
   static final class Ids {
+    @NonNull String observation;
+
+    @NonNull String patient;
+
+    @NonNull String patientNotMe;
+
+    @NonNull String questionnaire;
+
     @NonNull String questionnaireResponse;
-    @NonNull String questionnaireResponseGenerated;
+
     @NonNull String questionnaireResponseAuthor;
+
     @NonNull String questionnaireResponseSubject;
+
+    @NonNull String questionnaireResponseGenerated;
   }
 
   @Value

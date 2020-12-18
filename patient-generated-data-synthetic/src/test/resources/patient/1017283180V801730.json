@@ -1,5 +1,5 @@
 {
-  "id" : "1000000",
+  "id" : "1017283180V801730",
   "resourceType" : "Patient",
   "text" : {
     "status" : "generated",
@@ -16,8 +16,8 @@
           }
         ]
       },
-      "system" : "http://va.gov/mvi",
-      "value" : "1000000"
+      "system" : "http://va.gov/mpi",
+      "value" : "1017283180V801730"
     }
   ],
   "active" : true,
@@ -97,7 +97,7 @@
     }
   ],
   "managingOrganization" : {
-    "reference" : "Organization/f001",
+    "reference" : "https://api.va.gov/services/fhir/v0/r4/Organization/I2-U2YS4YSMVOGA4TNVOJB3RXVIQRQR7OXTDMFNC24L4YSKJKXSTCZA0000",
     "display" : "Burgers University Medical Centre"
   }
 }

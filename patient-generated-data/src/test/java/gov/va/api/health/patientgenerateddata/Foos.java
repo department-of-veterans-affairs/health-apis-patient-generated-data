@@ -14,7 +14,7 @@ class Foos {
 
   @AllArgsConstructor
   @Data
-  static class FooEntity implements PayloadEntity {
+  static class FooEntity implements PayloadEntity<FooResource> {
     String id;
 
     String payload;
@@ -26,6 +26,11 @@ class Foos {
 
     public String payload() {
       return payload;
+    }
+
+    @Override
+    public Class<FooResource> resourceType() {
+      return FooResource.class;
     }
   }
 

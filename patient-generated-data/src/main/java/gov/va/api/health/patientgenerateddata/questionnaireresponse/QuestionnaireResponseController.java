@@ -1,7 +1,6 @@
 package gov.va.api.health.patientgenerateddata.questionnaireresponse;
 
 import static com.google.common.base.Preconditions.checkState;
-import static gov.va.api.health.patientgenerateddata.SerializationUtils.deserializedPayload;
 import static gov.va.api.lighthouse.vulcan.Rules.atLeastOneParameterOf;
 import static gov.va.api.lighthouse.vulcan.Rules.parametersNeverSpecifiedTogether;
 import static gov.va.api.lighthouse.vulcan.Vulcan.returnNothing;
@@ -75,7 +74,7 @@ public class QuestionnaireResponseController {
   QuestionnaireResponse read(@PathVariable("id") String id) {
     Optional<QuestionnaireResponseEntity> maybeEntity = repository.findById(id);
     QuestionnaireResponseEntity entity = maybeEntity.orElseThrow(() -> new Exceptions.NotFound(id));
-    return deserializedPayload(id, entity.payload(), QuestionnaireResponse.class);
+    return entity.deserializePayload();
   }
 
   /** QuestionnaireResponse Search. */

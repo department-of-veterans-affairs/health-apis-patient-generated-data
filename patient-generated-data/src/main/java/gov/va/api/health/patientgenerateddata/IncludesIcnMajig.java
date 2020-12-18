@@ -1,8 +1,9 @@
 package gov.va.api.health.patientgenerateddata;
 
+import static java.util.stream.Collectors.joining;
+
 import gov.va.api.health.r4.api.elements.Reference;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.Builder;
 import lombok.NonNull;
@@ -55,7 +56,7 @@ public final class IncludesIcnMajig<T, B> implements ResponseBodyAdvice<Object> 
       ServerHttpRequest unused4,
       ServerHttpResponse serverHttpResponse) {
     if (type.isInstance(payload)) {
-      String users = extractIcns.apply((T) payload).collect(Collectors.joining());
+      String users = extractIcns.apply((T) payload).distinct().collect(joining(","));
       users = users.isBlank() ? "NONE" : users;
       addHeader(serverHttpResponse, users);
       return payload;
@@ -67,7 +68,7 @@ public final class IncludesIcnMajig<T, B> implements ResponseBodyAdvice<Object> 
               .apply((B) payload)
               .flatMap(resource -> extractIcns.apply(resource))
               .distinct()
-              .collect(Collectors.joining(","));
+              .collect(joining(","));
       users = users.isBlank() ? "NONE" : users;
       addHeader(serverHttpResponse, users);
       return payload;

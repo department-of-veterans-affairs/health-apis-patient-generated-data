@@ -10,6 +10,7 @@ import gov.va.api.health.r4.api.resources.Observation;
 import gov.va.api.health.r4.api.resources.Patient;
 import gov.va.api.health.r4.api.resources.Questionnaire;
 import gov.va.api.health.r4.api.resources.QuestionnaireResponse;
+import gov.va.api.health.r4.api.resources.Resource;
 import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -19,7 +20,6 @@ import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -104,20 +104,12 @@ public final class Populaterator {
   }
 
   @SneakyThrows
-  public static void observation(@NonNull Connection connection) {
-    Set<String> ids = new HashSet<>();
+  private static void observation(@NonNull Connection connection) {
     for (File f : new File(baseDir() + "/src/test/resources/observation").listFiles()) {
-      Observation observation = MAPPER.readValue(f, Observation.class);
-      Set<ConstraintViolation<Observation>> violations =
-          Validation.buildDefaultValidatorFactory().getValidator().validate(observation);
-      checkState(violations.isEmpty(), "Invalid payload: " + violations);
-      String id = observation.id();
-      checkState(id != null);
-      checkState(!ids.contains(id), "Duplicate ID " + id);
-      ids.add(id);
+      Observation observation = readFile(Observation.class, f);
       String sqlInsert = sqlInsert("app.Observation", List.of("id", "payload", "version"));
       try (PreparedStatement statement = connection.prepareStatement(sqlInsert)) {
-        statement.setObject(1, id);
+        statement.setObject(1, observation.id());
         statement.setObject(2, MAPPER.writeValueAsString(observation));
         statement.setObject(3, 0);
         statement.execute();
@@ -139,19 +131,11 @@ public final class Populaterator {
 
   @SneakyThrows
   private static void patient(@NonNull Connection connection) {
-    Set<String> ids = new HashSet<>();
     for (File f : new File(baseDir() + "/src/test/resources/patient").listFiles()) {
-      Patient patient = MAPPER.readValue(f, Patient.class);
-      Set<ConstraintViolation<Patient>> violations =
-          Validation.buildDefaultValidatorFactory().getValidator().validate(patient);
-      checkState(violations.isEmpty(), "Invalid payload: " + violations);
-      String id = patient.id();
-      checkState(id != null);
-      checkState(!ids.contains(id), "Duplicate ID " + id);
-      ids.add(id);
+      Patient patient = readFile(Patient.class, f);
       String sqlInsert = sqlInsert("app.Patient", List.of("id", "payload", "version"));
       try (PreparedStatement statement = connection.prepareStatement(sqlInsert)) {
-        statement.setObject(1, id);
+        statement.setObject(1, patient.id());
         statement.setObject(2, MAPPER.writeValueAsString(patient));
         statement.setObject(3, 0);
         statement.execute();
@@ -177,19 +161,11 @@ public final class Populaterator {
 
   @SneakyThrows
   private static void questionnaire(@NonNull Connection connection) {
-    Set<String> ids = new HashSet<>();
     for (File f : new File(baseDir() + "/src/test/resources/questionnaire").listFiles()) {
-      Questionnaire questionnaire = MAPPER.readValue(f, Questionnaire.class);
-      Set<ConstraintViolation<Questionnaire>> violations =
-          Validation.buildDefaultValidatorFactory().getValidator().validate(questionnaire);
-      checkState(violations.isEmpty(), "Invalid payload: " + violations);
-      String id = questionnaire.id();
-      checkState(id != null);
-      checkState(!ids.contains(id), "Duplicate ID " + id);
-      ids.add(id);
+      Questionnaire questionnaire = readFile(Questionnaire.class, f);
       String sqlInsert = sqlInsert("app.Questionnaire", List.of("id", "payload", "version"));
       try (PreparedStatement statement = connection.prepareStatement(sqlInsert)) {
-        statement.setObject(1, id);
+        statement.setObject(1, questionnaire.id());
         statement.setObject(2, MAPPER.writeValueAsString(questionnaire));
         statement.setObject(3, 0);
         statement.execute();
@@ -199,22 +175,14 @@ public final class Populaterator {
 
   @SneakyThrows
   private static void questionnaireResponse(@NonNull Connection connection) {
-    Set<String> ids = new HashSet<>();
     for (File f : new File(baseDir() + "/src/test/resources/questionnaire-response").listFiles()) {
-      QuestionnaireResponse response = MAPPER.readValue(f, QuestionnaireResponse.class);
-      Set<ConstraintViolation<QuestionnaireResponse>> violations =
-          Validation.buildDefaultValidatorFactory().getValidator().validate(response);
-      checkState(violations.isEmpty(), "Invalid payload: " + violations);
-      String id = response.id();
-      checkState(id != null);
-      checkState(!ids.contains(id), "Duplicate ID " + id);
-      ids.add(id);
+      QuestionnaireResponse response = readFile(QuestionnaireResponse.class, f);
       String sqlInsert =
           sqlInsert(
               "app.QuestionnaireResponse",
               List.of("id", "payload", "version", "authored", "author", "subject"));
       try (PreparedStatement statement = connection.prepareStatement(sqlInsert)) {
-        statement.setObject(1, id);
+        statement.setObject(1, response.id());
         statement.setObject(2, MAPPER.writeValueAsString(response));
         statement.setObject(3, 0);
         statement.setTimestamp(4, timestamp(parseDateTime(response.authored())));
@@ -224,6 +192,17 @@ public final class Populaterator {
         statement.execute();
       }
     }
+  }
+
+  @SneakyThrows
+  private static <T extends Resource> T readFile(@NonNull Class<T> clazz, @NonNull File f) {
+    T obj = MAPPER.readValue(f, clazz);
+    Set<ConstraintViolation<T>> violations =
+        Validation.buildDefaultValidatorFactory().getValidator().validate(obj);
+    checkState(violations.isEmpty(), "Invalid payload for %s: %s", f.getAbsolutePath(), violations);
+    String id = obj.id();
+    checkState(f.getName().equals(id + ".json"), "ID %s does not match %s", id, f.getName());
+    return obj;
   }
 
   private static String resourceId(Reference ref) {
@@ -236,13 +215,11 @@ public final class Populaterator {
   }
 
   private static String sqlInsert(@NonNull String table, @NonNull Collection<String> columns) {
-    return "insert into "
-        + table
-        + " ("
-        + columns.stream().collect(joining(","))
-        + ") values ("
-        + IntStream.range(0, columns.size()).mapToObj(v -> "?").collect(joining(","))
-        + ")";
+    return String.format(
+        "insert into %s (%s) values (%s)",
+        table,
+        columns.stream().collect(joining(",")),
+        IntStream.range(0, columns.size()).mapToObj(v -> "?").collect(joining(",")));
   }
 
   private static Timestamp timestamp(Instant instant) {

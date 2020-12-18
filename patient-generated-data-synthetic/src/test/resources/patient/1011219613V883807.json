@@ -1,5 +1,5 @@
 {
-  "id" : "2000000",
+  "id" : "1011219613V883807",
   "resourceType" : "Patient",
   "text" : {
     "status" : "generated",
@@ -16,8 +16,8 @@
           }
         ]
       },
-      "system" : "http://va.gov/mvi",
-      "value" : "2000000"
+      "system" : "http://va.gov/mpi",
+      "value" : "1011219613V883807"
     }
   ],
   "active" : true,
@@ -106,7 +106,7 @@
     }
   ],
   "managingOrganization" : {
-    "reference" : "Organization/f201",
+    "reference" : "https://api.va.gov/services/fhir/v0/r4/Organization/I2-U2YS4YSMVOGA4TNVOJB3RXVIQRQR7OXTDMFNC24L4YSKJKXSTCZA0000",
     "display" : "AUMC"
   }
 }
