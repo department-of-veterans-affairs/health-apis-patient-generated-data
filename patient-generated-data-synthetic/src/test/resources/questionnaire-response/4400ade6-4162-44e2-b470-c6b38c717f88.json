@@ -10,7 +10,7 @@
   "subject" : {
     "reference" : "https://api.va.gov/services/fhir/v0/r4/Patient/1017283180V801730"
   },
-  "authored" : "2013-02-19T14:15:00-05:00",
+  "authored" : "2020-08-20T22:26:06.453127500Z",
   "author" : {
     "reference" : "https://api.va.gov/services/fhir/v0/r4/Practitioner/I2-6NVSMKEGQKNB3KRDXBGE7NRIEY000000"
   },

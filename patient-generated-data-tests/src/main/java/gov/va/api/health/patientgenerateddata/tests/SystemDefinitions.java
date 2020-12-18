@@ -124,17 +124,17 @@ class SystemDefinitions {
   @Builder
   static final class Ids {
     @NonNull String observation;
-    
+
     @NonNull String patient;
-    
+
     @NonNull String patientNotMe;
-    
+
     @NonNull String questionnaire;
-    
+
     @NonNull String questionnaireResponse;
-    
+
     @NonNull String questionnaireResponseAuthor;
-    
+
     @NonNull String questionnaireResponseGenerated;
   }
 
