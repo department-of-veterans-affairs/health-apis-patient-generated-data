@@ -56,7 +56,7 @@ public final class IncludesIcnMajig<T, B> implements ResponseBodyAdvice<Object> 
       ServerHttpRequest unused4,
       ServerHttpResponse serverHttpResponse) {
     if (type.isInstance(payload)) {
-      String users = extractIcns.apply((T) payload).collect(joining(","));
+      String users = extractIcns.apply((T) payload).distinct().collect(joining(","));
       users = users.isBlank() ? "NONE" : users;
       addHeader(serverHttpResponse, users);
       return payload;
