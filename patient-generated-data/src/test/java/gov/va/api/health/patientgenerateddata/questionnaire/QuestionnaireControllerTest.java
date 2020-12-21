@@ -3,6 +3,7 @@ package gov.va.api.health.patientgenerateddata.questionnaire;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -11,6 +12,7 @@ import gov.va.api.health.autoconfig.configuration.JacksonConfig;
 import gov.va.api.health.patientgenerateddata.Exceptions;
 import gov.va.api.health.patientgenerateddata.LinkProperties;
 import gov.va.api.health.r4.api.resources.Questionnaire;
+import gov.va.api.health.r4.api.resources.Questionnaire.PublicationStatus;
 import java.net.URI;
 import java.util.Optional;
 import lombok.SneakyThrows;
@@ -20,9 +22,39 @@ import org.springframework.validation.DataBinder;
 
 public class QuestionnaireControllerTest {
   @Test
+  @SneakyThrows
+  void create() {
+    LinkProperties pageLinks =
+        LinkProperties.builder().baseUrl("http://foo.com").r4BasePath("r4").build();
+    QuestionnaireRepository repo = mock(QuestionnaireRepository.class);
+    QuestionnaireController controller = spy(new QuestionnaireController(pageLinks, repo));
+    when(controller.generateRandomId()).thenReturn("123");
+    var questionnaire = questionnaire();
+    var questionnaireWithId = questionnaire().id("123");
+    assertThat(controller.create(questionnaire))
+        .isEqualTo(
+            ResponseEntity.created(URI.create("http://foo.com/r4/Questionnaire/" + 123))
+                .body(questionnaireWithId));
+  }
+
+  @Test
+  @SneakyThrows
+  void create_invalid() {
+    var questionnaire = questionnaire().id("123");
+    var repo = mock(QuestionnaireRepository.class);
+    var pageLinks = mock(LinkProperties.class);
+    var controller = new QuestionnaireController(pageLinks, repo);
+    assertThrows(Exceptions.BadRequest.class, () -> controller.create(questionnaire));
+  }
+
+  @Test
   void initDirectFieldAccess() {
     new QuestionnaireController(mock(LinkProperties.class), mock(QuestionnaireRepository.class))
         .initDirectFieldAccess(mock(DataBinder.class));
+  }
+
+  private Questionnaire questionnaire() {
+    return Questionnaire.builder().title("x").status(PublicationStatus.active).build();
   }
 
   @Test
