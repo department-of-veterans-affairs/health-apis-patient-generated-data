@@ -11,13 +11,19 @@ import gov.va.api.health.r4.api.resources.Observation;
 import gov.va.api.health.r4.api.resources.Observation.ObservationStatus;
 import gov.va.api.health.sentinel.Environment;
 import java.util.List;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 public class ObservationCreateIT {
+  @BeforeAll
+  static void assumeEnvironment() {
+    // These tests invent data that will not be cleaned up
+    // To avoid polluting the database, they should only run locally
+    assumeEnvironmentIn(Environment.LOCAL);
+  }
 
   @Test
   public void create_invalid() {
-    assumeEnvironmentIn(Environment.LOCAL);
     Observation observation = observation().id("123");
     doPost(
         "Observation", serializePayload(observation), "create invalid resource, existing id", 400);
@@ -25,7 +31,6 @@ public class ObservationCreateIT {
 
   @Test
   public void create_valid() {
-    assumeEnvironmentIn(Environment.LOCAL);
     Observation observation = observation();
     doPost("Observation", serializePayload(observation), "create resource", 201);
   }

@@ -12,12 +12,19 @@ import gov.va.api.health.r4.api.resources.Patient.Gender;
 import gov.va.api.health.sentinel.Environment;
 import java.util.ArrayList;
 import java.util.List;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 public class PatientCreateIT {
+  @BeforeAll
+  static void assumeEnvironment() {
+    // These tests invent data that will not be cleaned up
+    // To avoid polluting the database, they should only run locally
+    assumeEnvironmentIn(Environment.LOCAL);
+  }
+
   @Test
   public void create_invalid() {
-    assumeEnvironmentIn(Environment.LOCAL);
     // not an mpi id
     String id = "123";
     Patient patient = patient(id);
@@ -35,7 +42,6 @@ public class PatientCreateIT {
 
   @Test
   public void create_valid() {
-    assumeEnvironmentIn(Environment.LOCAL);
     var id = systemDefinition().ids().patientGenerated();
     Patient patient = patient(id);
     doPost("Patient", serializePayload(patient), "create resource", 201);
