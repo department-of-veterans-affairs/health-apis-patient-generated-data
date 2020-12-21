@@ -224,3 +224,8 @@ databaseChangeLog:
             schemaName: app
             columnName: author
             newDataType: varchar(255)
+        - modifyDataType:
+            tableName: QuestionnaireResponse
+            schemaName: app
+            columnName: subject
+            newDataType: varchar(255)
