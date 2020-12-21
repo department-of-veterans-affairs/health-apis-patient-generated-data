@@ -1,6 +1,7 @@
 package gov.va.api.health.patientgenerateddata.observation;
 
 import static com.google.common.base.Preconditions.checkState;
+import static gov.va.api.health.patientgenerateddata.Controllers.checkRequestState;
 
 import gov.va.api.health.autoconfig.configuration.JacksonConfig;
 import gov.va.api.health.autoconfig.logging.Loggable;
@@ -9,9 +10,11 @@ import gov.va.api.health.patientgenerateddata.LinkProperties;
 import gov.va.api.health.r4.api.resources.Observation;
 import java.net.URI;
 import java.util.Optional;
+import java.util.UUID;
 import javax.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.DataBinder;
@@ -19,6 +22,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,6 +38,18 @@ public class ObservationController {
   private final LinkProperties linkProperties;
 
   private final ObservationRepository repository;
+
+  @PostMapping
+  ResponseEntity<Observation> create(@Valid @RequestBody Observation observation) {
+    checkRequestState(
+        StringUtils.isEmpty(observation.id()), "ID must be empty, found ", observation.id());
+    observation.id(generateRandomId());
+    return update(observation.id(), observation);
+  }
+
+  String generateRandomId() {
+    return UUID.randomUUID().toString();
+  }
 
   @InitBinder
   void initDirectFieldAccess(DataBinder dataBinder) {
