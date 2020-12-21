@@ -29,7 +29,7 @@ public class ObservationCreateIT {
     Observation observation = observation();
     doPost("Observation", serializePayload(observation), "create resource", 201);
   }
-
+  
   private Observation observation() {
     return Observation.builder()
         .status(ObservationStatus.unknown)
