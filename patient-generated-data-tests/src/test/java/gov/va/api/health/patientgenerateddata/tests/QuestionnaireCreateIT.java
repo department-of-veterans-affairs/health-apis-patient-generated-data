@@ -7,12 +7,19 @@ import static gov.va.api.health.sentinel.EnvironmentAssumptions.assumeEnvironmen
 import gov.va.api.health.r4.api.resources.Questionnaire;
 import gov.va.api.health.r4.api.resources.Questionnaire.PublicationStatus;
 import gov.va.api.health.sentinel.Environment;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 public class QuestionnaireCreateIT {
+  @BeforeAll
+  static void assumeEnvironment() {
+    // These tests invent data that will not be cleaned up
+    // To avoid polluting the database, they should only run locally
+    assumeEnvironmentIn(Environment.LOCAL);
+  }
+
   @Test
   public void create_invalid() {
-    assumeEnvironmentIn(Environment.LOCAL);
     Questionnaire questionnaire = questionnaire().id("123");
     doPost(
         "Questionnaire",
@@ -23,7 +30,6 @@ public class QuestionnaireCreateIT {
 
   @Test
   public void create_valid() {
-    assumeEnvironmentIn(Environment.LOCAL);
     Questionnaire questionnaire = questionnaire();
     doPost("Questionnaire", serializePayload(questionnaire), "create resource", 201);
   }
