@@ -78,7 +78,7 @@ public class QuestionnaireResponseController {
       String id, QuestionnaireResponse questionnaireResponse) {
     checkRequestState(
         StringUtils.isEmpty(questionnaireResponse.id()),
-        "ID must be empty, found ",
+        "ID must be empty, found %s",
         questionnaireResponse.id());
     questionnaireResponse.id(id);
     return update(questionnaireResponse.id(), questionnaireResponse);

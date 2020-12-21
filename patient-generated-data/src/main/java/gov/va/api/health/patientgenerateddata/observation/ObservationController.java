@@ -46,7 +46,7 @@ public class ObservationController {
 
   ResponseEntity<Observation> create(String id, Observation observation) {
     checkRequestState(
-        StringUtils.isEmpty(observation.id()), "ID must be empty, found ", observation.id());
+        StringUtils.isEmpty(observation.id()), "ID must be empty, found %s", observation.id());
     observation.id(id);
     return update(observation.id(), observation);
   }

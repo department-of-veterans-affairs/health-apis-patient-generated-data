@@ -46,7 +46,7 @@ public class QuestionnaireController {
 
   ResponseEntity<Questionnaire> create(String id, Questionnaire questionnaire) {
     checkRequestState(
-        StringUtils.isEmpty(questionnaire.id()), "ID must be empty, found ", questionnaire.id());
+        StringUtils.isEmpty(questionnaire.id()), "ID must be empty, found %s", questionnaire.id());
     questionnaire.id(id);
     return update(questionnaire.id(), questionnaire);
   }
