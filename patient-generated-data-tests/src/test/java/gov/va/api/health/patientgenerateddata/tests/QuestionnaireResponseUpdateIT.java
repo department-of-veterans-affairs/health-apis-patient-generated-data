@@ -26,8 +26,9 @@ public class QuestionnaireResponseUpdateIT {
   static void setup() {
     // These tests alter data, but do not infinitely create more
     // Do not run in SLA'd environments
-    assumeEnvironmentIn(Environment.LOCAL);
-    // Environment.QA, Environment.STAGING, Environment.STAGING_LAB
+    assumeEnvironmentIn(
+        Environment.LOCAL, Environment.QA, Environment.STAGING, Environment.STAGING_LAB);
+
     var id = systemDefinition().ids().questionnaireResponseGenerated();
     ExpectedResponse existing = doGet("application/json", "QuestionnaireResponse/" + id, null);
     if (existing.response().statusCode() == 404) {
