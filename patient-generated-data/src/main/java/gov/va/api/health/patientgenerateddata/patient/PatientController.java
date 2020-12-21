@@ -40,6 +40,10 @@ import org.springframework.web.bind.annotation.RestController;
     produces = {"application/json", "application/fhir+json"})
 @AllArgsConstructor(onConstructor_ = @Autowired)
 public class PatientController {
+  private static final Pattern MPI_PATTERN = Pattern.compile("^[0-9]{10}V[0-9]{6}$");
+
+  private static final String MPI_URI = "http://va.gov/mpi";
+
   private final LinkProperties linkProperties;
 
   private final PatientRepository repository;
@@ -66,7 +70,7 @@ public class PatientController {
                                   .code("MR")
                                   .build()))
                       .build())
-              .system("http://va.gov/mpi")
+              .system(MPI_URI)
               .value(id)
               .build();
       patient.identifier().add(mpiIdentifier);
@@ -82,7 +86,7 @@ public class PatientController {
               .filter(
                   (identifier) -> {
                     if (identifier.system() != null) {
-                      return identifier.system().equals("http://va.gov/mpi");
+                      return identifier.system().equals(MPI_URI);
                     }
                     return false;
                   })
@@ -102,8 +106,7 @@ public class PatientController {
   @SneakyThrows
   private boolean isValidIcn(String icn) {
     checkState(!StringUtils.isEmpty(icn));
-    Pattern pattern = Pattern.compile("^[0-9]{10}V[0-9]{6}$");
-    return pattern.matcher(icn.trim()).matches();
+    return MPI_PATTERN.matcher(icn.trim()).matches();
   }
 
   @GetMapping(value = "/{id}")
