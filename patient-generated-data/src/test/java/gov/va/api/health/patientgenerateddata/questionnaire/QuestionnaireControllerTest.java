@@ -11,6 +11,7 @@ import static org.mockito.Mockito.when;
 import gov.va.api.health.autoconfig.configuration.JacksonConfig;
 import gov.va.api.health.patientgenerateddata.Exceptions;
 import gov.va.api.health.patientgenerateddata.LinkProperties;
+import gov.va.api.health.patientgenerateddata.questionnaireresponse.QuestionnaireResponseEntity;
 import gov.va.api.health.r4.api.resources.Questionnaire;
 import gov.va.api.health.r4.api.resources.Questionnaire.PublicationStatus;
 import java.net.URI;
@@ -31,10 +32,13 @@ public class QuestionnaireControllerTest {
     when(controller.generateRandomId()).thenReturn("123");
     var questionnaire = questionnaire();
     var questionnaireWithId = questionnaire().id("123");
+    var persisted = JacksonConfig.createMapper().writeValueAsString(questionnaire);
     assertThat(controller.create(questionnaire))
         .isEqualTo(
             ResponseEntity.created(URI.create("http://foo.com/r4/Questionnaire/" + 123))
                 .body(questionnaireWithId));
+    verify(repo, times(1))
+        .save(QuestionnaireEntity.builder().id("123").payload(persisted).build());
   }
 
   @Test
