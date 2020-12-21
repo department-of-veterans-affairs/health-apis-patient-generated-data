@@ -15,4 +15,10 @@ public final class Exceptions {
       super(message);
     }
   }
+
+  public static final class BadRequest extends RuntimeException {
+    public BadRequest(String message, Throwable cause) {
+      super(message, cause);
+    }
+  }
 }
