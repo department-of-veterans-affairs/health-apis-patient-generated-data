@@ -10,10 +10,36 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 
 public interface PatientApi {
+  @Operation(
+      summary = "Patient Create",
+      description =
+          "https://build.fhir.org/ig/HL7/US-Core-R4/StructureDefinition-us-core-patient.html",
+      tags = {"Patient"})
+  @POST
+  @Path("Patient")
+  @ApiResponse(
+      responseCode = "201",
+      description = "Record created",
+      content =
+          @Content(
+              mediaType = "application/fhir+json",
+              schema = @Schema(implementation = Patient.class)))
+  @ApiResponse(
+      responseCode = "400",
+      description = "Bad request",
+      content =
+          @Content(
+              mediaType = "application/fhir+json",
+              schema = @Schema(implementation = OperationOutcome.class)))
+  Patient patientCreate(
+      @RequestBody(required = true, description = "The FHIR resource in JSON format.")
+          Patient body);
+
   @Operation(
       summary = "Patient Read",
       description =
