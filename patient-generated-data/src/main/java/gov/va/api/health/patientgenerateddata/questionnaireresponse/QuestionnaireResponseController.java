@@ -56,6 +56,7 @@ public class QuestionnaireResponseController {
                 .value("_id", "id")
                 .value("author", "author")
                 .dateAsInstant("authored", "authored")
+                .value("subject", "subject")
                 .get())
         .defaultQuery(returnNothing())
         .rule(atLeastOneParameterOf("_id", "author", "authored", "subject"))
@@ -113,12 +114,14 @@ public class QuestionnaireResponseController {
     String payload = JacksonConfig.createMapper().writeValueAsString(questionnaireResponse);
     String authorId = ReferenceUtils.resourceId(questionnaireResponse.author());
     Instant authored = ParseUtils.parseDateTime(questionnaireResponse.authored());
+    String subject = ReferenceUtils.resourceId(questionnaireResponse.subject());
     Optional<QuestionnaireResponseEntity> maybeEntity = repository.findById(id);
     if (maybeEntity.isPresent()) {
       QuestionnaireResponseEntity entity = maybeEntity.get();
       entity.payload(payload);
       entity.author(authorId);
       entity.authored(authored);
+      entity.subject(subject);
       repository.save(entity);
       return ResponseEntity.ok(questionnaireResponse);
     }
@@ -128,6 +131,7 @@ public class QuestionnaireResponseController {
             .payload(payload)
             .author(authorId)
             .authored(authored)
+            .subject(subject)
             .build());
     return ResponseEntity.created(
             URI.create(linkProperties.r4Url() + "/QuestionnaireResponse/" + id))
