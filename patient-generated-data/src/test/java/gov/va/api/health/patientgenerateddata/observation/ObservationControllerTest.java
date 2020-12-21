@@ -11,6 +11,7 @@ import gov.va.api.health.autoconfig.configuration.JacksonConfig;
 import gov.va.api.health.patientgenerateddata.Exceptions;
 import gov.va.api.health.patientgenerateddata.LinkProperties;
 import gov.va.api.health.r4.api.resources.Observation;
+import gov.va.api.health.r4.api.resources.Observation.ObservationStatus;
 import java.net.URI;
 import java.util.Optional;
 import lombok.SneakyThrows;
@@ -20,9 +21,40 @@ import org.springframework.validation.DataBinder;
 
 public class ObservationControllerTest {
   @Test
+  @SneakyThrows
+  void create() {
+    LinkProperties pageLinks =
+        LinkProperties.builder().baseUrl("http://foo.com").r4BasePath("r4").build();
+    ObservationRepository repo = mock(ObservationRepository.class);
+    ObservationController controller = new ObservationController(pageLinks, repo);
+    var observation = observation();
+    var observationWithId = observation().id("123");
+    var persisted = JacksonConfig.createMapper().writeValueAsString(observation);
+    assertThat(controller.create("123", observation))
+        .isEqualTo(
+            ResponseEntity.created(URI.create("http://foo.com/r4/Observation/" + 123))
+                .body(observationWithId));
+    verify(repo, times(1)).save(ObservationEntity.builder().id("123").payload(persisted).build());
+  }
+
+  @Test
+  @SneakyThrows
+  void create_invalid() {
+    var observation = observation().id("123");
+    var repo = mock(ObservationRepository.class);
+    var pageLinks = mock(LinkProperties.class);
+    var controller = new ObservationController(pageLinks, repo);
+    assertThrows(Exceptions.BadRequest.class, () -> controller.create(observation));
+  }
+
+  @Test
   void initDirectFieldAccess() {
     new ObservationController(mock(LinkProperties.class), mock(ObservationRepository.class))
         .initDirectFieldAccess(mock(DataBinder.class));
+  }
+
+  private Observation observation() {
+    return Observation.builder().status(ObservationStatus.unknown).build();
   }
 
   @Test

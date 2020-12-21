@@ -1,6 +1,8 @@
 package gov.va.api.health.patientgenerateddata.questionnaireresponse;
 
 import static com.google.common.base.Preconditions.checkState;
+import static gov.va.api.health.patientgenerateddata.Controllers.checkRequestState;
+import static gov.va.api.health.patientgenerateddata.Controllers.generateRandomId;
 import static gov.va.api.lighthouse.vulcan.Rules.atLeastOneParameterOf;
 import static gov.va.api.lighthouse.vulcan.Rules.parametersNeverSpecifiedTogether;
 import static gov.va.api.lighthouse.vulcan.Vulcan.returnNothing;
@@ -23,6 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.DataBinder;
@@ -30,6 +33,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -62,6 +66,22 @@ public class QuestionnaireResponseController {
         .rule(parametersNeverSpecifiedTogether("_id", "author"))
         .rule(parametersNeverSpecifiedTogether("_id", "authored"))
         .build();
+  }
+
+  @PostMapping
+  ResponseEntity<QuestionnaireResponse> create(
+      @Valid @RequestBody QuestionnaireResponse questionnaireResponse) {
+    return create(generateRandomId(), questionnaireResponse);
+  }
+
+  ResponseEntity<QuestionnaireResponse> create(
+      String id, QuestionnaireResponse questionnaireResponse) {
+    checkRequestState(
+        StringUtils.isEmpty(questionnaireResponse.id()),
+        "ID must be empty, found %s",
+        questionnaireResponse.id());
+    questionnaireResponse.id(id);
+    return update(questionnaireResponse.id(), questionnaireResponse);
   }
 
   @InitBinder

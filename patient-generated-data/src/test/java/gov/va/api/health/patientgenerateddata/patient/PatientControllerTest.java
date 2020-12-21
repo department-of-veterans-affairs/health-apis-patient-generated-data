@@ -10,8 +10,15 @@ import static org.mockito.Mockito.when;
 import gov.va.api.health.autoconfig.configuration.JacksonConfig;
 import gov.va.api.health.patientgenerateddata.Exceptions;
 import gov.va.api.health.patientgenerateddata.LinkProperties;
+import gov.va.api.health.r4.api.datatypes.CodeableConcept;
+import gov.va.api.health.r4.api.datatypes.Coding;
+import gov.va.api.health.r4.api.datatypes.Identifier;
+import gov.va.api.health.r4.api.datatypes.Identifier.IdentifierUse;
 import gov.va.api.health.r4.api.resources.Patient;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
@@ -20,9 +27,63 @@ import org.springframework.validation.DataBinder;
 
 public class PatientControllerTest {
   @Test
+  @SneakyThrows
+  void create() {
+    LinkProperties pageLinks =
+        LinkProperties.builder().baseUrl("http://foo.com").r4BasePath("r4").build();
+    String id = "9999999999V999999";
+    PatientRepository repo = mock(PatientRepository.class);
+    Patient patient =
+        Patient.builder()
+            .id(id)
+            .identifier(new ArrayList<>(List.of(Identifier.builder().build())))
+            .build();
+    assertThat(new PatientController(pageLinks, repo).create(patient))
+        .isEqualTo(
+            ResponseEntity.created(URI.create("http://foo.com/r4/Patient/" + id)).body(patient));
+    Patient persisted =
+        Patient.builder()
+            .id(id)
+            .identifier(new ArrayList<>(List.of(Identifier.builder().build(), mpi(id))))
+            .build();
+    String persistedSerialized = JacksonConfig.createMapper().writeValueAsString(persisted);
+    verify(repo, times(1))
+        .save(PatientEntity.builder().id(id).payload(persistedSerialized).build());
+  }
+
+  @Test
+  @SneakyThrows
+  void create_invalid() {
+    String id = "9V9";
+    PatientRepository repo = mock(PatientRepository.class);
+    Patient patient =
+        Patient.builder()
+            .id(id)
+            .identifier(new ArrayList<>(List.of(Identifier.builder().build())))
+            .build();
+    assertThrows(
+        Exceptions.BadRequest.class,
+        () -> new PatientController(mock(LinkProperties.class), repo).create(patient));
+  }
+
+  @Test
   void initDirectFieldAccess() {
     new PatientController(mock(LinkProperties.class), mock(PatientRepository.class))
         .initDirectFieldAccess(mock(DataBinder.class));
+  }
+
+  private Identifier mpi(String icn) {
+    return Identifier.builder()
+        .use(IdentifierUse.usual)
+        .type(
+            CodeableConcept.builder()
+                .coding(
+                    Collections.singletonList(
+                        Coding.builder().system("http://hl7.org/fhir/v2/0203").code("MR").build()))
+                .build())
+        .system("http://va.gov/mpi")
+        .value(icn)
+        .build();
   }
 
   @Test
