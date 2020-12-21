@@ -2,6 +2,7 @@ package gov.va.api.health.patientgenerateddata.questionnaire;
 
 import static com.google.common.base.Preconditions.checkState;
 import static gov.va.api.health.patientgenerateddata.Controllers.checkRequestState;
+import static gov.va.api.health.patientgenerateddata.Controllers.generateRandomId;
 
 import gov.va.api.health.autoconfig.configuration.JacksonConfig;
 import gov.va.api.health.autoconfig.logging.Loggable;
@@ -10,7 +11,6 @@ import gov.va.api.health.patientgenerateddata.LinkProperties;
 import gov.va.api.health.r4.api.resources.Questionnaire;
 import java.net.URI;
 import java.util.Optional;
-import java.util.UUID;
 import javax.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
@@ -41,14 +41,14 @@ public class QuestionnaireController {
 
   @PostMapping
   ResponseEntity<Questionnaire> create(@Valid @RequestBody Questionnaire questionnaire) {
-    checkRequestState(
-        StringUtils.isEmpty(questionnaire.id()), "ID must be empty, found ", questionnaire.id());
-    questionnaire.id(generateRandomId());
-    return update(questionnaire.id(), questionnaire);
+    return create(generateRandomId(), questionnaire);
   }
 
-  String generateRandomId() {
-    return UUID.randomUUID().toString();
+  ResponseEntity<Questionnaire> create(String id, Questionnaire questionnaire) {
+    checkRequestState(
+        StringUtils.isEmpty(questionnaire.id()), "ID must be empty, found ", questionnaire.id());
+    questionnaire.id(id);
+    return update(questionnaire.id(), questionnaire);
   }
 
   @InitBinder

@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -71,12 +70,11 @@ public class QuestionnaireResponseControllerTest {
         LinkProperties.builder().baseUrl("http://foo.com").r4BasePath("r4").build();
     QuestionnaireResponseRepository repo = mock(QuestionnaireResponseRepository.class);
     QuestionnaireResponseController controller =
-        spy(new QuestionnaireResponseController(pageLinks, repo));
-    when(controller.generateRandomId()).thenReturn("123");
+        new QuestionnaireResponseController(pageLinks, repo);
     var questionnaireResponse = questionnaireResponse();
     var questionnaireResponseWithId = questionnaireResponse().id("123");
     var persisted = JacksonConfig.createMapper().writeValueAsString(questionnaireResponseWithId);
-    assertThat(controller.create(questionnaireResponse))
+    assertThat(controller.create("123", questionnaireResponse))
         .isEqualTo(
             ResponseEntity.created(URI.create("http://foo.com/r4/QuestionnaireResponse/123"))
                 .body(questionnaireResponseWithId));

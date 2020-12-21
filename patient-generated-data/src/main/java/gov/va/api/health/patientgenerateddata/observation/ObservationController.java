@@ -2,6 +2,7 @@ package gov.va.api.health.patientgenerateddata.observation;
 
 import static com.google.common.base.Preconditions.checkState;
 import static gov.va.api.health.patientgenerateddata.Controllers.checkRequestState;
+import static gov.va.api.health.patientgenerateddata.Controllers.generateRandomId;
 
 import gov.va.api.health.autoconfig.configuration.JacksonConfig;
 import gov.va.api.health.autoconfig.logging.Loggable;
@@ -10,7 +11,6 @@ import gov.va.api.health.patientgenerateddata.LinkProperties;
 import gov.va.api.health.r4.api.resources.Observation;
 import java.net.URI;
 import java.util.Optional;
-import java.util.UUID;
 import javax.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
@@ -41,14 +41,14 @@ public class ObservationController {
 
   @PostMapping
   ResponseEntity<Observation> create(@Valid @RequestBody Observation observation) {
-    checkRequestState(
-        StringUtils.isEmpty(observation.id()), "ID must be empty, found ", observation.id());
-    observation.id(generateRandomId());
-    return update(observation.id(), observation);
+    return create(generateRandomId(), observation);
   }
 
-  String generateRandomId() {
-    return UUID.randomUUID().toString();
+  ResponseEntity<Observation> create(String id, Observation observation) {
+    checkRequestState(
+        StringUtils.isEmpty(observation.id()), "ID must be empty, found ", observation.id());
+    observation.id(id);
+    return update(observation.id(), observation);
   }
 
   @InitBinder

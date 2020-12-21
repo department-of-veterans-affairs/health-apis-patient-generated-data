@@ -3,7 +3,6 @@ package gov.va.api.health.patientgenerateddata.observation;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -27,12 +26,11 @@ public class ObservationControllerTest {
     LinkProperties pageLinks =
         LinkProperties.builder().baseUrl("http://foo.com").r4BasePath("r4").build();
     ObservationRepository repo = mock(ObservationRepository.class);
-    ObservationController controller = spy(new ObservationController(pageLinks, repo));
-    when(controller.generateRandomId()).thenReturn("123");
+    ObservationController controller = new ObservationController(pageLinks, repo);
     var observation = observation();
     var observationWithId = observation().id("123");
     var persisted = JacksonConfig.createMapper().writeValueAsString(observation);
-    assertThat(controller.create(observation))
+    assertThat(controller.create("123", observation))
         .isEqualTo(
             ResponseEntity.created(URI.create("http://foo.com/r4/Observation/" + 123))
                 .body(observationWithId));

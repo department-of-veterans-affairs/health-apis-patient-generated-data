@@ -3,7 +3,6 @@ package gov.va.api.health.patientgenerateddata.questionnaire;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -27,12 +26,11 @@ public class QuestionnaireControllerTest {
     LinkProperties pageLinks =
         LinkProperties.builder().baseUrl("http://foo.com").r4BasePath("r4").build();
     QuestionnaireRepository repo = mock(QuestionnaireRepository.class);
-    QuestionnaireController controller = spy(new QuestionnaireController(pageLinks, repo));
-    when(controller.generateRandomId()).thenReturn("123");
+    QuestionnaireController controller = new QuestionnaireController(pageLinks, repo);
     var questionnaire = questionnaire();
     var questionnaireWithId = questionnaire().id("123");
     var persisted = JacksonConfig.createMapper().writeValueAsString(questionnaire);
-    assertThat(controller.create(questionnaire))
+    assertThat(controller.create("123", questionnaire))
         .isEqualTo(
             ResponseEntity.created(URI.create("http://foo.com/r4/Questionnaire/" + 123))
                 .body(questionnaireWithId));

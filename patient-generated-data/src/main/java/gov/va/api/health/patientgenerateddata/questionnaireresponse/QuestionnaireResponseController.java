@@ -2,6 +2,7 @@ package gov.va.api.health.patientgenerateddata.questionnaireresponse;
 
 import static com.google.common.base.Preconditions.checkState;
 import static gov.va.api.health.patientgenerateddata.Controllers.checkRequestState;
+import static gov.va.api.health.patientgenerateddata.Controllers.generateRandomId;
 import static gov.va.api.lighthouse.vulcan.Rules.atLeastOneParameterOf;
 import static gov.va.api.lighthouse.vulcan.Rules.parametersNeverSpecifiedTogether;
 import static gov.va.api.lighthouse.vulcan.Vulcan.returnNothing;
@@ -20,7 +21,6 @@ import gov.va.api.lighthouse.vulcan.mappings.Mappings;
 import java.net.URI;
 import java.time.Instant;
 import java.util.Optional;
-import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -71,16 +71,17 @@ public class QuestionnaireResponseController {
   @PostMapping
   ResponseEntity<QuestionnaireResponse> create(
       @Valid @RequestBody QuestionnaireResponse questionnaireResponse) {
+    return create(generateRandomId(), questionnaireResponse);
+  }
+
+  ResponseEntity<QuestionnaireResponse> create(
+      String id, QuestionnaireResponse questionnaireResponse) {
     checkRequestState(
         StringUtils.isEmpty(questionnaireResponse.id()),
         "ID must be empty, found ",
         questionnaireResponse.id());
-    questionnaireResponse.id(generateRandomId());
+    questionnaireResponse.id(id);
     return update(questionnaireResponse.id(), questionnaireResponse);
-  }
-
-  String generateRandomId() {
-    return UUID.randomUUID().toString();
   }
 
   @InitBinder

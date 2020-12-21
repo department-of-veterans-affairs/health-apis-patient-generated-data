@@ -2,6 +2,7 @@ package gov.va.api.health.patientgenerateddata;
 
 import static com.google.common.base.Preconditions.checkState;
 
+import java.util.UUID;
 import lombok.NonNull;
 import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
@@ -27,5 +28,10 @@ public class Controllers {
     } catch (IllegalStateException e) {
       throw new Exceptions.BadRequest(e.getMessage(), e);
     }
+  }
+
+  /** Generate random ID. */
+  public static String generateRandomId() {
+    return UUID.randomUUID().toString();
   }
 }
