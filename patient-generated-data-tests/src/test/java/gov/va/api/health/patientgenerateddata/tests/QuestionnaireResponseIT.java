@@ -28,6 +28,7 @@ public class QuestionnaireResponseIT {
 
   @Test
   void read() {
+    assumeEnvironmentIn(Environment.LOCAL);
     var id = systemDefinition().ids().questionnaireResponse();
     doGet(null, "QuestionnaireResponse/" + id, 200);
     doGet("application/json", "QuestionnaireResponse/" + id, 200);
@@ -41,11 +42,9 @@ public class QuestionnaireResponseIT {
 
   @Test
   void search_author() {
-    assumeEnvironmentIn(Environment.LOCAL);
-    // Environment.QA
-    // Environment.STAGING,
-    // Environment.STAGING_LAB,
-    // Environment.LAB
+    assumeEnvironmentIn(
+        Environment.LOCAL, Environment.QA, Environment.STAGING, Environment.STAGING_LAB);
+    //  Environment.LAB
 
     String author = systemDefinition().ids().questionnaireResponseAuthor();
     String query = String.format("?author=%s", author);
@@ -61,9 +60,8 @@ public class QuestionnaireResponseIT {
 
   @Test
   void search_authored() {
-    assumeEnvironmentIn(Environment.LOCAL, Environment.QA);
-    // Environment.STAGING,
-    // Environment.STAGING_LAB,
+    assumeEnvironmentIn(
+        Environment.LOCAL, Environment.QA, Environment.STAGING, Environment.STAGING_LAB);
     // Environment.LAB
 
     String expectedId = systemDefinition().ids().questionnaireResponse();
@@ -104,9 +102,8 @@ public class QuestionnaireResponseIT {
 
   @Test
   void search_id() {
-    assumeEnvironmentIn(Environment.LOCAL, Environment.QA);
-    // Environment.STAGING,
-    // Environment.STAGING_LAB,
+    assumeEnvironmentIn(
+        Environment.LOCAL, Environment.QA, Environment.STAGING, Environment.STAGING_LAB);
     // Environment.LAB
 
     var id = systemDefinition().ids().questionnaireResponse();
