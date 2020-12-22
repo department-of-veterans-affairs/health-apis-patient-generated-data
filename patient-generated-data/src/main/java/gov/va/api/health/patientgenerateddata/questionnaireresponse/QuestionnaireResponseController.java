@@ -2,6 +2,7 @@ package gov.va.api.health.patientgenerateddata.questionnaireresponse;
 
 import static com.google.common.base.Preconditions.checkState;
 import static gov.va.api.lighthouse.vulcan.Rules.atLeastOneParameterOf;
+import static gov.va.api.lighthouse.vulcan.Rules.ifParameter;
 import static gov.va.api.lighthouse.vulcan.Rules.parametersNeverSpecifiedTogether;
 import static gov.va.api.lighthouse.vulcan.Vulcan.returnNothing;
 
@@ -60,9 +61,7 @@ public class QuestionnaireResponseController {
                 .get())
         .defaultQuery(returnNothing())
         .rule(atLeastOneParameterOf("_id", "author", "authored", "subject"))
-        .rule(parametersNeverSpecifiedTogether("_id", "author"))
-        .rule(parametersNeverSpecifiedTogether("_id", "authored"))
-        .rule(parametersNeverSpecifiedTogether("_id", "subject"))
+        .rule(ifParameter("_id").thenForbidParameters("author", "authored", "subject"))
         .build();
   }
 

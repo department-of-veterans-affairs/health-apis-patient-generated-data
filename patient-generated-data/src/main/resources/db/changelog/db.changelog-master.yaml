@@ -72,7 +72,7 @@ databaseChangeLog:
                   type: int
                   constraints:
                     nullable: false
-                    
+
   - changeSet:
       id: 5
       author: pteracuda
@@ -141,11 +141,6 @@ databaseChangeLog:
                   type: datetime2
                   constraints:
                     - nullable: true
-              - column:
-                  name: subject
-                  type: varchar
-                  constraints:
-                    - nullable: true
 
   - changeSet:
       id: 8
@@ -164,7 +159,7 @@ databaseChangeLog:
             schemaName: app
             columnName: id
             columnDataType: varchar(36)
-        - addPrimaryKey:   
+        - addPrimaryKey:
             tableName: Observation
             schemaName: app
             columnNames: id
@@ -181,7 +176,7 @@ databaseChangeLog:
             schemaName: app
             columnName: id
             columnDataType: varchar(36)
-        - addPrimaryKey:   
+        - addPrimaryKey:
             tableName: Patient
             schemaName: app
             columnNames: id
@@ -198,7 +193,7 @@ databaseChangeLog:
             schemaName: app
             columnName: id
             columnDataType: varchar(36)
-        - addPrimaryKey:   
+        - addPrimaryKey:
             tableName: Questionnaire
             schemaName: app
             columnNames: id
@@ -215,7 +210,7 @@ databaseChangeLog:
             schemaName: app
             columnName: id
             columnDataType: varchar(36)
-        - addPrimaryKey:   
+        - addPrimaryKey:
             tableName: QuestionnaireResponse
             schemaName: app
             columnNames: id
@@ -224,8 +219,17 @@ databaseChangeLog:
             schemaName: app
             columnName: author
             newDataType: varchar(255)
-        - modifyDataType:
+
+  - changeSet:
+      id: 9
+      author: pteracuda
+      changes:
+        - addColumn:
             tableName: QuestionnaireResponse
             schemaName: app
-            columnName: subject
-            newDataType: varchar(255)
+            columns:
+              - column:
+                  name: subject
+                  type: varchar
+                  constraints:
+                    - nullable: true
