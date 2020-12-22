@@ -11,10 +11,36 @@ import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 
 public interface QuestionnaireResponseApi {
+
+  @Operation(
+      summary = "QuestionnaireResponse Create",
+      description = "https://www.hl7.org/fhir/R4/questionnaireresponse.html",
+      tags = {"QuestionnaireResponse"})
+  @POST
+  @Path("QuestionnaireResponse")
+  @ApiResponse(
+      responseCode = "201",
+      description = "Record created",
+      content =
+          @Content(
+              mediaType = "application/fhir+json",
+              schema = @Schema(implementation = QuestionnaireResponse.class)))
+  @ApiResponse(
+      responseCode = "400",
+      description = "Bad request",
+      content =
+          @Content(
+              mediaType = "application/fhir+json",
+              schema = @Schema(implementation = OperationOutcome.class)))
+  QuestionnaireResponse questionnaireResponseCreate(
+      @RequestBody(required = true, description = "The FHIR resource in JSON format.")
+          QuestionnaireResponse body);
+
   @Operation(
       summary = "QuestionnaireResponse Read",
       description = "https://www.hl7.org/fhir/R4/questionnaireresponse.html",

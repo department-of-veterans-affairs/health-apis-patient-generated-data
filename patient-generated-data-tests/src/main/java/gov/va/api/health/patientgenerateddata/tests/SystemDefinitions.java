@@ -13,6 +13,7 @@ class SystemDefinitions {
     return Ids.builder()
         .observation("fc691a7f-a0f3-47b4-9d00-2786d055e8ba")
         .patient("1011537977V693883")
+        .patientGenerated("9999999999V999999")
         .patientNotMe("1017283180V801730")
         .questionnaire("37953b72-961b-41ee-bd05-86c62bacc46b")
         .questionnaireResponse("f003043a-9047-4c3a-b15b-a26c67f4e723")
@@ -127,6 +128,8 @@ class SystemDefinitions {
     @NonNull String observation;
 
     @NonNull String patient;
+
+    @NonNull String patientGenerated;
 
     @NonNull String patientNotMe;
 

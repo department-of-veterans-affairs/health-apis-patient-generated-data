@@ -11,6 +11,7 @@ import gov.va.api.health.autoconfig.configuration.JacksonConfig;
 import gov.va.api.health.patientgenerateddata.Exceptions;
 import gov.va.api.health.patientgenerateddata.LinkProperties;
 import gov.va.api.health.r4.api.resources.Questionnaire;
+import gov.va.api.health.r4.api.resources.Questionnaire.PublicationStatus;
 import java.net.URI;
 import java.util.Optional;
 import lombok.SneakyThrows;
@@ -20,9 +21,40 @@ import org.springframework.validation.DataBinder;
 
 public class QuestionnaireControllerTest {
   @Test
+  @SneakyThrows
+  void create() {
+    LinkProperties pageLinks =
+        LinkProperties.builder().baseUrl("http://foo.com").r4BasePath("r4").build();
+    QuestionnaireRepository repo = mock(QuestionnaireRepository.class);
+    QuestionnaireController controller = new QuestionnaireController(pageLinks, repo);
+    var questionnaire = questionnaire();
+    var questionnaireWithId = questionnaire().id("123");
+    var persisted = JacksonConfig.createMapper().writeValueAsString(questionnaire);
+    assertThat(controller.create("123", questionnaire))
+        .isEqualTo(
+            ResponseEntity.created(URI.create("http://foo.com/r4/Questionnaire/" + 123))
+                .body(questionnaireWithId));
+    verify(repo, times(1)).save(QuestionnaireEntity.builder().id("123").payload(persisted).build());
+  }
+
+  @Test
+  @SneakyThrows
+  void create_invalid() {
+    var questionnaire = questionnaire().id("123");
+    var repo = mock(QuestionnaireRepository.class);
+    var pageLinks = mock(LinkProperties.class);
+    var controller = new QuestionnaireController(pageLinks, repo);
+    assertThrows(Exceptions.BadRequest.class, () -> controller.create(questionnaire));
+  }
+
+  @Test
   void initDirectFieldAccess() {
     new QuestionnaireController(mock(LinkProperties.class), mock(QuestionnaireRepository.class))
         .initDirectFieldAccess(mock(DataBinder.class));
+  }
+
+  private Questionnaire questionnaire() {
+    return Questionnaire.builder().title("x").status(PublicationStatus.active).build();
   }
 
   @Test

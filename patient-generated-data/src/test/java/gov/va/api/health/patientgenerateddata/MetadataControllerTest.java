@@ -73,20 +73,15 @@ public class MetadataControllerTest {
                                         .profile("https://www.hl7.org/fhir/r4/observation.html")
                                         .interaction(
                                             List.of(
-                                                CapabilityStatement.ResourceInteraction.builder()
-                                                    .code(
-                                                        CapabilityStatement.TypeRestfulInteraction
-                                                            .read)
-                                                    .documentation(
-                                                        "Implemented per specification. See http://hl7.org/fhir/R4/http.html")
-                                                    .build(),
-                                                CapabilityStatement.ResourceInteraction.builder()
-                                                    .code(
-                                                        CapabilityStatement.TypeRestfulInteraction
-                                                            .update)
-                                                    .documentation(
-                                                        "Implemented per specification. See http://hl7.org/fhir/R4/http.html")
-                                                    .build()))
+                                                resourceInteraction(
+                                                    CapabilityStatement.TypeRestfulInteraction
+                                                        .create),
+                                                resourceInteraction(
+                                                    CapabilityStatement.TypeRestfulInteraction
+                                                        .read),
+                                                resourceInteraction(
+                                                    CapabilityStatement.TypeRestfulInteraction
+                                                        .update)))
                                         .versioning(CapabilityStatement.Versioning.no_version)
                                         .referencePolicy(
                                             List.of(
@@ -98,20 +93,15 @@ public class MetadataControllerTest {
                                         .profile("https://www.hl7.org/fhir/r4/patient.html")
                                         .interaction(
                                             List.of(
-                                                CapabilityStatement.ResourceInteraction.builder()
-                                                    .code(
-                                                        CapabilityStatement.TypeRestfulInteraction
-                                                            .read)
-                                                    .documentation(
-                                                        "Implemented per specification. See http://hl7.org/fhir/R4/http.html")
-                                                    .build(),
-                                                CapabilityStatement.ResourceInteraction.builder()
-                                                    .code(
-                                                        CapabilityStatement.TypeRestfulInteraction
-                                                            .update)
-                                                    .documentation(
-                                                        "Implemented per specification. See http://hl7.org/fhir/R4/http.html")
-                                                    .build()))
+                                                resourceInteraction(
+                                                    CapabilityStatement.TypeRestfulInteraction
+                                                        .create),
+                                                resourceInteraction(
+                                                    CapabilityStatement.TypeRestfulInteraction
+                                                        .read),
+                                                resourceInteraction(
+                                                    CapabilityStatement.TypeRestfulInteraction
+                                                        .update)))
                                         .versioning(CapabilityStatement.Versioning.no_version)
                                         .referencePolicy(
                                             List.of(
@@ -123,20 +113,15 @@ public class MetadataControllerTest {
                                         .profile("https://www.hl7.org/fhir/r4/questionnaire.html")
                                         .interaction(
                                             List.of(
-                                                CapabilityStatement.ResourceInteraction.builder()
-                                                    .code(
-                                                        CapabilityStatement.TypeRestfulInteraction
-                                                            .read)
-                                                    .documentation(
-                                                        "Implemented per specification. See http://hl7.org/fhir/R4/http.html")
-                                                    .build(),
-                                                CapabilityStatement.ResourceInteraction.builder()
-                                                    .code(
-                                                        CapabilityStatement.TypeRestfulInteraction
-                                                            .update)
-                                                    .documentation(
-                                                        "Implemented per specification. See http://hl7.org/fhir/R4/http.html")
-                                                    .build()))
+                                                resourceInteraction(
+                                                    CapabilityStatement.TypeRestfulInteraction
+                                                        .create),
+                                                resourceInteraction(
+                                                    CapabilityStatement.TypeRestfulInteraction
+                                                        .read),
+                                                resourceInteraction(
+                                                    CapabilityStatement.TypeRestfulInteraction
+                                                        .update)))
                                         .versioning(CapabilityStatement.Versioning.no_version)
                                         .referencePolicy(
                                             List.of(
@@ -149,27 +134,18 @@ public class MetadataControllerTest {
                                             "https://www.hl7.org/fhir/r4/questionnaireresponse.html")
                                         .interaction(
                                             List.of(
-                                                CapabilityStatement.ResourceInteraction.builder()
-                                                    .code(
-                                                        CapabilityStatement.TypeRestfulInteraction
-                                                            .read)
-                                                    .documentation(
-                                                        "Implemented per specification. See http://hl7.org/fhir/R4/http.html")
-                                                    .build(),
-                                                CapabilityStatement.ResourceInteraction.builder()
-                                                    .code(
-                                                        CapabilityStatement.TypeRestfulInteraction
-                                                            .update)
-                                                    .documentation(
-                                                        "Implemented per specification. See http://hl7.org/fhir/R4/http.html")
-                                                    .build(),
-                                                CapabilityStatement.ResourceInteraction.builder()
-                                                    .code(
-                                                        CapabilityStatement.TypeRestfulInteraction
-                                                            .search_type)
-                                                    .documentation(
-                                                        "Implemented per specification. See http://hl7.org/fhir/R4/http.html")
-                                                    .build()))
+                                                resourceInteraction(
+                                                    CapabilityStatement.TypeRestfulInteraction
+                                                        .create),
+                                                resourceInteraction(
+                                                    CapabilityStatement.TypeRestfulInteraction
+                                                        .read),
+                                                resourceInteraction(
+                                                    CapabilityStatement.TypeRestfulInteraction
+                                                        .update),
+                                                resourceInteraction(
+                                                    CapabilityStatement.TypeRestfulInteraction
+                                                        .search_type)))
                                         .versioning(CapabilityStatement.Versioning.no_version)
                                         .referencePolicy(
                                             List.of(
@@ -202,6 +178,14 @@ public class MetadataControllerTest {
                 .build());
   }
 
+  CapabilityStatement.ResourceInteraction resourceInteraction(
+      CapabilityStatement.TypeRestfulInteraction type) {
+    return CapabilityStatement.ResourceInteraction.builder()
+        .code(type)
+        .documentation("Implemented per specification. See http://hl7.org/fhir/R4/http.html")
+        .build();
+  }
+
   @Test
   void supportedResource() {
     assertThat(
@@ -217,6 +201,11 @@ public class MetadataControllerTest {
                 .profile("url")
                 .interaction(
                     List.of(
+                        CapabilityStatement.ResourceInteraction.builder()
+                            .code(CapabilityStatement.TypeRestfulInteraction.create)
+                            .documentation(
+                                "Implemented per specification. See http://hl7.org/fhir/R4/http.html")
+                            .build(),
                         CapabilityStatement.ResourceInteraction.builder()
                             .code(CapabilityStatement.TypeRestfulInteraction.read)
                             .documentation(

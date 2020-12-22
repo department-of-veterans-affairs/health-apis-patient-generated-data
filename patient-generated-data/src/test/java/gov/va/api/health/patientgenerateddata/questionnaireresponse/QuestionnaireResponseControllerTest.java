@@ -14,6 +14,7 @@ import gov.va.api.health.patientgenerateddata.Exceptions;
 import gov.va.api.health.patientgenerateddata.LinkProperties;
 import gov.va.api.health.r4.api.elements.Reference;
 import gov.va.api.health.r4.api.resources.QuestionnaireResponse;
+import gov.va.api.health.r4.api.resources.QuestionnaireResponse.Status;
 import gov.va.api.lighthouse.vulcan.InvalidRequest;
 import java.net.URI;
 import java.util.List;
@@ -63,6 +64,35 @@ public class QuestionnaireResponseControllerTest {
   }
 
   @Test
+  @SneakyThrows
+  void create() {
+    LinkProperties pageLinks =
+        LinkProperties.builder().baseUrl("http://foo.com").r4BasePath("r4").build();
+    QuestionnaireResponseRepository repo = mock(QuestionnaireResponseRepository.class);
+    QuestionnaireResponseController controller =
+        new QuestionnaireResponseController(pageLinks, repo);
+    var questionnaireResponse = questionnaireResponse();
+    var questionnaireResponseWithId = questionnaireResponse().id("123");
+    var persisted = JacksonConfig.createMapper().writeValueAsString(questionnaireResponseWithId);
+    assertThat(controller.create("123", questionnaireResponse))
+        .isEqualTo(
+            ResponseEntity.created(URI.create("http://foo.com/r4/QuestionnaireResponse/123"))
+                .body(questionnaireResponseWithId));
+    verify(repo, times(1))
+        .save(QuestionnaireResponseEntity.builder().id("123").payload(persisted).build());
+  }
+
+  @Test
+  @SneakyThrows
+  void create_invalid() {
+    var questionnaireResponse = questionnaireResponse().id("123");
+    var repo = mock(QuestionnaireResponseRepository.class);
+    var pageLinks = mock(LinkProperties.class);
+    var controller = new QuestionnaireResponseController(pageLinks, repo);
+    assertThrows(Exceptions.BadRequest.class, () -> controller.create(questionnaireResponse));
+  }
+
+  @Test
   void initDirectFieldAccess() {
     new QuestionnaireResponseController(
             mock(LinkProperties.class), mock(QuestionnaireResponseRepository.class))
@@ -77,6 +107,10 @@ public class QuestionnaireResponseControllerTest {
     assertThatExceptionOfType(InvalidRequest.class).isThrownBy(() -> controller().search(r));
   }
 
+  private QuestionnaireResponse questionnaireResponse() {
+    return QuestionnaireResponse.builder().status(Status.completed).build();
+  }
+
   @Test
   @SneakyThrows
   void read() {
@@ -87,7 +121,6 @@ public class QuestionnaireResponseControllerTest {
     when(repo.findById("x"))
         .thenReturn(
             Optional.of(QuestionnaireResponseEntity.builder().id("x").payload(payload).build()));
-
     assertThat(new QuestionnaireResponseController(pageLinks, repo).read("x"))
         .isEqualTo(QuestionnaireResponse.builder().id("x").build());
   }

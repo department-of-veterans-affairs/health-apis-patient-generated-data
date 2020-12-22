@@ -159,6 +159,11 @@ class MetadataController {
     }
 
     private List<CapabilityStatement.ResourceInteraction> interactions() {
+      CapabilityStatement.ResourceInteraction creatable =
+          CapabilityStatement.ResourceInteraction.builder()
+              .code(CapabilityStatement.TypeRestfulInteraction.create)
+              .documentation(RESOURCE_DOCUMENTATION)
+              .build();
       CapabilityStatement.ResourceInteraction readable =
           CapabilityStatement.ResourceInteraction.builder()
               .code(CapabilityStatement.TypeRestfulInteraction.read)
@@ -170,7 +175,7 @@ class MetadataController {
               .documentation(RESOURCE_DOCUMENTATION)
               .build();
       if (isEmpty(searches)) {
-        return List.of(readable, updatable);
+        return List.of(creatable, readable, updatable);
       }
 
       CapabilityStatement.ResourceInteraction searchable =
@@ -178,7 +183,7 @@ class MetadataController {
               .code(CapabilityStatement.TypeRestfulInteraction.search_type)
               .documentation(RESOURCE_DOCUMENTATION)
               .build();
-      return List.of(readable, updatable, searchable);
+      return List.of(creatable, readable, updatable, searchable);
     }
 
     private List<CapabilityStatement.SearchParam> searchParams() {
