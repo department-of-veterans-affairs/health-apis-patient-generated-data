@@ -127,7 +127,7 @@ public interface QuestionnaireResponseApi {
       @Parameter(
               in = ParameterIn.QUERY,
               name = "subject",
-              description = "The subject to whom the questionnaire answers apply to.")
+              description = "Who or what the answers apply to.")
           String subject,
       @Parameter(
               in = ParameterIn.QUERY,

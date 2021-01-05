@@ -230,6 +230,6 @@ databaseChangeLog:
             columns:
               - column:
                   name: subject
-                  type: varchar
+                  type: varchar(255)
                   constraints:
                     - nullable: true
