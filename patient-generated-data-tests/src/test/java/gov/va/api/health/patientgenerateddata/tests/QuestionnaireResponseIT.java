@@ -117,10 +117,10 @@ public class QuestionnaireResponseIT {
 
   @Test
   void search_subject() {
-    assumeEnvironmentIn(Environment.LOCAL);
-    //         Environment.QA
-    //         Environment.STAGING,
-    //         Environment.STAGING_LAB,
+    assumeEnvironmentIn(Environment.LOCAL,
+             Environment.QA,
+             Environment.STAGING,
+             Environment.STAGING_LAB);
     //         Environment.LAB);
     String subject = systemDefinition().ids().questionnaireResponseSubject();
     String query = String.format("?subject=%s", subject);
