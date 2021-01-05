@@ -4,7 +4,7 @@ import static com.google.common.base.Preconditions.checkState;
 import static gov.va.api.health.patientgenerateddata.Controllers.checkRequestState;
 import static gov.va.api.health.patientgenerateddata.Controllers.generateRandomId;
 import static gov.va.api.lighthouse.vulcan.Rules.atLeastOneParameterOf;
-import static gov.va.api.lighthouse.vulcan.Rules.parametersNeverSpecifiedTogether;
+import static gov.va.api.lighthouse.vulcan.Rules.ifParameter;
 import static gov.va.api.lighthouse.vulcan.Vulcan.returnNothing;
 
 import gov.va.api.health.autoconfig.configuration.JacksonConfig;
@@ -60,11 +60,11 @@ public class QuestionnaireResponseController {
                 .value("_id", "id")
                 .value("author", "author")
                 .dateAsInstant("authored", "authored")
+                .value("subject", "subject")
                 .get())
         .defaultQuery(returnNothing())
-        .rule(atLeastOneParameterOf("_id", "author", "authored"))
-        .rule(parametersNeverSpecifiedTogether("_id", "author"))
-        .rule(parametersNeverSpecifiedTogether("_id", "authored"))
+        .rule(atLeastOneParameterOf("_id", "author", "authored", "subject"))
+        .rule(ifParameter("_id").thenForbidParameters("author", "authored", "subject"))
         .build();
   }
 
@@ -132,12 +132,14 @@ public class QuestionnaireResponseController {
     String payload = JacksonConfig.createMapper().writeValueAsString(questionnaireResponse);
     String authorId = ReferenceUtils.resourceId(questionnaireResponse.author());
     Instant authored = ParseUtils.parseDateTime(questionnaireResponse.authored());
+    String subject = ReferenceUtils.resourceId(questionnaireResponse.subject());
     Optional<QuestionnaireResponseEntity> maybeEntity = repository.findById(id);
     if (maybeEntity.isPresent()) {
       QuestionnaireResponseEntity entity = maybeEntity.get();
       entity.payload(payload);
       entity.author(authorId);
       entity.authored(authored);
+      entity.subject(subject);
       repository.save(entity);
       return ResponseEntity.ok(questionnaireResponse);
     }
@@ -147,6 +149,7 @@ public class QuestionnaireResponseController {
             .payload(payload)
             .author(authorId)
             .authored(authored)
+            .subject(subject)
             .build());
     return ResponseEntity.created(
             URI.create(linkProperties.r4Url() + "/QuestionnaireResponse/" + id))

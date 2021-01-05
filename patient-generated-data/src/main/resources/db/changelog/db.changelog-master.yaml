@@ -72,7 +72,7 @@ databaseChangeLog:
                   type: int
                   constraints:
                     nullable: false
-                    
+
   - changeSet:
       id: 5
       author: pteracuda
@@ -159,7 +159,7 @@ databaseChangeLog:
             schemaName: app
             columnName: id
             columnDataType: varchar(36)
-        - addPrimaryKey:   
+        - addPrimaryKey:
             tableName: Observation
             schemaName: app
             columnNames: id
@@ -176,7 +176,7 @@ databaseChangeLog:
             schemaName: app
             columnName: id
             columnDataType: varchar(36)
-        - addPrimaryKey:   
+        - addPrimaryKey:
             tableName: Patient
             schemaName: app
             columnNames: id
@@ -193,7 +193,7 @@ databaseChangeLog:
             schemaName: app
             columnName: id
             columnDataType: varchar(36)
-        - addPrimaryKey:   
+        - addPrimaryKey:
             tableName: Questionnaire
             schemaName: app
             columnNames: id
@@ -210,7 +210,7 @@ databaseChangeLog:
             schemaName: app
             columnName: id
             columnDataType: varchar(36)
-        - addPrimaryKey:   
+        - addPrimaryKey:
             tableName: QuestionnaireResponse
             schemaName: app
             columnNames: id
@@ -219,3 +219,17 @@ databaseChangeLog:
             schemaName: app
             columnName: author
             newDataType: varchar(255)
+
+  - changeSet:
+      id: 9
+      author: pteracuda
+      changes:
+        - addColumn:
+            tableName: QuestionnaireResponse
+            schemaName: app
+            columns:
+              - column:
+                  name: subject
+                  type: varchar(255)
+                  constraints:
+                    - nullable: true

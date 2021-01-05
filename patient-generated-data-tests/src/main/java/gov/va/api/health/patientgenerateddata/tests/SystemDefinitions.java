@@ -18,6 +18,7 @@ class SystemDefinitions {
         .questionnaire("37953b72-961b-41ee-bd05-86c62bacc46b")
         .questionnaireResponse("f003043a-9047-4c3a-b15b-a26c67f4e723")
         .questionnaireResponseAuthor("1011537977V693883")
+        .questionnaireResponseSubject("1017283180V801730")
         .questionnaireResponseGenerated("qr-generated")
         .build();
   }
@@ -137,6 +138,8 @@ class SystemDefinitions {
     @NonNull String questionnaireResponse;
 
     @NonNull String questionnaireResponseAuthor;
+
+    @NonNull String questionnaireResponseSubject;
 
     @NonNull String questionnaireResponseGenerated;
   }
