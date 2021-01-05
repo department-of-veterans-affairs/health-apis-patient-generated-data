@@ -9,7 +9,6 @@ import gov.va.api.health.r4.api.datatypes.ContactDetail;
 import gov.va.api.health.r4.api.datatypes.ContactPoint;
 import gov.va.api.health.r4.api.elements.Extension;
 import gov.va.api.health.r4.api.resources.CapabilityStatement;
-import gov.va.api.health.r4.api.resources.CapabilityStatement.Security;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -115,8 +114,8 @@ class MetadataController {
             .build());
   }
 
-  private Security restSecurity() {
-    return Security.builder()
+  private CapabilityStatement.Security restSecurity() {
+    return CapabilityStatement.Security.builder()
         .cors(true)
         .description("http://docs.smarthealthit.org/")
         .service(List.of(smartOnFhirCodeableConcept()))
