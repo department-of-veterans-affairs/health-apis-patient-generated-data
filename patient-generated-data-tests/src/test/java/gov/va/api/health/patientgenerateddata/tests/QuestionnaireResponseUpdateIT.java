@@ -61,4 +61,17 @@ public class QuestionnaireResponseUpdateIT {
     QuestionnaireResponse persisted = persistedResponse.response().as(QuestionnaireResponse.class);
     assertThat(persisted.authored()).isEqualTo(now.toString());
   }
+
+  @Test
+  void update_subject() {
+    Instant now = Instant.now();
+    Reference ref = Reference.builder().reference("Resource/" + now.toString()).build();
+    var id = systemDefinition().ids().questionnaireResponseGenerated();
+    QuestionnaireResponse qr = questionnaireResponse(id).subject(ref);
+    doPut("QuestionnaireResponse/" + id, serializePayload(qr), "update subject", 200);
+    ExpectedResponse persistedResponse =
+        doGet("application/json", "QuestionnaireResponse/" + id, 200);
+    QuestionnaireResponse persisted = persistedResponse.response().as(QuestionnaireResponse.class);
+    assertThat(persisted.subject().reference()).endsWith(now.toString());
+  }
 }

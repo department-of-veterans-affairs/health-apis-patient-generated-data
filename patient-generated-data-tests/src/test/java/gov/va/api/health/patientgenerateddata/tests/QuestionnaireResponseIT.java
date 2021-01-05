@@ -47,13 +47,11 @@ public class QuestionnaireResponseIT {
         Environment.STAGING,
         Environment.STAGING_LAB,
         Environment.LAB);
-
     String author = systemDefinition().ids().questionnaireResponseAuthor();
     String query = String.format("?author=%s", author);
     var response = doGet("application/json", "QuestionnaireResponse" + query, 200);
     QuestionnaireResponse.Bundle bundle = response.expectValid(QuestionnaireResponse.Bundle.class);
     assertThat(bundle.entry()).hasSizeGreaterThan(0);
-
     query = String.format("?author=%s", "unknown");
     response = doGet("application/json", "QuestionnaireResponse" + query, 200);
     bundle = response.expectValid(QuestionnaireResponse.Bundle.class);
@@ -68,7 +66,6 @@ public class QuestionnaireResponseIT {
         Environment.STAGING,
         Environment.STAGING_LAB,
         Environment.LAB);
-
     String expectedId = systemDefinition().ids().questionnaireResponse();
     String date = "2013-02-19T19:15:00Z";
     String query = String.format("?authored=%s", date);
@@ -113,9 +110,26 @@ public class QuestionnaireResponseIT {
         Environment.STAGING,
         Environment.STAGING_LAB,
         Environment.LAB);
-
     var id = systemDefinition().ids().questionnaireResponse();
     var response = doGet("application/json", "QuestionnaireResponse?_id=" + id, 200);
     response.expectValid(QuestionnaireResponse.Bundle.class);
+  }
+
+  @Test
+  void search_subject() {
+    assumeEnvironmentIn(Environment.LOCAL);
+    //         Environment.QA
+    //         Environment.STAGING,
+    //         Environment.STAGING_LAB,
+    //         Environment.LAB);
+    String subject = systemDefinition().ids().questionnaireResponseSubject();
+    String query = String.format("?subject=%s", subject);
+    var response = doGet("application/json", "QuestionnaireResponse" + query, 200);
+    QuestionnaireResponse.Bundle bundle = response.expectValid(QuestionnaireResponse.Bundle.class);
+    assertThat(bundle.entry()).hasSizeGreaterThan(0);
+    query = String.format("?subject=%s", "unknown");
+    response = doGet("application/json", "QuestionnaireResponse" + query, 200);
+    bundle = response.expectValid(QuestionnaireResponse.Bundle.class);
+    assertThat(bundle.entry()).isEmpty();
   }
 }
