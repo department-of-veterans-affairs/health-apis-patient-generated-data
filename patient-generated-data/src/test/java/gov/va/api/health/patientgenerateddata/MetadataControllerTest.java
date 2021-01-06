@@ -29,10 +29,10 @@ public class MetadataControllerTest {
                     buildProperties,
                     LinkProperties.builder().baseUrl("http://va.gov").r4BasePath("api/r4").build(),
                     MetadataProperties.builder()
-                        .tokenEndpoint("http://fake.com/token")
-                        .authorizeEndpoint("http://fake.com/authorize")
-                        .managementEndpoint("http://fake.com/manage")
-                        .revocationEndpoint("http://fake.com/revoke")
+                        .endpointToken("http://fake.com/token")
+                        .endpointAuthorize("http://fake.com/authorize")
+                        .endpointManagement("http://fake.com/manage")
+                        .endpointRevocation("http://fake.com/revoke")
                         .build())
                 .read())
         .isEqualTo(

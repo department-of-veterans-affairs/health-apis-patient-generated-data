@@ -132,19 +132,19 @@ class MetadataController {
                         List.of(
                             Extension.builder()
                                 .url("token")
-                                .valueUri(metadataProperties.getTokenEndpoint())
+                                .valueUri(metadataProperties.getEndpointToken())
                                 .build(),
                             Extension.builder()
                                 .url("authorize")
-                                .valueUri(metadataProperties.getAuthorizeEndpoint())
+                                .valueUri(metadataProperties.getEndpointAuthorize())
                                 .build(),
                             Extension.builder()
                                 .url("manage")
-                                .valueUri(metadataProperties.getManagementEndpoint())
+                                .valueUri(metadataProperties.getEndpointManagement())
                                 .build(),
                             Extension.builder()
                                 .url("revoke")
-                                .valueUri(metadataProperties.getRevocationEndpoint())
+                                .valueUri(metadataProperties.getEndpointRevocation())
                                 .build()))
                     .build()))
         .build();

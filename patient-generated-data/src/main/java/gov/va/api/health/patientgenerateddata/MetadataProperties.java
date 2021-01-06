@@ -18,8 +18,8 @@ import org.springframework.context.annotation.Configuration;
 @AllArgsConstructor
 @Builder
 public class MetadataProperties {
-  private String tokenEndpoint;
-  private String authorizeEndpoint;
-  private String managementEndpoint;
-  private String revocationEndpoint;
+  private String endpointAuthorize;
+  private String endpointManagement;
+  private String endpointRevocation;
+  private String endpointToken;
 }
