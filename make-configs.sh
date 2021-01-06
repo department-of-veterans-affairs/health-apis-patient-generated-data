@@ -35,6 +35,10 @@ checkForUnsetValues() {
 }
 
 makeConfig patient-generated-data $PROFILE
+configValue patient-generated-data $PROFILE metadata.endpoint-authorize 'http://fake.com/authorize'
+configValue patient-generated-data $PROFILE metadata.endpoint-management 'http://fake.com/manage'
+configValue patient-generated-data $PROFILE metadata.endpoint-revocation 'http://fake.com/revoke'
+configValue patient-generated-data $PROFILE metadata.endpoint-token 'http://fake.com/token'
 configValue patient-generated-data $PROFILE public-r4-base-path 'r4'
 configValue patient-generated-data $PROFILE public-url 'http://localhost:8095'
 configValue patient-generated-data $PROFILE spring.datasource.password '<YourStrong!Passw0rd>'

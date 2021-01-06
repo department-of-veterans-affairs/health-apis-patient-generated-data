@@ -3,8 +3,11 @@ package gov.va.api.health.patientgenerateddata;
 import static java.util.stream.Collectors.toList;
 import static org.springframework.util.CollectionUtils.isEmpty;
 
+import gov.va.api.health.r4.api.datatypes.CodeableConcept;
+import gov.va.api.health.r4.api.datatypes.Coding;
 import gov.va.api.health.r4.api.datatypes.ContactDetail;
 import gov.va.api.health.r4.api.datatypes.ContactPoint;
+import gov.va.api.health.r4.api.elements.Extension;
 import gov.va.api.health.r4.api.resources.CapabilityStatement;
 import java.util.List;
 import java.util.Set;
@@ -33,6 +36,8 @@ class MetadataController {
   private final BuildProperties buildProperties;
 
   private final LinkProperties pageLinks;
+
+  private final MetadataProperties metadataProperties;
 
   private List<ContactDetail> contact() {
     return List.of(
@@ -110,7 +115,51 @@ class MetadataController {
         CapabilityStatement.Rest.builder()
             .mode(CapabilityStatement.RestMode.server)
             .resource(resources())
+            .security(restSecurity())
             .build());
+  }
+
+  private CapabilityStatement.Security restSecurity() {
+    return CapabilityStatement.Security.builder()
+        .cors(true)
+        .description("http://docs.smarthealthit.org/")
+        .service(List.of(smartOnFhirCodeableConcept()))
+        .extension(
+            List.of(
+                Extension.builder()
+                    .url("http://fhir-registry.smarthealthit.org/StructureDefinition/oauth-uris")
+                    .extension(
+                        List.of(
+                            Extension.builder()
+                                .url("token")
+                                .valueUri(metadataProperties.getEndpointToken())
+                                .build(),
+                            Extension.builder()
+                                .url("authorize")
+                                .valueUri(metadataProperties.getEndpointAuthorize())
+                                .build(),
+                            Extension.builder()
+                                .url("manage")
+                                .valueUri(metadataProperties.getEndpointManagement())
+                                .build(),
+                            Extension.builder()
+                                .url("revoke")
+                                .valueUri(metadataProperties.getEndpointRevocation())
+                                .build()))
+                    .build()))
+        .build();
+  }
+
+  private CodeableConcept smartOnFhirCodeableConcept() {
+    return CodeableConcept.builder()
+        .coding(
+            List.of(
+                Coding.builder()
+                    .system("http://terminology.hl7.org/CodeSystem/restful-security-service")
+                    .code("SMART-on-FHIR")
+                    .display("SMART-on-FHIR")
+                    .build()))
+        .build();
   }
 
   private CapabilityStatement.Software software() {
