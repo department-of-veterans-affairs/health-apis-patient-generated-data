@@ -13,6 +13,7 @@ import java.net.URI;
 import java.util.Optional;
 import javax.validation.Valid;
 import lombok.AllArgsConstructor;
+import lombok.NonNull;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,11 +45,15 @@ public class QuestionnaireController {
     return create(generateRandomId(), questionnaire);
   }
 
+  @SneakyThrows
   ResponseEntity<Questionnaire> create(String id, Questionnaire questionnaire) {
     checkRequestState(
         StringUtils.isEmpty(questionnaire.id()), "ID must be empty, found %s", questionnaire.id());
     questionnaire.id(id);
-    return update(questionnaire.id(), questionnaire);
+    QuestionnaireEntity entity = transform(questionnaire);
+    repository.save(entity);
+    return ResponseEntity.created(URI.create(linkProperties.r4Url() + "/Questionnaire/" + id))
+        .body(questionnaire);
   }
 
   @InitBinder
@@ -63,6 +68,23 @@ public class QuestionnaireController {
     return entity.deserializePayload();
   }
 
+  QuestionnaireEntity transform(Questionnaire questionnaire) {
+    return transform(questionnaire, QuestionnaireEntity.builder().build());
+  }
+
+  @SneakyThrows
+  QuestionnaireEntity transform(Questionnaire questionnaire, QuestionnaireEntity entity) {
+    return transform(
+        questionnaire, entity, JacksonConfig.createMapper().writeValueAsString(questionnaire));
+  }
+
+  QuestionnaireEntity transform(
+      @NonNull Questionnaire questionnaire, @NonNull QuestionnaireEntity entity, String payload) {
+    entity.id(questionnaire.id());
+    entity.payload(payload);
+    return entity;
+  }
+
   @SneakyThrows
   @PutMapping(value = "/{id}")
   @Loggable(arguments = false)
@@ -71,14 +93,9 @@ public class QuestionnaireController {
     String payload = JacksonConfig.createMapper().writeValueAsString(questionnaire);
     checkState(id.equals(questionnaire.id()), "%s != %s", id, questionnaire.id());
     Optional<QuestionnaireEntity> maybeEntity = repository.findById(id);
-    if (maybeEntity.isPresent()) {
-      QuestionnaireEntity entity = maybeEntity.get();
-      entity.payload(payload);
-      repository.save(entity);
-      return ResponseEntity.ok(questionnaire);
-    }
-    repository.save(QuestionnaireEntity.builder().id(id).payload(payload).build());
-    return ResponseEntity.created(URI.create(linkProperties.r4Url() + "/Questionnaire/" + id))
-        .body(questionnaire);
+    QuestionnaireEntity entity = maybeEntity.orElseThrow(() -> new Exceptions.NotFound(id));
+    entity = transform(questionnaire, entity, payload);
+    repository.save(entity);
+    return ResponseEntity.ok(questionnaire);
   }
 }

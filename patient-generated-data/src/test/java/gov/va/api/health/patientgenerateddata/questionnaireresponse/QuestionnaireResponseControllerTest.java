@@ -153,19 +153,16 @@ public class QuestionnaireResponseControllerTest {
 
   @Test
   @SneakyThrows
-  void update_new() {
+  void update_not_existing() {
     QuestionnaireResponseRepository repo = mock(QuestionnaireResponseRepository.class);
     Reference authorRef = Reference.builder().reference("1011537977V693883").build();
     QuestionnaireResponse questionnaireResponse =
         QuestionnaireResponse.builder().id("x").author(authorRef).build();
-    String payload = JacksonConfig.createMapper().writeValueAsString(questionnaireResponse);
-    assertThat(
-            new QuestionnaireResponseController(pageLinks, repo).update("x", questionnaireResponse))
-        .isEqualTo(
-            ResponseEntity.created(URI.create("http://foo.com/r4/QuestionnaireResponse/x"))
-                .body(questionnaireResponse));
-    verify(repo, times(1))
-        .save(QuestionnaireResponseEntity.builder().id("x").payload(payload).build());
+    assertThrows(
+        Exceptions.NotFound.class,
+        () ->
+            new QuestionnaireResponseController(pageLinks, repo)
+                .update("x", questionnaireResponse));
   }
 
   @ParameterizedTest

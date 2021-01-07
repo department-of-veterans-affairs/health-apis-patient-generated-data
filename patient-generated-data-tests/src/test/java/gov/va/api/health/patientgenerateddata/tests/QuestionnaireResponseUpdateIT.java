@@ -30,11 +30,7 @@ public class QuestionnaireResponseUpdateIT {
         Environment.LOCAL, Environment.QA, Environment.STAGING, Environment.STAGING_LAB);
 
     var id = systemDefinition().ids().questionnaireResponseGenerated();
-    ExpectedResponse existing = doGet("application/json", "QuestionnaireResponse/" + id, null);
-    if (existing.response().statusCode() == 404) {
-      QuestionnaireResponse qr = questionnaireResponse(id);
-      doPut("QuestionnaireResponse/" + id, serializePayload(qr), "load initial resource", 201);
-    }
+    doGet("application/json", "QuestionnaireResponse/" + id, 200);
   }
 
   @Test

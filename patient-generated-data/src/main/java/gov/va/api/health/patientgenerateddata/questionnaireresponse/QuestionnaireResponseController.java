@@ -24,6 +24,7 @@ import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import lombok.AllArgsConstructor;
+import lombok.NonNull;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,7 +82,11 @@ public class QuestionnaireResponseController {
         "ID must be empty, found %s",
         questionnaireResponse.id());
     questionnaireResponse.id(id);
-    return update(questionnaireResponse.id(), questionnaireResponse);
+    QuestionnaireResponseEntity entity = transform(questionnaireResponse);
+    repository.save(entity);
+    return ResponseEntity.created(
+            URI.create(linkProperties.r4Url() + "/QuestionnaireResponse/" + id))
+        .body(questionnaireResponse);
   }
 
   @InitBinder
@@ -122,6 +127,32 @@ public class QuestionnaireResponseController {
         .build();
   }
 
+  QuestionnaireResponseEntity transform(QuestionnaireResponse questionnaire) {
+    return transform(questionnaire, QuestionnaireResponseEntity.builder().build());
+  }
+
+  @SneakyThrows
+  QuestionnaireResponseEntity transform(
+      QuestionnaireResponse questionnaire, QuestionnaireResponseEntity entity) {
+    return transform(
+        questionnaire, entity, JacksonConfig.createMapper().writeValueAsString(questionnaire));
+  }
+
+  QuestionnaireResponseEntity transform(
+      @NonNull QuestionnaireResponse questionnaireResponse,
+      @NonNull QuestionnaireResponseEntity entity,
+      String payload) {
+    String authorId = ReferenceUtils.resourceId(questionnaireResponse.author());
+    Instant authored = ParseUtils.parseDateTime(questionnaireResponse.authored());
+    String subject = ReferenceUtils.resourceId(questionnaireResponse.subject());
+    entity.id(questionnaireResponse.id());
+    entity.payload(payload);
+    entity.author(authorId);
+    entity.authored(authored);
+    entity.subject(subject);
+    return entity;
+  }
+
   @SneakyThrows
   @PutMapping(value = "/{id}")
   @Loggable(arguments = false)
@@ -129,30 +160,10 @@ public class QuestionnaireResponseController {
       @PathVariable("id") String id,
       @Valid @RequestBody QuestionnaireResponse questionnaireResponse) {
     checkState(id.equals(questionnaireResponse.id()), "%s != %s", id, questionnaireResponse.id());
-    String payload = JacksonConfig.createMapper().writeValueAsString(questionnaireResponse);
-    String authorId = ReferenceUtils.resourceId(questionnaireResponse.author());
-    Instant authored = ParseUtils.parseDateTime(questionnaireResponse.authored());
-    String subject = ReferenceUtils.resourceId(questionnaireResponse.subject());
     Optional<QuestionnaireResponseEntity> maybeEntity = repository.findById(id);
-    if (maybeEntity.isPresent()) {
-      QuestionnaireResponseEntity entity = maybeEntity.get();
-      entity.payload(payload);
-      entity.author(authorId);
-      entity.authored(authored);
-      entity.subject(subject);
-      repository.save(entity);
-      return ResponseEntity.ok(questionnaireResponse);
-    }
-    repository.save(
-        QuestionnaireResponseEntity.builder()
-            .id(id)
-            .payload(payload)
-            .author(authorId)
-            .authored(authored)
-            .subject(subject)
-            .build());
-    return ResponseEntity.created(
-            URI.create(linkProperties.r4Url() + "/QuestionnaireResponse/" + id))
-        .body(questionnaireResponse);
+    QuestionnaireResponseEntity entity = maybeEntity.orElseThrow(() -> new Exceptions.NotFound(id));
+    entity = transform(questionnaireResponse, entity);
+    repository.save(entity);
+    return ResponseEntity.ok(questionnaireResponse);
   }
 }

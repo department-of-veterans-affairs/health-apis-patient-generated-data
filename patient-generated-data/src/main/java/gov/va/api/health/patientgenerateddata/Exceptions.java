@@ -17,6 +17,10 @@ public final class Exceptions {
   }
 
   public static final class BadRequest extends RuntimeException {
+    public BadRequest(String message) {
+      super(message);
+    }
+
     public BadRequest(String message, Throwable cause) {
       super(message, cause);
     }
