@@ -92,16 +92,14 @@ public class ObservationControllerTest {
 
   @Test
   @SneakyThrows
-  void update_new() {
+  void update_not_existing() {
     LinkProperties pageLinks =
         LinkProperties.builder().baseUrl("http://foo.com").r4BasePath("r4").build();
     ObservationRepository repo = mock(ObservationRepository.class);
     Observation observation = Observation.builder().id("x").build();
     String payload = JacksonConfig.createMapper().writeValueAsString(observation);
-    assertThat(new ObservationController(pageLinks, repo).update("x", observation))
-        .isEqualTo(
-            ResponseEntity.created(URI.create("http://foo.com/r4/Observation/x"))
-                .body(observation));
-    verify(repo, times(1)).save(ObservationEntity.builder().id("x").payload(payload).build());
+    assertThrows(
+        Exceptions.NotFound.class,
+        () -> new ObservationController(pageLinks, repo).update("x", observation));
   }
 }

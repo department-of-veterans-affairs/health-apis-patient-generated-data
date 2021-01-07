@@ -13,6 +13,7 @@ import java.net.URI;
 import java.util.Optional;
 import javax.validation.Valid;
 import lombok.AllArgsConstructor;
+import lombok.NonNull;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,7 +49,10 @@ public class ObservationController {
     checkRequestState(
         StringUtils.isEmpty(observation.id()), "ID must be empty, found %s", observation.id());
     observation.id(id);
-    return update(observation.id(), observation);
+    ObservationEntity entity = transform(observation);
+    repository.save(entity);
+    return ResponseEntity.created(URI.create(linkProperties.r4Url() + "/Observation/" + id))
+        .body(observation);
   }
 
   @InitBinder
@@ -63,22 +67,33 @@ public class ObservationController {
     return entity.deserializePayload();
   }
 
+  ObservationEntity transform(Observation observation) {
+    return transform(observation, ObservationEntity.builder().build());
+  }
+
+  @SneakyThrows
+  ObservationEntity transform(Observation observation, ObservationEntity entity) {
+    return transform(
+        observation, entity, JacksonConfig.createMapper().writeValueAsString(observation));
+  }
+
+  ObservationEntity transform(
+      @NonNull Observation observation, @NonNull ObservationEntity entity, String payload) {
+    entity.id(observation.id());
+    entity.payload(payload);
+    return entity;
+  }
+
   @SneakyThrows
   @PutMapping(value = "/{id}")
   @Loggable(arguments = false)
   ResponseEntity<Observation> update(
       @PathVariable("id") String id, @Valid @RequestBody Observation observation) {
-    String payload = JacksonConfig.createMapper().writeValueAsString(observation);
     checkState(id.equals(observation.id()), "%s != %s", id, observation.id());
     Optional<ObservationEntity> maybeEntity = repository.findById(id);
-    if (maybeEntity.isPresent()) {
-      ObservationEntity entity = maybeEntity.get();
-      entity.payload(payload);
-      repository.save(entity);
-      return ResponseEntity.ok(observation);
-    }
-    repository.save(ObservationEntity.builder().id(id).payload(payload).build());
-    return ResponseEntity.created(URI.create(linkProperties.r4Url() + "/Observation/" + id))
-        .body(observation);
+    ObservationEntity entity = maybeEntity.orElseThrow(() -> new Exceptions.NotFound(id));
+    entity = transform(observation, entity);
+    repository.save(entity);
+    return ResponseEntity.ok(observation);
   }
 }
