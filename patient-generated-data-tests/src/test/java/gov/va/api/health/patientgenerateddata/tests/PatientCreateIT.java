@@ -45,6 +45,8 @@ public class PatientCreateIT {
     var id = systemDefinition().ids().patientGenerated();
     Patient patient = patient(id);
     doPost("Patient", serializePayload(patient), "create resource", 201);
+    // duplicate is rejected
+    doPost("Patient", serializePayload(patient), "create resource (duplicate)", 400);
   }
 
   Identifier identifier() {

@@ -19,6 +19,7 @@ import java.util.regex.Pattern;
 import javax.validation.Valid;
 import liquibase.util.StringUtils;
 import lombok.AllArgsConstructor;
+import lombok.NonNull;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -75,7 +76,14 @@ public class PatientController {
               .build();
       patient.identifier().add(mpiIdentifier);
     }
-    return update(id, patient);
+    Optional<PatientEntity> maybeEntity = repository.findById(id);
+    if (maybeEntity.isPresent()) {
+      throw new Exceptions.BadRequest(String.format("Patient already exists with id %s", id));
+    }
+    PatientEntity entity = transform(patient);
+    repository.save(entity);
+    return ResponseEntity.created(URI.create(linkProperties.r4Url() + "/Patient/" + id))
+        .body(patient);
   }
 
   private String findIcn(Patient patient) {
@@ -116,22 +124,31 @@ public class PatientController {
     return entity.deserializePayload();
   }
 
+  PatientEntity transform(Patient patient) {
+    return transform(patient, PatientEntity.builder().build());
+  }
+
+  @SneakyThrows
+  PatientEntity transform(Patient patient, PatientEntity entity) {
+    return transform(patient, entity, JacksonConfig.createMapper().writeValueAsString(patient));
+  }
+
+  PatientEntity transform(@NonNull Patient patient, @NonNull PatientEntity entity, String payload) {
+    entity.id(patient.id());
+    entity.payload(payload);
+    return entity;
+  }
+
   @SneakyThrows
   @PutMapping(value = "/{id}")
   @Loggable(arguments = false)
   ResponseEntity<Patient> update(
       @PathVariable("id") String id, @Valid @RequestBody Patient patient) {
-    String payload = JacksonConfig.createMapper().writeValueAsString(patient);
     checkState(id.equals(patient.id()), "%s != %s", id, patient.id());
     Optional<PatientEntity> maybeEntity = repository.findById(id);
-    if (maybeEntity.isPresent()) {
-      PatientEntity entity = maybeEntity.get();
-      entity.payload(payload);
-      repository.save(entity);
-      return ResponseEntity.ok(patient);
-    }
-    repository.save(PatientEntity.builder().id(id).payload(payload).build());
-    return ResponseEntity.created(URI.create(linkProperties.r4Url() + "/Patient/" + id))
-        .body(patient);
+    PatientEntity entity = maybeEntity.orElseThrow(() -> new Exceptions.NotFound(id));
+    entity = transform(patient, entity);
+    repository.save(entity);
+    return ResponseEntity.ok(patient);
   }
 }

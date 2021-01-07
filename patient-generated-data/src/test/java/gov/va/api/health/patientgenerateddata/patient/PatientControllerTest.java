@@ -2,6 +2,7 @@ package gov.va.api.health.patientgenerateddata.patient;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -49,6 +50,26 @@ public class PatientControllerTest {
     String persistedSerialized = JacksonConfig.createMapper().writeValueAsString(persisted);
     verify(repo, times(1))
         .save(PatientEntity.builder().id(id).payload(persistedSerialized).build());
+  }
+
+  @Test
+  void create_duplicate() {
+    LinkProperties pageLinks =
+        LinkProperties.builder().baseUrl("http://foo.com").r4BasePath("r4").build();
+    String id = "9999999999V999999";
+    PatientRepository repo = mock(PatientRepository.class);
+    when(repo.findById(id))
+        .thenReturn(Optional.of(PatientEntity.builder().id(id).payload("payload").build()));
+
+    Patient patient =
+        Patient.builder()
+            .id(id)
+            .identifier(new ArrayList<>(List.of(Identifier.builder().build())))
+            .build();
+
+    assertThrows(
+        Exceptions.BadRequest.class, () -> new PatientController(pageLinks, repo).create(patient));
+    verify(repo, times(0)).save(any());
   }
 
   @Test
@@ -121,14 +142,13 @@ public class PatientControllerTest {
 
   @Test
   @SneakyThrows
-  void update_new() {
+  void update_not_existing() {
     LinkProperties pageLinks =
         LinkProperties.builder().baseUrl("http://foo.com").r4BasePath("r4").build();
     PatientRepository repo = mock(PatientRepository.class);
     Patient patient = Patient.builder().id("x").build();
-    String payload = JacksonConfig.createMapper().writeValueAsString(patient);
-    assertThat(new PatientController(pageLinks, repo).update("x", patient))
-        .isEqualTo(ResponseEntity.created(URI.create("http://foo.com/r4/Patient/x")).body(patient));
-    verify(repo, times(1)).save(PatientEntity.builder().id("x").payload(payload).build());
+    assertThrows(
+        Exceptions.NotFound.class,
+        () -> new PatientController(pageLinks, repo).update("x", patient));
   }
 }
