@@ -10,9 +10,13 @@ import static org.mockito.Mockito.when;
 import gov.va.api.health.autoconfig.configuration.JacksonConfig;
 import gov.va.api.health.patientgenerateddata.Exceptions;
 import gov.va.api.health.patientgenerateddata.LinkProperties;
+import gov.va.api.health.r4.api.datatypes.CodeableConcept;
+import gov.va.api.health.r4.api.datatypes.Coding;
+import gov.va.api.health.r4.api.datatypes.UsageContext;
 import gov.va.api.health.r4.api.resources.Questionnaire;
 import gov.va.api.health.r4.api.resources.Questionnaire.PublicationStatus;
 import java.net.URI;
+import java.util.List;
 import java.util.Optional;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
@@ -105,5 +109,44 @@ public class QuestionnaireControllerTest {
             ResponseEntity.created(URI.create("http://foo.com/r4/Questionnaire/x"))
                 .body(questionnaire));
     verify(repo, times(1)).save(QuestionnaireEntity.builder().id("x").payload(payload).build());
+  }
+
+  @Test
+  void contextJoin() {
+    Questionnaire x =
+        Questionnaire.builder()
+            .useContext(
+                List.of(
+                    UsageContext.builder()
+                        .code(Coding.builder().system("uct").code("venue").build())
+                        .valueCodeableConcept(
+                            CodeableConcept.builder()
+                                .coding(
+                                    List.of(Coding.builder().system("clinics").code("123").build()))
+                                .build())
+                        .build()))
+            .build();
+    String join = QuestionnaireController.useContextValueJoin(x);
+
+    // search by context type system-only is not supported
+    //    assertThat(join).contains("uct|$clinics|");
+    //    assertThat(join).contains("uct|$clinics|123");
+    //    assertThat(join).contains("uct|$|123");
+    //    assertThat(join).contains("uct|$123");
+
+    assertThat(join).contains("uct|venue$clinics|");
+    assertThat(join).contains("uct|venue$clinics|123");
+    assertThat(join).contains("uct|venue$|123");
+    assertThat(join).contains("uct|venue$123");
+
+    assertThat(join).contains("|venue$clinics|");
+    assertThat(join).contains("|venue$clinics|123");
+    assertThat(join).contains("|venue$|123");
+    assertThat(join).contains("|venue$123");
+
+    assertThat(join).contains("venue$clinics|");
+    assertThat(join).contains("venue$clinics|123");
+    assertThat(join).contains("venue$|123");
+    assertThat(join).contains("venue$123");
   }
 }

@@ -18,6 +18,9 @@ import gov.va.api.lighthouse.vulcan.Vulcan;
 import gov.va.api.lighthouse.vulcan.VulcanConfiguration;
 import gov.va.api.lighthouse.vulcan.mappings.Mappings;
 import java.net.URI;
+import static java.util.Collections.emptyList;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -155,24 +158,41 @@ public class QuestionnaireController {
                   .valueCodeableConcept()
                   .coding()
                   .stream()
-                  .map(
-                      valueCoding ->
-                          Stream.of(codeJoin(context.code()), codeJoin(valueCoding))
-                              .filter(StringUtils::isNotBlank)
-                              .collect(joining("$")))
+                  .flatMap(
+                      valueCoding -> {
+                        List<String> codeJoins = codeJoin(context.code(), true);
+                        List<String> valueJoins = codeJoin(valueCoding, false);
+                        List<String> results = new ArrayList<>();
+                        for (String x : codeJoins) {
+                          for (String y : valueJoins) {
+                            results.add(
+                                Stream.of(x, y)
+                                    .filter(StringUtils::isNotBlank)
+                                    .collect(joining("$")));
+                          }
+                        }
+                        return results.stream();
+                      })
                   .filter(StringUtils::isNotBlank)
                   .map(join -> "|" + join + "|");
             })
         .collect(joining(","));
   }
 
-  private static String codeJoin(Coding coding) {
+  private static List<String> codeJoin(Coding coding, boolean systemRequiresCode) {
     if (coding == null) {
-      return null;
+      return List.of("");
     }
-    return trimToNull(
-        Stream.of(coding.system(), coding.code())
-            .filter(StringUtils::isNotBlank)
-            .collect(joining("|")));
+    String system = trimToNull(coding.system());
+    String code = trimToNull(coding.code());
+    if (system == null) {
+      return code == null ? List.of("") : List.of("|" + code, code);
+    }
+    if (code == null) {
+      return List.of(system + "|");
+    }
+    return systemRequiresCode
+        ? List.of(system + "|" + code)
+        : List.of(system + "|" + code, "|" + code, code);
   }
 }
