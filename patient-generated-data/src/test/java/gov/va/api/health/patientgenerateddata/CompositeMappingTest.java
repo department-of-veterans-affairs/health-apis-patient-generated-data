@@ -1,26 +1,13 @@
 package gov.va.api.health.patientgenerateddata;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import gov.va.api.health.autoconfig.configuration.JacksonConfig;
-import gov.va.api.health.patientgenerateddata.Exceptions;
-import gov.va.api.health.patientgenerateddata.LinkProperties;
+
 import gov.va.api.health.r4.api.datatypes.CodeableConcept;
 import gov.va.api.health.r4.api.datatypes.Coding;
 import gov.va.api.health.r4.api.datatypes.UsageContext;
 import gov.va.api.health.r4.api.resources.Questionnaire;
-import gov.va.api.health.r4.api.resources.Questionnaire.PublicationStatus;
-import java.net.URI;
 import java.util.List;
-import java.util.Optional;
-import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.ResponseEntity;
-import org.springframework.validation.DataBinder;
 
 public class CompositeMappingTest {
   private static void _assertSearch(String string, String query) {
