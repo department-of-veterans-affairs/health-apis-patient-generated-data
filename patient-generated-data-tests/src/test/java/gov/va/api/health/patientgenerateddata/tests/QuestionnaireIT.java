@@ -43,10 +43,6 @@ public class QuestionnaireIT {
     var response = doGet("application/json", "Questionnaire" + query, 200);
     Questionnaire.Bundle bundle = response.expectValid(Questionnaire.Bundle.class);
     assertThat(bundle.entry()).hasSizeGreaterThan(0);
-    // query = String.format("?subject=%s", "unknown");
-    // response = doGet("application/json", "Questionnaire" + query, 200);
-    // bundle = response.expectValid(Questionnaire.Bundle.class);
-    // assertThat(bundle.entry()).isEmpty();
   }
 
   @Test
