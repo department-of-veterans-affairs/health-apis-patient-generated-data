@@ -169,7 +169,7 @@ public final class Populaterator {
         statement.setObject(1, questionnaire.id());
         statement.setObject(2, MAPPER.writeValueAsString(questionnaire));
         statement.setObject(3, 0);
-        statement.setObject(4, QuestionnaireController.useContextValueJoin(questionnaire));
+        statement.setObject(4, CompositeMapping.useContextValueJoin(questionnaire));
         statement.execute();
       }
     }

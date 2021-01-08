@@ -133,7 +133,7 @@ public class QuestionnaireController {
     if (maybeEntity.isPresent()) {
       QuestionnaireEntity entity = maybeEntity.get();
       entity.payload(payload);
-      entity.contextTypeValue(useContextValueJoin(questionnaire));
+      entity.contextTypeValue(CompositeMapping.useContextValueJoin(questionnaire));
       repository.save(entity);
       return ResponseEntity.ok(questionnaire);
     }
@@ -141,64 +141,9 @@ public class QuestionnaireController {
         QuestionnaireEntity.builder()
             .id(id)
             .payload(payload)
-            .contextTypeValue(useContextValueJoin(questionnaire))
+            .contextTypeValue(CompositeMapping.useContextValueJoin(questionnaire))
             .build());
     return ResponseEntity.created(URI.create(linkProperties.r4Url() + "/Questionnaire/" + id))
         .body(questionnaire);
-  }
-
-  public static String useContextValueJoin(Questionnaire questionnaire) {
-    if (questionnaire.useContext() == null) {
-      return null;
-    }
-    return questionnaire
-        .useContext()
-        .stream()
-        .flatMap(
-            context -> {
-              if (context.valueCodeableConcept() == null
-                  || context.valueCodeableConcept().coding() == null) {
-                return Stream.empty();
-              }
-              return context
-                  .valueCodeableConcept()
-                  .coding()
-                  .stream()
-                  .flatMap(
-                      valueCoding -> {
-                        List<String> codeJoins = codeJoin(context.code(), true);
-                        List<String> valueJoins = codeJoin(valueCoding, false);
-                        List<String> results = new ArrayList<>();
-                        for (String x : codeJoins) {
-                          for (String y : valueJoins) {
-                            results.add(
-                                Stream.of(x, y)
-                                    .filter(StringUtils::isNotBlank)
-                                    .collect(joining("$")));
-                          }
-                        }
-                        return results.stream();
-                      })
-                  .filter(StringUtils::isNotBlank)
-                  .map(join -> "|" + join + "|");
-            })
-        .collect(joining(","));
-  }
-
-  private static List<String> codeJoin(Coding coding, boolean systemRequiresCode) {
-    if (coding == null) {
-      return List.of("");
-    }
-    String system = trimToNull(coding.system());
-    String code = trimToNull(coding.code());
-    if (system == null) {
-      return code == null ? List.of("") : List.of("|" + code, code);
-    }
-    if (code == null) {
-      return List.of(system + "|");
-    }
-    return systemRequiresCode
-        ? List.of(system + "|" + code)
-        : List.of(system + "|" + code, "|" + code, code);
   }
 }
