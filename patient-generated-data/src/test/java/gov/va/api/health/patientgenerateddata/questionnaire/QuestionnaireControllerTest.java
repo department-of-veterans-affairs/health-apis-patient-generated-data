@@ -129,7 +129,7 @@ public class QuestionnaireControllerTest {
     String join = QuestionnaireController.useContextValueJoin(x);
     System.out.println(join);
 
-    // search by context type system-only is not supported
+    // search by context type with system-only is not supported
     //    assertSearch(join, "uct|$clinics|");
     //    assertSearch(join, "uct|$clinics|123");
     //    assertSearch(join, "uct|$|123");
