@@ -19,7 +19,8 @@ public final class CompositeMapping<EntityT> implements SingleParameterMapping<E
 
   String fieldName;
 
-  private Specification<EntityT> clauseForContainsMatch(HttpServletRequest request) {
+  @Override
+  public Specification<EntityT> specificationFor(HttpServletRequest request) {
     String value = request.getParameter(parameterName());
     if (isBlank(value)) {
       return null;
@@ -37,12 +38,7 @@ public final class CompositeMapping<EntityT> implements SingleParameterMapping<E
     return (Specification<EntityT>)
         (root, criteriaQuery, criteriaBuilder) ->
             criteriaBuilder.like(
-                criteriaBuilder.lower(root.get(fieldName)), "%" + sb.toString() + "%");
-  }
-
-  @Override
-  public Specification<EntityT> specificationFor(HttpServletRequest request) {
-    Specification<EntityT> specification = clauseForContainsMatch(request);
-    return specification;
+                criteriaBuilder.lower(root.get(fieldName)),
+                "%" + sb.toString().toLowerCase(Locale.ENGLISH) + "%");
   }
 }
