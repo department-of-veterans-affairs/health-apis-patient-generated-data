@@ -147,7 +147,7 @@ public class QuestionnaireController {
         .body(questionnaire);
   }
 
-  static String useContextValueJoin(Questionnaire questionnaire) {
+  public static String useContextValueJoin(Questionnaire questionnaire) {
     if (questionnaire.useContext() == null) {
       return null;
     }
