@@ -127,26 +127,41 @@ public class QuestionnaireControllerTest {
                         .build()))
             .build();
     String join = QuestionnaireController.useContextValueJoin(x);
+    System.out.println(join);
 
     // search by context type system-only is not supported
-    //    assertThat(join).contains("uct|$clinics|");
-    //    assertThat(join).contains("uct|$clinics|123");
-    //    assertThat(join).contains("uct|$|123");
-    //    assertThat(join).contains("uct|$123");
+    //    assertSearch(join, "uct|$clinics|");
+    //    assertSearch(join, "uct|$clinics|123");
+    //    assertSearch(join, "uct|$|123");
+    //    assertSearch(join, "uct|$123");
 
-    assertThat(join).contains("uct|venue$clinics|");
-    assertThat(join).contains("uct|venue$clinics|123");
-    assertThat(join).contains("uct|venue$|123");
-    assertThat(join).contains("uct|venue$123");
+    assertSearch(join, "uct|venue$clinics|");
+    assertSearch(join, "uct|venue$clinics|123");
+    assertSearch(join, "uct|venue$|123");
+    assertSearch(join, "uct|venue$123");
 
-    assertThat(join).contains("|venue$clinics|");
-    assertThat(join).contains("|venue$clinics|123");
-    assertThat(join).contains("|venue$|123");
-    assertThat(join).contains("|venue$123");
+    assertSearch(join, "|venue$clinics|");
+    assertSearch(join, "|venue$clinics|123");
+    assertSearch(join, "|venue$|123");
+    assertSearch(join, "|venue$123");
 
-    assertThat(join).contains("venue$clinics|");
-    assertThat(join).contains("venue$clinics|123");
-    assertThat(join).contains("venue$|123");
-    assertThat(join).contains("venue$123");
+    assertSearch(join, "venue$clinics|");
+    assertSearch(join, "venue$clinics|123");
+    assertSearch(join, "venue$|123");
+    assertSearch(join, "venue$123");
+    
+    assertThat(join).doesNotContain("|venue$12|");
+  }
+
+  private void assertSearch(String string, String query) {
+    StringBuilder sb = new StringBuilder();
+    if (!query.startsWith("|")) {
+      sb.append("|");
+    }
+    sb.append(query);
+    if (!query.endsWith("|")) {
+      sb.append("|");
+    }
+    assertThat(string).contains(sb.toString());
   }
 }
