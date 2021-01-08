@@ -5,7 +5,6 @@ import static java.util.stream.Collectors.joining;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.api.health.autoconfig.configuration.JacksonConfig;
-import gov.va.api.health.patientgenerateddata.questionnaire.QuestionnaireController;
 import gov.va.api.health.r4.api.elements.Reference;
 import gov.va.api.health.r4.api.resources.Observation;
 import gov.va.api.health.r4.api.resources.Patient;
@@ -164,7 +163,8 @@ public final class Populaterator {
   private static void questionnaire(@NonNull Connection connection) {
     for (File f : new File(baseDir() + "/src/test/resources/questionnaire").listFiles()) {
       Questionnaire questionnaire = readFile(Questionnaire.class, f);
-      String sqlInsert = sqlInsert("app.Questionnaire", List.of("id", "payload", "version", "contextTypeValue"));
+      String sqlInsert =
+          sqlInsert("app.Questionnaire", List.of("id", "payload", "version", "contextTypeValue"));
       try (PreparedStatement statement = connection.prepareStatement(sqlInsert)) {
         statement.setObject(1, questionnaire.id());
         statement.setObject(2, MAPPER.writeValueAsString(questionnaire));
