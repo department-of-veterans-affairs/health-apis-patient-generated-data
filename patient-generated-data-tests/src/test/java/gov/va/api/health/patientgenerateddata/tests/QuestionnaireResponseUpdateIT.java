@@ -26,8 +26,12 @@ public class QuestionnaireResponseUpdateIT {
   static void setup() {
     // These tests alter data, but do not infinitely create more
     // Do not run in SLA'd environments
-    assumeEnvironmentIn(
-        Environment.LOCAL, Environment.QA, Environment.STAGING, Environment.STAGING_LAB);
+    // assumeEnvironmentIn(
+    //    Environment.LOCAL, Environment.QA, Environment.STAGING, Environment.STAGING_LAB);
+
+    // Until a more permanent, update-specific QR Resource is made available, these tests should
+    // only run locally
+    assumeEnvironmentIn(Environment.LOCAL);
 
     var id = systemDefinition().ids().questionnaireResponseUpdates();
     doGet("application/json", "QuestionnaireResponse/" + id, 200);
