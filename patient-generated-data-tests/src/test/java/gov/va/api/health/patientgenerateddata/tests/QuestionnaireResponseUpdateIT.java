@@ -29,7 +29,7 @@ public class QuestionnaireResponseUpdateIT {
     assumeEnvironmentIn(
         Environment.LOCAL, Environment.QA, Environment.STAGING, Environment.STAGING_LAB);
 
-    var id = systemDefinition().ids().questionnaireResponseGenerated();
+    var id = systemDefinition().ids().questionnaireResponseUpdates();
     doGet("application/json", "QuestionnaireResponse/" + id, 200);
   }
 
@@ -37,7 +37,7 @@ public class QuestionnaireResponseUpdateIT {
   void update_author() {
     Instant now = Instant.now();
     Reference ref = Reference.builder().reference("Resource/" + now.toString()).build();
-    var id = systemDefinition().ids().questionnaireResponseGenerated();
+    var id = systemDefinition().ids().questionnaireResponseUpdates();
     QuestionnaireResponse qr = questionnaireResponse(id).author(ref);
     doPut("QuestionnaireResponse/" + id, serializePayload(qr), "update author", 200);
     ExpectedResponse persistedResponse =
@@ -48,7 +48,7 @@ public class QuestionnaireResponseUpdateIT {
 
   @Test
   void update_authored() {
-    var id = systemDefinition().ids().questionnaireResponseGenerated();
+    var id = systemDefinition().ids().questionnaireResponseUpdates();
     Instant now = Instant.now().with(ChronoField.NANO_OF_SECOND, 0);
     QuestionnaireResponse qr = questionnaireResponse(id).authored(now.toString());
     doPut("QuestionnaireResponse/" + id, serializePayload(qr), "update authored date", 200);
@@ -62,7 +62,7 @@ public class QuestionnaireResponseUpdateIT {
   void update_subject() {
     Instant now = Instant.now();
     Reference ref = Reference.builder().reference("Resource/" + now.toString()).build();
-    var id = systemDefinition().ids().questionnaireResponseGenerated();
+    var id = systemDefinition().ids().questionnaireResponseUpdates();
     QuestionnaireResponse qr = questionnaireResponse(id).subject(ref);
     doPut("QuestionnaireResponse/" + id, serializePayload(qr), "update subject", 200);
     ExpectedResponse persistedResponse =

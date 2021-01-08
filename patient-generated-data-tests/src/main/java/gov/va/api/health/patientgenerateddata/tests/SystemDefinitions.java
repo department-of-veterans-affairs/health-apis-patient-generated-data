@@ -19,7 +19,7 @@ class SystemDefinitions {
         .questionnaireResponse("f003043a-9047-4c3a-b15b-a26c67f4e723")
         .questionnaireResponseAuthor("1011537977V693883")
         .questionnaireResponseSubject("1011537977V693883")
-        .questionnaireResponseGenerated("00000000-0000-0000-0000-000000000000")
+        .questionnaireResponseUpdates("00000000-0000-0000-0000-000000000000")
         .build();
   }
 
@@ -141,7 +141,7 @@ class SystemDefinitions {
 
     @NonNull String questionnaireResponseSubject;
 
-    @NonNull String questionnaireResponseGenerated;
+    @NonNull String questionnaireResponseUpdates;
   }
 
   @Value
