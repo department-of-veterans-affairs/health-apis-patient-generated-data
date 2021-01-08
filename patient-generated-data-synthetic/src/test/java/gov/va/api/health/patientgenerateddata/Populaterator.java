@@ -168,6 +168,7 @@ public final class Populaterator {
         statement.setObject(1, questionnaire.id());
         statement.setObject(2, MAPPER.writeValueAsString(questionnaire));
         statement.setObject(3, 0);
+        // TODO populate contextTypeValue
         statement.execute();
       }
     }

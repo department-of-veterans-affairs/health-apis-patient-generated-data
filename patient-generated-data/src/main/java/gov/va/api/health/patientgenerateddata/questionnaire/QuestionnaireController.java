@@ -8,6 +8,7 @@ import static gov.va.api.lighthouse.vulcan.Rules.ifParameter;
 import static gov.va.api.lighthouse.vulcan.Vulcan.returnNothing;
 import gov.va.api.health.autoconfig.configuration.JacksonConfig;
 import gov.va.api.health.autoconfig.logging.Loggable;
+import gov.va.api.health.patientgenerateddata.CompositeMapping;
 import gov.va.api.health.patientgenerateddata.Exceptions;
 import gov.va.api.health.patientgenerateddata.LinkProperties;
 import gov.va.api.health.patientgenerateddata.VulcanizedBundler;
@@ -17,9 +18,9 @@ import gov.va.api.health.r4.api.resources.Questionnaire;
 import gov.va.api.lighthouse.vulcan.Vulcan;
 import gov.va.api.lighthouse.vulcan.VulcanConfiguration;
 import gov.va.api.lighthouse.vulcan.mappings.Mappings;
+import gov.va.api.lighthouse.vulcan.mappings.StringMapping;
 import java.net.URI;
 import static java.util.Collections.emptyList;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -63,11 +64,16 @@ public class QuestionnaireController {
             linkProperties.pagingConfiguration("Questionnaire", QuestionnaireEntity.naturalOrder()))
         .mappings(
             Mappings.forEntity(QuestionnaireEntity.class)
-                // .composite("context-type-value", "xxx")
+                .value("_id", "id")
+                .add(
+                    CompositeMapping.<QuestionnaireEntity>builder()
+                        .parameterName("context-type-value")
+                        .fieldName("contextTypeValue")
+                        .build())
                 .get())
         .defaultQuery(returnNothing())
-        .rule(atLeastOneParameterOf("_id", "author", "authored", "subject"))
-        .rule(ifParameter("_id").thenForbidParameters("author", "authored", "subject"))
+        .rule(atLeastOneParameterOf("_id", "context-type-value"))
+        .rule(ifParameter("_id").thenForbidParameters("context-type-value"))
         .build();
   }
 
