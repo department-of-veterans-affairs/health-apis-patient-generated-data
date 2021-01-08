@@ -53,7 +53,7 @@ public class QuestionnaireController {
             linkProperties.pagingConfiguration("Questionnaire", QuestionnaireEntity.naturalOrder()))
         .mappings(
             Mappings.forEntity(QuestionnaireEntity.class)
-                .composite("context-type-value", "xxx")
+                // .composite("context-type-value", "xxx")
                 .get())
         .defaultQuery(returnNothing())
         .rule(atLeastOneParameterOf("_id", "author", "authored", "subject"))
@@ -86,7 +86,7 @@ public class QuestionnaireController {
   }
 
   @GetMapping
-  public Questionnaire.Bundle search(HttpServletRequest request) {
+  Questionnaire.Bundle search(HttpServletRequest request) {
     return Vulcan.forRepo(repository)
         .config(configuration())
         .build()
