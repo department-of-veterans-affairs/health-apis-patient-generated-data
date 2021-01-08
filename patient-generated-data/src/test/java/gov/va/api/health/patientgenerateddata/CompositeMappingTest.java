@@ -51,13 +51,12 @@ public class CompositeMappingTest {
                         .build()))
             .build();
     String join = CompositeMapping.useContextValueJoin(x);
-    System.out.println(join);
 
     // search by context type with system-only is not supported
-    //    assertSearch(join, "uct|$clinics|");
-    //    assertSearch(join, "uct|$clinics|123");
-    //    assertSearch(join, "uct|$|123");
-    //    assertSearch(join, "uct|$123");
+    //    _assertSearch(join, "uct|$clinics|");
+    //    _assertSearch(join, "uct|$clinics|123");
+    //    _assertSearch(join, "uct|$|123");
+    //    _assertSearch(join, "uct|$123");
 
     _assertSearch(join, "uct|venue$clinics|");
     _assertSearch(join, "uct|venue$clinics|123");
