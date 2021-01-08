@@ -6,18 +6,25 @@ import static gov.va.api.health.patientgenerateddata.Controllers.generateRandomI
 import static gov.va.api.lighthouse.vulcan.Rules.atLeastOneParameterOf;
 import static gov.va.api.lighthouse.vulcan.Rules.ifParameter;
 import static gov.va.api.lighthouse.vulcan.Vulcan.returnNothing;
-
 import gov.va.api.health.autoconfig.configuration.JacksonConfig;
 import gov.va.api.health.autoconfig.logging.Loggable;
 import gov.va.api.health.patientgenerateddata.Exceptions;
 import gov.va.api.health.patientgenerateddata.LinkProperties;
 import gov.va.api.health.patientgenerateddata.VulcanizedBundler;
+import gov.va.api.health.r4.api.datatypes.Coding;
+import gov.va.api.health.r4.api.datatypes.UsageContext;
 import gov.va.api.health.r4.api.resources.Questionnaire;
 import gov.va.api.lighthouse.vulcan.Vulcan;
 import gov.va.api.lighthouse.vulcan.VulcanConfiguration;
 import gov.va.api.lighthouse.vulcan.mappings.Mappings;
 import java.net.URI;
+import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Stream;
+import static org.apache.commons.lang3.StringUtils.trimToNull;
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -117,14 +124,55 @@ public class QuestionnaireController {
     if (maybeEntity.isPresent()) {
       QuestionnaireEntity entity = maybeEntity.get();
       entity.payload(payload);
-      entity.contextTypeValue("");
+      entity.contextTypeValue(useContextValueJoin(questionnaire));
       repository.save(entity);
       return ResponseEntity.ok(questionnaire);
     }
     repository.save(
-        QuestionnaireEntity.builder().id(id).payload(payload).contextTypeValue("").build());
+        QuestionnaireEntity.builder()
+            .id(id)
+            .payload(payload)
+            .contextTypeValue(useContextValueJoin(questionnaire))
+            .build());
     return ResponseEntity.created(URI.create(linkProperties.r4Url() + "/Questionnaire/" + id))
         .body(questionnaire);
-    // |use-context-system|use-context-code$value-system|value-code| , ...
+  }
+
+  static String useContextValueJoin(Questionnaire questionnaire) {
+    if (questionnaire.useContext() == null) {
+      return null;
+    }
+    return questionnaire
+        .useContext()
+        .stream()
+        .flatMap(
+            context -> {
+              if (context.valueCodeableConcept() == null
+                  || context.valueCodeableConcept().coding() == null) {
+                return Stream.empty();
+              }
+              return context
+                  .valueCodeableConcept()
+                  .coding()
+                  .stream()
+                  .map(
+                      valueCoding ->
+                          Stream.of(codeJoin(context.code()), codeJoin(valueCoding))
+                              .filter(StringUtils::isNotBlank)
+                              .collect(joining("$")))
+                  .filter(StringUtils::isNotBlank)
+                  .map(join -> "|" + join + "|");
+            })
+        .collect(joining(","));
+  }
+
+  private static String codeJoin(Coding coding) {
+    if (coding == null) {
+      return null;
+    }
+    return trimToNull(
+        Stream.of(coding.system(), coding.code())
+            .filter(StringUtils::isNotBlank)
+            .collect(joining("|")));
   }
 }

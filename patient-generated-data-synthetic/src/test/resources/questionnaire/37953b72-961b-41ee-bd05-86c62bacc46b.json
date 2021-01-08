@@ -28,6 +28,10 @@
           {
             "system" : "https://staff.apps.va.gov/VistaEmrService/clinics",
             "code" : "534/12975"
+          },
+          {
+            "system" : "foo",
+            "code" : "bar"
           }
         ]
       }
