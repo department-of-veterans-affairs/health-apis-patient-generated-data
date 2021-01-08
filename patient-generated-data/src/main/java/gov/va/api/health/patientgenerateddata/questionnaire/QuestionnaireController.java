@@ -3,14 +3,22 @@ package gov.va.api.health.patientgenerateddata.questionnaire;
 import static com.google.common.base.Preconditions.checkState;
 import static gov.va.api.health.patientgenerateddata.Controllers.checkRequestState;
 import static gov.va.api.health.patientgenerateddata.Controllers.generateRandomId;
+import static gov.va.api.lighthouse.vulcan.Rules.atLeastOneParameterOf;
+import static gov.va.api.lighthouse.vulcan.Rules.ifParameter;
+import static gov.va.api.lighthouse.vulcan.Vulcan.returnNothing;
 
 import gov.va.api.health.autoconfig.configuration.JacksonConfig;
 import gov.va.api.health.autoconfig.logging.Loggable;
 import gov.va.api.health.patientgenerateddata.Exceptions;
 import gov.va.api.health.patientgenerateddata.LinkProperties;
+import gov.va.api.health.patientgenerateddata.VulcanizedBundler;
 import gov.va.api.health.r4.api.resources.Questionnaire;
+import gov.va.api.lighthouse.vulcan.Vulcan;
+import gov.va.api.lighthouse.vulcan.VulcanConfiguration;
+import gov.va.api.lighthouse.vulcan.mappings.Mappings;
 import java.net.URI;
 import java.util.Optional;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
@@ -39,6 +47,20 @@ public class QuestionnaireController {
 
   private final QuestionnaireRepository repository;
 
+  private VulcanConfiguration<QuestionnaireEntity> configuration() {
+    return VulcanConfiguration.forEntity(QuestionnaireEntity.class)
+        .paging(
+            linkProperties.pagingConfiguration("Questionnaire", QuestionnaireEntity.naturalOrder()))
+        .mappings(
+            Mappings.forEntity(QuestionnaireEntity.class)
+                .composite("context-type-value", "xxx")
+                .get())
+        .defaultQuery(returnNothing())
+        .rule(atLeastOneParameterOf("_id", "author", "authored", "subject"))
+        .rule(ifParameter("_id").thenForbidParameters("author", "authored", "subject"))
+        .build();
+  }
+
   @PostMapping
   ResponseEntity<Questionnaire> create(@Valid @RequestBody Questionnaire questionnaire) {
     return create(generateRandomId(), questionnaire);
@@ -63,6 +85,27 @@ public class QuestionnaireController {
     return entity.deserializePayload();
   }
 
+  @GetMapping
+  public Questionnaire.Bundle search(HttpServletRequest request) {
+    return Vulcan.forRepo(repository)
+        .config(configuration())
+        .build()
+        .search(request)
+        .map(toBundle());
+  }
+
+  VulcanizedBundler<QuestionnaireEntity, Questionnaire, Questionnaire.Entry, Questionnaire.Bundle>
+      toBundle() {
+    return VulcanizedBundler.forBundling(
+            QuestionnaireEntity.class,
+            VulcanizedBundler.Bundling.newBundle(Questionnaire.Bundle::new)
+                .newEntry(Questionnaire.Entry::new)
+                .linkProperties(linkProperties)
+                .build())
+        .toResource(QuestionnaireEntity::deserializePayload)
+        .build();
+  }
+
   @SneakyThrows
   @PutMapping(value = "/{id}")
   @Loggable(arguments = false)
@@ -74,11 +117,14 @@ public class QuestionnaireController {
     if (maybeEntity.isPresent()) {
       QuestionnaireEntity entity = maybeEntity.get();
       entity.payload(payload);
+      entity.contextTypeValue("");
       repository.save(entity);
       return ResponseEntity.ok(questionnaire);
     }
-    repository.save(QuestionnaireEntity.builder().id(id).payload(payload).build());
+    repository.save(
+        QuestionnaireEntity.builder().id(id).payload(payload).contextTypeValue("").build());
     return ResponseEntity.created(URI.create(linkProperties.r4Url() + "/Questionnaire/" + id))
         .body(questionnaire);
+    // |use-context-system|use-context-code$value-system|value-code| , ...
   }
 }
