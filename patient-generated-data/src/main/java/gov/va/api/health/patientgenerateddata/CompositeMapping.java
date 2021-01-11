@@ -58,6 +58,7 @@ public final class CompositeMapping<EntityT> implements SingleParameterMapping<E
         || context.valueCodeableConcept().coding() == null) {
       return Stream.empty();
     }
+   // must have ucCode and at least one of value system/code to index
     return context.valueCodeableConcept().coding().stream()
         .flatMap(
             valueCoding -> {
