@@ -3,6 +3,7 @@ package gov.va.api.health.patientgenerateddata.questionnaire;
 import static com.google.common.base.Preconditions.checkState;
 import static gov.va.api.health.patientgenerateddata.Controllers.checkRequestState;
 import static gov.va.api.health.patientgenerateddata.Controllers.generateRandomId;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 import gov.va.api.health.autoconfig.configuration.JacksonConfig;
 import gov.va.api.health.autoconfig.logging.Loggable;
@@ -15,7 +16,6 @@ import javax.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.SneakyThrows;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.DataBinder;
@@ -48,7 +48,7 @@ public class QuestionnaireController {
   @SneakyThrows
   ResponseEntity<Questionnaire> create(String id, Questionnaire questionnaire) {
     checkRequestState(
-        StringUtils.isEmpty(questionnaire.id()), "ID must be empty, found %s", questionnaire.id());
+        isEmpty(questionnaire.id()), "ID must be empty, found %s", questionnaire.id());
     questionnaire.id(id);
     QuestionnaireEntity entity = transform(questionnaire);
     repository.save(entity);

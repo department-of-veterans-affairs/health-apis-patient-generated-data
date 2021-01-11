@@ -3,6 +3,7 @@ package gov.va.api.health.patientgenerateddata.observation;
 import static com.google.common.base.Preconditions.checkState;
 import static gov.va.api.health.patientgenerateddata.Controllers.checkRequestState;
 import static gov.va.api.health.patientgenerateddata.Controllers.generateRandomId;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 import gov.va.api.health.autoconfig.configuration.JacksonConfig;
 import gov.va.api.health.autoconfig.logging.Loggable;
@@ -15,7 +16,6 @@ import javax.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.SneakyThrows;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.DataBinder;
@@ -46,8 +46,7 @@ public class ObservationController {
   }
 
   ResponseEntity<Observation> create(String id, Observation observation) {
-    checkRequestState(
-        StringUtils.isEmpty(observation.id()), "ID must be empty, found %s", observation.id());
+    checkRequestState(isEmpty(observation.id()), "ID must be empty, found %s", observation.id());
     observation.id(id);
     ObservationEntity entity = transform(observation);
     repository.save(entity);

@@ -2,6 +2,7 @@ package gov.va.api.health.patientgenerateddata.patient;
 
 import static com.google.common.base.Preconditions.checkState;
 import static gov.va.api.health.patientgenerateddata.Controllers.checkRequestState;
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 import gov.va.api.health.autoconfig.configuration.JacksonConfig;
 import gov.va.api.health.autoconfig.logging.Loggable;
@@ -17,7 +18,6 @@ import java.util.Collections;
 import java.util.Optional;
 import java.util.regex.Pattern;
 import javax.validation.Valid;
-import liquibase.util.StringUtils;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.SneakyThrows;
@@ -51,7 +51,7 @@ public class PatientController {
 
   @PostMapping
   ResponseEntity<Patient> create(@Valid @RequestBody Patient patient) {
-    checkRequestState(!StringUtils.isEmpty(patient.id()), "Patient ICN is required in id field");
+    checkRequestState(isNotEmpty(patient.id()), "Patient ICN is required in id field");
     String id = patient.id();
     checkRequestState(isValidIcn(id), "Patient ICN must be in valid MPI format.");
     String icnIdentifier = findIcn(patient);
@@ -113,7 +113,7 @@ public class PatientController {
 
   @SneakyThrows
   private boolean isValidIcn(String icn) {
-    checkState(!StringUtils.isEmpty(icn));
+    checkState(isNotEmpty(icn));
     return MPI_PATTERN.matcher(icn.trim()).matches();
   }
 

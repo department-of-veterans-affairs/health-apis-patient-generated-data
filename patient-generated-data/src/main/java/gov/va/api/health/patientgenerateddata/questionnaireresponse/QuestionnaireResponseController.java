@@ -6,6 +6,7 @@ import static gov.va.api.health.patientgenerateddata.Controllers.generateRandomI
 import static gov.va.api.lighthouse.vulcan.Rules.atLeastOneParameterOf;
 import static gov.va.api.lighthouse.vulcan.Rules.ifParameter;
 import static gov.va.api.lighthouse.vulcan.Vulcan.returnNothing;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 import gov.va.api.health.autoconfig.configuration.JacksonConfig;
 import gov.va.api.health.autoconfig.logging.Loggable;
@@ -26,7 +27,6 @@ import javax.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.SneakyThrows;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.DataBinder;
@@ -78,7 +78,7 @@ public class QuestionnaireResponseController {
   ResponseEntity<QuestionnaireResponse> create(
       String id, QuestionnaireResponse questionnaireResponse) {
     checkRequestState(
-        StringUtils.isEmpty(questionnaireResponse.id()),
+        isEmpty(questionnaireResponse.id()),
         "ID must be empty, found %s",
         questionnaireResponse.id());
     questionnaireResponse.id(id);
