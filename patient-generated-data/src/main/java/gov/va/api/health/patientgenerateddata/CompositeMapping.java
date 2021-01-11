@@ -3,6 +3,7 @@ package gov.va.api.health.patientgenerateddata;
 import static java.util.stream.Collectors.joining;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.trimToNull;
+
 import gov.va.api.health.r4.api.datatypes.UsageContext;
 import gov.va.api.health.r4.api.resources.Questionnaire;
 import gov.va.api.lighthouse.vulcan.mappings.SingleParameterMapping;
@@ -23,14 +24,16 @@ public final class CompositeMapping<EntityT> implements SingleParameterMapping<E
 
   String fieldName;
 
+  static String addTerminators(String str) {
+    return "|" + str + "|";
+  }
+
   /** Return CSV of context-type-value queries. */
   public static String useContextValueJoin(Questionnaire questionnaire) {
     if (questionnaire == null || questionnaire.useContext() == null) {
       return null;
     }
-    return questionnaire
-        .useContext()
-        .stream()
+    return questionnaire.useContext().stream()
         .flatMap(context -> valueJoin(context))
         .collect(joining(","));
   }
@@ -41,10 +44,7 @@ public final class CompositeMapping<EntityT> implements SingleParameterMapping<E
         || context.valueCodeableConcept().coding() == null) {
       return Stream.empty();
     }
-    return context
-        .valueCodeableConcept()
-        .coding()
-        .stream()
+    return context.valueCodeableConcept().coding().stream()
         .flatMap(
             valueCoding -> {
               String ucCode =
@@ -54,14 +54,12 @@ public final class CompositeMapping<EntityT> implements SingleParameterMapping<E
                 // must have ucCode to index
                 return Stream.empty();
               }
-
               String valueSystem = trimToNull(valueCoding.system());
               String valueCode = trimToNull(valueCoding.code());
               if (valueSystem == null && valueCode == null) {
                 // must have at least one of valueSystem and valueCode to index
                 return Stream.empty();
               }
-
               if (valueSystem == null) {
                 // code with any system: valueCode
                 // code with no system: |valueCode
@@ -69,12 +67,10 @@ public final class CompositeMapping<EntityT> implements SingleParameterMapping<E
                     addTerminators(ucCode + "$" + valueCode),
                     addTerminators(ucCode + "$|" + valueCode));
               }
-
               if (valueCode == null) {
                 // system with any code: valueSystem|
                 return Stream.of(addTerminators(ucCode + "$" + valueSystem + "|"));
               }
-
               // system with explicit code: valueSystem|valueCode
               // system with any code: valueSystem|
               // code with any system: valueCode
@@ -97,9 +93,5 @@ public final class CompositeMapping<EntityT> implements SingleParameterMapping<E
             criteriaBuilder.like(
                 criteriaBuilder.lower(root.get(fieldName)),
                 "%" + addTerminators(value).toLowerCase(Locale.ENGLISH) + "%");
-  }
-
-  static String addTerminators(String str) {
-    return "|" + str + "|";
   }
 }
