@@ -1,7 +1,6 @@
 package gov.va.api.health.patientgenerateddata.tests;
 
 import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.doPost;
-import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.serializePayload;
 import static gov.va.api.health.sentinel.EnvironmentAssumptions.assumeEnvironmentIn;
 
 import gov.va.api.health.r4.api.resources.QuestionnaireResponse;
@@ -23,7 +22,7 @@ public class QuestionnaireResponseCreateIT {
     QuestionnaireResponse questionnaireResponse = questionnaireResponse().id("123");
     doPost(
         "QuestionnaireResponse",
-        serializePayload(questionnaireResponse),
+        questionnaireResponse,
         "create invalid resource, existing id",
         400);
   }
@@ -31,8 +30,7 @@ public class QuestionnaireResponseCreateIT {
   @Test
   public void create_valid() {
     QuestionnaireResponse questionnaireResponse = questionnaireResponse();
-    doPost(
-        "QuestionnaireResponse", serializePayload(questionnaireResponse), "create resource", 201);
+    doPost("QuestionnaireResponse", questionnaireResponse, "create resource", 201);
   }
 
   private QuestionnaireResponse questionnaireResponse() {

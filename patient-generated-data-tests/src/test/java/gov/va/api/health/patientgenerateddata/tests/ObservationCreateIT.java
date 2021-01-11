@@ -1,7 +1,6 @@
 package gov.va.api.health.patientgenerateddata.tests;
 
 import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.doPost;
-import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.serializePayload;
 import static gov.va.api.health.sentinel.EnvironmentAssumptions.assumeEnvironmentIn;
 
 import gov.va.api.health.r4.api.datatypes.CodeableConcept;
@@ -25,14 +24,13 @@ public class ObservationCreateIT {
   @Test
   public void create_invalid() {
     Observation observation = observation().id("123");
-    doPost(
-        "Observation", serializePayload(observation), "create invalid resource, existing id", 400);
+    doPost("Observation", observation, "create invalid resource, existing id", 400);
   }
 
   @Test
   public void create_valid() {
     Observation observation = observation();
-    doPost("Observation", serializePayload(observation), "create resource", 201);
+    doPost("Observation", observation, "create resource", 201);
   }
 
   private Observation observation() {

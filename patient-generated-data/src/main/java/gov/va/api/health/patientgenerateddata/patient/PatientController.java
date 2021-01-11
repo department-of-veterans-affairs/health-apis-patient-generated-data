@@ -4,6 +4,7 @@ import static com.google.common.base.Preconditions.checkState;
 import static gov.va.api.health.patientgenerateddata.Controllers.checkRequestState;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.api.health.autoconfig.configuration.JacksonConfig;
 import gov.va.api.health.autoconfig.logging.Loggable;
 import gov.va.api.health.patientgenerateddata.Exceptions;
@@ -41,6 +42,8 @@ import org.springframework.web.bind.annotation.RestController;
     produces = {"application/json", "application/fhir+json"})
 @AllArgsConstructor(onConstructor_ = @Autowired)
 public class PatientController {
+  private static final ObjectMapper MAPPER = JacksonConfig.createMapper();
+
   private static final Pattern MPI_PATTERN = Pattern.compile("^[0-9]{10}V[0-9]{6}$");
 
   private static final String MPI_URI = "http://va.gov/mpi";
@@ -130,7 +133,7 @@ public class PatientController {
 
   @SneakyThrows
   PatientEntity transform(Patient patient, PatientEntity entity) {
-    return transform(patient, entity, JacksonConfig.createMapper().writeValueAsString(patient));
+    return transform(patient, entity, MAPPER.writeValueAsString(patient));
   }
 
   PatientEntity transform(@NonNull Patient patient, @NonNull PatientEntity entity, String payload) {

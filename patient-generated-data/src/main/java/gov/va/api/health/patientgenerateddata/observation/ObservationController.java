@@ -5,6 +5,7 @@ import static gov.va.api.health.patientgenerateddata.Controllers.checkRequestSta
 import static gov.va.api.health.patientgenerateddata.Controllers.generateRandomId;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.api.health.autoconfig.configuration.JacksonConfig;
 import gov.va.api.health.autoconfig.logging.Loggable;
 import gov.va.api.health.patientgenerateddata.Exceptions;
@@ -36,6 +37,8 @@ import org.springframework.web.bind.annotation.RestController;
     produces = {"application/json", "application/fhir+json"})
 @AllArgsConstructor(onConstructor_ = @Autowired)
 public class ObservationController {
+  private static final ObjectMapper MAPPER = JacksonConfig.createMapper();
+
   private final LinkProperties linkProperties;
 
   private final ObservationRepository repository;
@@ -72,8 +75,7 @@ public class ObservationController {
 
   @SneakyThrows
   ObservationEntity transform(Observation observation, ObservationEntity entity) {
-    return transform(
-        observation, entity, JacksonConfig.createMapper().writeValueAsString(observation));
+    return transform(observation, entity, MAPPER.writeValueAsString(observation));
   }
 
   ObservationEntity transform(

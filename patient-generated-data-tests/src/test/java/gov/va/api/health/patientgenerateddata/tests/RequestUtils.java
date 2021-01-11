@@ -3,6 +3,7 @@ package gov.va.api.health.patientgenerateddata.tests;
 import static gov.va.api.health.patientgenerateddata.tests.SystemDefinitions.systemDefinition;
 import static gov.va.api.health.sentinel.ExpectedResponse.logAllWithTruncatedBody;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.api.health.autoconfig.configuration.JacksonConfig;
 import gov.va.api.health.sentinel.ExpectedResponse;
 import io.restassured.RestAssured;
@@ -13,6 +14,8 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class RequestUtils {
+  private static final ObjectMapper MAPPER = JacksonConfig.createMapper();
+
   public static ExpectedResponse doGet(
       String acceptHeader, String request, Integer expectedStatus) {
     SystemDefinitions.Service svc = systemDefinition().r4();
@@ -39,8 +42,9 @@ public class RequestUtils {
     return response;
   }
 
+  @SneakyThrows
   public static ExpectedResponse doPost(
-      String request, String payload, String description, Integer expectedStatus) {
+      String request, Object payload, String description, Integer expectedStatus) {
     SystemDefinitions.Service svc = systemDefinition().r4();
     RequestSpecification spec =
         RestAssured.given()
@@ -49,7 +53,7 @@ public class RequestUtils {
             .relaxedHTTPSValidation()
             .header("Authorization", "Bearer " + System.getProperty("access-token", "unset"))
             .header("Content-Type", "application/json")
-            .body(payload);
+            .body(MAPPER.writeValueAsString(payload));
     log.info(
         "Expect {} POST '{}' is status code ({})",
         svc.apiPath() + request,
@@ -64,8 +68,9 @@ public class RequestUtils {
     return response;
   }
 
+  @SneakyThrows
   public static ExpectedResponse doPut(
-      String request, String payload, String description, Integer expectedStatus) {
+      String request, Object payload, String description, Integer expectedStatus) {
     SystemDefinitions.Service svc = systemDefinition().r4();
     RequestSpecification spec =
         RestAssured.given()
@@ -74,7 +79,7 @@ public class RequestUtils {
             .relaxedHTTPSValidation()
             .header("Authorization", "Bearer " + System.getProperty("access-token", "unset"))
             .header("Content-Type", "application/json")
-            .body(payload);
+            .body(MAPPER.writeValueAsString(payload));
     log.info(
         "Expect {} PUT '{}' is status code ({})",
         svc.apiPath() + request,
@@ -87,10 +92,5 @@ public class RequestUtils {
       response.expect(expectedStatus);
     }
     return response;
-  }
-
-  @SneakyThrows
-  public static String serializePayload(Object payload) {
-    return JacksonConfig.createMapper().writeValueAsString(payload);
   }
 }

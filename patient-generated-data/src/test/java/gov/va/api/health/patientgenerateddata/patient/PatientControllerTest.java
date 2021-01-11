@@ -8,6 +8,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.api.health.autoconfig.configuration.JacksonConfig;
 import gov.va.api.health.patientgenerateddata.Exceptions;
 import gov.va.api.health.patientgenerateddata.LinkProperties;
@@ -27,6 +28,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.DataBinder;
 
 public class PatientControllerTest {
+  private static final ObjectMapper MAPPER = JacksonConfig.createMapper();
+
   @Test
   @SneakyThrows
   void create() {
@@ -47,7 +50,7 @@ public class PatientControllerTest {
             .id(id)
             .identifier(new ArrayList<>(List.of(Identifier.builder().build(), mpi(id))))
             .build();
-    String persistedSerialized = JacksonConfig.createMapper().writeValueAsString(persisted);
+    String persistedSerialized = MAPPER.writeValueAsString(persisted);
     verify(repo, times(1))
         .save(PatientEntity.builder().id(id).payload(persistedSerialized).build());
   }
@@ -111,8 +114,7 @@ public class PatientControllerTest {
   @SneakyThrows
   void read() {
     PatientRepository repo = mock(PatientRepository.class);
-    String payload =
-        JacksonConfig.createMapper().writeValueAsString(Patient.builder().id("x").build());
+    String payload = MAPPER.writeValueAsString(Patient.builder().id("x").build());
     when(repo.findById("x"))
         .thenReturn(Optional.of(PatientEntity.builder().id("x").payload(payload).build()));
     assertThat(new PatientController(mock(LinkProperties.class), repo).read("x"))
@@ -132,7 +134,7 @@ public class PatientControllerTest {
   void update_existing() {
     PatientRepository repo = mock(PatientRepository.class);
     Patient patient = Patient.builder().id("x").build();
-    String payload = JacksonConfig.createMapper().writeValueAsString(patient);
+    String payload = MAPPER.writeValueAsString(patient);
     when(repo.findById("x"))
         .thenReturn(Optional.of(PatientEntity.builder().id("x").payload(payload).build()));
     assertThat(new PatientController(mock(LinkProperties.class), repo).update("x", patient))

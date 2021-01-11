@@ -8,6 +8,7 @@ import static gov.va.api.lighthouse.vulcan.Rules.ifParameter;
 import static gov.va.api.lighthouse.vulcan.Vulcan.returnNothing;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.api.health.autoconfig.configuration.JacksonConfig;
 import gov.va.api.health.autoconfig.logging.Loggable;
 import gov.va.api.health.patientgenerateddata.Exceptions;
@@ -47,6 +48,8 @@ import org.springframework.web.bind.annotation.RestController;
     produces = {"application/json", "application/fhir+json"})
 @AllArgsConstructor(onConstructor_ = @Autowired)
 public class QuestionnaireResponseController {
+  private static final ObjectMapper MAPPER = JacksonConfig.createMapper();
+
   private final LinkProperties linkProperties;
 
   private final QuestionnaireResponseRepository repository;
@@ -134,8 +137,7 @@ public class QuestionnaireResponseController {
   @SneakyThrows
   QuestionnaireResponseEntity transform(
       QuestionnaireResponse questionnaire, QuestionnaireResponseEntity entity) {
-    return transform(
-        questionnaire, entity, JacksonConfig.createMapper().writeValueAsString(questionnaire));
+    return transform(questionnaire, entity, MAPPER.writeValueAsString(questionnaire));
   }
 
   QuestionnaireResponseEntity transform(

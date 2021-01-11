@@ -5,6 +5,7 @@ import static gov.va.api.health.patientgenerateddata.Controllers.checkRequestSta
 import static gov.va.api.health.patientgenerateddata.Controllers.generateRandomId;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.api.health.autoconfig.configuration.JacksonConfig;
 import gov.va.api.health.autoconfig.logging.Loggable;
 import gov.va.api.health.patientgenerateddata.Exceptions;
@@ -36,6 +37,8 @@ import org.springframework.web.bind.annotation.RestController;
     produces = {"application/json", "application/fhir+json"})
 @AllArgsConstructor(onConstructor = @__({@Autowired}))
 public class QuestionnaireController {
+  private static final ObjectMapper MAPPER = JacksonConfig.createMapper();
+
   private final LinkProperties linkProperties;
 
   private final QuestionnaireRepository repository;
@@ -74,8 +77,7 @@ public class QuestionnaireController {
 
   @SneakyThrows
   QuestionnaireEntity transform(Questionnaire questionnaire, QuestionnaireEntity entity) {
-    return transform(
-        questionnaire, entity, JacksonConfig.createMapper().writeValueAsString(questionnaire));
+    return transform(questionnaire, entity, MAPPER.writeValueAsString(questionnaire));
   }
 
   QuestionnaireEntity transform(
@@ -90,7 +92,7 @@ public class QuestionnaireController {
   @Loggable(arguments = false)
   ResponseEntity<Questionnaire> update(
       @PathVariable("id") String id, @Valid @RequestBody Questionnaire questionnaire) {
-    String payload = JacksonConfig.createMapper().writeValueAsString(questionnaire);
+    String payload = MAPPER.writeValueAsString(questionnaire);
     checkState(id.equals(questionnaire.id()), "%s != %s", id, questionnaire.id());
     Optional<QuestionnaireEntity> maybeEntity = repository.findById(id);
     QuestionnaireEntity entity = maybeEntity.orElseThrow(() -> new Exceptions.NotFound(id));
