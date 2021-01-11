@@ -35,12 +35,45 @@ public class QuestionnaireIT {
   }
 
   @Test
-  void search_contextTypeValue() {
+  void search_contextTypeValue_codeWithAnySystem() {
     assumeEnvironmentIn(Environment.LOCAL);
     // Environment.QA, Environment.STAGING, Environment.STAGING_LAB Environment.LAB
-    String arg = "venue$https://staff.apps.va.gov/VistaEmrService/clinics|534/12975";
-    String query = String.format("?context-type-value=%s", arg);
-    var response = doGet("application/json", "Questionnaire" + query, 200);
+    String query = systemDefinition().ids().questionnaireContextTypeValue().codeWithAnySystem();
+    var response =
+        doGet("application/json", String.format("Questionnaire?context-type-value=%s", query), 200);
+    Questionnaire.Bundle bundle = response.expectValid(Questionnaire.Bundle.class);
+    assertThat(bundle.entry()).hasSizeGreaterThan(0);
+  }
+
+  @Test
+  void search_contextTypeValue_codeWithNoSystem() {
+    assumeEnvironmentIn(Environment.LOCAL);
+    // Environment.QA, Environment.STAGING, Environment.STAGING_LAB Environment.LAB
+    String query = systemDefinition().ids().questionnaireContextTypeValue().codeWithNoSystem();
+    var response =
+        doGet("application/json", String.format("Questionnaire?context-type-value=%s", query), 200);
+    Questionnaire.Bundle bundle = response.expectValid(Questionnaire.Bundle.class);
+    assertThat(bundle.entry()).isEmpty();
+  }
+
+  @Test
+  void search_contextTypeValue_systemAndCode() {
+    assumeEnvironmentIn(Environment.LOCAL);
+    // Environment.QA, Environment.STAGING, Environment.STAGING_LAB Environment.LAB
+    String query = systemDefinition().ids().questionnaireContextTypeValue().systemAndCode();
+    var response =
+        doGet("application/json", String.format("Questionnaire?context-type-value=%s", query), 200);
+    Questionnaire.Bundle bundle = response.expectValid(Questionnaire.Bundle.class);
+    assertThat(bundle.entry()).hasSizeGreaterThan(0);
+  }
+
+  @Test
+  void search_contextTypeValue_systemWithAnyCode() {
+    assumeEnvironmentIn(Environment.LOCAL);
+    // Environment.QA, Environment.STAGING, Environment.STAGING_LAB Environment.LAB
+    String query = systemDefinition().ids().questionnaireContextTypeValue().systemWithAnyCode();
+    var response =
+        doGet("application/json", String.format("Questionnaire?context-type-value=%s", query), 200);
     Questionnaire.Bundle bundle = response.expectValid(Questionnaire.Bundle.class);
     assertThat(bundle.entry()).hasSizeGreaterThan(0);
   }
