@@ -30,7 +30,6 @@ public class MagicReferenceConfig {
   }
 
   private final class QualifiedReferenceWriter extends BeanPropertyWriter {
-
     private QualifiedReferenceWriter(BeanPropertyWriter base) {
       super(base);
     }

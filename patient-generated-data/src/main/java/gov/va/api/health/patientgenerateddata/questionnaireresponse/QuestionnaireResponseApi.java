@@ -16,7 +16,6 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 
 public interface QuestionnaireResponseApi {
-
   @Operation(
       summary = "QuestionnaireResponse Create",
       description = "https://www.hl7.org/fhir/R4/questionnaireresponse.html",
@@ -108,7 +107,6 @@ public interface QuestionnaireResponseApi {
       @Parameter(
               in = ParameterIn.QUERY,
               name = "_id",
-              required = true,
               description =
                   "The logical ID of the resource. Once assigned, this value never changes.")
           String id,

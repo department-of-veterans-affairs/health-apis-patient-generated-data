@@ -6,7 +6,6 @@ import gov.va.api.health.patientgenerateddata.patient.PatientEntity;
 import org.junit.jupiter.api.Test;
 
 public class PayloadEntityTest {
-
   @Test
   public void badPayload() {
     PatientEntity entity = PatientEntity.builder().id("x").payload("notjson").build();
