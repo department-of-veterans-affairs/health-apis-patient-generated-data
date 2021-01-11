@@ -150,7 +150,6 @@ public class QuestionnaireController {
     String payload = MAPPER.writeValueAsString(questionnaire);
     checkState(id.equals(questionnaire.id()), "%s != %s", id, questionnaire.id());
     Optional<QuestionnaireEntity> maybeEntity = repository.findById(id);
-
     QuestionnaireEntity entity = maybeEntity.orElseThrow(() -> new Exceptions.NotFound(id));
     entity = populate(questionnaire, entity, payload);
     repository.save(entity);
