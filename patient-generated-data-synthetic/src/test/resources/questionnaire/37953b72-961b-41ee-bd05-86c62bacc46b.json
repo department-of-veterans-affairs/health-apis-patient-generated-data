@@ -17,6 +17,36 @@
   "title" : "VA GOV Pre-Visit Agenda Questionnaire",
   "status" : "active",
   "publisher" : "clipboard.gov.va",
+  "useContext" : [
+    {
+      "code" : {
+        "system" : "http://terminology.hl7.org/CodeSystem/usage-context-type",
+        "code" : "venue"
+      },
+      "valueCodeableConcept" : {
+        "coding" : [
+          {
+            "system" : "https://staff.apps.va.gov/VistaEmrService/clinics",
+            "code" : "534/12975"
+          }
+        ]
+      }
+    },
+    {
+      "code" : {
+        "system" : "http://terminology.hl7.org/CodeSystem/usage-context-type",
+        "code" : "venue"
+      },
+      "valueCodeableConcept" : {
+        "coding" : [
+          {
+            "system" : "https://staff.apps.va.gov/VistaEmrService/clinics",
+            "code" : "534/12976"
+          }
+        ]
+      }
+    }
+  ],
   "item" : [
     {
       "linkId" : "01",

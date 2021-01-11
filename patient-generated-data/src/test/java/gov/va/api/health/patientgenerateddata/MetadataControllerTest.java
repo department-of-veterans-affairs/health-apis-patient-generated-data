@@ -131,12 +131,27 @@ public class MetadataControllerTest {
                                                         .read),
                                                 resourceInteraction(
                                                     CapabilityStatement.TypeRestfulInteraction
-                                                        .update)))
+                                                        .update),
+                                                resourceInteraction(
+                                                    CapabilityStatement.TypeRestfulInteraction
+                                                        .search_type)))
                                         .versioning(CapabilityStatement.Versioning.no_version)
                                         .referencePolicy(
                                             List.of(
                                                 CapabilityStatement.ReferencePolicy.literal,
                                                 CapabilityStatement.ReferencePolicy.local))
+                                        .searchParam(
+                                            List.of(
+                                                CapabilityStatement.SearchParam.builder()
+                                                    .name("_id")
+                                                    .type(CapabilityStatement.SearchParamType.token)
+                                                    .build(),
+                                                CapabilityStatement.SearchParam.builder()
+                                                    .name("context-type-value")
+                                                    .type(
+                                                        CapabilityStatement.SearchParamType
+                                                            .composite)
+                                                    .build()))
                                         .build(),
                                     CapabilityStatement.CapabilityResource.builder()
                                         .type("QuestionnaireResponse")

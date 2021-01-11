@@ -95,6 +95,7 @@ class MetadataController {
             SupportedResource.builder()
                 .type("Questionnaire")
                 .profileUrl("https://www.hl7.org/fhir/r4/questionnaire.html")
+                .searches(Set.of(SearchParam.ID, SearchParam.CONTEXT_TYPE_VALUE))
                 .build(),
             SupportedResource.builder()
                 .type("QuestionnaireResponse")
@@ -175,6 +176,7 @@ class MetadataController {
   enum SearchParam {
     AUTHOR("author", CapabilityStatement.SearchParamType.reference),
     AUTHORED("authored", CapabilityStatement.SearchParamType.date),
+    CONTEXT_TYPE_VALUE("context-type-value", CapabilityStatement.SearchParamType.composite),
     ID("_id", CapabilityStatement.SearchParamType.token),
     PATIENT("patient", CapabilityStatement.SearchParamType.reference),
     SUBJECT("subject", CapabilityStatement.SearchParamType.reference);

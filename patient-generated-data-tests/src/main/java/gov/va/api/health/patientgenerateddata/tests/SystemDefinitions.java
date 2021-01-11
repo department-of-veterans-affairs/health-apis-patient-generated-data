@@ -16,6 +16,13 @@ class SystemDefinitions {
         .patientGenerated("9999999999V999999")
         .patientNotMe("1017283180V801730")
         .questionnaire("37953b72-961b-41ee-bd05-86c62bacc46b")
+        .questionnaireContextTypeValue(
+            Ids.UsageContextTypeValue.builder()
+                .codeWithAnySystem("venue$534/12975")
+                .codeWithNoSystem("venue$|534/12975")
+                .systemAndCode("venue$https://staff.apps.va.gov/VistaEmrService/clinics|534/12975")
+                .systemWithAnyCode("venue$https://staff.apps.va.gov/VistaEmrService/clinics|")
+                .build())
         .questionnaireResponse("f003043a-9047-4c3a-b15b-a26c67f4e723")
         .questionnaireResponseAuthor("1011537977V693883")
         .questionnaireResponseSubject("1011537977V693883")
@@ -135,6 +142,8 @@ class SystemDefinitions {
 
     @NonNull String questionnaire;
 
+    @NonNull UsageContextTypeValue questionnaireContextTypeValue;
+
     @NonNull String questionnaireResponse;
 
     @NonNull String questionnaireResponseAuthor;
@@ -142,6 +151,18 @@ class SystemDefinitions {
     @NonNull String questionnaireResponseSubject;
 
     @NonNull String questionnaireResponseUpdates;
+
+    @Value
+    @Builder
+    static final class UsageContextTypeValue {
+      @NonNull String codeWithAnySystem;
+
+      @NonNull String codeWithNoSystem;
+
+      @NonNull String systemAndCode;
+
+      @NonNull String systemWithAnyCode;
+    }
   }
 
   @Value

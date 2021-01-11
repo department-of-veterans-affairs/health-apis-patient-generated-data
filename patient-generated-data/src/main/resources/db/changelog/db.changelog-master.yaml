@@ -233,3 +233,17 @@ databaseChangeLog:
                   type: varchar(255)
                   constraints:
                     - nullable: true
+
+  - changeSet:
+      id: 10
+      author: pteracuda
+      changes:
+        - addColumn:
+            tableName: Questionnaire
+            schemaName: app
+            columns:
+              - column:
+                  name: contextTypeValue
+                  type: clob
+                  constraints:
+                    - nullable: true
