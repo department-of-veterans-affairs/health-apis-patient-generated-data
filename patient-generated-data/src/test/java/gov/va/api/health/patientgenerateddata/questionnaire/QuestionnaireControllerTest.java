@@ -12,13 +12,9 @@ import static org.mockito.Mockito.when;
 import gov.va.api.health.autoconfig.configuration.JacksonConfig;
 import gov.va.api.health.patientgenerateddata.Exceptions;
 import gov.va.api.health.patientgenerateddata.LinkProperties;
-import gov.va.api.health.patientgenerateddata.questionnaireresponse.QuestionnaireResponseController;
-import gov.va.api.health.patientgenerateddata.questionnaireresponse.QuestionnaireResponseEntity;
-import gov.va.api.health.patientgenerateddata.questionnaireresponse.QuestionnaireResponseRepository;
 import gov.va.api.health.r4.api.resources.Questionnaire;
 import gov.va.api.health.r4.api.resources.Questionnaire.PublicationStatus;
 import gov.va.api.lighthouse.vulcan.InvalidRequest;
-
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
@@ -36,6 +32,19 @@ import org.springframework.validation.DataBinder;
 import org.springframework.web.util.UriComponentsBuilder;
 
 public class QuestionnaireControllerTest {
+  private static MockHttpServletRequest _requestFromUri(String uri) {
+    var u = UriComponentsBuilder.fromUriString(uri).build();
+    MockHttpServletRequest request = new MockHttpServletRequest();
+    request.setRequestURI(u.getPath());
+    request.setRemoteHost(u.getHost());
+    request.setProtocol(u.getScheme());
+    request.setServerPort(u.getPort());
+    u.getQueryParams()
+        .entrySet()
+        .forEach(e -> request.addParameter(e.getKey(), e.getValue().toArray(new String[0])));
+    return request;
+  }
+
   private Questionnaire _questionnaire() {
     return Questionnaire.builder().title("x").status(PublicationStatus.active).build();
   }
@@ -93,6 +102,47 @@ public class QuestionnaireControllerTest {
         () -> new QuestionnaireController(mock(LinkProperties.class), repo).read("notfound"));
   }
 
+  @ParameterizedTest
+  @ValueSource(strings = {"", "?_id=123&context-type-value=x$y"})
+  void search_invalid(String query) {
+    LinkProperties pageLinks =
+        LinkProperties.builder()
+            .defaultPageSize(1)
+            .maxPageSize(1)
+            .baseUrl("http://foo.com")
+            .r4BasePath("r4")
+            .build();
+    QuestionnaireController controller =
+        new QuestionnaireController(pageLinks, mock(QuestionnaireRepository.class));
+    var req = _requestFromUri("http://fonzy.com/r4/Questionnaire" + query);
+    assertThatExceptionOfType(InvalidRequest.class).isThrownBy(() -> controller.search(req));
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"?_id=1", "?context-type-value=x$y"})
+  void search_valid(String query) {
+    LinkProperties pageLinks =
+        LinkProperties.builder()
+            .defaultPageSize(1)
+            .maxPageSize(1)
+            .baseUrl("http://foo.com")
+            .r4BasePath("r4")
+            .build();
+    QuestionnaireRepository repo = mock(QuestionnaireRepository.class);
+    QuestionnaireController controller = new QuestionnaireController(pageLinks, repo);
+    var anySpec = ArgumentMatchers.<Specification<QuestionnaireEntity>>any();
+    when(repo.findAll(anySpec, any(Pageable.class)))
+        .thenAnswer(
+            i ->
+                new PageImpl<QuestionnaireEntity>(
+                    List.of(QuestionnaireEntity.builder().build().id("1").payload("{ \"id\": 1}")),
+                    i.getArgument(1, Pageable.class),
+                    1));
+    var r = _requestFromUri("http://fonzy.com/r4/Questionnaire" + query);
+    var actual = controller.search(r);
+    assertThat(actual.entry()).hasSize(1);
+  }
+
   @Test
   @SneakyThrows
   void update_existing() {
@@ -122,52 +172,4 @@ public class QuestionnaireControllerTest {
                 .body(questionnaire));
     verify(repo, times(1)).save(QuestionnaireEntity.builder().id("x").payload(payload).build());
   }
-
-  
-  
-  
-  
-  @ParameterizedTest
-  @ValueSource(strings = {"?_id=1", "?author=1011537977V693883"})
-  @SneakyThrows
-  void validSearch(String query) {
-    QuestionnaireResponseRepository repo = mock(QuestionnaireResponseRepository.class);
-    QuestionnaireResponseController controller = controller(repo);
-    var anySpec = ArgumentMatchers.<Specification<QuestionnaireResponseEntity>>any();
-    when(repo.findAll(anySpec, any(Pageable.class)))
-        .thenAnswer(
-            i ->
-                new PageImpl<QuestionnaireResponseEntity>(
-                    List.of(
-                        QuestionnaireResponseEntity.builder()
-                            .build()
-                            .id("1")
-                            .payload("{ \"id\": 1}")),
-                    i.getArgument(1, Pageable.class),
-                    1));
-    var r = _requestFromUri("http://fonzy.com/r4/QuestionnaireResponse" + query);
-    var actual = controller.search(r);
-    assertThat(actual.entry()).hasSize(1);
-  }
-  
-  @ParameterizedTest
-  @ValueSource(strings = {"", "?_id=123&authored=2000-01-01T00:00:00Z"})
-  @SneakyThrows
-  void invalidRequests(String query) {
-    var r = _requestFromUri("http://fonzy.com/r4/QuestionnaireResponse" + query);
-    assertThatExceptionOfType(InvalidRequest.class).isThrownBy(() -> controller().search(r));
-  }
-  
-  private static MockHttpServletRequest _requestFromUri(String uri) {
-	    var u = UriComponentsBuilder.fromUriString(uri).build();
-	    MockHttpServletRequest request = new MockHttpServletRequest();
-	    request.setRequestURI(u.getPath());
-	    request.setRemoteHost(u.getHost());
-	    request.setProtocol(u.getScheme());
-	    request.setServerPort(u.getPort());
-	    u.getQueryParams()
-	        .entrySet()
-	        .forEach(e -> request.addParameter(e.getKey(), e.getValue().toArray(new String[0])));
-	    return request;
-	  }
 }
