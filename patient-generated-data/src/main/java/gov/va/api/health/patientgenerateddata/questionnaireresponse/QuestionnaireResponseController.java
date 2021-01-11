@@ -85,7 +85,7 @@ public class QuestionnaireResponseController {
         "ID must be empty, found %s",
         questionnaireResponse.id());
     questionnaireResponse.id(id);
-    QuestionnaireResponseEntity entity = transform(questionnaireResponse);
+    QuestionnaireResponseEntity entity = toEntity(questionnaireResponse);
     repository.save(entity);
     return ResponseEntity.created(
             URI.create(linkProperties.r4Url() + "/QuestionnaireResponse/" + id))
@@ -95,6 +95,32 @@ public class QuestionnaireResponseController {
   @InitBinder
   void initDirectFieldAccess(DataBinder dataBinder) {
     dataBinder.initDirectFieldAccess();
+  }
+
+  @SneakyThrows
+  QuestionnaireResponseEntity populate(
+      QuestionnaireResponse questionnaireResponse, QuestionnaireResponseEntity entity) {
+    return populate(
+        questionnaireResponse, entity, MAPPER.writeValueAsString(questionnaireResponse));
+  }
+
+  QuestionnaireResponseEntity populate(
+      @NonNull QuestionnaireResponse questionnaireResponse,
+      @NonNull QuestionnaireResponseEntity entity,
+      String payload) {
+    checkState(
+        entity.id().equals(questionnaireResponse.id()),
+        "IDs don't match, %s != %s",
+        entity.id(),
+        questionnaireResponse.id());
+    String authorId = ReferenceUtils.resourceId(questionnaireResponse.author());
+    Instant authored = ParseUtils.parseDateTime(questionnaireResponse.authored());
+    String subject = ReferenceUtils.resourceId(questionnaireResponse.subject());
+    entity.payload(payload);
+    entity.author(authorId);
+    entity.authored(authored);
+    entity.subject(subject);
+    return entity;
   }
 
   @GetMapping(value = "/{id}")
@@ -130,29 +156,11 @@ public class QuestionnaireResponseController {
         .build();
   }
 
-  QuestionnaireResponseEntity transform(QuestionnaireResponse questionnaire) {
-    return transform(questionnaire, QuestionnaireResponseEntity.builder().build());
-  }
-
-  @SneakyThrows
-  QuestionnaireResponseEntity transform(
-      QuestionnaireResponse questionnaire, QuestionnaireResponseEntity entity) {
-    return transform(questionnaire, entity, MAPPER.writeValueAsString(questionnaire));
-  }
-
-  QuestionnaireResponseEntity transform(
-      @NonNull QuestionnaireResponse questionnaireResponse,
-      @NonNull QuestionnaireResponseEntity entity,
-      String payload) {
-    String authorId = ReferenceUtils.resourceId(questionnaireResponse.author());
-    Instant authored = ParseUtils.parseDateTime(questionnaireResponse.authored());
-    String subject = ReferenceUtils.resourceId(questionnaireResponse.subject());
-    entity.id(questionnaireResponse.id());
-    entity.payload(payload);
-    entity.author(authorId);
-    entity.authored(authored);
-    entity.subject(subject);
-    return entity;
+  QuestionnaireResponseEntity toEntity(QuestionnaireResponse questionnaireResponse) {
+    checkState(questionnaireResponse.id() != null, "ID is required");
+    return populate(
+        questionnaireResponse,
+        QuestionnaireResponseEntity.builder().id(questionnaireResponse.id()).build());
   }
 
   @SneakyThrows
@@ -164,7 +172,7 @@ public class QuestionnaireResponseController {
     checkState(id.equals(questionnaireResponse.id()), "%s != %s", id, questionnaireResponse.id());
     Optional<QuestionnaireResponseEntity> maybeEntity = repository.findById(id);
     QuestionnaireResponseEntity entity = maybeEntity.orElseThrow(() -> new Exceptions.NotFound(id));
-    entity = transform(questionnaireResponse, entity);
+    entity = populate(questionnaireResponse, entity);
     repository.save(entity);
     return ResponseEntity.ok(questionnaireResponse);
   }

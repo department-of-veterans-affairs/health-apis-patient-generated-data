@@ -53,7 +53,7 @@ public class QuestionnaireController {
     checkRequestState(
         isEmpty(questionnaire.id()), "ID must be empty, found %s", questionnaire.id());
     questionnaire.id(id);
-    QuestionnaireEntity entity = transform(questionnaire);
+    QuestionnaireEntity entity = toEntity(questionnaire);
     repository.save(entity);
     return ResponseEntity.created(URI.create(linkProperties.r4Url() + "/Questionnaire/" + id))
         .body(questionnaire);
@@ -64,6 +64,22 @@ public class QuestionnaireController {
     dataBinder.initDirectFieldAccess();
   }
 
+  @SneakyThrows
+  QuestionnaireEntity populate(Questionnaire questionnaire, QuestionnaireEntity entity) {
+    return populate(questionnaire, entity, MAPPER.writeValueAsString(questionnaire));
+  }
+
+  QuestionnaireEntity populate(
+      @NonNull Questionnaire questionnaire, @NonNull QuestionnaireEntity entity, String payload) {
+    checkState(
+        entity.id().equals(questionnaire.id()),
+        "IDs don't match, %s != %s",
+        entity.id(),
+        questionnaire.id());
+    entity.payload(payload);
+    return entity;
+  }
+
   @GetMapping(value = "/{id}")
   Questionnaire read(@PathVariable("id") String id) {
     Optional<QuestionnaireEntity> maybeEntity = repository.findById(id);
@@ -71,20 +87,9 @@ public class QuestionnaireController {
     return entity.deserializePayload();
   }
 
-  QuestionnaireEntity transform(Questionnaire questionnaire) {
-    return transform(questionnaire, QuestionnaireEntity.builder().build());
-  }
-
-  @SneakyThrows
-  QuestionnaireEntity transform(Questionnaire questionnaire, QuestionnaireEntity entity) {
-    return transform(questionnaire, entity, MAPPER.writeValueAsString(questionnaire));
-  }
-
-  QuestionnaireEntity transform(
-      @NonNull Questionnaire questionnaire, @NonNull QuestionnaireEntity entity, String payload) {
-    entity.id(questionnaire.id());
-    entity.payload(payload);
-    return entity;
+  QuestionnaireEntity toEntity(Questionnaire questionnaire) {
+    checkState(questionnaire.id() != null, "ID is required");
+    return populate(questionnaire, QuestionnaireEntity.builder().id(questionnaire.id()).build());
   }
 
   @SneakyThrows
@@ -96,7 +101,7 @@ public class QuestionnaireController {
     checkState(id.equals(questionnaire.id()), "%s != %s", id, questionnaire.id());
     Optional<QuestionnaireEntity> maybeEntity = repository.findById(id);
     QuestionnaireEntity entity = maybeEntity.orElseThrow(() -> new Exceptions.NotFound(id));
-    entity = transform(questionnaire, entity, payload);
+    entity = populate(questionnaire, entity, payload);
     repository.save(entity);
     return ResponseEntity.ok(questionnaire);
   }

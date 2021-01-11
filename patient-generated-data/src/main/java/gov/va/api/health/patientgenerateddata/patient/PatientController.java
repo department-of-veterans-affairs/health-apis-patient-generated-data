@@ -83,7 +83,7 @@ public class PatientController {
     if (maybeEntity.isPresent()) {
       throw new Exceptions.BadRequest(String.format("Patient already exists with id %s", id));
     }
-    PatientEntity entity = transform(patient);
+    PatientEntity entity = toEntity(patient);
     repository.save(entity);
     return ResponseEntity.created(URI.create(linkProperties.r4Url() + "/Patient/" + id))
         .body(patient);
@@ -120,6 +120,18 @@ public class PatientController {
     return MPI_PATTERN.matcher(icn.trim()).matches();
   }
 
+  @SneakyThrows
+  PatientEntity populate(Patient patient, PatientEntity entity) {
+    return populate(patient, entity, MAPPER.writeValueAsString(patient));
+  }
+
+  PatientEntity populate(@NonNull Patient patient, @NonNull PatientEntity entity, String payload) {
+    checkState(
+        entity.id().equals(patient.id()), "IDs don't match, %s != %s", entity.id(), patient.id());
+    entity.payload(payload);
+    return entity;
+  }
+
   @GetMapping(value = "/{id}")
   Patient read(@PathVariable("id") String id) {
     Optional<PatientEntity> maybeEntity = repository.findById(id);
@@ -127,19 +139,9 @@ public class PatientController {
     return entity.deserializePayload();
   }
 
-  PatientEntity transform(Patient patient) {
-    return transform(patient, PatientEntity.builder().build());
-  }
-
-  @SneakyThrows
-  PatientEntity transform(Patient patient, PatientEntity entity) {
-    return transform(patient, entity, MAPPER.writeValueAsString(patient));
-  }
-
-  PatientEntity transform(@NonNull Patient patient, @NonNull PatientEntity entity, String payload) {
-    entity.id(patient.id());
-    entity.payload(payload);
-    return entity;
+  PatientEntity toEntity(Patient patient) {
+    checkState(patient.id() != null, "ID is required");
+    return populate(patient, PatientEntity.builder().id(patient.id()).build());
   }
 
   @SneakyThrows
@@ -150,7 +152,7 @@ public class PatientController {
     checkState(id.equals(patient.id()), "%s != %s", id, patient.id());
     Optional<PatientEntity> maybeEntity = repository.findById(id);
     PatientEntity entity = maybeEntity.orElseThrow(() -> new Exceptions.NotFound(id));
-    entity = transform(patient, entity);
+    entity = populate(patient, entity);
     repository.save(entity);
     return ResponseEntity.ok(patient);
   }
