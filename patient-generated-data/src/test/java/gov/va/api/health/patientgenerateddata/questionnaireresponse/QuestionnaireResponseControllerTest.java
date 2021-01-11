@@ -9,6 +9,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.api.health.autoconfig.configuration.JacksonConfig;
 import gov.va.api.health.patientgenerateddata.Exceptions;
 import gov.va.api.health.patientgenerateddata.LinkProperties;
@@ -33,6 +34,8 @@ import org.springframework.validation.DataBinder;
 import org.springframework.web.util.UriComponentsBuilder;
 
 public class QuestionnaireResponseControllerTest {
+  private static final ObjectMapper MAPPER = JacksonConfig.createMapper();
+
   LinkProperties pageLinks =
       LinkProperties.builder()
           .defaultPageSize(500)
@@ -73,7 +76,7 @@ public class QuestionnaireResponseControllerTest {
         new QuestionnaireResponseController(pageLinks, repo);
     var questionnaireResponse = questionnaireResponse();
     var questionnaireResponseWithId = questionnaireResponse().id("123");
-    var persisted = JacksonConfig.createMapper().writeValueAsString(questionnaireResponseWithId);
+    var persisted = MAPPER.writeValueAsString(questionnaireResponseWithId);
     assertThat(controller.create("123", questionnaireResponse))
         .isEqualTo(
             ResponseEntity.created(URI.create("http://foo.com/r4/QuestionnaireResponse/123"))
@@ -115,9 +118,7 @@ public class QuestionnaireResponseControllerTest {
   @SneakyThrows
   void read() {
     QuestionnaireResponseRepository repo = mock(QuestionnaireResponseRepository.class);
-    String payload =
-        JacksonConfig.createMapper()
-            .writeValueAsString(QuestionnaireResponse.builder().id("x").build());
+    String payload = MAPPER.writeValueAsString(QuestionnaireResponse.builder().id("x").build());
     when(repo.findById("x"))
         .thenReturn(
             Optional.of(QuestionnaireResponseEntity.builder().id("x").payload(payload).build()));
@@ -140,7 +141,7 @@ public class QuestionnaireResponseControllerTest {
     Reference authorRef = Reference.builder().reference("1011537977V693883").build();
     QuestionnaireResponse questionnaireResponse =
         QuestionnaireResponse.builder().id("x").author(authorRef).build();
-    String payload = JacksonConfig.createMapper().writeValueAsString(questionnaireResponse);
+    String payload = MAPPER.writeValueAsString(questionnaireResponse);
     when(repo.findById("x"))
         .thenReturn(
             Optional.of(QuestionnaireResponseEntity.builder().id("x").payload(payload).build()));
@@ -153,19 +154,16 @@ public class QuestionnaireResponseControllerTest {
 
   @Test
   @SneakyThrows
-  void update_new() {
+  void update_not_existing() {
     QuestionnaireResponseRepository repo = mock(QuestionnaireResponseRepository.class);
     Reference authorRef = Reference.builder().reference("1011537977V693883").build();
     QuestionnaireResponse questionnaireResponse =
         QuestionnaireResponse.builder().id("x").author(authorRef).build();
-    String payload = JacksonConfig.createMapper().writeValueAsString(questionnaireResponse);
-    assertThat(
-            new QuestionnaireResponseController(pageLinks, repo).update("x", questionnaireResponse))
-        .isEqualTo(
-            ResponseEntity.created(URI.create("http://foo.com/r4/QuestionnaireResponse/x"))
-                .body(questionnaireResponse));
-    verify(repo, times(1))
-        .save(QuestionnaireResponseEntity.builder().id("x").payload(payload).build());
+    assertThrows(
+        Exceptions.NotFound.class,
+        () ->
+            new QuestionnaireResponseController(pageLinks, repo)
+                .update("x", questionnaireResponse));
   }
 
   @ParameterizedTest

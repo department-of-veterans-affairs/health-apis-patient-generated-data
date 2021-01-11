@@ -1,7 +1,6 @@
 package gov.va.api.health.patientgenerateddata.tests;
 
 import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.doPut;
-import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.serializePayload;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.api.health.autoconfig.configuration.JacksonConfig;
@@ -33,7 +32,7 @@ public class SyntheticRefresh {
         new File(baseDir() + "/../patient-generated-data-synthetic/src/test/resources/" + folder)
             .listFiles()) {
       T obj = MAPPER.readValue(f, clazz);
-      doPut(clazz.getSimpleName() + "/" + obj.id(), serializePayload(obj), "refresh", null);
+      doPut(clazz.getSimpleName() + "/" + obj.id(), obj, "refresh", null);
     }
   }
 }

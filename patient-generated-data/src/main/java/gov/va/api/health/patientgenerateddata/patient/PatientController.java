@@ -2,7 +2,9 @@ package gov.va.api.health.patientgenerateddata.patient;
 
 import static com.google.common.base.Preconditions.checkState;
 import static gov.va.api.health.patientgenerateddata.Controllers.checkRequestState;
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.api.health.autoconfig.configuration.JacksonConfig;
 import gov.va.api.health.autoconfig.logging.Loggable;
 import gov.va.api.health.patientgenerateddata.Exceptions;
@@ -17,8 +19,8 @@ import java.util.Collections;
 import java.util.Optional;
 import java.util.regex.Pattern;
 import javax.validation.Valid;
-import liquibase.util.StringUtils;
 import lombok.AllArgsConstructor;
+import lombok.NonNull;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -40,6 +42,8 @@ import org.springframework.web.bind.annotation.RestController;
     produces = {"application/json", "application/fhir+json"})
 @AllArgsConstructor(onConstructor_ = @Autowired)
 public class PatientController {
+  private static final ObjectMapper MAPPER = JacksonConfig.createMapper();
+
   private static final Pattern MPI_PATTERN = Pattern.compile("^[0-9]{10}V[0-9]{6}$");
 
   private static final String MPI_URI = "http://va.gov/mpi";
@@ -50,7 +54,7 @@ public class PatientController {
 
   @PostMapping
   ResponseEntity<Patient> create(@Valid @RequestBody Patient patient) {
-    checkRequestState(!StringUtils.isEmpty(patient.id()), "Patient ICN is required in id field");
+    checkRequestState(isNotEmpty(patient.id()), "Patient ICN is required in id field");
     String id = patient.id();
     checkRequestState(isValidIcn(id), "Patient ICN must be in valid MPI format.");
     String icnIdentifier = findIcn(patient);
@@ -75,7 +79,14 @@ public class PatientController {
               .build();
       patient.identifier().add(mpiIdentifier);
     }
-    return update(id, patient);
+    Optional<PatientEntity> maybeEntity = repository.findById(id);
+    if (maybeEntity.isPresent()) {
+      throw new Exceptions.BadRequest(String.format("Patient already exists with id %s", id));
+    }
+    PatientEntity entity = toEntity(patient);
+    repository.save(entity);
+    return ResponseEntity.created(URI.create(linkProperties.r4Url() + "/Patient/" + id))
+        .body(patient);
   }
 
   private String findIcn(Patient patient) {
@@ -105,8 +116,20 @@ public class PatientController {
 
   @SneakyThrows
   private boolean isValidIcn(String icn) {
-    checkState(!StringUtils.isEmpty(icn));
+    checkState(isNotEmpty(icn));
     return MPI_PATTERN.matcher(icn.trim()).matches();
+  }
+
+  @SneakyThrows
+  PatientEntity populate(Patient patient, PatientEntity entity) {
+    return populate(patient, entity, MAPPER.writeValueAsString(patient));
+  }
+
+  PatientEntity populate(@NonNull Patient patient, @NonNull PatientEntity entity, String payload) {
+    checkState(
+        entity.id().equals(patient.id()), "IDs don't match, %s != %s", entity.id(), patient.id());
+    entity.payload(payload);
+    return entity;
   }
 
   @GetMapping(value = "/{id}")
@@ -116,22 +139,21 @@ public class PatientController {
     return entity.deserializePayload();
   }
 
+  PatientEntity toEntity(Patient patient) {
+    checkState(patient.id() != null, "ID is required");
+    return populate(patient, PatientEntity.builder().id(patient.id()).build());
+  }
+
   @SneakyThrows
   @PutMapping(value = "/{id}")
   @Loggable(arguments = false)
   ResponseEntity<Patient> update(
       @PathVariable("id") String id, @Valid @RequestBody Patient patient) {
-    String payload = JacksonConfig.createMapper().writeValueAsString(patient);
     checkState(id.equals(patient.id()), "%s != %s", id, patient.id());
     Optional<PatientEntity> maybeEntity = repository.findById(id);
-    if (maybeEntity.isPresent()) {
-      PatientEntity entity = maybeEntity.get();
-      entity.payload(payload);
-      repository.save(entity);
-      return ResponseEntity.ok(patient);
-    }
-    repository.save(PatientEntity.builder().id(id).payload(payload).build());
-    return ResponseEntity.created(URI.create(linkProperties.r4Url() + "/Patient/" + id))
-        .body(patient);
+    PatientEntity entity = maybeEntity.orElseThrow(() -> new Exceptions.NotFound(id));
+    entity = populate(patient, entity);
+    repository.save(entity);
+    return ResponseEntity.ok(patient);
   }
 }

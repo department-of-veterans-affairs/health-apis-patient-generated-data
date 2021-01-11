@@ -2,11 +2,13 @@ package gov.va.api.health.patientgenerateddata.patient;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.api.health.autoconfig.configuration.JacksonConfig;
 import gov.va.api.health.patientgenerateddata.Exceptions;
 import gov.va.api.health.patientgenerateddata.LinkProperties;
@@ -26,6 +28,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.DataBinder;
 
 public class PatientControllerTest {
+  private static final ObjectMapper MAPPER = JacksonConfig.createMapper();
+
   @Test
   @SneakyThrows
   void create() {
@@ -46,9 +50,29 @@ public class PatientControllerTest {
             .id(id)
             .identifier(new ArrayList<>(List.of(Identifier.builder().build(), mpi(id))))
             .build();
-    String persistedSerialized = JacksonConfig.createMapper().writeValueAsString(persisted);
+    String persistedSerialized = MAPPER.writeValueAsString(persisted);
     verify(repo, times(1))
         .save(PatientEntity.builder().id(id).payload(persistedSerialized).build());
+  }
+
+  @Test
+  void create_duplicate() {
+    LinkProperties pageLinks =
+        LinkProperties.builder().baseUrl("http://foo.com").r4BasePath("r4").build();
+    String id = "9999999999V999999";
+    PatientRepository repo = mock(PatientRepository.class);
+    when(repo.findById(id))
+        .thenReturn(Optional.of(PatientEntity.builder().id(id).payload("payload").build()));
+
+    Patient patient =
+        Patient.builder()
+            .id(id)
+            .identifier(new ArrayList<>(List.of(Identifier.builder().build())))
+            .build();
+
+    assertThrows(
+        Exceptions.BadRequest.class, () -> new PatientController(pageLinks, repo).create(patient));
+    verify(repo, times(0)).save(any());
   }
 
   @Test
@@ -90,8 +114,7 @@ public class PatientControllerTest {
   @SneakyThrows
   void read() {
     PatientRepository repo = mock(PatientRepository.class);
-    String payload =
-        JacksonConfig.createMapper().writeValueAsString(Patient.builder().id("x").build());
+    String payload = MAPPER.writeValueAsString(Patient.builder().id("x").build());
     when(repo.findById("x"))
         .thenReturn(Optional.of(PatientEntity.builder().id("x").payload(payload).build()));
     assertThat(new PatientController(mock(LinkProperties.class), repo).read("x"))
@@ -111,7 +134,7 @@ public class PatientControllerTest {
   void update_existing() {
     PatientRepository repo = mock(PatientRepository.class);
     Patient patient = Patient.builder().id("x").build();
-    String payload = JacksonConfig.createMapper().writeValueAsString(patient);
+    String payload = MAPPER.writeValueAsString(patient);
     when(repo.findById("x"))
         .thenReturn(Optional.of(PatientEntity.builder().id("x").payload(payload).build()));
     assertThat(new PatientController(mock(LinkProperties.class), repo).update("x", patient))
@@ -121,14 +144,13 @@ public class PatientControllerTest {
 
   @Test
   @SneakyThrows
-  void update_new() {
+  void update_not_existing() {
     LinkProperties pageLinks =
         LinkProperties.builder().baseUrl("http://foo.com").r4BasePath("r4").build();
     PatientRepository repo = mock(PatientRepository.class);
     Patient patient = Patient.builder().id("x").build();
-    String payload = JacksonConfig.createMapper().writeValueAsString(patient);
-    assertThat(new PatientController(pageLinks, repo).update("x", patient))
-        .isEqualTo(ResponseEntity.created(URI.create("http://foo.com/r4/Patient/x")).body(patient));
-    verify(repo, times(1)).save(PatientEntity.builder().id("x").payload(payload).build());
+    assertThrows(
+        Exceptions.NotFound.class,
+        () -> new PatientController(pageLinks, repo).update("x", patient));
   }
 }

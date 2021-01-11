@@ -10,6 +10,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.io.JsonEOFException;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import gov.va.api.health.autoconfig.configuration.JacksonConfig;
 import gov.va.api.health.autoconfig.encryption.BasicEncryption;
@@ -40,6 +41,8 @@ import org.springframework.web.client.HttpClientErrorException;
 @RestControllerAdvice
 @RequestMapping(produces = "application/json")
 public final class WebExceptionHandler {
+  private static final ObjectMapper MAPPER = JacksonConfig.createMapper();
+
   private final String encryptionKey;
 
   public WebExceptionHandler(@Value("${web-exception-key}") String encryptionKey) {
@@ -230,9 +233,9 @@ public final class WebExceptionHandler {
       boolean printStackTrace) {
     OperationOutcome response = asOperationOutcome(code, tr, request, diagnostics);
     if (printStackTrace) {
-      log.error("Response {}", JacksonConfig.createMapper().writeValueAsString(response), tr);
+      log.error("Response {}", MAPPER.writeValueAsString(response), tr);
     } else {
-      log.error("Response {}", JacksonConfig.createMapper().writeValueAsString(response));
+      log.error("Response {}", MAPPER.writeValueAsString(response));
     }
     return response;
   }

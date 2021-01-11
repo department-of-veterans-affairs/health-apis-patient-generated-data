@@ -6,7 +6,9 @@ import static gov.va.api.health.patientgenerateddata.Controllers.generateRandomI
 import static gov.va.api.lighthouse.vulcan.Rules.atLeastOneParameterOf;
 import static gov.va.api.lighthouse.vulcan.Rules.ifParameter;
 import static gov.va.api.lighthouse.vulcan.Vulcan.returnNothing;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.api.health.autoconfig.configuration.JacksonConfig;
 import gov.va.api.health.autoconfig.logging.Loggable;
 import gov.va.api.health.patientgenerateddata.CompositeMapping;
@@ -22,8 +24,8 @@ import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import lombok.AllArgsConstructor;
+import lombok.NonNull;
 import lombok.SneakyThrows;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.DataBinder;
@@ -44,6 +46,8 @@ import org.springframework.web.bind.annotation.RestController;
     produces = {"application/json", "application/fhir+json"})
 @AllArgsConstructor(onConstructor = @__({@Autowired}))
 public class QuestionnaireController {
+  private static final ObjectMapper MAPPER = JacksonConfig.createMapper();
+
   private final LinkProperties linkProperties;
 
   private final QuestionnaireRepository repository;
@@ -72,16 +76,37 @@ public class QuestionnaireController {
     return create(generateRandomId(), questionnaire);
   }
 
+  @SneakyThrows
   ResponseEntity<Questionnaire> create(String id, Questionnaire questionnaire) {
     checkRequestState(
-        StringUtils.isEmpty(questionnaire.id()), "ID must be empty, found %s", questionnaire.id());
+        isEmpty(questionnaire.id()), "ID must be empty, found %s", questionnaire.id());
     questionnaire.id(id);
-    return update(questionnaire.id(), questionnaire);
+    QuestionnaireEntity entity = toEntity(questionnaire);
+    repository.save(entity);
+    return ResponseEntity.created(URI.create(linkProperties.r4Url() + "/Questionnaire/" + id))
+        .body(questionnaire);
   }
 
   @InitBinder
   void initDirectFieldAccess(DataBinder dataBinder) {
     dataBinder.initDirectFieldAccess();
+  }
+
+  @SneakyThrows
+  QuestionnaireEntity populate(Questionnaire questionnaire, QuestionnaireEntity entity) {
+    return populate(questionnaire, entity, MAPPER.writeValueAsString(questionnaire));
+  }
+
+  QuestionnaireEntity populate(
+      @NonNull Questionnaire questionnaire, @NonNull QuestionnaireEntity entity, String payload) {
+    checkState(
+        entity.id().equals(questionnaire.id()),
+        "IDs don't match, %s != %s",
+        entity.id(),
+        questionnaire.id());
+    entity.payload(payload);
+    entity.contextTypeValue(CompositeMapping.useContextValueJoin(questionnaire));
+    return entity;
   }
 
   @GetMapping(value = "/{id}")
@@ -112,28 +137,23 @@ public class QuestionnaireController {
         .build();
   }
 
+  QuestionnaireEntity toEntity(Questionnaire questionnaire) {
+    checkState(questionnaire.id() != null, "ID is required");
+    return populate(questionnaire, QuestionnaireEntity.builder().id(questionnaire.id()).build());
+  }
+
   @SneakyThrows
   @PutMapping(value = "/{id}")
   @Loggable(arguments = false)
   ResponseEntity<Questionnaire> update(
       @PathVariable("id") String id, @Valid @RequestBody Questionnaire questionnaire) {
-    String payload = JacksonConfig.createMapper().writeValueAsString(questionnaire);
+    String payload = MAPPER.writeValueAsString(questionnaire);
     checkState(id.equals(questionnaire.id()), "%s != %s", id, questionnaire.id());
     Optional<QuestionnaireEntity> maybeEntity = repository.findById(id);
-    if (maybeEntity.isPresent()) {
-      QuestionnaireEntity entity = maybeEntity.get();
-      entity.payload(payload);
-      entity.contextTypeValue(CompositeMapping.useContextValueJoin(questionnaire));
-      repository.save(entity);
-      return ResponseEntity.ok(questionnaire);
-    }
-    repository.save(
-        QuestionnaireEntity.builder()
-            .id(id)
-            .payload(payload)
-            .contextTypeValue(CompositeMapping.useContextValueJoin(questionnaire))
-            .build());
-    return ResponseEntity.created(URI.create(linkProperties.r4Url() + "/Questionnaire/" + id))
-        .body(questionnaire);
+
+    QuestionnaireEntity entity = maybeEntity.orElseThrow(() -> new Exceptions.NotFound(id));
+    entity = populate(questionnaire, entity, payload);
+    repository.save(entity);
+    return ResponseEntity.ok(questionnaire);
   }
 }

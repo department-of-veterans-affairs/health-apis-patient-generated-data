@@ -8,7 +8,6 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class JacksonMapperConfig {
-
   private final MagicReferenceConfig magicReferences;
 
   @Autowired
@@ -18,7 +17,6 @@ public class JacksonMapperConfig {
 
   @Bean
   public ObjectMapper objectMapper() {
-    ObjectMapper mapper = JacksonConfig.createMapper();
-    return magicReferences.configure(mapper);
+    return magicReferences.configure(JacksonConfig.createMapper());
   }
 }
