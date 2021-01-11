@@ -3,7 +3,9 @@ package gov.va.api.health.patientgenerateddata.observation;
 import static com.google.common.base.Preconditions.checkState;
 import static gov.va.api.health.patientgenerateddata.Controllers.checkRequestState;
 import static gov.va.api.health.patientgenerateddata.Controllers.generateRandomId;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.api.health.autoconfig.configuration.JacksonConfig;
 import gov.va.api.health.autoconfig.logging.Loggable;
 import gov.va.api.health.patientgenerateddata.Exceptions;
@@ -13,8 +15,8 @@ import java.net.URI;
 import java.util.Optional;
 import javax.validation.Valid;
 import lombok.AllArgsConstructor;
+import lombok.NonNull;
 import lombok.SneakyThrows;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.DataBinder;
@@ -35,6 +37,8 @@ import org.springframework.web.bind.annotation.RestController;
     produces = {"application/json", "application/fhir+json"})
 @AllArgsConstructor(onConstructor_ = @Autowired)
 public class ObservationController {
+  private static final ObjectMapper MAPPER = JacksonConfig.createMapper();
+
   private final LinkProperties linkProperties;
 
   private final ObservationRepository repository;
@@ -45,15 +49,33 @@ public class ObservationController {
   }
 
   ResponseEntity<Observation> create(String id, Observation observation) {
-    checkRequestState(
-        StringUtils.isEmpty(observation.id()), "ID must be empty, found %s", observation.id());
+    checkRequestState(isEmpty(observation.id()), "ID must be empty, found %s", observation.id());
     observation.id(id);
-    return update(observation.id(), observation);
+    ObservationEntity entity = toEntity(observation);
+    repository.save(entity);
+    return ResponseEntity.created(URI.create(linkProperties.r4Url() + "/Observation/" + id))
+        .body(observation);
   }
 
   @InitBinder
   void initDirectFieldAccess(DataBinder dataBinder) {
     dataBinder.initDirectFieldAccess();
+  }
+
+  @SneakyThrows
+  ObservationEntity populate(Observation observation, ObservationEntity entity) {
+    return populate(observation, entity, MAPPER.writeValueAsString(observation));
+  }
+
+  ObservationEntity populate(
+      @NonNull Observation observation, @NonNull ObservationEntity entity, String payload) {
+    checkState(
+        entity.id().equals(observation.id()),
+        "IDs don't match, %s != %s",
+        entity.id(),
+        observation.id());
+    entity.payload(payload);
+    return entity;
   }
 
   @GetMapping(value = "/{id}")
@@ -63,22 +85,21 @@ public class ObservationController {
     return entity.deserializePayload();
   }
 
+  ObservationEntity toEntity(Observation observation) {
+    checkState(observation.id() != null, "ID is required");
+    return populate(observation, ObservationEntity.builder().id(observation.id()).build());
+  }
+
   @SneakyThrows
   @PutMapping(value = "/{id}")
   @Loggable(arguments = false)
   ResponseEntity<Observation> update(
       @PathVariable("id") String id, @Valid @RequestBody Observation observation) {
-    String payload = JacksonConfig.createMapper().writeValueAsString(observation);
     checkState(id.equals(observation.id()), "%s != %s", id, observation.id());
     Optional<ObservationEntity> maybeEntity = repository.findById(id);
-    if (maybeEntity.isPresent()) {
-      ObservationEntity entity = maybeEntity.get();
-      entity.payload(payload);
-      repository.save(entity);
-      return ResponseEntity.ok(observation);
-    }
-    repository.save(ObservationEntity.builder().id(id).payload(payload).build());
-    return ResponseEntity.created(URI.create(linkProperties.r4Url() + "/Observation/" + id))
-        .body(observation);
+    ObservationEntity entity = maybeEntity.orElseThrow(() -> new Exceptions.NotFound(id));
+    entity = populate(observation, entity);
+    repository.save(entity);
+    return ResponseEntity.ok(observation);
   }
 }

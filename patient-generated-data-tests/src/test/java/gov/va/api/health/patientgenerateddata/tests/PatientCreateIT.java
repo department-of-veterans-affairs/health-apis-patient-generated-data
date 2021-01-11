@@ -1,7 +1,6 @@
 package gov.va.api.health.patientgenerateddata.tests;
 
 import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.doPost;
-import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.serializePayload;
 import static gov.va.api.health.patientgenerateddata.tests.SystemDefinitions.systemDefinition;
 import static gov.va.api.health.sentinel.EnvironmentAssumptions.assumeEnvironmentIn;
 
@@ -28,23 +27,24 @@ public class PatientCreateIT {
     // not an mpi id
     String id = "123";
     Patient patient = patient(id);
-    doPost("Patient", serializePayload(patient), "create invalid resource, bad mpi format", 400);
+    doPost("Patient", patient, "create invalid resource, bad mpi format", 400);
     // no id
     patient = patient(null);
-    doPost("Patient", serializePayload(patient), "create invalid resource, missing id", 400);
+    doPost("Patient", patient, "create invalid resource, missing id", 400);
     // mismatch mpi id and identifier
     id = "1111111111V111111";
     patient = patient(id);
     patient.identifier().add(identifier().system("http://va.gov/mpi"));
-    doPost(
-        "Patient", serializePayload(patient), "create invalid resource, mismatching MPI ids", 400);
+    doPost("Patient", patient, "create invalid resource, mismatching MPI ids", 400);
   }
 
   @Test
   public void create_valid() {
     var id = systemDefinition().ids().patientGenerated();
     Patient patient = patient(id);
-    doPost("Patient", serializePayload(patient), "create resource", 201);
+    doPost("Patient", patient, "create resource", 201);
+    // duplicate is rejected
+    doPost("Patient", patient, "create resource (duplicate)", 400);
   }
 
   Identifier identifier() {

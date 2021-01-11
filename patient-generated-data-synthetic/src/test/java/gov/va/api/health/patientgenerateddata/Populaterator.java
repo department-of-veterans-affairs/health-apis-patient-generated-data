@@ -2,6 +2,7 @@ package gov.va.api.health.patientgenerateddata;
 
 import static com.google.common.base.Preconditions.checkState;
 import static java.util.stream.Collectors.joining;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.api.health.autoconfig.configuration.JacksonConfig;
@@ -38,7 +39,6 @@ import lombok.Builder;
 import lombok.NonNull;
 import lombok.SneakyThrows;
 import lombok.Value;
-import org.apache.commons.lang3.StringUtils;
 
 public final class Populaterator {
   private static final ObjectMapper MAPPER = JacksonConfig.createMapper();
@@ -118,7 +118,7 @@ public final class Populaterator {
   }
 
   private static Instant parseDateTime(String datetime) {
-    if (StringUtils.isBlank(datetime)) {
+    if (isBlank(datetime)) {
       return null;
     }
     String str = datetime.trim();

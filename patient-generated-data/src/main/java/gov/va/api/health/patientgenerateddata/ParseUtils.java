@@ -1,9 +1,10 @@
 package gov.va.api.health.patientgenerateddata;
 
+import static org.apache.commons.lang3.StringUtils.isBlank;
+
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import lombok.experimental.UtilityClass;
-import org.apache.commons.lang3.StringUtils;
 
 @UtilityClass
 public class ParseUtils {
@@ -20,7 +21,7 @@ public class ParseUtils {
    * https://www.hl7.org/fhir/datatypes.html#dateTime
    */
   public static Instant parseDateTime(String datetime) {
-    if (StringUtils.isBlank(datetime)) {
+    if (isBlank(datetime)) {
       return null;
     }
     String str = datetime.trim().toUpperCase();
@@ -49,7 +50,7 @@ public class ParseUtils {
    * </pre>
    */
   private static Instant parseDateTimeOffset(String datetime) {
-    if (StringUtils.isBlank(datetime)) {
+    if (isBlank(datetime)) {
       return null;
     }
     OffsetDateTime odt = OffsetDateTime.parse(datetime);
@@ -64,7 +65,7 @@ public class ParseUtils {
    * </pre>
    */
   private static Instant parseDateTimeUtc(String datetime) {
-    if (StringUtils.isBlank(datetime)) {
+    if (isBlank(datetime)) {
       return null;
     }
     return Instant.parse(datetime);
