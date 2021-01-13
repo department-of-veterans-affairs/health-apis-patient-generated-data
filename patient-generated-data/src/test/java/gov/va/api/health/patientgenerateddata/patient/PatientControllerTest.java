@@ -30,6 +30,20 @@ import org.springframework.validation.DataBinder;
 public class PatientControllerTest {
   private static final ObjectMapper MAPPER = JacksonConfig.createMapper();
 
+  public static Identifier mpi(String icn) {
+    return Identifier.builder()
+        .use(IdentifierUse.usual)
+        .type(
+            CodeableConcept.builder()
+                .coding(
+                    Collections.singletonList(
+                        Coding.builder().system("http://hl7.org/fhir/v2/0203").code("MR").build()))
+                .build())
+        .system("http://va.gov/mpi")
+        .value(icn)
+        .build();
+  }
+
   @Test
   @SneakyThrows
   void create() {
@@ -63,13 +77,11 @@ public class PatientControllerTest {
     PatientRepository repo = mock(PatientRepository.class);
     when(repo.findById(id))
         .thenReturn(Optional.of(PatientEntity.builder().id(id).payload("payload").build()));
-
     Patient patient =
         Patient.builder()
             .id(id)
             .identifier(new ArrayList<>(List.of(Identifier.builder().build())))
             .build();
-
     assertThrows(
         Exceptions.BadRequest.class, () -> new PatientController(pageLinks, repo).create(patient));
     verify(repo, times(0)).save(any());
@@ -94,20 +106,6 @@ public class PatientControllerTest {
   void initDirectFieldAccess() {
     new PatientController(mock(LinkProperties.class), mock(PatientRepository.class))
         .initDirectFieldAccess(mock(DataBinder.class));
-  }
-
-  private Identifier mpi(String icn) {
-    return Identifier.builder()
-        .use(IdentifierUse.usual)
-        .type(
-            CodeableConcept.builder()
-                .coding(
-                    Collections.singletonList(
-                        Coding.builder().system("http://hl7.org/fhir/v2/0203").code("MR").build()))
-                .build())
-        .system("http://va.gov/mpi")
-        .value(icn)
-        .build();
   }
 
   @Test

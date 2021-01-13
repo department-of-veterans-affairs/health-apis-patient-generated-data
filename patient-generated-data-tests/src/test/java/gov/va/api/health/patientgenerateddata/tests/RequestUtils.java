@@ -43,6 +43,37 @@ public class RequestUtils {
   }
 
   @SneakyThrows
+  public static ExpectedResponse doInternalPost(
+      String request,
+      Object payload,
+      String description,
+      String clientKey,
+      Integer expectedStatus) {
+    SystemDefinitions.Service svc = systemDefinition().r4Management();
+    RequestSpecification spec =
+        RestAssured.given()
+            .baseUri(svc.url())
+            .port(svc.port())
+            .relaxedHTTPSValidation()
+            .header("Authorization", "Bearer " + System.getProperty("access-token", "unset"))
+            .header("client-key", clientKey)
+            .header("Content-Type", "application/json")
+            .body(MAPPER.writeValueAsString(payload));
+    log.info(
+        "Expect {} POST '{}' is status code ({})",
+        svc.apiPath() + request,
+        description,
+        expectedStatus);
+    ExpectedResponse response =
+        ExpectedResponse.of(spec.request(Method.POST, svc.urlWithApiPath() + request))
+            .logAction(logAllWithTruncatedBody(2000));
+    if (expectedStatus != null) {
+      response.expect(expectedStatus);
+    }
+    return response;
+  }
+
+  @SneakyThrows
   public static ExpectedResponse doPost(
       String request, Object payload, String description, Integer expectedStatus) {
     SystemDefinitions.Service svc = systemDefinition().r4();

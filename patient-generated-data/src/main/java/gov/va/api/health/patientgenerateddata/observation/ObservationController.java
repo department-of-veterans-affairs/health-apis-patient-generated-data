@@ -15,6 +15,7 @@ import java.net.URI;
 import java.util.Optional;
 import javax.validation.Valid;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NonNull;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,14 +42,15 @@ public class ObservationController {
 
   private final LinkProperties linkProperties;
 
-  private final ObservationRepository repository;
+  @Getter private final ObservationRepository repository;
 
   @PostMapping
   ResponseEntity<Observation> create(@Valid @RequestBody Observation observation) {
     return create(generateRandomId(), observation);
   }
 
-  ResponseEntity<Observation> create(String id, Observation observation) {
+  /** Create resource. */
+  public ResponseEntity<Observation> create(String id, Observation observation) {
     checkRequestState(isEmpty(observation.id()), "ID must be empty, found %s", observation.id());
     observation.id(id);
     ObservationEntity entity = toEntity(observation);

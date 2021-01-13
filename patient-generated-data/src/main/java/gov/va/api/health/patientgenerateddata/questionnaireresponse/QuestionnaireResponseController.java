@@ -26,6 +26,7 @@ import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NonNull;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,7 +53,7 @@ public class QuestionnaireResponseController {
 
   private final LinkProperties linkProperties;
 
-  private final QuestionnaireResponseRepository repository;
+  @Getter private final QuestionnaireResponseRepository repository;
 
   private VulcanConfiguration<QuestionnaireResponseEntity> configuration() {
     return VulcanConfiguration.forEntity(QuestionnaireResponseEntity.class)
@@ -78,7 +79,8 @@ public class QuestionnaireResponseController {
     return create(generateRandomId(), questionnaireResponse);
   }
 
-  ResponseEntity<QuestionnaireResponse> create(
+  /** Create resource. */
+  public ResponseEntity<QuestionnaireResponse> create(
       String id, QuestionnaireResponse questionnaireResponse) {
     checkRequestState(
         isEmpty(questionnaireResponse.id()),

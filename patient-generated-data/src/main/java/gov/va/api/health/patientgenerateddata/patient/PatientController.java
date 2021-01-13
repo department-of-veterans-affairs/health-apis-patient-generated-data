@@ -20,6 +20,7 @@ import java.util.Optional;
 import java.util.regex.Pattern;
 import javax.validation.Valid;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NonNull;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,10 +51,11 @@ public class PatientController {
 
   private final LinkProperties linkProperties;
 
-  private final PatientRepository repository;
+  @Getter private final PatientRepository repository;
 
+  /** Create resource. */
   @PostMapping
-  ResponseEntity<Patient> create(@Valid @RequestBody Patient patient) {
+  public ResponseEntity<Patient> create(@Valid @RequestBody Patient patient) {
     checkRequestState(isNotEmpty(patient.id()), "Patient ICN is required in id field");
     String id = patient.id();
     checkRequestState(isValidIcn(id), "Patient ICN must be in valid MPI format.");
