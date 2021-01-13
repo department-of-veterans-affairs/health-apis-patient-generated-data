@@ -2,11 +2,9 @@ package gov.va.api.health.patientgenerateddata;
 
 import static com.google.common.base.Preconditions.checkState;
 import static java.util.stream.Collectors.joining;
-import static org.apache.commons.lang3.StringUtils.isBlank;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.api.health.autoconfig.configuration.JacksonConfig;
-import gov.va.api.health.r4.api.elements.Reference;
 import gov.va.api.health.r4.api.resources.Observation;
 import gov.va.api.health.r4.api.resources.Patient;
 import gov.va.api.health.r4.api.resources.Questionnaire;
@@ -18,7 +16,6 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.Timestamp;
 import java.time.Instant;
-import java.time.OffsetDateTime;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -117,18 +114,6 @@ public final class Populaterator {
     }
   }
 
-  private static Instant parseDateTime(String datetime) {
-    if (isBlank(datetime)) {
-      return null;
-    }
-    String str = datetime.trim();
-    if (str.endsWith("Z")) {
-      return Instant.parse(datetime);
-    }
-    // Assume time zone offset is provided
-    return OffsetDateTime.parse(datetime).toInstant();
-  }
-
   @SneakyThrows
   private static void patient(@NonNull Connection connection) {
     for (File f : new File(baseDir() + "/src/test/resources/patient").listFiles()) {
@@ -187,9 +172,9 @@ public final class Populaterator {
         statement.setObject(1, response.id());
         statement.setObject(2, MAPPER.writeValueAsString(response));
         statement.setObject(3, 0);
-        statement.setTimestamp(4, timestamp(parseDateTime(response.authored())));
-        statement.setObject(5, resourceId(response.author()));
-        statement.setObject(6, resourceId(response.subject()));
+        statement.setTimestamp(4, timestamp(ParseUtils.parseDateTime(response.authored())));
+        statement.setObject(5, ReferenceUtils.resourceId(response.author()));
+        statement.setObject(6, ReferenceUtils.resourceId(response.subject()));
         statement.execute();
       }
     }
@@ -204,15 +189,6 @@ public final class Populaterator {
     String id = obj.id();
     checkState(f.getName().equals(id + ".json"), "ID %s does not match %s", id, f.getName());
     return obj;
-  }
-
-  private static String resourceId(Reference ref) {
-    if (ref == null) {
-      return null;
-    }
-    checkState(ref.reference().contains("/"));
-    int lastSlashLocation = ref.reference().lastIndexOf("/") + 1;
-    return ref.reference().substring(lastSlashLocation);
   }
 
   private static String sqlInsert(@NonNull String table, @NonNull Collection<String> columns) {
