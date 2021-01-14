@@ -21,19 +21,7 @@ public class ObservationCreateIT {
     assumeEnvironmentIn(Environment.LOCAL);
   }
 
-  @Test
-  public void create_invalid() {
-    Observation observation = observation().id("123");
-    doPost("Observation", observation, "create invalid resource, existing id", 400);
-  }
-
-  @Test
-  public void create_valid() {
-    Observation observation = observation();
-    doPost("Observation", observation, "create resource", 201);
-  }
-
-  private Observation observation() {
+  public static Observation observation() {
     return Observation.builder()
         .status(ObservationStatus.unknown)
         .effectiveDateTime("2020-01-01T01:00:00Z")
@@ -52,5 +40,17 @@ public class ObservationCreateIT {
         .code(CodeableConcept.builder().text("code").build())
         .subject(Reference.builder().reference("Patient/1").build())
         .build();
+  }
+
+  @Test
+  public void create_invalid() {
+    Observation observation = observation().id("123");
+    doPost("Observation", observation, "create invalid resource, existing id", 400);
+  }
+
+  @Test
+  public void create_valid() {
+    Observation observation = observation();
+    doPost("Observation", observation, "create resource", 201);
   }
 }
