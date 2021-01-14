@@ -38,12 +38,6 @@ class SystemDefinitions {
             serviceDefinition(
                 "internal", "https://blue.lab.lighthouse.va.gov", 443, "/patient-generated-data/"))
         .r4(serviceDefinition("r4", "https://blue.lab.lighthouse.va.gov", 443, "/pgd/v0/r4/"))
-        .r4Management(
-            serviceDefinition(
-                "r4Management",
-                "https://blue.lab.lighthouse.va.gov",
-                443,
-                "/pgd/v0/management/r4/"))
         .ids(ids())
         .build();
   }
@@ -52,8 +46,6 @@ class SystemDefinitions {
     return SystemDefinition.builder()
         .internal(serviceDefinition("internal", "http://localhost", 8095, "/"))
         .r4(serviceDefinition("r4", "http://localhost", 8095, "/r4/"))
-        .r4Management(
-            serviceDefinition("r4Management", "http://localhost", 8095, "/management/r4/"))
         .ids(ids())
         .build();
   }
@@ -69,12 +61,6 @@ class SystemDefinitions {
         .r4(
             serviceDefinition(
                 "r4", "https://blue.production.lighthouse.va.gov", 443, "/pgd/v0/r4/"))
-        .r4Management(
-            serviceDefinition(
-                "r4Management",
-                "https://blue.production.lighthouse.va.gov",
-                443,
-                "/pgd/v0/management/r4/"))
         .ids(ids())
         .build();
   }
@@ -85,9 +71,6 @@ class SystemDefinitions {
             serviceDefinition(
                 "internal", "https://blue.qa.lighthouse.va.gov", 443, "/patient-generated-data/"))
         .r4(serviceDefinition("r4", "https://blue.qa.lighthouse.va.gov", 443, "/pgd/v0/r4/"))
-        .r4Management(
-            serviceDefinition(
-                "r4Management", "https://blue.qa.lighthouse.va.gov", 443, "/pgd/v0/management/r4/"))
         .ids(ids())
         .build();
   }
@@ -109,12 +92,6 @@ class SystemDefinitions {
                 443,
                 "/patient-generated-data/"))
         .r4(serviceDefinition("r4", "https://blue.staging.lighthouse.va.gov", 443, "/pgd/v0/r4/"))
-        .r4Management(
-            serviceDefinition(
-                "r4Management",
-                "https://blue.staging.lighthouse.va.gov",
-                443,
-                "/pgd/v0/management/r4/"))
         .ids(ids())
         .build();
   }
@@ -130,12 +107,6 @@ class SystemDefinitions {
         .r4(
             serviceDefinition(
                 "r4", "https://blue.staging-lab.lighthouse.va.gov", 443, "/pgd/v0/r4/"))
-        .r4Management(
-            serviceDefinition(
-                "r4Management",
-                "https://blue.staging-lab.lighthouse.va.gov",
-                443,
-                "/pgd/v0/management/r4/"))
         .ids(ids())
         .build();
   }
@@ -224,8 +195,6 @@ class SystemDefinitions {
     @NonNull Service internal;
 
     @NonNull Service r4;
-
-    @NonNull Service r4Management;
 
     @NonNull Ids ids;
   }

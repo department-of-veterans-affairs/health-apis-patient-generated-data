@@ -1,5 +1,6 @@
 package gov.va.api.health.patientgenerateddata.tests;
 
+import static gov.va.api.health.patientgenerateddata.tests.SystemDefinitions.CLIENT_KEY_DEFAULT;
 import static gov.va.api.health.patientgenerateddata.tests.SystemDefinitions.systemDefinition;
 import static gov.va.api.health.sentinel.ExpectedResponse.logAllWithTruncatedBody;
 
@@ -15,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class RequestUtils {
   private static final ObjectMapper MAPPER = JacksonConfig.createMapper();
+  private static final String INTERNAL_R4_PATH = "management/r4/";
 
   public static ExpectedResponse doGet(
       String acceptHeader, String request, Integer expectedStatus) {
@@ -42,14 +44,24 @@ public class RequestUtils {
     return response;
   }
 
+  public static ExpectedResponse doInternalPost(
+      String request, Object payload, String description, Integer expectedStatus) {
+    return doInternalPost(
+        request,
+        payload,
+        description,
+        expectedStatus,
+        System.getProperty("client-key", CLIENT_KEY_DEFAULT));
+  }
+
   @SneakyThrows
   public static ExpectedResponse doInternalPost(
       String request,
       Object payload,
       String description,
-      String clientKey,
-      Integer expectedStatus) {
-    SystemDefinitions.Service svc = systemDefinition().r4Management();
+      Integer expectedStatus,
+      String clientKey) {
+    SystemDefinitions.Service svc = systemDefinition().internal();
     RequestSpecification spec =
         RestAssured.given()
             .baseUri(svc.url())
@@ -61,11 +73,12 @@ public class RequestUtils {
             .body(MAPPER.writeValueAsString(payload));
     log.info(
         "Expect {} POST '{}' is status code ({})",
-        svc.apiPath() + request,
+        svc.apiPath() + INTERNAL_R4_PATH + request,
         description,
         expectedStatus);
     ExpectedResponse response =
-        ExpectedResponse.of(spec.request(Method.POST, svc.urlWithApiPath() + request))
+        ExpectedResponse.of(
+                spec.request(Method.POST, svc.urlWithApiPath() + INTERNAL_R4_PATH + request))
             .logAction(logAllWithTruncatedBody(2000));
     if (expectedStatus != null) {
       response.expect(expectedStatus);
