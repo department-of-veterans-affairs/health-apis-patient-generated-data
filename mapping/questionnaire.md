@@ -2,11 +2,31 @@
 
 See [Questionnaire Response](questionnaire-response.md) for create, read, and update semantics
 
-[Composite](https://www.hl7.org/fhir/r4/search.html#composite) search for questionnaires
-([context-type-value](https://www.hl7.org/fhir/r4/questionnaire.html#search)) in clinic
+[Composite](https://www.hl7.org/fhir/r4/search.html#composite) search for questionnaires with
+[context-type-value](https://www.hl7.org/fhir/r4/questionnaire.html#search)) containing clinic
 `https://veteran.apps.va.gov/cdw/v3/facilities/534/clinics/12975`:
 
-`GET [base]/Questionnaire?context-type-value=venue$https://staff.apps.va.gov/VistaEmrService/clinics|534/12975`
+```
+GET [base]/Questionnaire?context-type-value=venue$https://staff.apps.va.gov/VistaEmrService/clinics|534/12975
+```
+
+Search for questionnaires with context-type-value containing at least one of these clinics:
+- `https://veteran.apps.va.gov/cdw/v3/facilities/534/clinics/12974`
+- `https://veteran.apps.va.gov/cdw/v3/facilities/534/clinics/12975`
+- `https://veteran.apps.va.gov/cdw/v3/facilities/534/clinics/12976`
+
+```
+GET [base]/Questionnaire?context-type-value=
+  venue$https://staff.apps.va.gov/VistaEmrService/clinics|534/12974,
+  venue$https://staff.apps.va.gov/VistaEmrService/clinics|534/12975,
+  venue$https://staff.apps.va.gov/VistaEmrService/clinics|534/12976
+```
+
+System value may also be omitted from the search:
+```
+GET [base]/Questionnaire?context-type-value=venue$534/12975
+GET [base]/Questionnaire?context-type-value=venue$534/12974,venue$534/12975,venue$534/12976
+```
 
 ```
 {
