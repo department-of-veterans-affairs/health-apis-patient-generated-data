@@ -1,6 +1,5 @@
 package gov.va.api.health.patientgenerateddata.tests;
 
-import static gov.va.api.health.patientgenerateddata.tests.SystemDefinitions.CLIENT_KEY_DEFAULT;
 import static gov.va.api.health.patientgenerateddata.tests.SystemDefinitions.systemDefinition;
 import static gov.va.api.health.sentinel.ExpectedResponse.logAllWithTruncatedBody;
 
@@ -42,16 +41,6 @@ public class RequestUtils {
       response.expect(expectedStatus);
     }
     return response;
-  }
-
-  public static ExpectedResponse doInternalPost(
-      String request, Object payload, String description, Integer expectedStatus) {
-    return doInternalPost(
-        request,
-        payload,
-        description,
-        expectedStatus,
-        System.getProperty("client-key", CLIENT_KEY_DEFAULT));
   }
 
   @SneakyThrows

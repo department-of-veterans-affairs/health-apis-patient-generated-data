@@ -1,6 +1,7 @@
 package gov.va.api.health.patientgenerateddata.tests;
 
 import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.doInternalPost;
+import static gov.va.api.health.patientgenerateddata.tests.SystemDefinitions.CLIENT_KEY_DEFAULT;
 import static gov.va.api.health.sentinel.EnvironmentAssumptions.assumeEnvironmentIn;
 
 import gov.va.api.health.r4.api.resources.Questionnaire;
@@ -10,6 +11,8 @@ import org.junit.Test;
 import org.junit.jupiter.api.BeforeAll;
 
 public class ManagementControllerIT {
+
+  private static final String CLIENT_KEY = System.getProperty("client-key", CLIENT_KEY_DEFAULT);
 
   @BeforeAll
   static void assumeEnvironment() {
@@ -21,7 +24,7 @@ public class ManagementControllerIT {
   @Test
   public void create_questionnaire() {
     var questionnaire = questionnaire("0000");
-    doInternalPost("Questionnaire", questionnaire, "create resource", 201);
+    doInternalPost("Questionnaire", questionnaire, "create resource", 201, CLIENT_KEY);
   }
 
   @Test
