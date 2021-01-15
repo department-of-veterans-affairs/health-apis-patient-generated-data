@@ -1,5 +1,6 @@
 package gov.va.api.health.patientgenerateddata.tests;
 
+import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.doInternalPost;
 import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.doPut;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -19,6 +20,10 @@ public class SyntheticRefresh {
     return System.getProperty("basedir", ".");
   }
 
+  private static String clientKey() {
+    return System.getProperty("client-key");
+  }
+
   public static void main(String[] args) {
     refresh("observation", Observation.class);
     refresh("patient", Patient.class);
@@ -32,7 +37,11 @@ public class SyntheticRefresh {
         new File(baseDir() + "/../patient-generated-data-synthetic/src/test/resources/" + folder)
             .listFiles()) {
       T obj = MAPPER.readValue(f, clazz);
-      doPut(clazz.getSimpleName() + "/" + obj.id(), obj, "refresh", null);
+      try {
+        doPut(clazz.getSimpleName() + "/" + obj.id(), obj, "refresh", 200);
+      } catch (AssertionError e) {
+        doInternalPost(clazz.getSimpleName(), obj, "refresh", 201, clientKey());
+      }
     }
   }
 }
