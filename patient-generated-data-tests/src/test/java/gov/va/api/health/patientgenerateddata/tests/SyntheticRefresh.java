@@ -24,6 +24,11 @@ public class SyntheticRefresh {
     return System.getProperty("client-key");
   }
 
+  private static <T extends Resource> void create(T obj, Class<T> clazz) {
+    doInternalPost(clazz.getSimpleName(), obj, "create", 201, clientKey());
+    doPut(clazz.getSimpleName() + "/" + obj.id(), obj, "refresh", 200);
+  }
+
   public static void main(String[] args) {
     refresh("observation", Observation.class);
     refresh("patient", Patient.class);
@@ -43,10 +48,5 @@ public class SyntheticRefresh {
         create(obj, clazz);
       }
     }
-  }
-
-  private static <T extends Resource> void create(T obj, Class<T> clazz) {
-    doInternalPost(clazz.getSimpleName(), obj, "create", 201, clientKey());
-    doPut(clazz.getSimpleName() + "/" + obj.id(), obj, "refresh", 200);
   }
 }
