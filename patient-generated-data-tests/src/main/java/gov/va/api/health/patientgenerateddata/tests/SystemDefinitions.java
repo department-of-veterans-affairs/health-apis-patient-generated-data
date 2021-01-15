@@ -27,6 +27,8 @@ class SystemDefinitions {
         .questionnaireResponseAuthor("1011537977V693883")
         .questionnaireResponseSubject("1011537977V693883")
         .questionnaireResponseUpdates("4400ade6-4162-44e2-b470-c6b38c717f88")
+        .questionnaireResponseTagSystem("https://veteran.apps.va.gov/appointments/v1")
+        .questionnaireResponseTagCode("202008211400983000082100000000000000")
         .build();
   }
 
@@ -151,6 +153,10 @@ class SystemDefinitions {
     @NonNull String questionnaireResponseSubject;
 
     @NonNull String questionnaireResponseUpdates;
+
+    @NonNull String questionnaireResponseTagSystem;
+
+    @NonNull String questionnaireResponseTagCode;
 
     @Value
     @Builder

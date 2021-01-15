@@ -105,6 +105,7 @@ class MetadataController {
                         SearchParam.ID,
                         SearchParam.AUTHOR,
                         SearchParam.AUTHORED,
+                        SearchParam.TAG,
                         SearchParam.SUBJECT))
                 .build())
         .map(SupportedResource::asResource)
@@ -179,6 +180,7 @@ class MetadataController {
     CONTEXT_TYPE_VALUE("context-type-value", CapabilityStatement.SearchParamType.composite),
     ID("_id", CapabilityStatement.SearchParamType.token),
     PATIENT("patient", CapabilityStatement.SearchParamType.reference),
+    TAG("_tag", CapabilityStatement.SearchParamType.token),
     SUBJECT("subject", CapabilityStatement.SearchParamType.reference);
 
     private final String param;

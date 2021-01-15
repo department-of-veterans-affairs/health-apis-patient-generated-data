@@ -130,4 +130,24 @@ public class QuestionnaireResponseIT {
     bundle = response.expectValid(QuestionnaireResponse.Bundle.class);
     assertThat(bundle.entry()).isEmpty();
   }
+
+  @Test
+  void search_tag() {
+    assumeEnvironmentIn(Environment.LOCAL);
+    // , Environment.QA, Environment.STAGING, Environment.STAGING_LAB, Environment.LA);
+    String tagCode = systemDefinition().ids().questionnaireResponseTagCode();
+    String tagSystem = systemDefinition().ids().questionnaireResponseTagSystem();
+    String query = String.format("?_tag=%s", tagCode);
+    var response = doGet("application/json", "QuestionnaireResponse" + query, 200);
+    QuestionnaireResponse.Bundle bundle = response.expectValid(QuestionnaireResponse.Bundle.class);
+    assertThat(bundle.entry()).hasSizeGreaterThan(0);
+    query = String.format("?_tag=%s", tagSystem + "|");
+    response = doGet("application/json", "QuestionnaireResponse" + query, 200);
+    bundle = response.expectValid(QuestionnaireResponse.Bundle.class);
+    assertThat(bundle.entry()).hasSizeGreaterThan(0);
+    query = String.format("?_tag=%s", tagSystem + "|" + tagCode);
+    response = doGet("application/json", "QuestionnaireResponse" + query, 200);
+    bundle = response.expectValid(QuestionnaireResponse.Bundle.class);
+    assertThat(bundle.entry()).hasSizeGreaterThan(0);
+  }
 }
