@@ -40,8 +40,13 @@ public class SyntheticRefresh {
       try {
         doPut(clazz.getSimpleName() + "/" + obj.id(), obj, "refresh", 200);
       } catch (AssertionError e) {
-        doInternalPost(clazz.getSimpleName(), obj, "refresh", 201, clientKey());
+        create(obj, clazz);
       }
     }
+  }
+
+  private static <T extends Resource> void create(T obj, Class<T> clazz) {
+    doInternalPost(clazz.getSimpleName(), obj, "create", 201, clientKey());
+    doPut(clazz.getSimpleName() + "/" + obj.id(), obj, "refresh", 200);
   }
 }
