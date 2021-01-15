@@ -15,7 +15,6 @@ import java.net.URI;
 import java.util.Optional;
 import javax.validation.Valid;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.NonNull;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +41,31 @@ public class ObservationController {
 
   private final LinkProperties linkProperties;
 
-  @Getter private final ObservationRepository repository;
+  private final ObservationRepository repository;
+
+  /** Populates an entity with Resource data. */
+  @SneakyThrows
+  public static ObservationEntity populate(Observation observation, ObservationEntity entity) {
+    return populate(observation, entity, MAPPER.writeValueAsString(observation));
+  }
+
+  /** Populates an entity with Resource data. */
+  public static ObservationEntity populate(
+      @NonNull Observation observation, @NonNull ObservationEntity entity, String payload) {
+    checkState(
+        entity.id().equals(observation.id()),
+        "IDs don't match, %s != %s",
+        entity.id(),
+        observation.id());
+    entity.payload(payload);
+    return entity;
+  }
+
+  /** Transforms a Resource to an Entity. */
+  public static ObservationEntity toEntity(Observation observation) {
+    checkState(observation.id() != null, "ID is required");
+    return populate(observation, ObservationEntity.builder().id(observation.id()).build());
+  }
 
   @PostMapping
   ResponseEntity<Observation> create(@Valid @RequestBody Observation observation) {
@@ -64,32 +87,11 @@ public class ObservationController {
     dataBinder.initDirectFieldAccess();
   }
 
-  @SneakyThrows
-  ObservationEntity populate(Observation observation, ObservationEntity entity) {
-    return populate(observation, entity, MAPPER.writeValueAsString(observation));
-  }
-
-  ObservationEntity populate(
-      @NonNull Observation observation, @NonNull ObservationEntity entity, String payload) {
-    checkState(
-        entity.id().equals(observation.id()),
-        "IDs don't match, %s != %s",
-        entity.id(),
-        observation.id());
-    entity.payload(payload);
-    return entity;
-  }
-
   @GetMapping(value = "/{id}")
   Observation read(@PathVariable("id") String id) {
     Optional<ObservationEntity> maybeEntity = repository.findById(id);
     ObservationEntity entity = maybeEntity.orElseThrow(() -> new Exceptions.NotFound(id));
     return entity.deserializePayload();
-  }
-
-  ObservationEntity toEntity(Observation observation) {
-    checkState(observation.id() != null, "ID is required");
-    return populate(observation, ObservationEntity.builder().id(observation.id()).build());
   }
 
   @SneakyThrows

@@ -5,14 +5,10 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import gov.va.api.health.patientgenerateddata.observation.ObservationController;
 import gov.va.api.health.patientgenerateddata.observation.ObservationRepository;
-import gov.va.api.health.patientgenerateddata.patient.PatientController;
 import gov.va.api.health.patientgenerateddata.patient.PatientControllerTest;
 import gov.va.api.health.patientgenerateddata.patient.PatientRepository;
-import gov.va.api.health.patientgenerateddata.questionnaire.QuestionnaireController;
 import gov.va.api.health.patientgenerateddata.questionnaire.QuestionnaireRepository;
-import gov.va.api.health.patientgenerateddata.questionnaireresponse.QuestionnaireResponseController;
 import gov.va.api.health.patientgenerateddata.questionnaireresponse.QuestionnaireResponseRepository;
 import gov.va.api.health.r4.api.resources.Observation;
 import gov.va.api.health.r4.api.resources.Observation.ObservationStatus;
@@ -39,19 +35,11 @@ public class ManagementControllerTest {
     LinkProperties pageLinks =
         LinkProperties.builder().baseUrl("http://foo.com").r4BasePath("r4").build();
     var observationRepo = mock(ObservationRepository.class);
-    var observationController = new ObservationController(pageLinks, observationRepo);
     var patientRepo = mock(PatientRepository.class);
-    var patientController = new PatientController(pageLinks, patientRepo);
     var questionnaireRepo = mock(QuestionnaireRepository.class);
-    var questionnaireController = new QuestionnaireController(pageLinks, questionnaireRepo);
     var questionnaireResponseRepo = mock(QuestionnaireResponseRepository.class);
-    var questionnaireResponseController =
-        new QuestionnaireResponseController(pageLinks, questionnaireResponseRepo);
     return new ManagementController(
-        observationController,
-        patientController,
-        questionnaireController,
-        questionnaireResponseController);
+        pageLinks, observationRepo, patientRepo, questionnaireRepo, questionnaireResponseRepo);
   }
 
   private Observation _observation() {
@@ -104,7 +92,7 @@ public class ManagementControllerTest {
   public void create_questionnaire_duplicate() {
     var controller = _controller();
     var questionnaire = _questionnaire("x");
-    when(controller.questionnaireController().repository().existsById("x")).thenReturn(true);
+    when(controller.questionnaireRepository().existsById("x")).thenReturn(true);
     assertThrows(Exceptions.AlreadyExists.class, () -> controller.create(questionnaire));
   }
 

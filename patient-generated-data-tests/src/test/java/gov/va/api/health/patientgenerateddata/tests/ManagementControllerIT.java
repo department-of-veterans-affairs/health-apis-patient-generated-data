@@ -59,7 +59,7 @@ public class ManagementControllerIT {
   @Test
   public void create_patient() {
     // ID must be in MPI format!
-    var patient = _patient("1919191919V191919");
+    var patient = _patient("it-internal-patient");
     doInternalPost("Patient", patient, "create resource", 201, CLIENT_KEY);
   }
 

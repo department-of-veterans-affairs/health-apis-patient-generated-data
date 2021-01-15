@@ -20,7 +20,6 @@ import java.util.Optional;
 import java.util.regex.Pattern;
 import javax.validation.Valid;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.NonNull;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,7 +50,28 @@ public class PatientController {
 
   private final LinkProperties linkProperties;
 
-  @Getter private final PatientRepository repository;
+  private final PatientRepository repository;
+
+  /** Populates an entity with Resource data. */
+  @SneakyThrows
+  public static PatientEntity populate(Patient patient, PatientEntity entity) {
+    return populate(patient, entity, MAPPER.writeValueAsString(patient));
+  }
+
+  /** Populates an entity with Resource data. */
+  public static PatientEntity populate(
+      @NonNull Patient patient, @NonNull PatientEntity entity, String payload) {
+    checkState(
+        entity.id().equals(patient.id()), "IDs don't match, %s != %s", entity.id(), patient.id());
+    entity.payload(payload);
+    return entity;
+  }
+
+  /** Transforms a Resource to an Entity. */
+  public static PatientEntity toEntity(Patient patient) {
+    checkState(patient.id() != null, "ID is required");
+    return populate(patient, PatientEntity.builder().id(patient.id()).build());
+  }
 
   /** Create resource. */
   @PostMapping
@@ -122,28 +142,11 @@ public class PatientController {
     return MPI_PATTERN.matcher(icn.trim()).matches();
   }
 
-  @SneakyThrows
-  PatientEntity populate(Patient patient, PatientEntity entity) {
-    return populate(patient, entity, MAPPER.writeValueAsString(patient));
-  }
-
-  PatientEntity populate(@NonNull Patient patient, @NonNull PatientEntity entity, String payload) {
-    checkState(
-        entity.id().equals(patient.id()), "IDs don't match, %s != %s", entity.id(), patient.id());
-    entity.payload(payload);
-    return entity;
-  }
-
   @GetMapping(value = "/{id}")
   Patient read(@PathVariable("id") String id) {
     Optional<PatientEntity> maybeEntity = repository.findById(id);
     PatientEntity entity = maybeEntity.orElseThrow(() -> new Exceptions.NotFound(id));
     return entity.deserializePayload();
-  }
-
-  PatientEntity toEntity(Patient patient) {
-    checkState(patient.id() != null, "ID is required");
-    return populate(patient, PatientEntity.builder().id(patient.id()).build());
   }
 
   @SneakyThrows

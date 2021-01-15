@@ -26,7 +26,6 @@ import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.NonNull;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,7 +52,43 @@ public class QuestionnaireResponseController {
 
   private final LinkProperties linkProperties;
 
-  @Getter private final QuestionnaireResponseRepository repository;
+  private final QuestionnaireResponseRepository repository;
+
+  /** Populates an entity with Resource data. */
+  @SneakyThrows
+  public static QuestionnaireResponseEntity populate(
+      QuestionnaireResponse questionnaireResponse, QuestionnaireResponseEntity entity) {
+    return populate(
+        questionnaireResponse, entity, MAPPER.writeValueAsString(questionnaireResponse));
+  }
+
+  /** Populates an entity with Resource data. */
+  public static QuestionnaireResponseEntity populate(
+      @NonNull QuestionnaireResponse questionnaireResponse,
+      @NonNull QuestionnaireResponseEntity entity,
+      String payload) {
+    checkState(
+        entity.id().equals(questionnaireResponse.id()),
+        "IDs don't match, %s != %s",
+        entity.id(),
+        questionnaireResponse.id());
+    String authorId = ReferenceUtils.resourceId(questionnaireResponse.author());
+    Instant authored = ParseUtils.parseDateTime(questionnaireResponse.authored());
+    String subject = ReferenceUtils.resourceId(questionnaireResponse.subject());
+    entity.payload(payload);
+    entity.author(authorId);
+    entity.authored(authored);
+    entity.subject(subject);
+    return entity;
+  }
+
+  /** Transforms a Resource to an Entity. */
+  public static QuestionnaireResponseEntity toEntity(QuestionnaireResponse questionnaireResponse) {
+    checkState(questionnaireResponse.id() != null, "ID is required");
+    return populate(
+        questionnaireResponse,
+        QuestionnaireResponseEntity.builder().id(questionnaireResponse.id()).build());
+  }
 
   private VulcanConfiguration<QuestionnaireResponseEntity> configuration() {
     return VulcanConfiguration.forEntity(QuestionnaireResponseEntity.class)
@@ -99,32 +134,6 @@ public class QuestionnaireResponseController {
     dataBinder.initDirectFieldAccess();
   }
 
-  @SneakyThrows
-  QuestionnaireResponseEntity populate(
-      QuestionnaireResponse questionnaireResponse, QuestionnaireResponseEntity entity) {
-    return populate(
-        questionnaireResponse, entity, MAPPER.writeValueAsString(questionnaireResponse));
-  }
-
-  QuestionnaireResponseEntity populate(
-      @NonNull QuestionnaireResponse questionnaireResponse,
-      @NonNull QuestionnaireResponseEntity entity,
-      String payload) {
-    checkState(
-        entity.id().equals(questionnaireResponse.id()),
-        "IDs don't match, %s != %s",
-        entity.id(),
-        questionnaireResponse.id());
-    String authorId = ReferenceUtils.resourceId(questionnaireResponse.author());
-    Instant authored = ParseUtils.parseDateTime(questionnaireResponse.authored());
-    String subject = ReferenceUtils.resourceId(questionnaireResponse.subject());
-    entity.payload(payload);
-    entity.author(authorId);
-    entity.authored(authored);
-    entity.subject(subject);
-    return entity;
-  }
-
   @GetMapping(value = "/{id}")
   QuestionnaireResponse read(@PathVariable("id") String id) {
     Optional<QuestionnaireResponseEntity> maybeEntity = repository.findById(id);
@@ -156,13 +165,6 @@ public class QuestionnaireResponseController {
                 .build())
         .toResource(QuestionnaireResponseEntity::deserializePayload)
         .build();
-  }
-
-  QuestionnaireResponseEntity toEntity(QuestionnaireResponse questionnaireResponse) {
-    checkState(questionnaireResponse.id() != null, "ID is required");
-    return populate(
-        questionnaireResponse,
-        QuestionnaireResponseEntity.builder().id(questionnaireResponse.id()).build());
   }
 
   @SneakyThrows

@@ -24,7 +24,6 @@ import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.NonNull;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,7 +50,33 @@ public class QuestionnaireController {
 
   private final LinkProperties linkProperties;
 
-  @Getter private final QuestionnaireRepository repository;
+  private final QuestionnaireRepository repository;
+
+  /** Populates an entity with Resource data. */
+  @SneakyThrows
+  public static QuestionnaireEntity populate(
+      Questionnaire questionnaire, QuestionnaireEntity entity) {
+    return populate(questionnaire, entity, MAPPER.writeValueAsString(questionnaire));
+  }
+
+  /** Populates an entity with Resource data. */
+  public static QuestionnaireEntity populate(
+      @NonNull Questionnaire questionnaire, @NonNull QuestionnaireEntity entity, String payload) {
+    checkState(
+        entity.id().equals(questionnaire.id()),
+        "IDs don't match, %s != %s",
+        entity.id(),
+        questionnaire.id());
+    entity.payload(payload);
+    entity.contextTypeValue(CompositeMapping.useContextValueJoin(questionnaire));
+    return entity;
+  }
+
+  /** Transforms a Resource to an Entity. */
+  public static QuestionnaireEntity toEntity(Questionnaire questionnaire) {
+    checkState(questionnaire.id() != null, "ID is required");
+    return populate(questionnaire, QuestionnaireEntity.builder().id(questionnaire.id()).build());
+  }
 
   private VulcanConfiguration<QuestionnaireEntity> configuration() {
     return VulcanConfiguration.forEntity(QuestionnaireEntity.class)
@@ -94,23 +119,6 @@ public class QuestionnaireController {
     dataBinder.initDirectFieldAccess();
   }
 
-  @SneakyThrows
-  QuestionnaireEntity populate(Questionnaire questionnaire, QuestionnaireEntity entity) {
-    return populate(questionnaire, entity, MAPPER.writeValueAsString(questionnaire));
-  }
-
-  QuestionnaireEntity populate(
-      @NonNull Questionnaire questionnaire, @NonNull QuestionnaireEntity entity, String payload) {
-    checkState(
-        entity.id().equals(questionnaire.id()),
-        "IDs don't match, %s != %s",
-        entity.id(),
-        questionnaire.id());
-    entity.payload(payload);
-    entity.contextTypeValue(CompositeMapping.useContextValueJoin(questionnaire));
-    return entity;
-  }
-
   @GetMapping(value = "/{id}")
   Questionnaire read(@PathVariable("id") String id) {
     Optional<QuestionnaireEntity> maybeEntity = repository.findById(id);
@@ -137,11 +145,6 @@ public class QuestionnaireController {
                 .build())
         .toResource(QuestionnaireEntity::deserializePayload)
         .build();
-  }
-
-  QuestionnaireEntity toEntity(Questionnaire questionnaire) {
-    checkState(questionnaire.id() != null, "ID is required");
-    return populate(questionnaire, QuestionnaireEntity.builder().id(questionnaire.id()).build());
   }
 
   @SneakyThrows
