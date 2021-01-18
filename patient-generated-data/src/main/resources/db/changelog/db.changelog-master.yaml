@@ -247,3 +247,17 @@ databaseChangeLog:
                   type: clob
                   constraints:
                     - nullable: true
+
+  - changeSet:
+      id: 11
+      author: pteracuda
+      changes:
+        - addColumn:
+            tableName: QuestionnaireResponse
+            schemaName: app
+            columns:
+              - column:
+                  name: tag
+                  type: clob
+                  constraints:
+                    - nullable: true
