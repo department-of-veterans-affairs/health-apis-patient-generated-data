@@ -4,9 +4,13 @@ import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.doIntern
 import static gov.va.api.health.patientgenerateddata.tests.SystemDefinitions.CLIENT_KEY_DEFAULT;
 import static gov.va.api.health.sentinel.EnvironmentAssumptions.assumeEnvironmentIn;
 
+import gov.va.api.health.r4.api.datatypes.CodeableConcept;
+import gov.va.api.health.r4.api.datatypes.Coding;
 import gov.va.api.health.r4.api.datatypes.HumanName;
 import gov.va.api.health.r4.api.datatypes.Identifier;
+import gov.va.api.health.r4.api.elements.Reference;
 import gov.va.api.health.r4.api.resources.Observation;
+import gov.va.api.health.r4.api.resources.Observation.ObservationStatus;
 import gov.va.api.health.r4.api.resources.Patient;
 import gov.va.api.health.r4.api.resources.Patient.Gender;
 import gov.va.api.health.r4.api.resources.Questionnaire;
@@ -21,7 +25,7 @@ import org.junit.jupiter.api.BeforeAll;
 public class ManagementControllerCreateIT {
   private static final String CLIENT_KEY = System.getProperty("client-key", CLIENT_KEY_DEFAULT);
 
-  public static Questionnaire _questionnaire(String id) {
+  private static Questionnaire _questionnaire(String id) {
     return Questionnaire.builder().id(id).title("x").status(PublicationStatus.active).build();
   }
 
@@ -33,7 +37,25 @@ public class ManagementControllerCreateIT {
   }
 
   private Observation _observation(String id) {
-    return ObservationCreateIT.observation().id(id);
+    return Observation.builder()
+        .id(id)
+        .status(ObservationStatus.unknown)
+        .effectiveDateTime("2020-01-01T01:00:00Z")
+        .category(
+            List.of(
+                CodeableConcept.builder()
+                    .coding(
+                        List.of(
+                            Coding.builder()
+                                .system(
+                                    "http://terminology.hl7.org/CodeSystem/observation-category")
+                                .code("laboratory")
+                                .build()))
+                    .text("laboratory")
+                    .build()))
+        .code(CodeableConcept.builder().text("code").build())
+        .subject(Reference.builder().reference("Patient/1").build())
+        .build();
   }
 
   private Patient _patient(String icn) {

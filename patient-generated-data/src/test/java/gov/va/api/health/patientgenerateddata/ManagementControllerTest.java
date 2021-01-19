@@ -6,10 +6,13 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import gov.va.api.health.patientgenerateddata.observation.ObservationRepository;
-import gov.va.api.health.patientgenerateddata.patient.PatientControllerTest;
 import gov.va.api.health.patientgenerateddata.patient.PatientRepository;
 import gov.va.api.health.patientgenerateddata.questionnaire.QuestionnaireRepository;
 import gov.va.api.health.patientgenerateddata.questionnaireresponse.QuestionnaireResponseRepository;
+import gov.va.api.health.r4.api.datatypes.CodeableConcept;
+import gov.va.api.health.r4.api.datatypes.Coding;
+import gov.va.api.health.r4.api.datatypes.Identifier;
+import gov.va.api.health.r4.api.datatypes.Identifier.IdentifierUse;
 import gov.va.api.health.r4.api.resources.Observation;
 import gov.va.api.health.r4.api.resources.Observation.ObservationStatus;
 import gov.va.api.health.r4.api.resources.Patient;
@@ -19,6 +22,7 @@ import gov.va.api.health.r4.api.resources.QuestionnaireResponse;
 import gov.va.api.health.r4.api.resources.QuestionnaireResponse.Status;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 import org.junit.Test;
@@ -27,6 +31,20 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.http.ResponseEntity;
 
 public class ManagementControllerTest {
+  private static Identifier _mpi(String icn) {
+    return Identifier.builder()
+        .use(IdentifierUse.usual)
+        .type(
+            CodeableConcept.builder()
+                .coding(
+                    Collections.singletonList(
+                        Coding.builder().system("http://hl7.org/fhir/v2/0203").code("MR").build()))
+                .build())
+        .system("http://va.gov/mpi")
+        .value(icn)
+        .build();
+  }
+
   static Stream<String> invalid_formats_strings() {
     return Stream.of("", " ", null);
   }
@@ -47,10 +65,7 @@ public class ManagementControllerTest {
   }
 
   private Patient _patient(String icn) {
-    return Patient.builder()
-        .id(icn)
-        .identifier(new ArrayList<>(List.of(PatientControllerTest.mpi(icn))))
-        .build();
+    return Patient.builder().id(icn).identifier(new ArrayList<>(List.of(_mpi(icn)))).build();
   }
 
   private Questionnaire _questionnaire(String id) {

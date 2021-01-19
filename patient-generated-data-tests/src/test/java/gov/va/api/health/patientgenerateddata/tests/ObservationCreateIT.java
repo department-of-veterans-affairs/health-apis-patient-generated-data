@@ -21,7 +21,7 @@ public class ObservationCreateIT {
     assumeEnvironmentIn(Environment.LOCAL);
   }
 
-  public static Observation observation() {
+  private static Observation observation() {
     return Observation.builder()
         .status(ObservationStatus.unknown)
         .effectiveDateTime("2020-01-01T01:00:00Z")

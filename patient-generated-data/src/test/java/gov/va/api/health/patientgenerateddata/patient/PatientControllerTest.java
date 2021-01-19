@@ -30,7 +30,7 @@ import org.springframework.validation.DataBinder;
 public class PatientControllerTest {
   private static final ObjectMapper MAPPER = JacksonConfig.createMapper();
 
-  public static Identifier mpi(String icn) {
+  private static Identifier mpi(String icn) {
     return Identifier.builder()
         .use(IdentifierUse.usual)
         .type(
