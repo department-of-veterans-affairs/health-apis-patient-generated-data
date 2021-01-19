@@ -45,12 +45,12 @@ public class ObservationController {
 
   /** Populates an entity with Resource data. */
   @SneakyThrows
-  public static ObservationEntity populate(Observation observation, ObservationEntity entity) {
+  private static ObservationEntity populate(Observation observation, ObservationEntity entity) {
     return populate(observation, entity, MAPPER.writeValueAsString(observation));
   }
 
   /** Populates an entity with Resource data. */
-  public static ObservationEntity populate(
+  private static ObservationEntity populate(
       @NonNull Observation observation, @NonNull ObservationEntity entity, String payload) {
     checkState(
         entity.id().equals(observation.id()),

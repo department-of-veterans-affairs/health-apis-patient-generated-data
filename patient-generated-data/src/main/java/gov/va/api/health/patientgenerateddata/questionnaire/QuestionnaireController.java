@@ -54,13 +54,13 @@ public class QuestionnaireController {
 
   /** Populates an entity with Resource data. */
   @SneakyThrows
-  public static QuestionnaireEntity populate(
+  private static QuestionnaireEntity populate(
       Questionnaire questionnaire, QuestionnaireEntity entity) {
     return populate(questionnaire, entity, MAPPER.writeValueAsString(questionnaire));
   }
 
   /** Populates an entity with Resource data. */
-  public static QuestionnaireEntity populate(
+  private static QuestionnaireEntity populate(
       @NonNull Questionnaire questionnaire, @NonNull QuestionnaireEntity entity, String payload) {
     checkState(
         entity.id().equals(questionnaire.id()),

@@ -56,14 +56,14 @@ public class QuestionnaireResponseController {
 
   /** Populates an entity with Resource data. */
   @SneakyThrows
-  public static QuestionnaireResponseEntity populate(
+  private static QuestionnaireResponseEntity populate(
       QuestionnaireResponse questionnaireResponse, QuestionnaireResponseEntity entity) {
     return populate(
         questionnaireResponse, entity, MAPPER.writeValueAsString(questionnaireResponse));
   }
 
   /** Populates an entity with Resource data. */
-  public static QuestionnaireResponseEntity populate(
+  private static QuestionnaireResponseEntity populate(
       @NonNull QuestionnaireResponse questionnaireResponse,
       @NonNull QuestionnaireResponseEntity entity,
       String payload) {
