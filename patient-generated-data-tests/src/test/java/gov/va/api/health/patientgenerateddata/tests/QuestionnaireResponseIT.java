@@ -130,4 +130,15 @@ public class QuestionnaireResponseIT {
     bundle = response.expectValid(QuestionnaireResponse.Bundle.class);
     assertThat(bundle.entry()).isEmpty();
   }
+
+  @Test
+  void search_questionnaire() {
+    assumeEnvironmentIn(Environment.LOCAL);
+//    , Environment.QA, Environment.STAGING, Environment.STAGING_LAB, Environment.LAB);
+    String questionnaire = systemDefinition().ids().questionnaire();
+    String query = String.format("?questionnaire=%s", questionnaire);
+    var response = doGet("application/json", "QuestionnaireResponse" + query, 200);
+    QuestionnaireResponse.Bundle bundle = response.expectValid(QuestionnaireResponse.Bundle.class);
+    assertThat(bundle.entry()).hasSizeGreaterThan(0);
+  }
 }
