@@ -5,10 +5,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.Test;
 
 public class OpenApiControllerTest {
-
   @Test
-  void openApiCreator() {
-    OpenApiController oac = new OpenApiController();
-    assertThat(oac.openApi()).isNotNull();
+  void openApi() {
+    assertThat(new OpenApiController().openApi()).isEqualTo("{}");
   }
 }
