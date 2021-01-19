@@ -29,8 +29,8 @@ class SystemDefinitions {
         .questionnaireResponseUpdates("4400ade6-4162-44e2-b470-c6b38c717f88")
         .questionnaireResponseMetaTag(
             Ids.MetaTag.builder()
-                .metaTagSystem("https://veteran.apps.va.gov/appointments/v1")
-                .metaTagCode("202008211400983000082100000000000000")
+                .system("https://veteran.apps.va.gov/appointments/v1")
+                .code("202008211400983000082100000000000000")
                 .build())
         .build();
   }
@@ -149,11 +149,11 @@ class SystemDefinitions {
 
     @NonNull UsageContextTypeValue questionnaireContextTypeValue;
 
-    @NonNull MetaTag questionnaireResponseMetaTag;
-
     @NonNull String questionnaireResponse;
 
     @NonNull String questionnaireResponseAuthor;
+
+    @NonNull MetaTag questionnaireResponseMetaTag;
 
     @NonNull String questionnaireResponseSubject;
 
@@ -174,9 +174,9 @@ class SystemDefinitions {
     @Value
     @Builder
     static final class MetaTag {
-      @NonNull String metaTagSystem;
+      @NonNull String system;
 
-      @NonNull String metaTagCode;
+      @NonNull String code;
     }
   }
 

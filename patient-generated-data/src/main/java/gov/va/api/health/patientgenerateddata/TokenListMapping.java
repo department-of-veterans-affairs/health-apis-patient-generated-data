@@ -54,7 +54,7 @@ public final class TokenListMapping<EntityT> implements SingleParameterMapping<E
     }
     return questionnaireResponse.meta().tag().stream()
         .flatMap(tag -> codingJoin(tag))
-        .collect(joining(" , "));
+        .collect(joining(","));
   }
 
   @Override
