@@ -19,7 +19,6 @@ import org.springframework.web.servlet.HandlerExceptionResolver;
 
 @Configuration
 public class InternalClientKeyFilterConfiguration {
-
   @Autowired
   @Qualifier("handlerExceptionResolver")
   private HandlerExceptionResolver resolver;

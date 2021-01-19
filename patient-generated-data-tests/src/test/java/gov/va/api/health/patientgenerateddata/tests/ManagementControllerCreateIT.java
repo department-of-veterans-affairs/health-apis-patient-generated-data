@@ -19,15 +19,11 @@ import gov.va.api.health.r4.api.resources.QuestionnaireResponse;
 import gov.va.api.health.r4.api.resources.QuestionnaireResponse.Status;
 import gov.va.api.health.sentinel.Environment;
 import java.util.List;
-import org.junit.Test;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 public class ManagementControllerCreateIT {
   private static final String CLIENT_KEY = System.getProperty("client-key", CLIENT_KEY_DEFAULT);
-
-  private static Questionnaire _questionnaire(String id) {
-    return Questionnaire.builder().id(id).title("x").status(PublicationStatus.active).build();
-  }
 
   @BeforeAll
   static void assumeEnvironment() {
@@ -68,31 +64,35 @@ public class ManagementControllerCreateIT {
         .build();
   }
 
+  private Questionnaire _questionnaire(String id) {
+    return Questionnaire.builder().id(id).title("x").status(PublicationStatus.active).build();
+  }
+
   private QuestionnaireResponse _questionnaireResponse(String id) {
     return QuestionnaireResponse.builder().id(id).status(Status.completed).build();
   }
 
   @Test
-  public void create_observation() {
+  void create_observation() {
     var observation = _observation("it" + System.currentTimeMillis());
     doInternalPost("Observation", observation, "create resource", 201, CLIENT_KEY);
   }
 
   @Test
-  public void create_patient() {
+  void create_patient() {
     // ID must be in MPI format!
     var patient = _patient("it" + System.currentTimeMillis());
     doInternalPost("Patient", patient, "create resource", 201, CLIENT_KEY);
   }
 
   @Test
-  public void create_questionnaire() {
+  void create_questionnaire() {
     var questionnaire = _questionnaire("it" + System.currentTimeMillis());
     doInternalPost("Questionnaire", questionnaire, "create resource", 201, CLIENT_KEY);
   }
 
   @Test
-  public void create_questionnaire_response() {
+  void create_questionnaire_response() {
     var questionnaireResponse = _questionnaireResponse("it" + System.currentTimeMillis());
     doInternalPost(
         "QuestionnaireResponse", questionnaireResponse, "create resource", 201, CLIENT_KEY);

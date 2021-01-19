@@ -78,13 +78,11 @@ public class PatientController {
     return MPI_PATTERN.matcher(icn.trim()).matches();
   }
 
-  /** Populates an entity with Resource data. */
   @SneakyThrows
   private static PatientEntity populate(Patient patient, PatientEntity entity) {
     return populate(patient, entity, MAPPER.writeValueAsString(patient));
   }
 
-  /** Populates an entity with Resource data. */
   private static PatientEntity populate(
       @NonNull Patient patient, @NonNull PatientEntity entity, String payload) {
     checkState(

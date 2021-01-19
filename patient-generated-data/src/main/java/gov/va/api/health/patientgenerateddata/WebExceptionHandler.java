@@ -158,10 +158,10 @@ public final class WebExceptionHandler {
 
   @ExceptionHandler({
     BindException.class,
-    UnsatisfiedServletRequestParameterException.class,
-    gov.va.api.lighthouse.vulcan.InvalidRequest.class,
     Exceptions.AlreadyExists.class,
-    Exceptions.BadRequest.class
+    Exceptions.BadRequest.class,
+    gov.va.api.lighthouse.vulcan.InvalidRequest.class,
+    UnsatisfiedServletRequestParameterException.class
   })
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   OperationOutcome handleBadRequest(Exception e, HttpServletRequest request) {

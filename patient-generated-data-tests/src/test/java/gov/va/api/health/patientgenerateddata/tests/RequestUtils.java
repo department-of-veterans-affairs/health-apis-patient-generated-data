@@ -14,8 +14,10 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class RequestUtils {
-  private static final ObjectMapper MAPPER = JacksonConfig.createMapper();
   private static final String INTERNAL_R4_PATH = "management/r4/";
+
+  private static final ObjectMapper MAPPER = JacksonConfig.createMapper();
+
   private static final String ACCESS_TOKEN = System.getProperty("access-token", "unset");
 
   public static ExpectedResponse doGet(
@@ -26,7 +28,7 @@ public class RequestUtils {
             .baseUri(svc.url())
             .port(svc.port())
             .relaxedHTTPSValidation()
-            .header("Authorization", "Bearer " + System.getProperty("access-token", "unset"));
+            .header("Authorization", "Bearer " + ACCESS_TOKEN);
     log.info(
         "Expect {} with accept header ({}) is status code ({})",
         svc.apiPath() + request,
@@ -111,7 +113,7 @@ public class RequestUtils {
             .baseUri(svc.url())
             .port(svc.port())
             .relaxedHTTPSValidation()
-            .header("Authorization", "Bearer " + System.getProperty("access-token", "unset"))
+            .header("Authorization", "Bearer " + ACCESS_TOKEN)
             .header("Content-Type", "application/json")
             .body(MAPPER.writeValueAsString(payload));
     log.info(

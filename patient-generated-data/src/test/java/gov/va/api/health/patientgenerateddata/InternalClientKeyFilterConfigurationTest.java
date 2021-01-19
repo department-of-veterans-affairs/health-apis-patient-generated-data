@@ -15,7 +15,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 
 public class InternalClientKeyFilterConfigurationTest {
-
   @Test
   @SneakyThrows
   void match() {

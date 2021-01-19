@@ -54,7 +54,6 @@ public class QuestionnaireResponseController {
 
   private final QuestionnaireResponseRepository repository;
 
-  /** Populates an entity with Resource data. */
   @SneakyThrows
   private static QuestionnaireResponseEntity populate(
       QuestionnaireResponse questionnaireResponse, QuestionnaireResponseEntity entity) {
@@ -62,7 +61,6 @@ public class QuestionnaireResponseController {
         questionnaireResponse, entity, MAPPER.writeValueAsString(questionnaireResponse));
   }
 
-  /** Populates an entity with Resource data. */
   private static QuestionnaireResponseEntity populate(
       @NonNull QuestionnaireResponse questionnaireResponse,
       @NonNull QuestionnaireResponseEntity entity,

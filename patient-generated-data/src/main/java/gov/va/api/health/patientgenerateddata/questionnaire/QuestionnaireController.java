@@ -59,7 +59,6 @@ public class QuestionnaireController {
     return populate(questionnaire, entity, MAPPER.writeValueAsString(questionnaire));
   }
 
-  /** Populates an entity with Resource data. */
   private static QuestionnaireEntity populate(
       @NonNull Questionnaire questionnaire, @NonNull QuestionnaireEntity entity, String payload) {
     checkState(
@@ -72,7 +71,6 @@ public class QuestionnaireController {
     return entity;
   }
 
-  /** Transforms a Resource to an Entity. */
   public static QuestionnaireEntity toEntity(Questionnaire questionnaire) {
     checkState(questionnaire.id() != null, "ID is required");
     return populate(questionnaire, QuestionnaireEntity.builder().id(questionnaire.id()).build());

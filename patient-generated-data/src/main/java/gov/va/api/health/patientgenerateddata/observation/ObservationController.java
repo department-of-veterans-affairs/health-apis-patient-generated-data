@@ -43,13 +43,11 @@ public class ObservationController {
 
   private final ObservationRepository repository;
 
-  /** Populates an entity with Resource data. */
   @SneakyThrows
   private static ObservationEntity populate(Observation observation, ObservationEntity entity) {
     return populate(observation, entity, MAPPER.writeValueAsString(observation));
   }
 
-  /** Populates an entity with Resource data. */
   private static ObservationEntity populate(
       @NonNull Observation observation, @NonNull ObservationEntity entity, String payload) {
     checkState(
