@@ -102,7 +102,6 @@ public class QuestionnaireController {
     return create(generateRandomId(), questionnaire);
   }
 
-  /** Create resource. */
   @SneakyThrows
   ResponseEntity<Questionnaire> create(String id, Questionnaire questionnaire) {
     checkRequestState(

@@ -99,7 +99,6 @@ public class PatientController {
     return populate(patient, PatientEntity.builder().id(patient.id()).build());
   }
 
-  /** Create resource. */
   @PostMapping
   ResponseEntity<Patient> create(@Valid @RequestBody Patient patient) {
     checkRequestState(isNotEmpty(patient.id()), "Patient ICN is required in id field");

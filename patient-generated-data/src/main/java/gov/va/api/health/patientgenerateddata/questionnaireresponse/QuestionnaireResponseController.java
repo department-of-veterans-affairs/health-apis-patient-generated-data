@@ -114,7 +114,6 @@ public class QuestionnaireResponseController {
     return create(generateRandomId(), questionnaireResponse);
   }
 
-  /** Create resource. */
   ResponseEntity<QuestionnaireResponse> create(
       String id, QuestionnaireResponse questionnaireResponse) {
     checkRequestState(

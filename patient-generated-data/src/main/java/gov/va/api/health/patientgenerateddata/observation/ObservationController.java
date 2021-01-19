@@ -72,7 +72,6 @@ public class ObservationController {
     return create(generateRandomId(), observation);
   }
 
-  /** Create resource. */
   ResponseEntity<Observation> create(String id, Observation observation) {
     checkRequestState(isEmpty(observation.id()), "ID must be empty, found %s", observation.id());
     observation.id(id);
