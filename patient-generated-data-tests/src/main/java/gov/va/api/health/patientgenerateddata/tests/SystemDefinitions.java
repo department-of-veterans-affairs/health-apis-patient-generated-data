@@ -9,6 +9,8 @@ import lombok.experimental.UtilityClass;
 
 @UtilityClass
 class SystemDefinitions {
+  static final String CLIENT_KEY_DEFAULT = "pteracuda";
+
   private static Ids ids() {
     return Ids.builder()
         .observation("fc691a7f-a0f3-47b4-9d00-2786d055e8ba")
