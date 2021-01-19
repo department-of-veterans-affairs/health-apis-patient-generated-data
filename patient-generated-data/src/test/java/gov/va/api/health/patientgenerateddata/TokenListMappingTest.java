@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import gov.va.api.health.r4.api.datatypes.Coding;
 import gov.va.api.health.r4.api.elements.Meta;
 import gov.va.api.health.r4.api.resources.QuestionnaireResponse;
+import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 
@@ -20,6 +21,15 @@ public class TokenListMappingTest {
         .build();
   }
 
+  private static QuestionnaireResponse _questionnaireResponseNullValues() {
+    QuestionnaireResponse qr =
+        QuestionnaireResponse.builder()
+            .meta(Meta.builder().tag(List.of(Coding.builder().build())).build())
+            .build();
+    qr.meta().tag(null);
+    return qr;
+  }
+
   @Test
   void metadataValueJoin_Code() {
     String join = TokenListMapping.metadataValueJoin(_questionnaireResponse(null, "123"));
@@ -27,6 +37,18 @@ public class TokenListMappingTest {
     assertThat(join).contains(addTerminators("123"));
     assertThat(join).doesNotContain(addTerminators("clinics|123"));
     assertThat(join).doesNotContain(addTerminators("clinics|"));
+  }
+
+  @Test
+  void metadataValueJoin_Null() {
+    QuestionnaireResponse qr = _questionnaireResponseNullValues();
+    String join = TokenListMapping.metadataValueJoin(qr);
+    assertThat(join).isNull();
+    List<Coding> list = new ArrayList<>();
+    list.add(null);
+    qr.meta().tag(list);
+    join = TokenListMapping.metadataValueJoin(qr);
+    assertThat(join).isEmpty();
   }
 
   @Test
