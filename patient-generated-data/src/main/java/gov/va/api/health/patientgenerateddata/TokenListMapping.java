@@ -35,7 +35,7 @@ public final class TokenListMapping<EntityT> implements SingleParameterMapping<E
     }
     return questionnaireResponse.meta().tag().stream()
         .flatMap(tag -> valueJoin(tag))
-        .collect(joining(","));
+        .collect(joining(" , "));
   }
 
   private static Stream<String> valueJoin(Coding tag) {
@@ -46,7 +46,7 @@ public final class TokenListMapping<EntityT> implements SingleParameterMapping<E
       return Stream.empty();
     }
     if (tag.system() == null) {
-      return Stream.of(addTerminators("|" + tag.code()));
+      return Stream.of(addTerminators("|" + tag.code()), addTerminators(tag.code()));
     }
     if (tag.code() == null) {
       return Stream.of(addTerminators(tag.system() + "|"));
@@ -54,7 +54,7 @@ public final class TokenListMapping<EntityT> implements SingleParameterMapping<E
     return Stream.of(
         addTerminators(tag.system() + "|" + tag.code()),
         addTerminators(tag.system() + "|"),
-        addTerminators("|" + tag.code()));
+        addTerminators(tag.code()));
   }
 
   @Override

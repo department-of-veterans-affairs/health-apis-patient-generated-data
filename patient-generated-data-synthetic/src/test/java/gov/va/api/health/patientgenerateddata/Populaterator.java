@@ -167,7 +167,7 @@ public final class Populaterator {
       String sqlInsert =
           sqlInsert(
               "app.QuestionnaireResponse",
-              List.of("id", "payload", "version", "authored", "author", "subject", "tag"));
+              List.of("id", "payload", "version", "authored", "author", "subject", "metaTag"));
       try (PreparedStatement statement = connection.prepareStatement(sqlInsert)) {
         statement.setObject(1, response.id());
         statement.setObject(2, MAPPER.writeValueAsString(response));

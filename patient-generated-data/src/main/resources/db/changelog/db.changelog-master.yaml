@@ -257,7 +257,7 @@ databaseChangeLog:
             schemaName: app
             columns:
               - column:
-                  name: tag
+                  name: metaTag
                   type: clob
                   constraints:
                     - nullable: true

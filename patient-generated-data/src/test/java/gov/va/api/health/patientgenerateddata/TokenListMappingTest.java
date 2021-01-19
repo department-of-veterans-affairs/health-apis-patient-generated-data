@@ -65,7 +65,7 @@ public class TokenListMappingTest {
     String join = TokenListMapping.metadataValueJoin(_questionnaireResponse("clinics", "123"));
     assertThat(join).contains(addTerminators("clinics|123"));
     assertThat(join).contains(addTerminators("clinics|"));
-    assertThat(join).contains(addTerminators("|123"));
+    assertThat(join).contains(addTerminators("123"));
   }
 
   @Test

@@ -74,10 +74,12 @@ public class QuestionnaireResponseController {
     String authorId = ReferenceUtils.resourceId(questionnaireResponse.author());
     Instant authored = ParseUtils.parseDateTime(questionnaireResponse.authored());
     String subject = ReferenceUtils.resourceId(questionnaireResponse.subject());
+    String metaTag = TokenListMapping.metadataValueJoin(questionnaireResponse);
     entity.payload(payload);
     entity.author(authorId);
     entity.authored(authored);
     entity.subject(subject);
+    entity.metaTag(metaTag);
     return entity;
   }
 
@@ -99,7 +101,7 @@ public class QuestionnaireResponseController {
                 .add(
                     TokenListMapping.<QuestionnaireResponseEntity>builder()
                         .parameterName("_tag")
-                        .fieldName("tag")
+                        .fieldName("metaTag")
                         .build())
                 .value("author", "author")
                 .dateAsInstant("authored", "authored")
