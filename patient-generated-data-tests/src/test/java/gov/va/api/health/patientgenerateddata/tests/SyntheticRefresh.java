@@ -16,12 +16,16 @@ import lombok.SneakyThrows;
 public class SyntheticRefresh {
   private static final ObjectMapper MAPPER = JacksonConfig.createMapper();
 
+  private static final String CLIENT_KEY = System.getProperty("client-key", "unset");
+
+  private static final String BASE_DIR = System.getProperty("basedir", ".");
+
   private static String baseDir() {
-    return System.getProperty("basedir", ".");
+    return BASE_DIR;
   }
 
   private static String clientKey() {
-    return System.getProperty("client-key");
+    return CLIENT_KEY;
   }
 
   private static <T extends Resource> void create(T obj, Class<T> clazz) {
