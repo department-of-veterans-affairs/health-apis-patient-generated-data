@@ -52,6 +52,50 @@ public class PatientController {
 
   private final PatientRepository repository;
 
+  private static String findIcn(Patient patient) {
+    checkState(patient != null);
+    if (patient.identifier() != null) {
+      Optional<Identifier> mpi =
+          patient.identifier().stream()
+              .filter(
+                  (identifier) -> {
+                    if (identifier.system() != null) {
+                      return identifier.system().equals(MPI_URI);
+                    }
+                    return false;
+                  })
+              .findFirst();
+      if (mpi.isPresent()) {
+        return mpi.get().value();
+      }
+    }
+    return null;
+  }
+
+  @SneakyThrows
+  private static boolean isValidIcn(String icn) {
+    checkState(isNotEmpty(icn));
+    return MPI_PATTERN.matcher(icn.trim()).matches();
+  }
+
+  @SneakyThrows
+  static PatientEntity populate(Patient patient, PatientEntity entity) {
+    return populate(patient, entity, MAPPER.writeValueAsString(patient));
+  }
+
+  static PatientEntity populate(
+      @NonNull Patient patient, @NonNull PatientEntity entity, String payload) {
+    checkState(
+        entity.id().equals(patient.id()), "IDs don't match, %s != %s", entity.id(), patient.id());
+    entity.payload(payload);
+    return entity;
+  }
+
+  static PatientEntity toEntity(Patient patient) {
+    checkState(patient.id() != null, "ID is required");
+    return populate(patient, PatientEntity.builder().id(patient.id()).build());
+  }
+
   @PostMapping
   ResponseEntity<Patient> create(@Valid @RequestBody Patient patient) {
     checkRequestState(isNotEmpty(patient.id()), "Patient ICN is required in id field");
@@ -89,47 +133,9 @@ public class PatientController {
         .body(patient);
   }
 
-  private String findIcn(Patient patient) {
-    checkState(patient != null);
-    if (patient.identifier() != null) {
-      Optional<Identifier> mpi =
-          patient.identifier().stream()
-              .filter(
-                  (identifier) -> {
-                    if (identifier.system() != null) {
-                      return identifier.system().equals(MPI_URI);
-                    }
-                    return false;
-                  })
-              .findFirst();
-      if (mpi.isPresent()) {
-        return mpi.get().value();
-      }
-    }
-    return null;
-  }
-
   @InitBinder
   void initDirectFieldAccess(DataBinder dataBinder) {
     dataBinder.initDirectFieldAccess();
-  }
-
-  @SneakyThrows
-  private boolean isValidIcn(String icn) {
-    checkState(isNotEmpty(icn));
-    return MPI_PATTERN.matcher(icn.trim()).matches();
-  }
-
-  @SneakyThrows
-  PatientEntity populate(Patient patient, PatientEntity entity) {
-    return populate(patient, entity, MAPPER.writeValueAsString(patient));
-  }
-
-  PatientEntity populate(@NonNull Patient patient, @NonNull PatientEntity entity, String payload) {
-    checkState(
-        entity.id().equals(patient.id()), "IDs don't match, %s != %s", entity.id(), patient.id());
-    entity.payload(payload);
-    return entity;
   }
 
   @GetMapping(value = "/{id}")
@@ -137,11 +143,6 @@ public class PatientController {
     Optional<PatientEntity> maybeEntity = repository.findById(id);
     PatientEntity entity = maybeEntity.orElseThrow(() -> new Exceptions.NotFound(id));
     return entity.deserializePayload();
-  }
-
-  PatientEntity toEntity(Patient patient) {
-    checkState(patient.id() != null, "ID is required");
-    return populate(patient, PatientEntity.builder().id(patient.id()).build());
   }
 
   @SneakyThrows

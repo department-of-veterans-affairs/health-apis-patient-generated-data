@@ -55,6 +55,39 @@ public class QuestionnaireResponseController {
 
   private final QuestionnaireResponseRepository repository;
 
+  @SneakyThrows
+  static QuestionnaireResponseEntity populate(
+      QuestionnaireResponse questionnaireResponse, QuestionnaireResponseEntity entity) {
+    return populate(
+        questionnaireResponse, entity, MAPPER.writeValueAsString(questionnaireResponse));
+  }
+
+  static QuestionnaireResponseEntity populate(
+      @NonNull QuestionnaireResponse questionnaireResponse,
+      @NonNull QuestionnaireResponseEntity entity,
+      String payload) {
+    checkState(
+        entity.id().equals(questionnaireResponse.id()),
+        "IDs don't match, %s != %s",
+        entity.id(),
+        questionnaireResponse.id());
+    String authorId = ReferenceUtils.resourceId(questionnaireResponse.author());
+    Instant authored = ParseUtils.parseDateTime(questionnaireResponse.authored());
+    String subject = ReferenceUtils.resourceId(questionnaireResponse.subject());
+    entity.payload(payload);
+    entity.author(authorId);
+    entity.authored(authored);
+    entity.subject(subject);
+    return entity;
+  }
+
+  static QuestionnaireResponseEntity toEntity(QuestionnaireResponse questionnaireResponse) {
+    checkState(questionnaireResponse.id() != null, "ID is required");
+    return populate(
+        questionnaireResponse,
+        QuestionnaireResponseEntity.builder().id(questionnaireResponse.id()).build());
+  }
+
   private VulcanConfiguration<QuestionnaireResponseEntity> configuration() {
     return VulcanConfiguration.forEntity(QuestionnaireResponseEntity.class)
         .paging(
@@ -162,13 +195,6 @@ public class QuestionnaireResponseController {
                 .build())
         .toResource(QuestionnaireResponseEntity::deserializePayload)
         .build();
-  }
-
-  QuestionnaireResponseEntity toEntity(QuestionnaireResponse questionnaireResponse) {
-    checkState(questionnaireResponse.id() != null, "ID is required");
-    return populate(
-        questionnaireResponse,
-        QuestionnaireResponseEntity.builder().id(questionnaireResponse.id()).build());
   }
 
   @SneakyThrows
