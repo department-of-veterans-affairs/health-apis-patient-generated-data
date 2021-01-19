@@ -52,12 +52,14 @@ public class QuestionnaireController {
 
   private final QuestionnaireRepository repository;
 
+  /** Populates an entity with Resource data. */
   @SneakyThrows
-  static QuestionnaireEntity populate(Questionnaire questionnaire, QuestionnaireEntity entity) {
+  private static QuestionnaireEntity populate(
+      Questionnaire questionnaire, QuestionnaireEntity entity) {
     return populate(questionnaire, entity, MAPPER.writeValueAsString(questionnaire));
   }
 
-  static QuestionnaireEntity populate(
+  private static QuestionnaireEntity populate(
       @NonNull Questionnaire questionnaire, @NonNull QuestionnaireEntity entity, String payload) {
     checkState(
         entity.id().equals(questionnaire.id()),
@@ -69,7 +71,7 @@ public class QuestionnaireController {
     return entity;
   }
 
-  static QuestionnaireEntity toEntity(Questionnaire questionnaire) {
+  public static QuestionnaireEntity toEntity(Questionnaire questionnaire) {
     checkState(questionnaire.id() != null, "ID is required");
     return populate(questionnaire, QuestionnaireEntity.builder().id(questionnaire.id()).build());
   }

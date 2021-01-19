@@ -79,11 +79,11 @@ public class PatientController {
   }
 
   @SneakyThrows
-  static PatientEntity populate(Patient patient, PatientEntity entity) {
+  private static PatientEntity populate(Patient patient, PatientEntity entity) {
     return populate(patient, entity, MAPPER.writeValueAsString(patient));
   }
 
-  static PatientEntity populate(
+  private static PatientEntity populate(
       @NonNull Patient patient, @NonNull PatientEntity entity, String payload) {
     checkState(
         entity.id().equals(patient.id()), "IDs don't match, %s != %s", entity.id(), patient.id());
@@ -91,7 +91,8 @@ public class PatientController {
     return entity;
   }
 
-  static PatientEntity toEntity(Patient patient) {
+  /** Transforms a Resource to an Entity. */
+  public static PatientEntity toEntity(Patient patient) {
     checkState(patient.id() != null, "ID is required");
     return populate(patient, PatientEntity.builder().id(patient.id()).build());
   }

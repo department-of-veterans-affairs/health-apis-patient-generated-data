@@ -56,13 +56,13 @@ public class QuestionnaireResponseController {
   private final QuestionnaireResponseRepository repository;
 
   @SneakyThrows
-  static QuestionnaireResponseEntity populate(
+  private static QuestionnaireResponseEntity populate(
       QuestionnaireResponse questionnaireResponse, QuestionnaireResponseEntity entity) {
     return populate(
         questionnaireResponse, entity, MAPPER.writeValueAsString(questionnaireResponse));
   }
 
-  static QuestionnaireResponseEntity populate(
+  private static QuestionnaireResponseEntity populate(
       @NonNull QuestionnaireResponse questionnaireResponse,
       @NonNull QuestionnaireResponseEntity entity,
       String payload) {
@@ -83,7 +83,8 @@ public class QuestionnaireResponseController {
     return entity;
   }
 
-  static QuestionnaireResponseEntity toEntity(QuestionnaireResponse questionnaireResponse) {
+  /** Transforms a Resource to an Entity. */
+  public static QuestionnaireResponseEntity toEntity(QuestionnaireResponse questionnaireResponse) {
     checkState(questionnaireResponse.id() != null, "ID is required");
     return populate(
         questionnaireResponse,
@@ -147,7 +148,7 @@ public class QuestionnaireResponseController {
 
   /** QuestionnaireResponse Search. */
   @GetMapping
-  public QuestionnaireResponse.Bundle search(HttpServletRequest request) {
+  QuestionnaireResponse.Bundle search(HttpServletRequest request) {
     return Vulcan.forRepo(repository)
         .config(configuration())
         .build()
