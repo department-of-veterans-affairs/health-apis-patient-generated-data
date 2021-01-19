@@ -43,6 +43,27 @@ public class ObservationController {
 
   private final ObservationRepository repository;
 
+  @SneakyThrows
+  static ObservationEntity populate(Observation observation, ObservationEntity entity) {
+    return populate(observation, entity, MAPPER.writeValueAsString(observation));
+  }
+
+  static ObservationEntity populate(
+      @NonNull Observation observation, @NonNull ObservationEntity entity, String payload) {
+    checkState(
+        entity.id().equals(observation.id()),
+        "IDs don't match, %s != %s",
+        entity.id(),
+        observation.id());
+    entity.payload(payload);
+    return entity;
+  }
+
+  static ObservationEntity toEntity(Observation observation) {
+    checkState(observation.id() != null, "ID is required");
+    return populate(observation, ObservationEntity.builder().id(observation.id()).build());
+  }
+
   @PostMapping
   ResponseEntity<Observation> create(@Valid @RequestBody Observation observation) {
     return create(generateRandomId(), observation);
@@ -62,32 +83,11 @@ public class ObservationController {
     dataBinder.initDirectFieldAccess();
   }
 
-  @SneakyThrows
-  ObservationEntity populate(Observation observation, ObservationEntity entity) {
-    return populate(observation, entity, MAPPER.writeValueAsString(observation));
-  }
-
-  ObservationEntity populate(
-      @NonNull Observation observation, @NonNull ObservationEntity entity, String payload) {
-    checkState(
-        entity.id().equals(observation.id()),
-        "IDs don't match, %s != %s",
-        entity.id(),
-        observation.id());
-    entity.payload(payload);
-    return entity;
-  }
-
   @GetMapping(value = "/{id}")
   Observation read(@PathVariable("id") String id) {
     Optional<ObservationEntity> maybeEntity = repository.findById(id);
     ObservationEntity entity = maybeEntity.orElseThrow(() -> new Exceptions.NotFound(id));
     return entity.deserializePayload();
-  }
-
-  ObservationEntity toEntity(Observation observation) {
-    checkState(observation.id() != null, "ID is required");
-    return populate(observation, ObservationEntity.builder().id(observation.id()).build());
   }
 
   @SneakyThrows
