@@ -15,6 +15,7 @@ import gov.va.api.health.patientgenerateddata.Exceptions;
 import gov.va.api.health.patientgenerateddata.LinkProperties;
 import gov.va.api.health.patientgenerateddata.ParseUtils;
 import gov.va.api.health.patientgenerateddata.ReferenceUtils;
+import gov.va.api.health.patientgenerateddata.TokenListMapping;
 import gov.va.api.health.patientgenerateddata.VulcanizedBundler;
 import gov.va.api.health.r4.api.resources.QuestionnaireResponse;
 import gov.va.api.lighthouse.vulcan.Vulcan;
@@ -73,10 +74,12 @@ public class QuestionnaireResponseController {
     String authorId = ReferenceUtils.resourceId(questionnaireResponse.author());
     Instant authored = ParseUtils.parseDateTime(questionnaireResponse.authored());
     String subject = ReferenceUtils.resourceId(questionnaireResponse.subject());
+    String metaTag = TokenListMapping.metadataTagJoin(questionnaireResponse);
     entity.payload(payload);
     entity.author(authorId);
     entity.authored(authored);
     entity.subject(subject);
+    entity.metaTag(metaTag);
     return entity;
   }
 
@@ -96,13 +99,18 @@ public class QuestionnaireResponseController {
         .mappings(
             Mappings.forEntity(QuestionnaireResponseEntity.class)
                 .value("_id", "id")
+                .add(
+                    TokenListMapping.<QuestionnaireResponseEntity>builder()
+                        .parameterName("_tag")
+                        .fieldName("metaTag")
+                        .build())
                 .value("author", "author")
                 .dateAsInstant("authored", "authored")
                 .value("subject", "subject")
                 .get())
         .defaultQuery(returnNothing())
-        .rule(atLeastOneParameterOf("_id", "author", "authored", "subject"))
-        .rule(ifParameter("_id").thenForbidParameters("author", "authored", "subject"))
+        .rule(atLeastOneParameterOf("_id", "_tag", "author", "authored", "subject"))
+        .rule(ifParameter("_id").thenForbidParameters("_tag", "author", "authored", "subject"))
         .build();
   }
 
