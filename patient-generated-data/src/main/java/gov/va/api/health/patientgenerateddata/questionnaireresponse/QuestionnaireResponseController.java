@@ -74,7 +74,7 @@ public class QuestionnaireResponseController {
     String authorId = ReferenceUtils.resourceId(questionnaireResponse.author());
     Instant authored = ParseUtils.parseDateTime(questionnaireResponse.authored());
     String subject = ReferenceUtils.resourceId(questionnaireResponse.subject());
-    String metaTag = TokenListMapping.metadataValueJoin(questionnaireResponse);
+    String metaTag = TokenListMapping.metadataTagJoin(questionnaireResponse);
     entity.payload(payload);
     entity.author(authorId);
     entity.authored(authored);

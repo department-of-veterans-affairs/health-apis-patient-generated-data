@@ -31,8 +31,8 @@ public class TokenListMappingTest {
   }
 
   @Test
-  void metadataValueJoin_Code() {
-    String join = TokenListMapping.metadataValueJoin(_questionnaireResponse(null, "123"));
+  void metadataTagJoin_Code() {
+    String join = TokenListMapping.metadataTagJoin(_questionnaireResponse(null, "123"));
     assertThat(join).contains(addTerminators("|123"));
     assertThat(join).contains(addTerminators("123"));
     assertThat(join).doesNotContain(addTerminators("clinics|123"));
@@ -40,20 +40,20 @@ public class TokenListMappingTest {
   }
 
   @Test
-  void metadataValueJoin_Null() {
+  void metadataTagJoin_Null() {
     QuestionnaireResponse qr = _questionnaireResponseNullValues();
-    String join = TokenListMapping.metadataValueJoin(qr);
+    String join = TokenListMapping.metadataTagJoin(qr);
     assertThat(join).isNull();
     List<Coding> list = new ArrayList<>();
     list.add(null);
     qr.meta().tag(list);
-    join = TokenListMapping.metadataValueJoin(qr);
+    join = TokenListMapping.metadataTagJoin(qr);
     assertThat(join).isEmpty();
   }
 
   @Test
-  void metadataValueJoin_System() {
-    String join = TokenListMapping.metadataValueJoin(_questionnaireResponse("clinics", null));
+  void metadataTagJoin_System() {
+    String join = TokenListMapping.metadataTagJoin(_questionnaireResponse("clinics", null));
     assertThat(join).contains(addTerminators("clinics|"));
     assertThat(join).contains(addTerminators("clinics"));
     assertThat(join).doesNotContain(addTerminators("clinics|123"));
@@ -61,23 +61,23 @@ public class TokenListMappingTest {
   }
 
   @Test
-  void metadataValueJoin_SystemAndCode() {
-    String join = TokenListMapping.metadataValueJoin(_questionnaireResponse("clinics", "123"));
+  void metadataTagJoin_SystemAndCode() {
+    String join = TokenListMapping.metadataTagJoin(_questionnaireResponse("clinics", "123"));
     assertThat(join).contains(addTerminators("clinics|123"));
     assertThat(join).contains(addTerminators("clinics|"));
     assertThat(join).contains(addTerminators("123"));
   }
 
   @Test
-  void metadataValueJoin_falseMatch() {
-    String join = TokenListMapping.metadataValueJoin(_questionnaireResponse("clinics", "123"));
+  void metadataTagJoin_falseMatch() {
+    String join = TokenListMapping.metadataTagJoin(_questionnaireResponse("clinics", "123"));
     assertThat(join).doesNotContain(addTerminators("clinics|12"));
     assertThat(join).doesNotContain(addTerminators("linics|123"));
   }
 
   @Test
-  void metadataValueJoin_missingSystemAndCode() {
-    String join = TokenListMapping.metadataValueJoin(_questionnaireResponse(null, null));
+  void metadataTagJoin_missingSystemAndCode() {
+    String join = TokenListMapping.metadataTagJoin(_questionnaireResponse(null, null));
     assertThat(join).isEmpty();
   }
 }

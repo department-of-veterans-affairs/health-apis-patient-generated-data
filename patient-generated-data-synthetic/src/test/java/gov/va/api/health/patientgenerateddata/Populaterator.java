@@ -175,7 +175,7 @@ public final class Populaterator {
         statement.setTimestamp(4, timestamp(ParseUtils.parseDateTime(response.authored())));
         statement.setObject(5, ReferenceUtils.resourceId(response.author()));
         statement.setObject(6, ReferenceUtils.resourceId(response.subject()));
-        statement.setObject(7, TokenListMapping.metadataValueJoin(response));
+        statement.setObject(7, TokenListMapping.metadataTagJoin(response));
         statement.execute();
       }
     }
