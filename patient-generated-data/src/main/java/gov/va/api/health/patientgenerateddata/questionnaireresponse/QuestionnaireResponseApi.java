@@ -129,6 +129,11 @@ public interface QuestionnaireResponseApi {
           String subject,
       @Parameter(
               in = ParameterIn.QUERY,
+              name = "questionnaire",
+              description = "The questionnaire that is being responded")
+              String questionnaire,
+      @Parameter(
+              in = ParameterIn.QUERY,
               name = "page",
               description = "The page number of the search result.")
           @DefaultValue("1")

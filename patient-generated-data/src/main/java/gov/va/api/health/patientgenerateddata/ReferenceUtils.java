@@ -14,10 +14,14 @@ public final class ReferenceUtils {
    * followed by an ID, e.g. `foo/bar/Patient/1234567890V123456`.
    */
   public static String resourceId(Reference ref) {
-    if (ref == null || isBlank(ref.reference())) {
+    return resourceId(ref.reference());
+  }
+
+  public static String resourceId(String str) {
+    if (str == null || isBlank(str)) {
       return null;
     }
-    List<String> splitReference = Splitter.on('/').splitToList(ref.reference());
+    List<String> splitReference = Splitter.on('/').splitToList(str);
     if (splitReference.size() <= 1) {
       return null;
     }

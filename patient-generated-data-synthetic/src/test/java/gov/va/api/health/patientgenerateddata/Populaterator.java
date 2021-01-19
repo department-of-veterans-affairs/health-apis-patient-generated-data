@@ -14,6 +14,7 @@ import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.Ref;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.Collection;
@@ -167,7 +168,7 @@ public final class Populaterator {
       String sqlInsert =
           sqlInsert(
               "app.QuestionnaireResponse",
-              List.of("id", "payload", "version", "authored", "author", "subject"));
+              List.of("id", "payload", "version", "authored", "author", "subject", "questionnaire"));
       try (PreparedStatement statement = connection.prepareStatement(sqlInsert)) {
         statement.setObject(1, response.id());
         statement.setObject(2, MAPPER.writeValueAsString(response));
@@ -175,6 +176,7 @@ public final class Populaterator {
         statement.setTimestamp(4, timestamp(ParseUtils.parseDateTime(response.authored())));
         statement.setObject(5, ReferenceUtils.resourceId(response.author()));
         statement.setObject(6, ReferenceUtils.resourceId(response.subject()));
+        statement.setObject(7, ReferenceUtils.resourceId(response.questionnaire()));
         statement.execute();
       }
     }

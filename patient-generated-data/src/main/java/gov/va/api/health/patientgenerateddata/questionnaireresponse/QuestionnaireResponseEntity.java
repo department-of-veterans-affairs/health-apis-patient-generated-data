@@ -40,6 +40,8 @@ public class QuestionnaireResponseEntity implements PayloadEntity<QuestionnaireR
 
   private String subject;
 
+  private String questionnaire;
+
   public static Sort naturalOrder() {
     return Sort.by("id").ascending();
   }

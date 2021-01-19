@@ -73,10 +73,12 @@ public class QuestionnaireResponseController {
     String authorId = ReferenceUtils.resourceId(questionnaireResponse.author());
     Instant authored = ParseUtils.parseDateTime(questionnaireResponse.authored());
     String subject = ReferenceUtils.resourceId(questionnaireResponse.subject());
+    String questionnaire = ReferenceUtils.resourceId(questionnaireResponse.questionnaire());
     entity.payload(payload);
     entity.author(authorId);
     entity.authored(authored);
     entity.subject(subject);
+    entity.questionnaire(questionnaire);
     return entity;
   }
 
@@ -98,10 +100,12 @@ public class QuestionnaireResponseController {
                 .value("author", "author")
                 .dateAsInstant("authored", "authored")
                 .value("subject", "subject")
+                .value("questionnaire", "questionnaire")
                 .get())
         .defaultQuery(returnNothing())
-        .rule(atLeastOneParameterOf("_id", "author", "authored", "subject"))
-        .rule(ifParameter("_id").thenForbidParameters("author", "authored", "subject"))
+        .rule(atLeastOneParameterOf("_id", "author", "authored", "subject", "questionnaire"))
+        .rule(ifParameter("_id")
+                .thenForbidParameters("author", "authored", "subject", "questionnaire"))
         .build();
   }
 
