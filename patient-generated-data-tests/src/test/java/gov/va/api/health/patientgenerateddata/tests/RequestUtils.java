@@ -14,7 +14,11 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class RequestUtils {
+  private static final String INTERNAL_R4_PATH = "management/r4/";
+
   private static final ObjectMapper MAPPER = JacksonConfig.createMapper();
+
+  private static final String ACCESS_TOKEN = System.getProperty("access-token", "unset");
 
   public static ExpectedResponse doGet(
       String acceptHeader, String request, Integer expectedStatus) {
@@ -24,7 +28,7 @@ public class RequestUtils {
             .baseUri(svc.url())
             .port(svc.port())
             .relaxedHTTPSValidation()
-            .header("Authorization", "Bearer " + System.getProperty("access-token", "unset"));
+            .header("Authorization", "Bearer " + ACCESS_TOKEN);
     log.info(
         "Expect {} with accept header ({}) is status code ({})",
         svc.apiPath() + request,
@@ -43,6 +47,38 @@ public class RequestUtils {
   }
 
   @SneakyThrows
+  public static ExpectedResponse doInternalPost(
+      String request,
+      Object payload,
+      String description,
+      Integer expectedStatus,
+      String clientKey) {
+    SystemDefinitions.Service svc = systemDefinition().internal();
+    RequestSpecification spec =
+        RestAssured.given()
+            .baseUri(svc.url())
+            .port(svc.port())
+            .relaxedHTTPSValidation()
+            .header("Authorization", "Bearer " + ACCESS_TOKEN)
+            .header("client-key", clientKey)
+            .header("Content-Type", "application/json")
+            .body(MAPPER.writeValueAsString(payload));
+    log.info(
+        "Expect {} POST '{}' is status code ({})",
+        svc.apiPath() + INTERNAL_R4_PATH + request,
+        description,
+        expectedStatus);
+    ExpectedResponse response =
+        ExpectedResponse.of(
+                spec.request(Method.POST, svc.urlWithApiPath() + INTERNAL_R4_PATH + request))
+            .logAction(logAllWithTruncatedBody(2000));
+    if (expectedStatus != null) {
+      response.expect(expectedStatus);
+    }
+    return response;
+  }
+
+  @SneakyThrows
   public static ExpectedResponse doPost(
       String request, Object payload, String description, Integer expectedStatus) {
     SystemDefinitions.Service svc = systemDefinition().r4();
@@ -51,7 +87,7 @@ public class RequestUtils {
             .baseUri(svc.url())
             .port(svc.port())
             .relaxedHTTPSValidation()
-            .header("Authorization", "Bearer " + System.getProperty("access-token", "unset"))
+            .header("Authorization", "Bearer " + ACCESS_TOKEN)
             .header("Content-Type", "application/json")
             .body(MAPPER.writeValueAsString(payload));
     log.info(
@@ -77,7 +113,7 @@ public class RequestUtils {
             .baseUri(svc.url())
             .port(svc.port())
             .relaxedHTTPSValidation()
-            .header("Authorization", "Bearer " + System.getProperty("access-token", "unset"))
+            .header("Authorization", "Bearer " + ACCESS_TOKEN)
             .header("Content-Type", "application/json")
             .body(MAPPER.writeValueAsString(payload));
     log.info(
