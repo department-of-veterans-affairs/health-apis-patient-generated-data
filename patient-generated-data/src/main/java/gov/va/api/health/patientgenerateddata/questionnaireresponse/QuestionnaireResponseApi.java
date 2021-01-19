@@ -127,11 +127,7 @@ public interface QuestionnaireResponseApi {
               name = "subject",
               description = "Who or what the answers apply to.")
           String subject,
-      @Parameter(
-              in = ParameterIn.QUERY,
-              name = "_tag",
-              description = "The metadata tag for the system or code")
-          String tag,
+      @Parameter(in = ParameterIn.QUERY, name = "_tag", description = "A metadata tag") String tag,
       @Parameter(
               in = ParameterIn.QUERY,
               name = "page",

@@ -24,21 +24,7 @@ public final class TokenListMapping<EntityT> implements SingleParameterMapping<E
     return "|" + str + "|";
   }
 
-  /**
-   * Takes the questionnaire response and creates pairs of systems and codes, delimited by a comma.
-   */
-  public static String metadataValueJoin(QuestionnaireResponse questionnaireResponse) {
-    if (questionnaireResponse == null
-        || questionnaireResponse.meta() == null
-        || questionnaireResponse.meta().tag() == null) {
-      return null;
-    }
-    return questionnaireResponse.meta().tag().stream()
-        .flatMap(tag -> valueJoin(tag))
-        .collect(joining(" , "));
-  }
-
-  private static Stream<String> valueJoin(Coding tag) {
+  private static Stream<String> codingJoin(Coding tag) {
     if (tag == null) {
       return Stream.empty();
     }
@@ -55,6 +41,20 @@ public final class TokenListMapping<EntityT> implements SingleParameterMapping<E
         addTerminators(tag.system() + "|" + tag.code()),
         addTerminators(tag.system() + "|"),
         addTerminators(tag.code()));
+  }
+
+  /**
+   * Takes the questionnaire response and creates pairs of systems and codes, delimited by a comma.
+   */
+  public static String metadataTagJoin(QuestionnaireResponse questionnaireResponse) {
+    if (questionnaireResponse == null
+        || questionnaireResponse.meta() == null
+        || questionnaireResponse.meta().tag() == null) {
+      return null;
+    }
+    return questionnaireResponse.meta().tag().stream()
+        .flatMap(tag -> codingJoin(tag))
+        .collect(joining(" , "));
   }
 
   @Override
