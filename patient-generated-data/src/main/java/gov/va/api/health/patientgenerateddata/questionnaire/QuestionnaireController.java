@@ -104,7 +104,7 @@ public class QuestionnaireController {
 
   /** Create resource. */
   @SneakyThrows
-  public ResponseEntity<Questionnaire> create(String id, Questionnaire questionnaire) {
+  ResponseEntity<Questionnaire> create(String id, Questionnaire questionnaire) {
     checkRequestState(
         isEmpty(questionnaire.id()), "ID must be empty, found %s", questionnaire.id());
     questionnaire.id(id);

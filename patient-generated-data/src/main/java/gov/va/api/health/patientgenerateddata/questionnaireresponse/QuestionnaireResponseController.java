@@ -115,7 +115,7 @@ public class QuestionnaireResponseController {
   }
 
   /** Create resource. */
-  public ResponseEntity<QuestionnaireResponse> create(
+  ResponseEntity<QuestionnaireResponse> create(
       String id, QuestionnaireResponse questionnaireResponse) {
     checkRequestState(
         isEmpty(questionnaireResponse.id()),
@@ -143,7 +143,7 @@ public class QuestionnaireResponseController {
 
   /** QuestionnaireResponse Search. */
   @GetMapping
-  public QuestionnaireResponse.Bundle search(HttpServletRequest request) {
+  QuestionnaireResponse.Bundle search(HttpServletRequest request) {
     return Vulcan.forRepo(repository)
         .config(configuration())
         .build()

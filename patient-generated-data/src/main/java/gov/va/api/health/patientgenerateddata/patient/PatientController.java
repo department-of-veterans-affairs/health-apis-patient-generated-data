@@ -52,6 +52,32 @@ public class PatientController {
 
   private final PatientRepository repository;
 
+  private static String findIcn(Patient patient) {
+    checkState(patient != null);
+    if (patient.identifier() != null) {
+      Optional<Identifier> mpi =
+          patient.identifier().stream()
+              .filter(
+                  (identifier) -> {
+                    if (identifier.system() != null) {
+                      return identifier.system().equals(MPI_URI);
+                    }
+                    return false;
+                  })
+              .findFirst();
+      if (mpi.isPresent()) {
+        return mpi.get().value();
+      }
+    }
+    return null;
+  }
+
+  @SneakyThrows
+  private static boolean isValidIcn(String icn) {
+    checkState(isNotEmpty(icn));
+    return MPI_PATTERN.matcher(icn.trim()).matches();
+  }
+
   /** Populates an entity with Resource data. */
   @SneakyThrows
   public static PatientEntity populate(Patient patient, PatientEntity entity) {
@@ -75,7 +101,7 @@ public class PatientController {
 
   /** Create resource. */
   @PostMapping
-  public ResponseEntity<Patient> create(@Valid @RequestBody Patient patient) {
+  ResponseEntity<Patient> create(@Valid @RequestBody Patient patient) {
     checkRequestState(isNotEmpty(patient.id()), "Patient ICN is required in id field");
     String id = patient.id();
     checkRequestState(isValidIcn(id), "Patient ICN must be in valid MPI format.");
@@ -111,35 +137,9 @@ public class PatientController {
         .body(patient);
   }
 
-  private String findIcn(Patient patient) {
-    checkState(patient != null);
-    if (patient.identifier() != null) {
-      Optional<Identifier> mpi =
-          patient.identifier().stream()
-              .filter(
-                  (identifier) -> {
-                    if (identifier.system() != null) {
-                      return identifier.system().equals(MPI_URI);
-                    }
-                    return false;
-                  })
-              .findFirst();
-      if (mpi.isPresent()) {
-        return mpi.get().value();
-      }
-    }
-    return null;
-  }
-
   @InitBinder
   void initDirectFieldAccess(DataBinder dataBinder) {
     dataBinder.initDirectFieldAccess();
-  }
-
-  @SneakyThrows
-  private boolean isValidIcn(String icn) {
-    checkState(isNotEmpty(icn));
-    return MPI_PATTERN.matcher(icn.trim()).matches();
   }
 
   @GetMapping(value = "/{id}")

@@ -73,7 +73,7 @@ public class ObservationController {
   }
 
   /** Create resource. */
-  public ResponseEntity<Observation> create(String id, Observation observation) {
+  ResponseEntity<Observation> create(String id, Observation observation) {
     checkRequestState(isEmpty(observation.id()), "ID must be empty, found %s", observation.id());
     observation.id(id);
     ObservationEntity entity = toEntity(observation);
