@@ -52,26 +52,26 @@ public class ManagementControllerCreateIT {
 
   @Test
   public void create_observation() {
-    var observation = _observation("it-internal-observation");
+    var observation = _observation("it" + System.currentTimeMillis());
     doInternalPost("Observation", observation, "create resource", 201, CLIENT_KEY);
   }
 
   @Test
   public void create_patient() {
     // ID must be in MPI format!
-    var patient = _patient("it-internal-patient");
+    var patient = _patient("it" + System.currentTimeMillis());
     doInternalPost("Patient", patient, "create resource", 201, CLIENT_KEY);
   }
 
   @Test
   public void create_questionnaire() {
-    var questionnaire = _questionnaire("it-internal-questionnaire");
+    var questionnaire = _questionnaire("it" + System.currentTimeMillis());
     doInternalPost("Questionnaire", questionnaire, "create resource", 201, CLIENT_KEY);
   }
 
   @Test
   public void create_questionnaire_response() {
-    var questionnaireResponse = _questionnaireResponse("it-internal-questionnaire-response");
+    var questionnaireResponse = _questionnaireResponse("it" + System.currentTimeMillis());
     doInternalPost(
         "QuestionnaireResponse", questionnaireResponse, "create resource", 201, CLIENT_KEY);
   }

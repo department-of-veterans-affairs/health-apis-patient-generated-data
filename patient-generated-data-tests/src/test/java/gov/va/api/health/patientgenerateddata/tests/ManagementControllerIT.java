@@ -19,7 +19,7 @@ public class ManagementControllerIT {
   @Test
   public void create_questionnaire_invalid_key() {
     var questionnaire =
-        ManagementControllerCreateIT._questionnaire("it-internal-questionnaire-bad");
+        ManagementControllerCreateIT._questionnaire("it-bad" + System.currentTimeMillis());
     doInternalPost("Questionnaire", questionnaire, "create resource (invalid key)", 401, "NOPE");
   }
 }
