@@ -136,34 +136,6 @@ public class QuestionnaireResponseController {
     dataBinder.initDirectFieldAccess();
   }
 
-  @SneakyThrows
-  QuestionnaireResponseEntity populate(
-      QuestionnaireResponse questionnaireResponse, QuestionnaireResponseEntity entity) {
-    return populate(
-        questionnaireResponse, entity, MAPPER.writeValueAsString(questionnaireResponse));
-  }
-
-  QuestionnaireResponseEntity populate(
-      @NonNull QuestionnaireResponse questionnaireResponse,
-      @NonNull QuestionnaireResponseEntity entity,
-      String payload) {
-    checkState(
-        entity.id().equals(questionnaireResponse.id()),
-        "IDs don't match, %s != %s",
-        entity.id(),
-        questionnaireResponse.id());
-    String authorId = ReferenceUtils.resourceId(questionnaireResponse.author());
-    Instant authored = ParseUtils.parseDateTime(questionnaireResponse.authored());
-    String subject = ReferenceUtils.resourceId(questionnaireResponse.subject());
-    String tag = TokenListMapping.metadataValueJoin(questionnaireResponse);
-    entity.payload(payload);
-    entity.author(authorId);
-    entity.authored(authored);
-    entity.subject(subject);
-    entity.tag(tag);
-    return entity;
-  }
-
   @GetMapping(value = "/{id}")
   QuestionnaireResponse read(@PathVariable("id") String id) {
     Optional<QuestionnaireResponseEntity> maybeEntity = repository.findById(id);
