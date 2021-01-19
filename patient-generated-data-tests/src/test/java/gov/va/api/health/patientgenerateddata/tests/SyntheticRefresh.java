@@ -12,7 +12,9 @@ import gov.va.api.health.r4.api.resources.QuestionnaireResponse;
 import gov.va.api.health.r4.api.resources.Resource;
 import java.io.File;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class SyntheticRefresh {
   private static final ObjectMapper MAPPER = JacksonConfig.createMapper();
 
@@ -46,9 +48,9 @@ public class SyntheticRefresh {
         new File(baseDir() + "/../patient-generated-data-synthetic/src/test/resources/" + folder)
             .listFiles()) {
       T obj = MAPPER.readValue(f, clazz);
-      try {
-        doPut(clazz.getSimpleName() + "/" + obj.id(), obj, "refresh", 200);
-      } catch (AssertionError e) {
+      var response = doPut(clazz.getSimpleName() + "/" + obj.id(), obj, "refresh", null);
+      if (response.response().statusCode() == 404) {
+        log.warn(String.format("Creating new resource %s", obj.id()));
         create(obj, clazz);
       }
     }
