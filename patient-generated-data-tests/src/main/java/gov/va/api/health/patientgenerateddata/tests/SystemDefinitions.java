@@ -25,10 +25,11 @@ class SystemDefinitions {
                 .systemAndCode("venue$https://staff.apps.va.gov/VistaEmrService/clinics|534/12975")
                 .systemWithAnyCode("venue$https://staff.apps.va.gov/VistaEmrService/clinics|")
                 .build())
+        .questionnaireUpdates("00000000-0000-0000-0000-000000000000")
         .questionnaireResponse("f003043a-9047-4c3a-b15b-a26c67f4e723")
         .questionnaireResponseAuthor("1011537977V693883")
         .questionnaireResponseSubject("1011537977V693883")
-        .questionnaireResponseUpdates("4400ade6-4162-44e2-b470-c6b38c717f88")
+        .questionnaireResponseUpdates("00000000-0000-0000-0000-000000000000")
         .questionnaireResponseMetaTag(
             Ids.MetaTag.builder()
                 .system("https://veteran.apps.va.gov/appointments/v1")
@@ -150,6 +151,8 @@ class SystemDefinitions {
     @NonNull String questionnaire;
 
     @NonNull UsageContextTypeValue questionnaireContextTypeValue;
+
+    @NonNull String questionnaireUpdates;
 
     @NonNull String questionnaireResponse;
 
