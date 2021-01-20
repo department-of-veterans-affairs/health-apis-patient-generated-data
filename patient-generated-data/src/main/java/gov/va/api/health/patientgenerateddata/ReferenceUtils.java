@@ -10,13 +10,20 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public final class ReferenceUtils {
 
+  /**
+   * Extract resource ID from a reference. This is looking for any number of path elements, then a
+   * resource type followed by an ID, e.g. `foo/bar/Patient/1234567890V123456`.
+   */
   public static String resourceId(Reference ref) {
+    if (ref == null) {
+      return null;
+    }
     return resourceId(ref.reference());
   }
 
   /**
-   * Extract resource ID. This is looking for any number of path elements, then a resource type
-   * followed by an ID, e.g. `foo/bar/Patient/1234567890V123456`.
+   * Extract resource ID from a string. This is looking for any number of path elements, then a
+   * resource type followed by an ID, e.g. `foo/bar/Patient/1234567890V123456`.
    */
   public static String resourceId(String str) {
     if (str == null || isBlank(str)) {
