@@ -109,11 +109,14 @@ public class QuestionnaireResponseController {
                 .value("author", "author")
                 .dateAsInstant("authored", "authored")
                 .value("subject", "subject")
-                .value("questionnaire", "questionnaire")
+                .csvList("questionnaire", "questionnaire")
                 .get())
         .defaultQuery(returnNothing())
-        .rule(atLeastOneParameterOf("_id", "_tag", "author", "authored", "subject", "questionnaire"))
-        .rule(ifParameter("_id").thenForbidParameters("_tag", "author", "authored", "subject", "questionnaire"))
+        .rule(
+            atLeastOneParameterOf("_id", "_tag", "author", "authored", "subject", "questionnaire"))
+        .rule(
+            ifParameter("_id")
+                .thenForbidParameters("_tag", "author", "authored", "subject", "questionnaire"))
         .build();
   }
 
