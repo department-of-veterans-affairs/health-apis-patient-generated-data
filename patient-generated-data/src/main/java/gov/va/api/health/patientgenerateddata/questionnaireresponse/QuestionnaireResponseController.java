@@ -15,6 +15,7 @@ import gov.va.api.health.patientgenerateddata.Exceptions;
 import gov.va.api.health.patientgenerateddata.LinkProperties;
 import gov.va.api.health.patientgenerateddata.ParseUtils;
 import gov.va.api.health.patientgenerateddata.ReferenceUtils;
+import gov.va.api.health.patientgenerateddata.TokenListMapping;
 import gov.va.api.health.patientgenerateddata.VulcanizedBundler;
 import gov.va.api.health.r4.api.resources.QuestionnaireResponse;
 import gov.va.api.lighthouse.vulcan.Vulcan;
@@ -55,13 +56,13 @@ public class QuestionnaireResponseController {
   private final QuestionnaireResponseRepository repository;
 
   @SneakyThrows
-  static QuestionnaireResponseEntity populate(
+  private static QuestionnaireResponseEntity populate(
       QuestionnaireResponse questionnaireResponse, QuestionnaireResponseEntity entity) {
     return populate(
         questionnaireResponse, entity, MAPPER.writeValueAsString(questionnaireResponse));
   }
 
-  static QuestionnaireResponseEntity populate(
+  private static QuestionnaireResponseEntity populate(
       @NonNull QuestionnaireResponse questionnaireResponse,
       @NonNull QuestionnaireResponseEntity entity,
       String payload) {
@@ -74,15 +75,18 @@ public class QuestionnaireResponseController {
     Instant authored = ParseUtils.parseDateTime(questionnaireResponse.authored());
     String subject = ReferenceUtils.resourceId(questionnaireResponse.subject());
     String questionnaire = ReferenceUtils.resourceId(questionnaireResponse.questionnaire());
+    String metaTag = TokenListMapping.metadataTagJoin(questionnaireResponse);
     entity.payload(payload);
     entity.author(authorId);
     entity.authored(authored);
     entity.subject(subject);
     entity.questionnaire(questionnaire);
+    entity.metaTag(metaTag);
     return entity;
   }
 
-  static QuestionnaireResponseEntity toEntity(QuestionnaireResponse questionnaireResponse) {
+  /** Transforms a Resource to an Entity. */
+  public static QuestionnaireResponseEntity toEntity(QuestionnaireResponse questionnaireResponse) {
     checkState(questionnaireResponse.id() != null, "ID is required");
     return populate(
         questionnaireResponse,
@@ -97,15 +101,19 @@ public class QuestionnaireResponseController {
         .mappings(
             Mappings.forEntity(QuestionnaireResponseEntity.class)
                 .value("_id", "id")
+                .add(
+                    TokenListMapping.<QuestionnaireResponseEntity>builder()
+                        .parameterName("_tag")
+                        .fieldName("metaTag")
+                        .build())
                 .value("author", "author")
                 .dateAsInstant("authored", "authored")
                 .value("subject", "subject")
                 .value("questionnaire", "questionnaire")
                 .get())
         .defaultQuery(returnNothing())
-        .rule(atLeastOneParameterOf("_id", "author", "authored", "subject", "questionnaire"))
-        .rule(ifParameter("_id")
-                .thenForbidParameters("author", "authored", "subject", "questionnaire"))
+        .rule(atLeastOneParameterOf("_id", "_tag", "author", "authored", "subject", "questionnaire"))
+        .rule(ifParameter("_id").thenForbidParameters("_tag", "author", "authored", "subject", "questionnaire"))
         .build();
   }
 
@@ -143,7 +151,7 @@ public class QuestionnaireResponseController {
 
   /** QuestionnaireResponse Search. */
   @GetMapping
-  public QuestionnaireResponse.Bundle search(HttpServletRequest request) {
+  QuestionnaireResponse.Bundle search(HttpServletRequest request) {
     return Vulcan.forRepo(repository)
         .config(configuration())
         .build()

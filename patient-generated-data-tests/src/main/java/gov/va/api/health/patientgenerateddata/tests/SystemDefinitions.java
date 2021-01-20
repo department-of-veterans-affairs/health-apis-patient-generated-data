@@ -9,6 +9,8 @@ import lombok.experimental.UtilityClass;
 
 @UtilityClass
 class SystemDefinitions {
+  static final String CLIENT_KEY_DEFAULT = "pteracuda";
+
   private static Ids ids() {
     return Ids.builder()
         .observation("fc691a7f-a0f3-47b4-9d00-2786d055e8ba")
@@ -27,6 +29,11 @@ class SystemDefinitions {
         .questionnaireResponseAuthor("1011537977V693883")
         .questionnaireResponseSubject("1011537977V693883")
         .questionnaireResponseUpdates("4400ade6-4162-44e2-b470-c6b38c717f88")
+        .questionnaireResponseMetaTag(
+            Ids.MetaTag.builder()
+                .system("https://veteran.apps.va.gov/appointments/v1")
+                .code("202008211400983000082100000000000000")
+                .build())
         .build();
   }
 
@@ -148,6 +155,8 @@ class SystemDefinitions {
 
     @NonNull String questionnaireResponseAuthor;
 
+    @NonNull MetaTag questionnaireResponseMetaTag;
+
     @NonNull String questionnaireResponseSubject;
 
     @NonNull String questionnaireResponseUpdates;
@@ -162,6 +171,14 @@ class SystemDefinitions {
       @NonNull String systemAndCode;
 
       @NonNull String systemWithAnyCode;
+    }
+
+    @Value
+    @Builder
+    static final class MetaTag {
+      @NonNull String system;
+
+      @NonNull String code;
     }
   }
 

@@ -257,7 +257,21 @@ databaseChangeLog:
             schemaName: app
             columns:
               - column:
-                  name: questionnaire
-                  type: varchar(255)
+                  name: metaTag
+                  type: clob
                   constraints:
                     - nullable: true
+
+  - changeSet:
+      id: 12
+      author: pteracuda
+      changes:
+        - addColumn:
+            tableName: QuestionnaireResponse
+            schemaName: app
+            columns:
+              - column:
+                name: questionnaire
+                type: varchar(255)
+                constraints:
+                  - nullable: true

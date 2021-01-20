@@ -168,7 +168,7 @@ public final class Populaterator {
       String sqlInsert =
           sqlInsert(
               "app.QuestionnaireResponse",
-              List.of("id", "payload", "version", "authored", "author", "subject", "questionnaire"));
+              List.of("id", "payload", "version", "authored", "author", "subject", "metaTag", "questionnaire"));
       try (PreparedStatement statement = connection.prepareStatement(sqlInsert)) {
         statement.setObject(1, response.id());
         statement.setObject(2, MAPPER.writeValueAsString(response));
@@ -176,7 +176,8 @@ public final class Populaterator {
         statement.setTimestamp(4, timestamp(ParseUtils.parseDateTime(response.authored())));
         statement.setObject(5, ReferenceUtils.resourceId(response.author()));
         statement.setObject(6, ReferenceUtils.resourceId(response.subject()));
-        statement.setObject(7, ReferenceUtils.resourceId(response.questionnaire()));
+        statement.setObject(7, TokenListMapping.metadataTagJoin(response));
+        statement.setObject(8, ReferenceUtils.resourceId(response.questionnaire()));
         statement.execute();
       }
     }

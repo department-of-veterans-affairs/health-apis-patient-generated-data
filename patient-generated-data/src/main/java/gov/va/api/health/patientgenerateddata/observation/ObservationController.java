@@ -44,11 +44,11 @@ public class ObservationController {
   private final ObservationRepository repository;
 
   @SneakyThrows
-  static ObservationEntity populate(Observation observation, ObservationEntity entity) {
+  private static ObservationEntity populate(Observation observation, ObservationEntity entity) {
     return populate(observation, entity, MAPPER.writeValueAsString(observation));
   }
 
-  static ObservationEntity populate(
+  private static ObservationEntity populate(
       @NonNull Observation observation, @NonNull ObservationEntity entity, String payload) {
     checkState(
         entity.id().equals(observation.id()),
@@ -59,7 +59,8 @@ public class ObservationController {
     return entity;
   }
 
-  static ObservationEntity toEntity(Observation observation) {
+  /** Transforms a Resource to an Entity. */
+  public static ObservationEntity toEntity(Observation observation) {
     checkState(observation.id() != null, "ID is required");
     return populate(observation, ObservationEntity.builder().id(observation.id()).build());
   }
