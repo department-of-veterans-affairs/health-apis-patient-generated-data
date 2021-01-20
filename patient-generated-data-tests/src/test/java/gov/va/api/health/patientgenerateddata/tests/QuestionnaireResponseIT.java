@@ -135,7 +135,7 @@ public class QuestionnaireResponseIT {
   void search_tag_codeWithAnySystem() {
     assumeEnvironmentIn(
         Environment.LOCAL, Environment.QA, Environment.STAGING, Environment.STAGING_LAB);
-    // , Environment.LA);
+    // , Environment.LAB);
     String tagCode = systemDefinition().ids().questionnaireResponseMetaTag().code();
     String query = String.format("?_tag=%s", tagCode);
     var response = doGet("application/json", "QuestionnaireResponse" + query, 200);
@@ -147,7 +147,7 @@ public class QuestionnaireResponseIT {
   void search_tag_codeWithNoSystem() {
     assumeEnvironmentIn(
         Environment.LOCAL, Environment.QA, Environment.STAGING, Environment.STAGING_LAB);
-    // , Environment.LA);
+    // , Environment.LAB);
     String tagCode = systemDefinition().ids().questionnaireResponseMetaTag().code();
     String query = String.format("?_tag=%s", "|" + tagCode);
     var response = doGet("application/json", "QuestionnaireResponse" + query, 200);
@@ -159,7 +159,7 @@ public class QuestionnaireResponseIT {
   void search_tag_systemWithAnyCode() {
     assumeEnvironmentIn(
         Environment.LOCAL, Environment.QA, Environment.STAGING, Environment.STAGING_LAB);
-    // , Environment.LA);
+    // , Environment.LAB);
     String tagSystem = systemDefinition().ids().questionnaireResponseMetaTag().system();
     String query = String.format("?_tag=%s", tagSystem + "|");
     var response = doGet("application/json", "QuestionnaireResponse" + query, 200);
@@ -171,7 +171,7 @@ public class QuestionnaireResponseIT {
   void search_tag_systemWithCode() {
     assumeEnvironmentIn(
         Environment.LOCAL, Environment.QA, Environment.STAGING, Environment.STAGING_LAB);
-    // , Environment.LA);
+    // , Environment.LAB);
     String tagCode = systemDefinition().ids().questionnaireResponseMetaTag().code();
     String tagSystem = systemDefinition().ids().questionnaireResponseMetaTag().system();
     String query = String.format("?_tag=%s", tagSystem + "|" + tagCode);
