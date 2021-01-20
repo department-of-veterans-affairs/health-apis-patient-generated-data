@@ -124,6 +124,13 @@ public class QuestionnaireResponseIT {
     var response = doGet("application/json", "QuestionnaireResponse" + query, 200);
     QuestionnaireResponse.Bundle bundle = response.expectValid(QuestionnaireResponse.Bundle.class);
     assertThat(bundle.entry()).hasSizeGreaterThan(0);
+
+    String questionnaireList = systemDefinition().ids().questionnaireList();
+    query = String.format("?questionnaire=%s", questionnaireList);
+    response = doGet("application/json", "QuestionnaireResponse" + query, 200);
+    bundle = response.expectValid(QuestionnaireResponse.Bundle.class);
+    assertThat(bundle.entry()).hasSizeGreaterThan(0);
+
     query = String.format("?questionnaire=%s", "unknown");
     response = doGet("application/json", "QuestionnaireResponse" + query, 200);
     bundle = response.expectValid(QuestionnaireResponse.Bundle.class);

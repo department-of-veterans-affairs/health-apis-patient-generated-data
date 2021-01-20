@@ -18,6 +18,10 @@ class SystemDefinitions {
         .patientGenerated("9999999999V999999")
         .patientNotMe("1017283180V801730")
         .questionnaire("37953b72-961b-41ee-bd05-86c62bacc46b")
+        .questionnaireList(
+            "37953b72-961b-41ee-bd05-86c62bacc46b,"
+                + "9c930b5c-6e0e-4e84-9f3a-1c1a6cb4313e,"
+                + "842479ed-9c5b-474b-bf97-fc295617900c")
         .questionnaireContextTypeValue(
             Ids.UsageContextTypeValue.builder()
                 .codeWithAnySystem("venue$534/12975")
@@ -149,6 +153,8 @@ class SystemDefinitions {
     @NonNull String patientNotMe;
 
     @NonNull String questionnaire;
+
+    @NonNull String questionnaireList;
 
     @NonNull UsageContextTypeValue questionnaireContextTypeValue;
 
