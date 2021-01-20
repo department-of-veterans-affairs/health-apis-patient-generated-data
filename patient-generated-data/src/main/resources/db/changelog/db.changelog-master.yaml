@@ -271,7 +271,7 @@ databaseChangeLog:
             schemaName: app
             columns:
               - column:
-                name: questionnaire
-                type: varchar(255)
-                constraints:
-                  - nullable: true
+                  name: questionnaire
+                  type: varchar(255)
+                  constraints:
+                    - nullable: true
