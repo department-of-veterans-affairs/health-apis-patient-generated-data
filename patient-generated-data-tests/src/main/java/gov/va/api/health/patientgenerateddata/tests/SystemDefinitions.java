@@ -35,6 +35,11 @@ class SystemDefinitions {
                 .system("https://veteran.apps.va.gov/appointments/v1")
                 .code("202008211400983000082100000000000000")
                 .build())
+        .queestionnaireResponseSecondaryMetaTag(
+            Ids.MetaTag.builder()
+                .system("https://api.va.gov/services/pgd")
+                .code("66a5960c-68ee-4689-88ae-4c7cccf7ca79")
+                .build())
         .build();
   }
 
@@ -159,6 +164,8 @@ class SystemDefinitions {
     @NonNull String questionnaireResponseAuthor;
 
     @NonNull MetaTag questionnaireResponseMetaTag;
+
+    @NonNull MetaTag queestionnaireResponseSecondaryMetaTag;
 
     @NonNull String questionnaireResponseSubject;
 

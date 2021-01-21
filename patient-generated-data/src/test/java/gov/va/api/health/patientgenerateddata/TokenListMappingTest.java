@@ -21,6 +21,19 @@ public class TokenListMappingTest {
         .build();
   }
 
+  private static QuestionnaireResponse _questionnaireResponseCsv(
+      String valueSystem, String valueCode, String secondarySystem, String secondaryCode) {
+    return QuestionnaireResponse.builder()
+        .meta(
+            Meta.builder()
+                .tag(
+                    List.of(
+                        Coding.builder().code(valueCode).system(valueSystem).build(),
+                        Coding.builder().code(secondaryCode).system(secondarySystem).build()))
+                .build())
+        .build();
+  }
+
   private static QuestionnaireResponse _questionnaireResponseNullValues() {
     QuestionnaireResponse qr = QuestionnaireResponse.builder().meta(Meta.builder().build()).build();
     return qr;
@@ -33,6 +46,21 @@ public class TokenListMappingTest {
     assertThat(join).contains(addTerminators("123"));
     assertThat(join).doesNotContain(addTerminators("clinics|123"));
     assertThat(join).doesNotContain(addTerminators("clinics|"));
+  }
+
+  @Test
+  void metadataTagJoin_MultipleSystemsAndCodes() {
+    String join =
+        TokenListMapping.metadataTagJoin(
+            _questionnaireResponseCsv("clinics", "123", "somethingElse", "456"));
+    assertThat(join).contains(addTerminators("clinics|123"));
+    assertThat(join).contains(addTerminators("somethingElse|456"));
+    assertThat(join).contains(addTerminators("clinics|"));
+    assertThat(join).contains(addTerminators("somethingElse|"));
+    assertThat(join).contains(addTerminators("123"));
+    assertThat(join).contains(addTerminators("456"));
+    assertThat(join).doesNotContain(addTerminators("|123"));
+    assertThat(join).doesNotContain(addTerminators("|123"));
   }
 
   @Test

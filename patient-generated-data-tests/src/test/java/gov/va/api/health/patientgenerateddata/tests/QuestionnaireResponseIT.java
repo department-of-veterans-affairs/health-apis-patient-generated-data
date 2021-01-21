@@ -156,6 +156,24 @@ public class QuestionnaireResponseIT {
   }
 
   @Test
+  void search_tag_multipleSystemsAndCodes() {
+    assumeEnvironmentIn(
+        Environment.LOCAL, Environment.QA, Environment.STAGING, Environment.STAGING_LAB);
+    String tagCode = systemDefinition().ids().questionnaireResponseMetaTag().code();
+    String tagSystem = systemDefinition().ids().questionnaireResponseMetaTag().system();
+    String secondaryTagCode =
+        systemDefinition().ids().queestionnaireResponseSecondaryMetaTag().code();
+    String secondaryTagSystem =
+        systemDefinition().ids().queestionnaireResponseSecondaryMetaTag().system();
+    String query =
+        String.format(
+            "?_tag=%s,%s", tagSystem + "|" + tagCode, secondaryTagSystem + "|" + secondaryTagCode);
+    var response = doGet("application/json", "QuestionnaireResponse" + query, 200);
+    QuestionnaireResponse.Bundle bundle = response.expectValid(QuestionnaireResponse.Bundle.class);
+    assertThat(bundle.entry()).hasSizeGreaterThan(0);
+  }
+
+  @Test
   void search_tag_systemWithAnyCode() {
     assumeEnvironmentIn(
         Environment.LOCAL, Environment.QA, Environment.STAGING, Environment.STAGING_LAB);
