@@ -124,17 +124,25 @@ public class QuestionnaireResponseIT {
     var response = doGet("application/json", "QuestionnaireResponse" + query, 200);
     QuestionnaireResponse.Bundle bundle = response.expectValid(QuestionnaireResponse.Bundle.class);
     assertThat(bundle.entry()).hasSizeGreaterThan(0);
+  }
 
-    String questionnaireList = systemDefinition().ids().questionnaireList();
-    query = String.format("?questionnaire=%s", questionnaireList);
-    response = doGet("application/json", "QuestionnaireResponse" + query, 200);
-    bundle = response.expectValid(QuestionnaireResponse.Bundle.class);
-    assertThat(bundle.entry()).hasSizeGreaterThan(0);
-
-    query = String.format("?questionnaire=%s", "unknown");
-    response = doGet("application/json", "QuestionnaireResponse" + query, 200);
-    bundle = response.expectValid(QuestionnaireResponse.Bundle.class);
+  @Test
+  void search_questionnaireUnknown() {
+    assumeEnvironmentIn(Environment.LOCAL);
+    String query = String.format("?questionnaire=%s", "unknown");
+    var response = doGet("application/json", "QuestionnaireResponse" + query, 200);
+    QuestionnaireResponse.Bundle bundle = response.expectValid(QuestionnaireResponse.Bundle.class);
     assertThat(bundle.entry()).isEmpty();
+  }
+
+  @Test
+  void search_questionnaire_csv() {
+    assumeEnvironmentIn(Environment.LOCAL);
+    String questionnaireList = systemDefinition().ids().questionnaireList();
+    String query = String.format("?questionnaire=%s", questionnaireList);
+    var response = doGet("application/json", "QuestionnaireResponse" + query, 200);
+    QuestionnaireResponse.Bundle bundle = response.expectValid(QuestionnaireResponse.Bundle.class);
+    assertThat(bundle.entry()).hasSize(3);
   }
 
   @Test
