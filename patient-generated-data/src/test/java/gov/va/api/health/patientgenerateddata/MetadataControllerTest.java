@@ -197,6 +197,12 @@ public class MetadataControllerTest {
                                                     .type(CapabilityStatement.SearchParamType.date)
                                                     .build(),
                                                 CapabilityStatement.SearchParam.builder()
+                                                    .name("questionnaire")
+                                                    .type(
+                                                        CapabilityStatement.SearchParamType
+                                                            .reference)
+                                                    .build(),
+                                                CapabilityStatement.SearchParam.builder()
                                                     .name("subject")
                                                     .type(
                                                         CapabilityStatement.SearchParamType
