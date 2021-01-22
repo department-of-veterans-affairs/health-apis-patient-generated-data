@@ -100,7 +100,7 @@ public class QuestionnaireResponseIT {
   @Test
   void search_questionnaire() {
     assumeEnvironmentIn(Environment.LOCAL);
-    // , Environment.QA, Environment.STAGING, Environment.STAGING_LAB, Environment.LAB);
+    // Environment.QA, Environment.STAGING, Environment.STAGING_LAB, Environment.LAB
     String questionnaire = systemDefinition().ids().questionnaire();
     String query = String.format("?questionnaire=%s", questionnaire);
     var response = doGet("application/json", "QuestionnaireResponse" + query, 200);
@@ -111,6 +111,7 @@ public class QuestionnaireResponseIT {
   @Test
   void search_questionnaireUnknown() {
     assumeEnvironmentIn(Environment.LOCAL);
+    // Environment.QA, Environment.STAGING, Environment.STAGING_LAB, Environment.LAB
     String query = String.format("?questionnaire=%s", "unknown");
     var response = doGet("application/json", "QuestionnaireResponse" + query, 200);
     QuestionnaireResponse.Bundle bundle = response.expectValid(QuestionnaireResponse.Bundle.class);
@@ -120,6 +121,7 @@ public class QuestionnaireResponseIT {
   @Test
   void search_questionnaire_csv() {
     assumeEnvironmentIn(Environment.LOCAL);
+    // Environment.QA, Environment.STAGING, Environment.STAGING_LAB, Environment.LAB
     String questionnaireList = systemDefinition().ids().questionnaireList();
     String query = String.format("?questionnaire=%s", questionnaireList);
     var response = doGet("application/json", "QuestionnaireResponse" + query, 200);
