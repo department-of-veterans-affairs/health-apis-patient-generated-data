@@ -15,7 +15,6 @@ import org.junit.Test;
 import org.junit.jupiter.api.BeforeAll;
 
 public class QuestionnaireUpdateIT {
-
   static Questionnaire _questionnaire(String id) {
     return Questionnaire.builder().id(id).status(PublicationStatus.active).build();
   }
