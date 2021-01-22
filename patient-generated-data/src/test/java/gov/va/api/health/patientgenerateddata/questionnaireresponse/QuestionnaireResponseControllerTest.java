@@ -9,10 +9,13 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.api.health.autoconfig.configuration.JacksonConfig;
 import gov.va.api.health.patientgenerateddata.Exceptions;
 import gov.va.api.health.patientgenerateddata.LinkProperties;
+import gov.va.api.health.r4.api.elements.Reference;
 import gov.va.api.health.r4.api.resources.QuestionnaireResponse;
+import gov.va.api.health.r4.api.resources.QuestionnaireResponse.Status;
 import gov.va.api.lighthouse.vulcan.InvalidRequest;
 import java.net.URI;
 import java.util.List;
@@ -31,6 +34,8 @@ import org.springframework.validation.DataBinder;
 import org.springframework.web.util.UriComponentsBuilder;
 
 public class QuestionnaireResponseControllerTest {
+  private static final ObjectMapper MAPPER = JacksonConfig.createMapper();
+
   LinkProperties pageLinks =
       LinkProperties.builder()
           .defaultPageSize(500)
@@ -62,6 +67,35 @@ public class QuestionnaireResponseControllerTest {
   }
 
   @Test
+  @SneakyThrows
+  void create() {
+    LinkProperties pageLinks =
+        LinkProperties.builder().baseUrl("http://foo.com").r4BasePath("r4").build();
+    QuestionnaireResponseRepository repo = mock(QuestionnaireResponseRepository.class);
+    QuestionnaireResponseController controller =
+        new QuestionnaireResponseController(pageLinks, repo);
+    var questionnaireResponse = questionnaireResponse();
+    var questionnaireResponseWithId = questionnaireResponse().id("123");
+    var persisted = MAPPER.writeValueAsString(questionnaireResponseWithId);
+    assertThat(controller.create("123", questionnaireResponse))
+        .isEqualTo(
+            ResponseEntity.created(URI.create("http://foo.com/r4/QuestionnaireResponse/123"))
+                .body(questionnaireResponseWithId));
+    verify(repo, times(1))
+        .save(QuestionnaireResponseEntity.builder().id("123").payload(persisted).build());
+  }
+
+  @Test
+  @SneakyThrows
+  void create_invalid() {
+    var questionnaireResponse = questionnaireResponse().id("123");
+    var repo = mock(QuestionnaireResponseRepository.class);
+    var pageLinks = mock(LinkProperties.class);
+    var controller = new QuestionnaireResponseController(pageLinks, repo);
+    assertThrows(Exceptions.BadRequest.class, () -> controller.create(questionnaireResponse));
+  }
+
+  @Test
   void initDirectFieldAccess() {
     new QuestionnaireResponseController(
             mock(LinkProperties.class), mock(QuestionnaireResponseRepository.class))
@@ -76,13 +110,15 @@ public class QuestionnaireResponseControllerTest {
     assertThatExceptionOfType(InvalidRequest.class).isThrownBy(() -> controller().search(r));
   }
 
+  private QuestionnaireResponse questionnaireResponse() {
+    return QuestionnaireResponse.builder().status(Status.completed).build();
+  }
+
   @Test
   @SneakyThrows
   void read() {
     QuestionnaireResponseRepository repo = mock(QuestionnaireResponseRepository.class);
-    String payload =
-        JacksonConfig.createMapper()
-            .writeValueAsString(QuestionnaireResponse.builder().id("x").build());
+    String payload = MAPPER.writeValueAsString(QuestionnaireResponse.builder().id("x").build());
     when(repo.findById("x"))
         .thenReturn(
             Optional.of(QuestionnaireResponseEntity.builder().id("x").payload(payload).build()));
@@ -102,8 +138,10 @@ public class QuestionnaireResponseControllerTest {
   @SneakyThrows
   void update_existing() {
     QuestionnaireResponseRepository repo = mock(QuestionnaireResponseRepository.class);
-    QuestionnaireResponse questionnaireResponse = QuestionnaireResponse.builder().id("x").build();
-    String payload = JacksonConfig.createMapper().writeValueAsString(questionnaireResponse);
+    Reference authorRef = Reference.builder().reference("1011537977V693883").build();
+    QuestionnaireResponse questionnaireResponse =
+        QuestionnaireResponse.builder().id("x").author(authorRef).build();
+    String payload = MAPPER.writeValueAsString(questionnaireResponse);
     when(repo.findById("x"))
         .thenReturn(
             Optional.of(QuestionnaireResponseEntity.builder().id("x").payload(payload).build()));
@@ -116,21 +154,20 @@ public class QuestionnaireResponseControllerTest {
 
   @Test
   @SneakyThrows
-  void update_new() {
+  void update_not_existing() {
     QuestionnaireResponseRepository repo = mock(QuestionnaireResponseRepository.class);
-    QuestionnaireResponse questionnaireResponse = QuestionnaireResponse.builder().id("x").build();
-    String payload = JacksonConfig.createMapper().writeValueAsString(questionnaireResponse);
-    assertThat(
-            new QuestionnaireResponseController(pageLinks, repo).update("x", questionnaireResponse))
-        .isEqualTo(
-            ResponseEntity.created(URI.create("http://foo.com/r4/QuestionnaireResponse/x"))
-                .body(questionnaireResponse));
-    verify(repo, times(1))
-        .save(QuestionnaireResponseEntity.builder().id("x").payload(payload).build());
+    Reference authorRef = Reference.builder().reference("1011537977V693883").build();
+    QuestionnaireResponse questionnaireResponse =
+        QuestionnaireResponse.builder().id("x").author(authorRef).build();
+    assertThrows(
+        Exceptions.NotFound.class,
+        () ->
+            new QuestionnaireResponseController(pageLinks, repo)
+                .update("x", questionnaireResponse));
   }
 
   @ParameterizedTest
-  @ValueSource(strings = {"?_id=1"})
+  @ValueSource(strings = {"?_id=1", "?author=1011537977V693883"})
   @SneakyThrows
   void validSearch(String query) {
     QuestionnaireResponseRepository repo = mock(QuestionnaireResponseRepository.class);

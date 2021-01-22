@@ -1,5 +1,6 @@
 package gov.va.api.health.patientgenerateddata.questionnaireresponse;
 
+import com.google.common.collect.Streams;
 import gov.va.api.health.patientgenerateddata.IncludesIcnMajig;
 import gov.va.api.health.r4.api.bundle.AbstractEntry;
 import gov.va.api.health.r4.api.resources.QuestionnaireResponse;
@@ -18,8 +19,9 @@ public class QuestionnaireResponseIncludesIcnMajig implements ResponseBodyAdvice
           .extractResources(bundle -> bundle.entry().stream().map(AbstractEntry::resource))
           .extractIcns(
               body ->
-                  Stream.concat(
+                  Streams.concat(
                       Stream.ofNullable(IncludesIcnMajig.icn(body.subject())),
-                      Stream.ofNullable(IncludesIcnMajig.icn(body.author()))))
+                      Stream.ofNullable(IncludesIcnMajig.icn(body.author())),
+                      Stream.ofNullable(IncludesIcnMajig.icn(body.source()))))
           .build();
 }

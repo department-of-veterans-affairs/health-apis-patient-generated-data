@@ -9,12 +9,33 @@ import lombok.experimental.UtilityClass;
 
 @UtilityClass
 class SystemDefinitions {
-  private static Ids ids() {
-    return Ids.builder().questionnaireResponse("3141").build();
-  }
+  static final String CLIENT_KEY_DEFAULT = "pteracuda";
 
-  private static Ids idsGenerated() {
-    return Ids.builder().questionnaireResponse("qr202").build();
+  private static Ids ids() {
+    return Ids.builder()
+        .observation("fc691a7f-a0f3-47b4-9d00-2786d055e8ba")
+        .patient("1011537977V693883")
+        .patientGenerated("9999999999V999999")
+        .patientNotMe("1017283180V801730")
+        .questionnaire("37953b72-961b-41ee-bd05-86c62bacc46b")
+        .questionnaireContextTypeValue(
+            Ids.UsageContextTypeValue.builder()
+                .codeWithAnySystem("venue$534/12975")
+                .codeWithNoSystem("venue$|534/12975")
+                .systemAndCode("venue$https://staff.apps.va.gov/VistaEmrService/clinics|534/12975")
+                .systemWithAnyCode("venue$https://staff.apps.va.gov/VistaEmrService/clinics|")
+                .build())
+        .questionnaireUpdates("00000000-0000-0000-0000-000000000000")
+        .questionnaireResponse("f003043a-9047-4c3a-b15b-a26c67f4e723")
+        .questionnaireResponseAuthor("1011537977V693883")
+        .questionnaireResponseSubject("1011537977V693883")
+        .questionnaireResponseUpdates("00000000-0000-0000-0000-000000000000")
+        .questionnaireResponseMetaTag(
+            Ids.MetaTag.builder()
+                .system("https://veteran.apps.va.gov/appointments/v1")
+                .code("202008211400983000082100000000000000")
+                .build())
+        .build();
   }
 
   private static SystemDefinition lab() {
@@ -24,7 +45,6 @@ class SystemDefinitions {
                 "internal", "https://blue.lab.lighthouse.va.gov", 443, "/patient-generated-data/"))
         .r4(serviceDefinition("r4", "https://blue.lab.lighthouse.va.gov", 443, "/pgd/v0/r4/"))
         .ids(ids())
-        .idsGenerated(idsGenerated())
         .build();
   }
 
@@ -33,7 +53,6 @@ class SystemDefinitions {
         .internal(serviceDefinition("internal", "http://localhost", 8095, "/"))
         .r4(serviceDefinition("r4", "http://localhost", 8095, "/r4/"))
         .ids(ids())
-        .idsGenerated(idsGenerated())
         .build();
   }
 
@@ -49,7 +68,6 @@ class SystemDefinitions {
             serviceDefinition(
                 "r4", "https://blue.production.lighthouse.va.gov", 443, "/pgd/v0/r4/"))
         .ids(ids())
-        .idsGenerated(idsGenerated())
         .build();
   }
 
@@ -60,7 +78,6 @@ class SystemDefinitions {
                 "internal", "https://blue.qa.lighthouse.va.gov", 443, "/patient-generated-data/"))
         .r4(serviceDefinition("r4", "https://blue.qa.lighthouse.va.gov", 443, "/pgd/v0/r4/"))
         .ids(ids())
-        .idsGenerated(idsGenerated())
         .build();
   }
 
@@ -82,7 +99,6 @@ class SystemDefinitions {
                 "/patient-generated-data/"))
         .r4(serviceDefinition("r4", "https://blue.staging.lighthouse.va.gov", 443, "/pgd/v0/r4/"))
         .ids(ids())
-        .idsGenerated(idsGenerated())
         .build();
   }
 
@@ -98,7 +114,6 @@ class SystemDefinitions {
             serviceDefinition(
                 "r4", "https://blue.staging-lab.lighthouse.va.gov", 443, "/pgd/v0/r4/"))
         .ids(ids())
-        .idsGenerated(idsGenerated())
         .build();
   }
 
@@ -125,7 +140,49 @@ class SystemDefinitions {
   @Value
   @Builder
   static final class Ids {
+    @NonNull String observation;
+
+    @NonNull String patient;
+
+    @NonNull String patientGenerated;
+
+    @NonNull String patientNotMe;
+
+    @NonNull String questionnaire;
+
+    @NonNull UsageContextTypeValue questionnaireContextTypeValue;
+
+    @NonNull String questionnaireUpdates;
+
     @NonNull String questionnaireResponse;
+
+    @NonNull String questionnaireResponseAuthor;
+
+    @NonNull MetaTag questionnaireResponseMetaTag;
+
+    @NonNull String questionnaireResponseSubject;
+
+    @NonNull String questionnaireResponseUpdates;
+
+    @Value
+    @Builder
+    static final class UsageContextTypeValue {
+      @NonNull String codeWithAnySystem;
+
+      @NonNull String codeWithNoSystem;
+
+      @NonNull String systemAndCode;
+
+      @NonNull String systemWithAnyCode;
+    }
+
+    @Value
+    @Builder
+    static final class MetaTag {
+      @NonNull String system;
+
+      @NonNull String code;
+    }
   }
 
   @Value
@@ -158,7 +215,5 @@ class SystemDefinitions {
     @NonNull Service r4;
 
     @NonNull Ids ids;
-
-    @NonNull Ids idsGenerated;
   }
 }

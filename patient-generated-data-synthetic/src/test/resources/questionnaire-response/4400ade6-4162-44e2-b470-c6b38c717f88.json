@@ -1,18 +1,19 @@
 {
   "resourceType" : "QuestionnaireResponse",
-  "id" : "3141",
+  "id" : "4400ade6-4162-44e2-b470-c6b38c717f88",
   "text" : {
     "status" : "generated",
-    "div" : "<div></div>"
+    "div" : "<div>Cancer Quality Forum Questionnaire 2012</div>"
   },
+  "questionnaire" : "Questionnaire/9c930b5c-6e0e-4e84-9f3a-1c1a6cb4313e",
   "status" : "completed",
   "subject" : {
-    "reference" : "Patient/1011537977V693883"
+    "reference" : "https://api.va.gov/services/fhir/v0/r4/Patient/1017283180V801730"
   },
+  "authored" : "2020-08-20T22:26:06.453127500Z",
   "author" : {
-    "reference" : "Practitioner/1000000"
+    "reference" : "https://api.va.gov/services/fhir/v0/r4/Practitioner/I2-6NVSMKEGQKNB3KRDXBGE7NRIEY000000"
   },
-  "authored" : "2013-02-19T14:15:00-05:00",
   "item" : [
     {
       "linkId" : "1",

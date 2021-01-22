@@ -1,13 +1,14 @@
 {
   "resourceType" : "QuestionnaireResponse",
-  "id" : "f201",
+  "id" : "e7c5799f-14fd-420d-8671-e24386773e7e",
   "text" : {
     "status" : "generated",
-    "div" : "<div></div>"
+    "div" : "<div><h1>Lifelines Questionnaire</h1></div>"
   },
+  "questionnaire" : "Questionnaire/842479ed-9c5b-474b-bf97-fc295617900c",
   "status" : "completed",
-  "author" : {
-    "reference" : "Patient/1011537977V693883"
+  "subject" : {
+    "reference" : "https://api.va.gov/services/fhir/v0/r4/Patient/1011537977V693883"
   },
   "authored" : "2013-06-18T00:00:00+01:00",
   "item" : [

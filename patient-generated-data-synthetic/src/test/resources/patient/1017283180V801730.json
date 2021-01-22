@@ -1,6 +1,6 @@
 {
+  "id" : "1017283180V801730",
   "resourceType" : "Patient",
-  "id" : "1000000",
   "text" : {
     "status" : "generated",
     "div" : "<div></div>"
@@ -16,19 +16,19 @@
           }
         ]
       },
-      "system" : "http://va.gov/mvi",
-      "value" : "1000000"
+      "system" : "http://va.gov/mpi",
+      "value" : "1017283180V801730"
     }
   ],
   "active" : true,
   "name" : [
     {
       "use" : "usual",
+      "text" : "Mr. John100 Smith100",
       "family" : "Smith100",
       "given" : [
         "John100"
-      ],
-      "text" : "Mr. John100 Smith100"
+      ]
     }
   ],
   "telecom" : [
@@ -97,7 +97,7 @@
     }
   ],
   "managingOrganization" : {
-    "reference" : "Organization/f001",
+    "reference" : "https://api.va.gov/services/fhir/v0/r4/Organization/I2-U2YS4YSMVOGA4TNVOJB3RXVIQRQR7OXTDMFNC24L4YSKJKXSTCZA0000",
     "display" : "Burgers University Medical Centre"
   }
 }

@@ -3,6 +3,7 @@ package gov.va.api.health.patientgenerateddata;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.api.health.autoconfig.configuration.JacksonConfig;
 import gov.va.api.health.r4.api.DataAbsentReason;
 import gov.va.api.health.r4.api.elements.Extension;
@@ -18,6 +19,8 @@ import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 
 public class JacksonMapperConfigTest {
+  private static final ObjectMapper MAPPER = JacksonConfig.createMapper();
+
   private static Reference reference(String path) {
     return Reference.builder().display("display-value").reference(path).id("id-value").build();
   }
@@ -47,8 +50,7 @@ public class JacksonMapperConfigTest {
             .objectMapper()
             .writerWithDefaultPrettyPrinter()
             .writeValueAsString(input);
-    FugaziReferenceMajig actual =
-        JacksonConfig.createMapper().readValue(serializedJson, FugaziReferenceMajig.class);
+    FugaziReferenceMajig actual = MAPPER.readValue(serializedJson, FugaziReferenceMajig.class);
     assertThat(actual).isEqualTo(expected);
   }
 
@@ -123,8 +125,7 @@ public class JacksonMapperConfigTest {
             .objectMapper()
             .writerWithDefaultPrettyPrinter()
             .writeValueAsString(input);
-    FugaziReferenceMajig actual =
-        JacksonConfig.createMapper().readValue(qualifiedJson, FugaziReferenceMajig.class);
+    FugaziReferenceMajig actual = MAPPER.readValue(qualifiedJson, FugaziReferenceMajig.class);
     assertThat(actual).isEqualTo(expected);
   }
 

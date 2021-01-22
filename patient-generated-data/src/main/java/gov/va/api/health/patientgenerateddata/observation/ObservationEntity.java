@@ -1,5 +1,7 @@
 package gov.va.api.health.patientgenerateddata.observation;
 
+import gov.va.api.health.patientgenerateddata.PayloadEntity;
+import gov.va.api.health.r4.api.resources.Observation;
 import javax.persistence.Basic;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -21,7 +23,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class ObservationEntity {
+public class ObservationEntity implements PayloadEntity<Observation> {
   @Id @EqualsAndHashCode.Include private String id;
 
   @Lob
@@ -29,4 +31,9 @@ public class ObservationEntity {
   private String payload;
 
   @Version private Integer version;
+
+  @Override
+  public Class<Observation> resourceType() {
+    return Observation.class;
+  }
 }

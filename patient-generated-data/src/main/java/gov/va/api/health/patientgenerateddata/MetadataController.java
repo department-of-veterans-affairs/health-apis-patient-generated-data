@@ -3,8 +3,11 @@ package gov.va.api.health.patientgenerateddata;
 import static java.util.stream.Collectors.toList;
 import static org.springframework.util.CollectionUtils.isEmpty;
 
+import gov.va.api.health.r4.api.datatypes.CodeableConcept;
+import gov.va.api.health.r4.api.datatypes.Coding;
 import gov.va.api.health.r4.api.datatypes.ContactDetail;
 import gov.va.api.health.r4.api.datatypes.ContactPoint;
+import gov.va.api.health.r4.api.elements.Extension;
 import gov.va.api.health.r4.api.resources.CapabilityStatement;
 import java.util.List;
 import java.util.Set;
@@ -33,6 +36,8 @@ class MetadataController {
   private final BuildProperties buildProperties;
 
   private final LinkProperties pageLinks;
+
+  private final MetadataProperties metadataProperties;
 
   private List<ContactDetail> contact() {
     return List.of(
@@ -90,11 +95,18 @@ class MetadataController {
             SupportedResource.builder()
                 .type("Questionnaire")
                 .profileUrl("https://www.hl7.org/fhir/r4/questionnaire.html")
+                .searches(Set.of(SearchParam.ID, SearchParam.CONTEXT_TYPE_VALUE))
                 .build(),
             SupportedResource.builder()
                 .type("QuestionnaireResponse")
                 .profileUrl("https://www.hl7.org/fhir/r4/questionnaireresponse.html")
-                .searches(Set.of(SearchParam.ID, SearchParam.AUTHORED))
+                .searches(
+                    Set.of(
+                        SearchParam.ID,
+                        SearchParam.AUTHOR,
+                        SearchParam.AUTHORED,
+                        SearchParam.TAG,
+                        SearchParam.SUBJECT))
                 .build())
         .map(SupportedResource::asResource)
         .collect(toList());
@@ -105,7 +117,51 @@ class MetadataController {
         CapabilityStatement.Rest.builder()
             .mode(CapabilityStatement.RestMode.server)
             .resource(resources())
+            .security(restSecurity())
             .build());
+  }
+
+  private CapabilityStatement.Security restSecurity() {
+    return CapabilityStatement.Security.builder()
+        .cors(true)
+        .description("http://docs.smarthealthit.org/")
+        .service(List.of(smartOnFhirCodeableConcept()))
+        .extension(
+            List.of(
+                Extension.builder()
+                    .url("http://fhir-registry.smarthealthit.org/StructureDefinition/oauth-uris")
+                    .extension(
+                        List.of(
+                            Extension.builder()
+                                .url("token")
+                                .valueUri(metadataProperties.getEndpointToken())
+                                .build(),
+                            Extension.builder()
+                                .url("authorize")
+                                .valueUri(metadataProperties.getEndpointAuthorize())
+                                .build(),
+                            Extension.builder()
+                                .url("manage")
+                                .valueUri(metadataProperties.getEndpointManagement())
+                                .build(),
+                            Extension.builder()
+                                .url("revoke")
+                                .valueUri(metadataProperties.getEndpointRevocation())
+                                .build()))
+                    .build()))
+        .build();
+  }
+
+  private CodeableConcept smartOnFhirCodeableConcept() {
+    return CodeableConcept.builder()
+        .coding(
+            List.of(
+                Coding.builder()
+                    .system("http://terminology.hl7.org/CodeSystem/restful-security-service")
+                    .code("SMART-on-FHIR")
+                    .display("SMART-on-FHIR")
+                    .build()))
+        .build();
   }
 
   private CapabilityStatement.Software software() {
@@ -119,9 +175,13 @@ class MetadataController {
   @Getter
   @AllArgsConstructor
   enum SearchParam {
+    AUTHOR("author", CapabilityStatement.SearchParamType.reference),
     AUTHORED("authored", CapabilityStatement.SearchParamType.date),
+    CONTEXT_TYPE_VALUE("context-type-value", CapabilityStatement.SearchParamType.composite),
     ID("_id", CapabilityStatement.SearchParamType.token),
-    PATIENT("patient", CapabilityStatement.SearchParamType.reference);
+    PATIENT("patient", CapabilityStatement.SearchParamType.reference),
+    TAG("_tag", CapabilityStatement.SearchParamType.token),
+    SUBJECT("subject", CapabilityStatement.SearchParamType.reference);
 
     private final String param;
 
@@ -152,6 +212,11 @@ class MetadataController {
     }
 
     private List<CapabilityStatement.ResourceInteraction> interactions() {
+      CapabilityStatement.ResourceInteraction creatable =
+          CapabilityStatement.ResourceInteraction.builder()
+              .code(CapabilityStatement.TypeRestfulInteraction.create)
+              .documentation(RESOURCE_DOCUMENTATION)
+              .build();
       CapabilityStatement.ResourceInteraction readable =
           CapabilityStatement.ResourceInteraction.builder()
               .code(CapabilityStatement.TypeRestfulInteraction.read)
@@ -163,7 +228,7 @@ class MetadataController {
               .documentation(RESOURCE_DOCUMENTATION)
               .build();
       if (isEmpty(searches)) {
-        return List.of(readable, updatable);
+        return List.of(creatable, readable, updatable);
       }
 
       CapabilityStatement.ResourceInteraction searchable =
@@ -171,7 +236,7 @@ class MetadataController {
               .code(CapabilityStatement.TypeRestfulInteraction.search_type)
               .documentation(RESOURCE_DOCUMENTATION)
               .build();
-      return List.of(readable, updatable, searchable);
+      return List.of(creatable, readable, updatable, searchable);
     }
 
     private List<CapabilityStatement.SearchParam> searchParams() {

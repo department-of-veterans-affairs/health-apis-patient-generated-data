@@ -1,0 +1,72 @@
+{
+  "resourceType" : "Questionnaire",
+  "id" : "37953b72-961b-41ee-bd05-86c62bacc46b",
+  "meta" : {
+    "tag" : [
+      {
+        "system" : "https://api.va.gov/services/pgd",
+        "code" : "66a5960c-68ee-4689-88ae-4c7cccf7ca79",
+        "display" : "TEST APP"
+      }
+    ]
+  },
+  "text" : {
+    "status" : "generated",
+    "div" : "<div><h1>Pre-Visit Questionnaire</h1></div>"
+  },
+  "title" : "VA GOV Pre-Visit Agenda Questionnaire",
+  "status" : "active",
+  "publisher" : "clipboard.gov.va",
+  "useContext" : [
+    {
+      "code" : {
+        "system" : "http://terminology.hl7.org/CodeSystem/usage-context-type",
+        "code" : "venue"
+      },
+      "valueCodeableConcept" : {
+        "coding" : [
+          {
+            "system" : "https://staff.apps.va.gov/VistaEmrService/clinics",
+            "code" : "534/12975"
+          }
+        ]
+      }
+    },
+    {
+      "code" : {
+        "system" : "http://terminology.hl7.org/CodeSystem/usage-context-type",
+        "code" : "venue"
+      },
+      "valueCodeableConcept" : {
+        "coding" : [
+          {
+            "system" : "https://staff.apps.va.gov/VistaEmrService/clinics",
+            "code" : "534/12976"
+          }
+        ]
+      }
+    }
+  ],
+  "item" : [
+    {
+      "linkId" : "01",
+      "text" : "What is the reason for this appointment?",
+      "type" : "string"
+    },
+    {
+      "linkId" : "02",
+      "text" : "Are there any additional details you'd like to share with your provider about this appointment?",
+      "type" : "text"
+    },
+    {
+      "linkId" : "03",
+      "text" : "Are there any life events that are positively or negatively affecting your health?",
+      "type" : "text"
+    },
+    {
+      "linkId" : "04",
+      "text" : "Do you have other questions you want to ask your provider?",
+      "type" : "text"
+    }
+  ]
+}

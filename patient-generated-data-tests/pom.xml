@@ -8,7 +8,7 @@
     <relativePath/>
   </parent>
   <artifactId>patient-generated-data-tests</artifactId>
-  <version>0.0.45-SNAPSHOT</version>
+  <version>0.0.70-SNAPSHOT</version>
   <packaging>jar</packaging>
   <properties>
     <fhir-resources.version>5.0.17</fhir-resources.version>
@@ -88,6 +88,7 @@
                 <argument>-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5090</argument>
                 <argument>-cp</argument>
                 <argument>patient-generated-data.jar${path.separator}h2.jar${path.separator}patient-generated-data-synthetic-tests.jar</argument>
+                <argument>-Dclient-key=pteracuda</argument>
                 <argument>-Dloader=gov.va.api.health.patientgenerateddata.Application</argument>
                 <argument>-Dlogging.level.root=INFO</argument>
                 <argument>-Dpublic-r4-base-path=r4</argument>
@@ -130,6 +131,30 @@
                 <goals>
                   <goal>push</goal>
                 </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>synthetic-refresh</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>synthetic-refresh</id>
+                <phase>test</phase>
+                <goals>
+                  <goal>java</goal>
+                </goals>
+                <configuration>
+                  <mainClass>gov.va.api.health.patientgenerateddata.tests.SyntheticRefresh</mainClass>
+                  <classpathScope>test</classpathScope>
+                </configuration>
               </execution>
             </executions>
           </plugin>

@@ -11,10 +11,35 @@ import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 
 public interface QuestionnaireResponseApi {
+  @Operation(
+      summary = "QuestionnaireResponse Create",
+      description = "https://www.hl7.org/fhir/R4/questionnaireresponse.html",
+      tags = {"QuestionnaireResponse"})
+  @POST
+  @Path("QuestionnaireResponse")
+  @ApiResponse(
+      responseCode = "201",
+      description = "Record created",
+      content =
+          @Content(
+              mediaType = "application/fhir+json",
+              schema = @Schema(implementation = QuestionnaireResponse.class)))
+  @ApiResponse(
+      responseCode = "400",
+      description = "Bad request",
+      content =
+          @Content(
+              mediaType = "application/fhir+json",
+              schema = @Schema(implementation = OperationOutcome.class)))
+  QuestionnaireResponse questionnaireResponseCreate(
+      @RequestBody(required = true, description = "The FHIR resource in JSON format.")
+          QuestionnaireResponse body);
+
   @Operation(
       summary = "QuestionnaireResponse Read",
       description = "https://www.hl7.org/fhir/R4/questionnaireresponse.html",
@@ -48,7 +73,7 @@ public interface QuestionnaireResponseApi {
               name = "id",
               required = true,
               description =
-                  "The logical id of the resource. Once assigned, this value never changes.")
+                  "The logical ID of the resource. Once assigned, this value never changes.")
           String id);
 
   @Operation(
@@ -82,10 +107,14 @@ public interface QuestionnaireResponseApi {
       @Parameter(
               in = ParameterIn.QUERY,
               name = "_id",
-              required = true,
               description =
-                  "The logical id of the resource. Once assigned, this value never changes.")
+                  "The logical ID of the resource. Once assigned, this value never changes.")
           String id,
+      @Parameter(
+              in = ParameterIn.QUERY,
+              name = "author",
+              description = "The person or entity who received and recorded the answers.")
+          String author,
       @Parameter(
               in = ParameterIn.QUERY,
               name = "authored",
@@ -93,6 +122,12 @@ public interface QuestionnaireResponseApi {
                   "A date or range of dates (maximum of 2) that describes "
                       + "the date that the response was recorded.")
           String[] authored,
+      @Parameter(
+              in = ParameterIn.QUERY,
+              name = "subject",
+              description = "Who or what the answers apply to.")
+          String subject,
+      @Parameter(in = ParameterIn.QUERY, name = "_tag", description = "A metadata tag") String tag,
       @Parameter(
               in = ParameterIn.QUERY,
               name = "page",
@@ -141,7 +176,7 @@ public interface QuestionnaireResponseApi {
               name = "id",
               required = true,
               description =
-                  "The logical id of the resource. Once assigned, this value never changes.")
+                  "The logical ID of the resource. Once assigned, this value never changes.")
           String id,
       @RequestBody(required = true, description = "The FHIR resource in JSON format.")
           QuestionnaireResponse body);

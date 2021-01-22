@@ -25,23 +25,29 @@ import org.springframework.data.domain.Sort;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class QuestionnaireResponseEntity implements PayloadEntity {
+public class QuestionnaireResponseEntity implements PayloadEntity<QuestionnaireResponse> {
   @Id @EqualsAndHashCode.Include private String id;
+
+  @Version private Integer version;
 
   @Lob
   @Basic(fetch = FetchType.EAGER)
   private String payload;
 
-  @Version private Integer version;
+  private String author;
 
   private Instant authored;
+
+  private String subject;
+
+  private String metaTag;
 
   public static Sort naturalOrder() {
     return Sort.by("id").ascending();
   }
 
   @Override
-  public QuestionnaireResponse deserializePayload() {
-    return deserializePayload(QuestionnaireResponse.class);
+  public Class<QuestionnaireResponse> resourceType() {
+    return QuestionnaireResponse.class;
   }
 }

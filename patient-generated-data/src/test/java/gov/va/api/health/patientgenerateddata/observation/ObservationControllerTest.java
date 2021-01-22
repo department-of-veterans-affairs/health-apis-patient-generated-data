@@ -7,10 +7,12 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.api.health.autoconfig.configuration.JacksonConfig;
 import gov.va.api.health.patientgenerateddata.Exceptions;
 import gov.va.api.health.patientgenerateddata.LinkProperties;
 import gov.va.api.health.r4.api.resources.Observation;
+import gov.va.api.health.r4.api.resources.Observation.ObservationStatus;
 import java.net.URI;
 import java.util.Optional;
 import lombok.SneakyThrows;
@@ -19,18 +21,50 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.DataBinder;
 
 public class ObservationControllerTest {
+  private static final ObjectMapper MAPPER = JacksonConfig.createMapper();
+
+  @Test
+  @SneakyThrows
+  void create() {
+    LinkProperties pageLinks =
+        LinkProperties.builder().baseUrl("http://foo.com").r4BasePath("r4").build();
+    ObservationRepository repo = mock(ObservationRepository.class);
+    ObservationController controller = new ObservationController(pageLinks, repo);
+    var observation = observation();
+    var observationWithId = observation().id("123");
+    var persisted = MAPPER.writeValueAsString(observation);
+    assertThat(controller.create("123", observation))
+        .isEqualTo(
+            ResponseEntity.created(URI.create("http://foo.com/r4/Observation/" + 123))
+                .body(observationWithId));
+    verify(repo, times(1)).save(ObservationEntity.builder().id("123").payload(persisted).build());
+  }
+
+  @Test
+  @SneakyThrows
+  void create_invalid() {
+    var observation = observation().id("123");
+    var repo = mock(ObservationRepository.class);
+    var pageLinks = mock(LinkProperties.class);
+    var controller = new ObservationController(pageLinks, repo);
+    assertThrows(Exceptions.BadRequest.class, () -> controller.create(observation));
+  }
+
   @Test
   void initDirectFieldAccess() {
     new ObservationController(mock(LinkProperties.class), mock(ObservationRepository.class))
         .initDirectFieldAccess(mock(DataBinder.class));
   }
 
+  private Observation observation() {
+    return Observation.builder().status(ObservationStatus.unknown).build();
+  }
+
   @Test
   @SneakyThrows
   void read() {
     ObservationRepository repo = mock(ObservationRepository.class);
-    String payload =
-        JacksonConfig.createMapper().writeValueAsString(Observation.builder().id("x").build());
+    String payload = MAPPER.writeValueAsString(Observation.builder().id("x").build());
     when(repo.findById("x"))
         .thenReturn(Optional.of(ObservationEntity.builder().id("x").payload(payload).build()));
     assertThat(new ObservationController(mock(LinkProperties.class), repo).read("x"))
@@ -50,7 +84,7 @@ public class ObservationControllerTest {
   void update_existing() {
     ObservationRepository repo = mock(ObservationRepository.class);
     Observation observation = Observation.builder().id("x").build();
-    String payload = JacksonConfig.createMapper().writeValueAsString(observation);
+    String payload = MAPPER.writeValueAsString(observation);
     when(repo.findById("x"))
         .thenReturn(Optional.of(ObservationEntity.builder().id("x").payload(payload).build()));
     assertThat(new ObservationController(mock(LinkProperties.class), repo).update("x", observation))
@@ -60,16 +94,13 @@ public class ObservationControllerTest {
 
   @Test
   @SneakyThrows
-  void update_new() {
+  void update_not_existing() {
     LinkProperties pageLinks =
         LinkProperties.builder().baseUrl("http://foo.com").r4BasePath("r4").build();
     ObservationRepository repo = mock(ObservationRepository.class);
     Observation observation = Observation.builder().id("x").build();
-    String payload = JacksonConfig.createMapper().writeValueAsString(observation);
-    assertThat(new ObservationController(pageLinks, repo).update("x", observation))
-        .isEqualTo(
-            ResponseEntity.created(URI.create("http://foo.com/r4/Observation/x"))
-                .body(observation));
-    verify(repo, times(1)).save(ObservationEntity.builder().id("x").payload(payload).build());
+    assertThrows(
+        Exceptions.NotFound.class,
+        () -> new ObservationController(pageLinks, repo).update("x", observation));
   }
 }

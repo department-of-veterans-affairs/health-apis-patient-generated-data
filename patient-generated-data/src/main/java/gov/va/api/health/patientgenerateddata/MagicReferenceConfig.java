@@ -1,5 +1,7 @@
 package gov.va.api.health.patientgenerateddata;
 
+import static org.apache.commons.lang3.StringUtils.isBlank;
+
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.BeanDescription;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -13,7 +15,6 @@ import gov.va.api.health.r4.api.elements.Reference;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -29,13 +30,12 @@ public class MagicReferenceConfig {
   }
 
   private final class QualifiedReferenceWriter extends BeanPropertyWriter {
-
     private QualifiedReferenceWriter(BeanPropertyWriter base) {
       super(base);
     }
 
     private String qualify(String reference) {
-      if (StringUtils.isBlank(reference)) {
+      if (isBlank(reference)) {
         return null;
       }
       if (reference.startsWith("http")) {

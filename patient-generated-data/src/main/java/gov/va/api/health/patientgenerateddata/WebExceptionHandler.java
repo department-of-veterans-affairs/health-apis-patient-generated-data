@@ -10,6 +10,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.io.JsonEOFException;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import gov.va.api.health.autoconfig.configuration.JacksonConfig;
 import gov.va.api.health.autoconfig.encryption.BasicEncryption;
@@ -40,6 +41,8 @@ import org.springframework.web.client.HttpClientErrorException;
 @RestControllerAdvice
 @RequestMapping(produces = "application/json")
 public final class WebExceptionHandler {
+  private static final ObjectMapper MAPPER = JacksonConfig.createMapper();
+
   private final String encryptionKey;
 
   public WebExceptionHandler(@Value("${web-exception-key}") String encryptionKey) {
@@ -81,7 +84,6 @@ public final class WebExceptionHandler {
       MismatchedInputException mie = (MismatchedInputException) tr;
       return String.format("path: %s", mie.getPathReference());
     }
-
     if (tr instanceof JsonEOFException) {
       JsonEOFException eofe = (JsonEOFException) tr;
       if (eofe.getLocation() != null) {
@@ -90,12 +92,10 @@ public final class WebExceptionHandler {
             eofe.getLocation().getLineNr(), eofe.getLocation().getColumnNr());
       }
     }
-
     if (tr instanceof JsonMappingException) {
       JsonMappingException jme = (JsonMappingException) tr;
       return String.format("path: %s", jme.getPathReference());
     }
-
     if (tr instanceof JsonParseException) {
       JsonParseException jpe = (JsonParseException) tr;
       if (jpe.getLocation() != null) {
@@ -103,7 +103,6 @@ public final class WebExceptionHandler {
             "line: %s, column: %s", jpe.getLocation().getLineNr(), jpe.getLocation().getColumnNr());
       }
     }
-
     return tr.getMessage();
   }
 
@@ -133,15 +132,11 @@ public final class WebExceptionHandler {
 
   private List<Extension> extensions(Throwable tr, HttpServletRequest request) {
     List<Extension> extensions = new ArrayList<>(5);
-
     BasicEncryption encrypter = BasicEncryption.forKey(encryptionKey);
-
     extensions.add(
         Extension.builder().url("timestamp").valueInstant(Instant.now().toString()).build());
-
     extensions.add(
         Extension.builder().url("type").valueString(tr.getClass().getSimpleName()).build());
-
     if (isNotBlank(sanitizedMessage(tr))) {
       extensions.add(
           Extension.builder()
@@ -149,7 +144,6 @@ public final class WebExceptionHandler {
               .valueString(encrypter.encrypt(sanitizedMessage(tr)))
               .build());
     }
-
     String cause =
         causes(tr).stream()
             .map(t -> t.getClass().getSimpleName() + " " + sanitizedMessage(t))
@@ -158,16 +152,16 @@ public final class WebExceptionHandler {
       extensions.add(
           Extension.builder().url("cause").valueString(encrypter.encrypt(cause)).build());
     }
-
     extensions.add(Extension.builder().url("request").valueString(reconstructUrl(request)).build());
-
     return extensions;
   }
 
   @ExceptionHandler({
     BindException.class,
-    UnsatisfiedServletRequestParameterException.class,
-    gov.va.api.lighthouse.vulcan.InvalidRequest.class
+    Exceptions.AlreadyExists.class,
+    Exceptions.BadRequest.class,
+    gov.va.api.lighthouse.vulcan.InvalidRequest.class,
+    UnsatisfiedServletRequestParameterException.class
   })
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   OperationOutcome handleBadRequest(Exception e, HttpServletRequest request) {
@@ -204,6 +198,12 @@ public final class WebExceptionHandler {
     return responseFor("exception", e, request, emptyList(), true);
   }
 
+  @ExceptionHandler({HttpClientErrorException.Unauthorized.class, Exceptions.Unauthorized.class})
+  @ResponseStatus(HttpStatus.UNAUTHORIZED)
+  OperationOutcome handleUnauthorized(Exception e, HttpServletRequest request) {
+    return responseFor("unauthorized", e, request, emptyList(), true);
+  }
+
   /**
    * For constraint violation exceptions, we want to add a little more information in the exception
    * to present what exactly is wrong. We will distill which properties are wrong and why, but we
@@ -229,9 +229,9 @@ public final class WebExceptionHandler {
       boolean printStackTrace) {
     OperationOutcome response = asOperationOutcome(code, tr, request, diagnostics);
     if (printStackTrace) {
-      log.error("Response {}", JacksonConfig.createMapper().writeValueAsString(response), tr);
+      log.error("Response {}", MAPPER.writeValueAsString(response), tr);
     } else {
-      log.error("Response {}", JacksonConfig.createMapper().writeValueAsString(response));
+      log.error("Response {}", MAPPER.writeValueAsString(response));
     }
     return response;
   }
