@@ -132,7 +132,7 @@ public interface QuestionnaireResponseApi {
               in = ParameterIn.QUERY,
               name = "questionnaire",
               description = "The questionnaire that is being responded")
-              String questionnaire,
+          String questionnaire,
       @Parameter(
               in = ParameterIn.QUERY,
               name = "page",
