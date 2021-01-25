@@ -36,7 +36,7 @@ class SystemDefinitions {
         .questionnaireResponseUpdates("00000000-0000-0000-0000-000000000000")
         .questionnaireResponseMetaTag(
             Ids.MetaTag.builder()
-                .system("https://veteran.apps.va.gov/appointments/v1")
+                .system("https://api.va.gov/services/fhir/v0/r4/NamingSystem/va-appointment-identifier")
                 .code("202008211400983000082100000000000000")
                 .build())
         .build();
