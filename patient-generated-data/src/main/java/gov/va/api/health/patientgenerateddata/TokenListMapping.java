@@ -61,6 +61,19 @@ public final class TokenListMapping<EntityT> implements SingleParameterMapping<E
         .collect(joining(","));
   }
 
+  //  @Override
+  //  public Specification<EntityT> specificationFor(HttpServletRequest request) {
+  //    String value = request.getParameter(parameterName());
+  //    if (isBlank(value)) {
+  //      return null;
+  //    }
+  //    return (Specification<EntityT>)
+  //        (root, criteriaQuery, criteriaBuilder) ->
+  //            criteriaBuilder.like(
+  //                criteriaBuilder.lower(root.get(fieldName)),
+  //                "%" + addTerminators(value).toLowerCase(Locale.ENGLISH) + "%");
+  //  }
+
   /**
    * Takes a set of values to read from the database, and returns any values within the database
    * that contain a given part of the set.
@@ -88,6 +101,7 @@ public final class TokenListMapping<EntityT> implements SingleParameterMapping<E
     var values =
         Stream.of(request.getParameter(parameterName()).split(","))
             .filter(StringUtils::isBlank)
+            .filter(str -> str.equals("|"))
             .collect(toSet());
     return selectLikeInList(fieldName(), values);
   }
