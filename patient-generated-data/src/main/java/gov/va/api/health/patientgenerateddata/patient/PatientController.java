@@ -152,8 +152,8 @@ public class PatientController {
   ResponseEntity<Patient> update(
       @PathVariable("id") String id, @Valid @RequestBody Patient patient) {
     checkState(id.equals(patient.id()), "%s != %s", id, patient.id());
-    Optional<PatientEntity> maybeEntity = repository.findById(id);
-    PatientEntity entity = maybeEntity.orElseThrow(() -> new Exceptions.NotFound(id));
+    Optional<PatientEntity> maybeEntity = repository.findById(patient.id());
+    PatientEntity entity = maybeEntity.orElseThrow(() -> new Exceptions.NotFound(patient.id()));
     entity = populate(patient, entity);
     repository.save(entity);
     return ResponseEntity.ok(patient);
