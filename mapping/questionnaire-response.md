@@ -30,7 +30,7 @@ Include FHIR Resource in request body in json format
 
 **Search by meta tag (MAP appointment):**
 
-`GET [base]/QuestionnaireResponse?_tag=https://veteran.apps.va.gov/appointments/v1|202008211400983000084800000000000000`
+`GET [base]/QuestionnaireResponse?_tag=https://api.va.gov/services/fhir/v0/r4/NamingSystem/va-appointment-identifier|202008211400983000084800000000000000`
 
 ```
 {
@@ -44,7 +44,7 @@ Include FHIR Resource in request body in json format
         "display" : "VA GOV CLIPBOARD"
       },
       {
-        "system" : "https://veteran.apps.va.gov/appointments/v1",
+        "system" : "https://api.va.gov/services/fhir/v0/r4/NamingSystem/va-appointment-identifier",
         "code" : "202008211400983000084800000000000000"
       }
     ]
