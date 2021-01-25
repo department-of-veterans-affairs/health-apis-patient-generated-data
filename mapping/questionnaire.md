@@ -7,7 +7,7 @@ See [Questionnaire Response](questionnaire-response.md) for create, read, and up
 `https://veteran.apps.va.gov/cdw/v3/facilities/534/clinics/12975`:
 
 ```
-GET [base]/Questionnaire?context-type-value=venue$https://staff.apps.va.gov/VistaEmrService/clinics|534/12975
+GET [base]/Questionnaire?context-type-value=venue$https://api.va.gov/services/fhir/v0/r4/NamingSystem/va-clinic-identifier|534/12975
 ```
 
 Search for questionnaires with context-type-value containing at least one of these clinics:
@@ -17,9 +17,9 @@ Search for questionnaires with context-type-value containing at least one of the
 
 ```
 GET [base]/Questionnaire?context-type-value=
-  venue$https://staff.apps.va.gov/VistaEmrService/clinics|534/12974,
-  venue$https://staff.apps.va.gov/VistaEmrService/clinics|534/12975,
-  venue$https://staff.apps.va.gov/VistaEmrService/clinics|534/12976
+  venue$https://api.va.gov/services/fhir/v0/r4/NamingSystem/va-clinic-identifier|534/12974,
+  venue$https://api.va.gov/services/fhir/v0/r4/NamingSystem/va-clinic-identifier|534/12975,
+  venue$https://api.va.gov/services/fhir/v0/r4/NamingSystem/va-clinic-identifier|534/12976
 ```
 
 System value may also be omitted from the search:
@@ -43,7 +43,7 @@ GET [base]/Questionnaire?context-type-value=venue$534/12974,venue$534/12975,venu
   },
   "identifier" : [
     {
-      "system" : "https://api.va.gov/services/va_facilities/v0/facilities",
+      "system" : "https://api.va.gov/services/fhir/v0/r4/NamingSystem/va-facility-identifier",
       "value" : "vha_534"
     }
   ],
