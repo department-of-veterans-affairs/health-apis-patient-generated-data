@@ -26,8 +26,10 @@ class SystemDefinitions {
             Ids.UsageContextTypeValue.builder()
                 .codeWithAnySystem("venue$534/12975")
                 .codeWithNoSystem("venue$|534/12975")
-                .systemAndCode("venue$https://api.va.gov/services/fhir/v0/r4/NamingSystem/va-clinic-identifier|534/12975")
-                .systemWithAnyCode("venue$https://api.va.gov/services/fhir/v0/r4/NamingSystem/va-clinic-identifier|")
+                .systemAndCode(
+                    "venue$https://api.va.gov/services/fhir/v0/r4/NamingSystem/va-clinic-identifier|534/12975")
+                .systemWithAnyCode(
+                    "venue$https://api.va.gov/services/fhir/v0/r4/NamingSystem/va-clinic-identifier|")
                 .build())
         .questionnaireUpdates("00000000-0000-0000-0000-000000000000")
         .questionnaireResponse("f003043a-9047-4c3a-b15b-a26c67f4e723")
@@ -36,7 +38,8 @@ class SystemDefinitions {
         .questionnaireResponseUpdates("00000000-0000-0000-0000-000000000000")
         .questionnaireResponseMetaTag(
             Ids.MetaTag.builder()
-                .system("https://api.va.gov/services/fhir/v0/r4/NamingSystem/va-appointment-identifier")
+                .system(
+                    "https://api.va.gov/services/fhir/v0/r4/NamingSystem/va-appointment-identifier")
                 .code("202008211400983000082100000000000000")
                 .build())
         .build();
