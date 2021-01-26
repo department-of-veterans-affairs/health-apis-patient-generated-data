@@ -59,7 +59,7 @@ GET [base]/Questionnaire?context-type-value=venue$534/12974,venue$534/12975,venu
       "valueCodeableConcept" : {
         "coding" : [
           {
-            "system" : "https://staff.apps.va.gov/VistaEmrService/clinics",
+            "system" : "https://api.va.gov/services/fhir/v0/r4/NamingSystem/va-clinic-identifier",
             "code" : "534/12975"
           }
         ]
