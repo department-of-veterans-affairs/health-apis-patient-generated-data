@@ -7,8 +7,11 @@ import gov.va.api.health.r4.api.datatypes.Coding;
 import gov.va.api.health.r4.api.elements.Meta;
 import gov.va.api.health.r4.api.resources.QuestionnaireResponse;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import org.junit.jupiter.api.Test;
+import org.springframework.data.jpa.domain.Specification;
 
 public class TokenListMappingTest {
   private static QuestionnaireResponse _questionnaireResponse(
@@ -102,5 +105,18 @@ public class TokenListMappingTest {
   void metadataTagJoin_missingSystemAndCode() {
     String join = TokenListMapping.metadataTagJoin(_questionnaireResponse(null, null));
     assertThat(join).isEmpty();
+  }
+
+  @Test
+  void selectLikeInList() {
+    Set<String> values = new HashSet<>();
+    values.add("singleValue");
+    Specification<Object> spec = TokenListMapping.selectLikeInList("field", values);
+    assertThat(spec).isNotNull();
+    values = new HashSet<>();
+    values.add("someValue");
+    values.add("otherValue");
+    spec = TokenListMapping.selectLikeInList("field", values);
+    assertThat(spec).isNotNull();
   }
 }

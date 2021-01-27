@@ -1,16 +1,18 @@
 package gov.va.api.health.patientgenerateddata;
 
 import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 
 import gov.va.api.health.r4.api.datatypes.Coding;
 import gov.va.api.health.r4.api.resources.QuestionnaireResponse;
 import gov.va.api.lighthouse.vulcan.mappings.SingleParameterMapping;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import java.util.stream.Stream;
-import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.Predicate;
 import javax.servlet.http.HttpServletRequest;
 import lombok.Builder;
 import lombok.Value;
@@ -61,24 +63,11 @@ public final class TokenListMapping<EntityT> implements SingleParameterMapping<E
         .collect(joining(","));
   }
 
-  //  @Override
-  //  public Specification<EntityT> specificationFor(HttpServletRequest request) {
-  //    String value = request.getParameter(parameterName());
-  //    if (isBlank(value)) {
-  //      return null;
-  //    }
-  //    return (Specification<EntityT>)
-  //        (root, criteriaQuery, criteriaBuilder) ->
-  //            criteriaBuilder.like(
-  //                criteriaBuilder.lower(root.get(fieldName)),
-  //                "%" + addTerminators(value).toLowerCase(Locale.ENGLISH) + "%");
-  //  }
-
   /**
    * Takes a set of values to read from the database, and returns any values within the database
    * that contain a given part of the set.
    */
-  public static <E> Specification<E> selectLikeInList(String fieldName, Set<String> values) {
+  static <E> Specification<E> selectLikeInList(String fieldName, Set<String> values) {
     if (values == null || values.isEmpty()) {
       return null;
     }
@@ -90,18 +79,24 @@ public final class TokenListMapping<EntityT> implements SingleParameterMapping<E
               "%" + addTerminators(list.get(0)).toLowerCase(Locale.ENGLISH) + "%");
     }
     return (root, criteriaQuery, criteriaBuilder) -> {
-      CriteriaBuilder.In<String> in = criteriaBuilder.in(root.get(fieldName));
-      values.forEach(in::value);
-      return criteriaBuilder.or(in);
+      List<Predicate> predicates =
+          list.stream()
+              .map(
+                  val ->
+                      criteriaBuilder.like(
+                          criteriaBuilder.lower(root.get(fieldName)),
+                          "%" + addTerminators(val).toLowerCase(Locale.ENGLISH) + "%"))
+              .collect(toList());
+      return criteriaBuilder.or(predicates.toArray(new Predicate[0]));
     };
   }
 
   @Override
   public Specification<EntityT> specificationFor(HttpServletRequest request) {
     var values =
-        Stream.of(request.getParameter(parameterName()).split(","))
-            .filter(StringUtils::isBlank)
-            .filter(str -> str.equals("|"))
+        Stream.of(request.getParameter(parameterName()).split("\\s*,\\s*"))
+            .filter(StringUtils::isNotBlank)
+            .filter(str -> !str.equals("|"))
             .collect(toSet());
     return selectLikeInList(fieldName(), values);
   }

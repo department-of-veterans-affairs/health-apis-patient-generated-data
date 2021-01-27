@@ -7,8 +7,11 @@ import gov.va.api.health.r4.api.datatypes.CodeableConcept;
 import gov.va.api.health.r4.api.datatypes.Coding;
 import gov.va.api.health.r4.api.datatypes.UsageContext;
 import gov.va.api.health.r4.api.resources.Questionnaire;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import org.junit.jupiter.api.Test;
+import org.springframework.data.jpa.domain.Specification;
 
 public class CompositeMappingTest {
   private static Questionnaire _questionnaire(
@@ -26,6 +29,19 @@ public class CompositeMappingTest {
                             .build())
                     .build()))
         .build();
+  }
+
+  @Test
+  void selectLikeInList() {
+    Set<String> values = new HashSet<>();
+    values.add("singleValue");
+    Specification<Object> spec = CompositeMapping.selectLikeInList("field", values);
+    assertThat(spec).isNotNull();
+    values = new HashSet<>();
+    values.add("someValue");
+    values.add("otherValue");
+    spec = CompositeMapping.selectLikeInList("field", values);
+    assertThat(spec).isNotNull();
   }
 
   @Test
