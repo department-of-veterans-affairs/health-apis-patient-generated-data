@@ -12,6 +12,7 @@
   <packaging>jar</packaging>
   <properties>
     <fhir-resources.version>5.0.17</fhir-resources.version>
+    <jacoco.coverage>0.90</jacoco.coverage>
     <swagger-maven-plugin.version>2.1.5</swagger-maven-plugin.version>
     <vulcan.version>1.0.0</vulcan.version>
   </properties>
