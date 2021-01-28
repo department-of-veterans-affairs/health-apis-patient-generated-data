@@ -19,8 +19,7 @@ class SystemDefinitions {
         .patientNotMe("1017283180V801730")
         .questionnaire("37953b72-961b-41ee-bd05-86c62bacc46b")
         .questionnaireList(
-            "37953b72-961b-41ee-bd05-86c62bacc46b,"
-                + "842479ed-9c5b-474b-bf97-fc295617900c")
+            "37953b72-961b-41ee-bd05-86c62bacc46b," + "842479ed-9c5b-474b-bf97-fc295617900c")
         .questionnaireContextTypeValue(
             Ids.UsageContextTypeValue.builder()
                 .codeWithAnySystem("venue$534/12975")
