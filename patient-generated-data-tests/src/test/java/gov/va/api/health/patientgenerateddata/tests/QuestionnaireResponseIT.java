@@ -116,13 +116,11 @@ public class QuestionnaireResponseIT {
 
   @Test
   void search_questionnaire_csv() {
-    assumeEnvironmentIn(Environment.LOCAL);
-    // , Environment.QA, Environment.STAGING, Environment.STAGING_LAB, Environment.LAB);
     String questionnaireList = systemDefinition().ids().questionnaireList();
     String query = String.format("?questionnaire=%s", questionnaireList);
     var response = doGet("application/json", "QuestionnaireResponse" + query, 200);
     QuestionnaireResponse.Bundle bundle = response.expectValid(QuestionnaireResponse.Bundle.class);
-    assertThat(bundle.entry()).hasSize(3);
+    assertThat(bundle.entry()).hasSize(2);
   }
 
   @Test
