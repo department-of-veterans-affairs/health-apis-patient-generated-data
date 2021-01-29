@@ -10,7 +10,7 @@ Example for saving a questionnaire-response with a reference to a FHIR appointme
 ```
 {
   "resourceType" : "Appointment",
-  "id" : "example",
+  "id" : "202008211400983000084800000000000000",
   "text" : {
     "status" : "generated",
     "div" : "<div xmlns=\"http://www.w3.org/1999/xhtml\">Brian MRI results discussion</div>"
