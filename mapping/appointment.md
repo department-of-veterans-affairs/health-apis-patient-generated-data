@@ -121,7 +121,7 @@ Example for saving a questionnaire-response with a reference to a FHIR appointme
 - Search by appointment parameters with [chaining](https://www.hl7.org/fhir/search.html#chaining):
     - `QuestionnaireResponse?source=1008596379V859838&authored=2020-08-20&subject.actor=534-12975`
 - Implementation notes
-    - On save, PGD will need to retrieve the corresponding appointment to index its participant fields
+    - During save, PGD will internally retrieve the corresponding appointment to index its participant fields
     - What is the desired behavior if appointment API is unavailable, or the appointment can not be found?
     - Save the QuestionnaireResponse anyway and try to index the appointment again later?
 
