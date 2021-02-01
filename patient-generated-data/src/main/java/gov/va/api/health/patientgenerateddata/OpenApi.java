@@ -13,7 +13,7 @@ import javax.ws.rs.Path;
 @OpenAPIDefinition(
     info = @Info(title = "US Core R4", version = "v1"),
     servers = {
-      @Server(url = "https://blue.lab.lighthouse.va.gov/pgd/v0/r4/", description = "Sandbox")
+      @Server(url = "https://sandbox-api.va.gov/services/pgd/v0/r4/", description = "Sandbox")
     },
     externalDocs =
         @ExternalDocumentation(

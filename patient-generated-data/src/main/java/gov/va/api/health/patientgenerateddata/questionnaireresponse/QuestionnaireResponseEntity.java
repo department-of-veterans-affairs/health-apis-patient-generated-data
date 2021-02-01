@@ -38,6 +38,8 @@ public class QuestionnaireResponseEntity implements PayloadEntity<QuestionnaireR
 
   private Instant authored;
 
+  private String questionnaire;
+
   private String subject;
 
   private String metaTag;

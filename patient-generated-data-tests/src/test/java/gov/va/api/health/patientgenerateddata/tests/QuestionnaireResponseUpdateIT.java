@@ -27,7 +27,6 @@ public class QuestionnaireResponseUpdateIT {
     // Do not run in SLA'd environments
     assumeEnvironmentIn(
         Environment.LOCAL, Environment.QA, Environment.STAGING, Environment.STAGING_LAB);
-
     var id = systemDefinition().ids().questionnaireResponseUpdates();
     doGet("application/json", "QuestionnaireResponse/" + id, 200);
   }

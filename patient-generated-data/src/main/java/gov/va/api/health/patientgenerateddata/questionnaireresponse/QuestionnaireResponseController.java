@@ -74,11 +74,13 @@ public class QuestionnaireResponseController {
     String authorId = ReferenceUtils.resourceId(questionnaireResponse.author());
     Instant authored = ParseUtils.parseDateTime(questionnaireResponse.authored());
     String subject = ReferenceUtils.resourceId(questionnaireResponse.subject());
+    String questionnaire = ReferenceUtils.resourceId(questionnaireResponse.questionnaire());
     String metaTag = TokenListMapping.metadataTagJoin(questionnaireResponse);
     entity.payload(payload);
     entity.author(authorId);
     entity.authored(authored);
     entity.subject(subject);
+    entity.questionnaire(questionnaire);
     entity.metaTag(metaTag);
     return entity;
   }
@@ -107,10 +109,14 @@ public class QuestionnaireResponseController {
                 .value("author", "author")
                 .dateAsInstant("authored", "authored")
                 .value("subject", "subject")
+                .csvList("questionnaire", "questionnaire")
                 .get())
         .defaultQuery(returnNothing())
-        .rule(atLeastOneParameterOf("_id", "_tag", "author", "authored", "subject"))
-        .rule(ifParameter("_id").thenForbidParameters("_tag", "author", "authored", "subject"))
+        .rule(
+            atLeastOneParameterOf("_id", "_tag", "author", "authored", "subject", "questionnaire"))
+        .rule(
+            ifParameter("_id")
+                .thenForbidParameters("_tag", "author", "authored", "subject", "questionnaire"))
         .build();
   }
 

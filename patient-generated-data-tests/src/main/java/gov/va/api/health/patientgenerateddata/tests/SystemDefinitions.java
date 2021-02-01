@@ -18,12 +18,16 @@ class SystemDefinitions {
         .patientGenerated("9999999999V999999")
         .patientNotMe("1017283180V801730")
         .questionnaire("37953b72-961b-41ee-bd05-86c62bacc46b")
+        .questionnaireList(
+            "37953b72-961b-41ee-bd05-86c62bacc46b," + "842479ed-9c5b-474b-bf97-fc295617900c")
         .questionnaireContextTypeValue(
             Ids.UsageContextTypeValue.builder()
                 .codeWithAnySystem("venue$534/12975")
                 .codeWithNoSystem("venue$|534/12975")
-                .systemAndCode("venue$https://staff.apps.va.gov/VistaEmrService/clinics|534/12975")
-                .systemWithAnyCode("venue$https://staff.apps.va.gov/VistaEmrService/clinics|")
+                .systemAndCode(
+                    "venue$https://api.va.gov/services/fhir/v0/r4/NamingSystem/va-clinic-identifier|534/12975")
+                .systemWithAnyCode(
+                    "venue$https://api.va.gov/services/fhir/v0/r4/NamingSystem/va-clinic-identifier|")
                 .build())
         .questionnaireUpdates("00000000-0000-0000-0000-000000000000")
         .questionnaireResponse("f003043a-9047-4c3a-b15b-a26c67f4e723")
@@ -42,6 +46,7 @@ class SystemDefinitions {
                         .system("https://api.va.gov/services/pgd")
                         .code("66a5960c-68ee-4689-88ae-4c7cccf7ca79")
                         .build())
+
                 .build())
         .build();
   }
@@ -157,6 +162,8 @@ class SystemDefinitions {
     @NonNull String patientNotMe;
 
     @NonNull String questionnaire;
+
+    @NonNull String questionnaireList;
 
     @NonNull UsageContextTypeValue questionnaireContextTypeValue;
 

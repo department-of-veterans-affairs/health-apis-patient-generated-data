@@ -15,7 +15,6 @@ import org.junit.Test;
 import org.junit.jupiter.api.BeforeAll;
 
 public class QuestionnaireUpdateIT {
-
   static Questionnaire _questionnaire(String id) {
     return Questionnaire.builder().id(id).status(PublicationStatus.active).build();
   }
@@ -26,7 +25,6 @@ public class QuestionnaireUpdateIT {
     // Do not run in SLA'd environments
     assumeEnvironmentIn(
         Environment.LOCAL, Environment.QA, Environment.STAGING, Environment.STAGING_LAB);
-
     var id = systemDefinition().ids().questionnaireUpdates();
     doGet("application/json", "Questionnaire/" + id, 200);
   }
