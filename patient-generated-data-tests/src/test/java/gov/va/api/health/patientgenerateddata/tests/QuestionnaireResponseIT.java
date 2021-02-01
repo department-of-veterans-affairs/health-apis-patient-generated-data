@@ -138,9 +138,6 @@ public class QuestionnaireResponseIT {
 
   @Test
   void search_tag_codeWithAnySystem() {
-    assumeEnvironmentIn(
-        Environment.LOCAL, Environment.QA, Environment.STAGING, Environment.STAGING_LAB);
-    // , Environment.LAB);
     String tagCode = systemDefinition().ids().questionnaireResponseMetas().appointmentTag().code();
     String query = String.format("?_tag=%s", tagCode);
     var response = doGet("application/json", "QuestionnaireResponse" + query, 200);
@@ -150,10 +147,7 @@ public class QuestionnaireResponseIT {
 
   @Test
   void search_tag_codeWithNoSystem() {
-    assumeEnvironmentIn(
-        Environment.LOCAL, Environment.QA, Environment.STAGING, Environment.STAGING_LAB);
-    // , Environment.LAB);
-    String tagCode = systemDefinition().ids().questionnaireResponseMetas().appointme
+    String tagCode = systemDefinition().ids().questionnaireResponseMetas().appointmentTag().code();
     String query = String.format("?_tag=%s", "|" + tagCode);
     var response = doGet("application/json", "QuestionnaireResponse" + query, 200);
     QuestionnaireResponse.Bundle bundle = response.expectValid(QuestionnaireResponse.Bundle.class);
@@ -162,8 +156,6 @@ public class QuestionnaireResponseIT {
 
   @Test
   void search_tag_csv() {
-    assumeEnvironmentIn(
-        Environment.LOCAL, Environment.QA, Environment.STAGING, Environment.STAGING_LAB);
     String tagCode = systemDefinition().ids().questionnaireResponseMetas().systemTag().code();
     String tagSystem = systemDefinition().ids().questionnaireResponseMetas().systemTag().system();
     String secondaryTagCode =
@@ -180,12 +172,7 @@ public class QuestionnaireResponseIT {
 
   @Test
   void search_tag_systemWithAnyCode() {
-    assumeEnvironmentIn(
-        Environment.LOCAL, Environment.QA, Environment.STAGING, Environment.STAGING_LAB);
-    // , Environment.LAB);
-    String tagSystem =
-        systemDefinition().ids().questionnaireResponseMetas().appointmentTag().system();
-
+    String tagSystem = systemDefinition().ids().questionnaireResponseMetas().systemTag().system();
     String query = String.format("?_tag=%s", tagSystem + "|");
     var response = doGet("application/json", "QuestionnaireResponse" + query, 200);
     QuestionnaireResponse.Bundle bundle = response.expectValid(QuestionnaireResponse.Bundle.class);
@@ -194,12 +181,8 @@ public class QuestionnaireResponseIT {
 
   @Test
   void search_tag_systemWithCode() {
-    assumeEnvironmentIn(
-        Environment.LOCAL, Environment.QA, Environment.STAGING, Environment.STAGING_LAB);
-    // , Environment.LAB);
-    String tagCode = systemDefinition().ids().questionnaireResponseMetas().appointmentTag().code();
-    String tagSystem =
-        systemDefinition().ids().questionnaireResponseMetas().appointmentTag().system();
+    String tagCode = systemDefinition().ids().questionnaireResponseMetas().systemTag().code();
+    String tagSystem = systemDefinition().ids().questionnaireResponseMetas().systemTag().system();
     String query = String.format("?_tag=%s", tagSystem + "|" + tagCode);
     var response = doGet("application/json", "QuestionnaireResponse" + query, 200);
     QuestionnaireResponse.Bundle bundle = response.expectValid(QuestionnaireResponse.Bundle.class);
