@@ -38,7 +38,8 @@ class SystemDefinitions {
             Ids.Metas.builder()
                 .appointmentTag(
                     Ids.MetaTag.builder()
-                        .system("https://veteran.apps.va.gov/appointments/v1")
+                        .system(
+                            "https://api.va.gov/services/fhir/v0/r4/NamingSystem/va-appointment-identifier")
                         .code("202008211400983000082100000000000000")
                         .build())
                 .systemTag(
@@ -46,7 +47,6 @@ class SystemDefinitions {
                         .system("https://api.va.gov/services/pgd")
                         .code("66a5960c-68ee-4689-88ae-4c7cccf7ca79")
                         .build())
-
                 .build())
         .build();
   }
