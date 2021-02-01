@@ -46,7 +46,30 @@ public class TokenListMappingJpaTest {
   }
 
   @Test
-  void doIt() {
+  void search_tag_edgeCases() {
+    jdbc.execute("create table app.foo (id varchar, value varchar)");
+    String tagJoin = TokenListMapping.metadataTagJoin(_questionnaireResponse("clinics", "123"));
+    FooEntity entity = FooEntity.builder().id("x").value(tagJoin).build();
+    repository.save(entity);
+    TokenListMapping<FooEntity> mapping =
+        TokenListMapping.<FooEntity>builder().parameterName("param").fieldName("value").build();
+
+    Specification<FooEntity> spec =
+        mapping.specificationFor(_requestFromUri("http://fizz.com?param=,"));
+    assertThat(spec).isNull();
+
+    spec = mapping.specificationFor(_requestFromUri("http://fizz.com?param=|,|"));
+    assertThat(spec).isNull();
+
+    spec = mapping.specificationFor(_requestFromUri("http://fizz.com?param=,|"));
+    assertThat(spec).isNull();
+
+    spec = mapping.specificationFor(_requestFromUri("http://fizz.com?param=|,"));
+    assertThat(spec).isNull();
+  }
+
+  @Test
+  void specificationFor_systemAndCode() {
     jdbc.execute("create table app.foo (id varchar, value varchar)");
     String tagJoin = TokenListMapping.metadataTagJoin(_questionnaireResponse("clinics", "123"));
     FooEntity entity = FooEntity.builder().id("x").value(tagJoin).build();

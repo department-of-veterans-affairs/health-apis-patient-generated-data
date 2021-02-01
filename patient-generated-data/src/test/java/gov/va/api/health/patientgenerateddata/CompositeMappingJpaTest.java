@@ -54,7 +54,7 @@ public class CompositeMappingJpaTest {
   }
 
   @Test
-  void doIt() {
+  void specificationFor_systemAndCode() {
     jdbc.execute("create table app.foo (id varchar, value varchar)");
     String tagJoin =
         CompositeMapping.useContextValueJoin(_questionnaire("fizz", "buzz", "something", "else"));
@@ -63,7 +63,7 @@ public class CompositeMappingJpaTest {
     CompositeMapping<FooEntity> mapping =
         CompositeMapping.<FooEntity>builder().parameterName("param").fieldName("value").build();
     Specification<FooEntity> spec =
-        mapping.specificationFor(_requestFromUri("http://fizz.com?param=buzz$something,else"));
+        mapping.specificationFor(_requestFromUri("http://fizz.com?param=buzz$something|else"));
     assertThat(repository.findAll(spec)).isEqualTo(List.of(entity));
   }
 }

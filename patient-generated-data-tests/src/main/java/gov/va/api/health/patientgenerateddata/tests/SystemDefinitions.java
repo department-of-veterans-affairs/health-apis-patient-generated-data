@@ -30,15 +30,18 @@ class SystemDefinitions {
         .questionnaireResponseAuthor("1011537977V693883")
         .questionnaireResponseSubject("1011537977V693883")
         .questionnaireResponseUpdates("00000000-0000-0000-0000-000000000000")
-        .questionnaireResponseMetaTag(
-            Ids.MetaTag.builder()
-                .system("https://veteran.apps.va.gov/appointments/v1")
-                .code("202008211400983000082100000000000000")
-                .build())
-        .queestionnaireResponseSecondaryMetaTag(
-            Ids.MetaTag.builder()
-                .system("https://api.va.gov/services/pgd")
-                .code("66a5960c-68ee-4689-88ae-4c7cccf7ca79")
+        .questionnaireResponseMetas(
+            Ids.Metas.builder()
+                .appointmentTag(
+                    Ids.MetaTag.builder()
+                        .system("https://veteran.apps.va.gov/appointments/v1")
+                        .code("202008211400983000082100000000000000")
+                        .build())
+                .systemTag(
+                    Ids.MetaTag.builder()
+                        .system("https://api.va.gov/services/pgd")
+                        .code("66a5960c-68ee-4689-88ae-4c7cccf7ca79")
+                        .build())
                 .build())
         .build();
   }
@@ -163,9 +166,7 @@ class SystemDefinitions {
 
     @NonNull String questionnaireResponseAuthor;
 
-    @NonNull MetaTag questionnaireResponseMetaTag;
-
-    @NonNull MetaTag queestionnaireResponseSecondaryMetaTag;
+    @NonNull Metas questionnaireResponseMetas;
 
     @NonNull String questionnaireResponseSubject;
 
@@ -181,6 +182,14 @@ class SystemDefinitions {
       @NonNull String systemAndCode;
 
       @NonNull String systemWithAnyCode;
+    }
+
+    @Value
+    @Builder
+    static final class Metas {
+      @NonNull MetaTag appointmentTag;
+
+      @NonNull MetaTag systemTag;
     }
 
     @Value
