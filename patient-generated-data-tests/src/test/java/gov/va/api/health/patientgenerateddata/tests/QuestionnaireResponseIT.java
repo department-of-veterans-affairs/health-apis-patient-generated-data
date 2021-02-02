@@ -147,7 +147,7 @@ public class QuestionnaireResponseIT {
 
   @Test
   void search_tag_codeWithNoSystem() {
-    String tagCode = systemDefinition().ids().questionnaireResponseMetas().appointmentTag().code();
+    String tagCode = systemDefinition().ids().questionnaireResponseMetas().systemTag().code();
     String query = String.format("?_tag=%s", "|" + tagCode);
     var response = doGet("application/json", "QuestionnaireResponse" + query, 200);
     QuestionnaireResponse.Bundle bundle = response.expectValid(QuestionnaireResponse.Bundle.class);
@@ -167,7 +167,7 @@ public class QuestionnaireResponseIT {
             "?_tag=%s,%s", tagSystem + "|" + tagCode, secondaryTagSystem + "|" + secondaryTagCode);
     var response = doGet("application/json", "QuestionnaireResponse" + query, 200);
     QuestionnaireResponse.Bundle bundle = response.expectValid(QuestionnaireResponse.Bundle.class);
-    assertThat(bundle.entry()).hasSizeGreaterThan(0);
+    assertThat(bundle.entry()).hasSize(2);
   }
 
   @Test

@@ -59,8 +59,7 @@ public final class TokenListMapping<EntityT> implements SingleParameterMapping<E
   @Override
   public Specification<EntityT> specificationFor(HttpServletRequest request) {
     var values =
-        Stream.of(Splitter.on(",").trimResults().splitToList(request.getParameter(parameterName())))
-            .map(list -> list.get(0))
+        Splitter.on(",").trimResults().splitToList(request.getParameter(parameterName())).stream()
             .filter(StringUtils::isNotBlank)
             .filter(str -> !str.equals("|"))
             .collect(toSet());
