@@ -69,6 +69,24 @@ public class TokenListMappingJpaTest {
   }
 
   @Test
+  void specificationFor_csv() {
+    jdbc.execute("create table app.foo (id varchar, value varchar)");
+    String tagJoin = TokenListMapping.metadataTagJoin(_questionnaireResponse("clinics", "123"));
+    String tagJoinSecondary =
+        TokenListMapping.metadataTagJoin(_questionnaireResponse("something", "456"));
+    FooEntity entity = FooEntity.builder().id("x").value(tagJoin).build();
+    FooEntity entitySecondary = FooEntity.builder().id("y").value(tagJoinSecondary).build();
+    repository.save(entity);
+    repository.save(entitySecondary);
+    TokenListMapping<FooEntity> mapping =
+        TokenListMapping.<FooEntity>builder().parameterName("param").fieldName("value").build();
+    Specification<FooEntity> spec =
+        mapping.specificationFor(
+            _requestFromUri("http://fizz.com?param=clinics|123,something|456"));
+    assertThat(repository.findAll(spec)).isEqualTo(List.of(entity, entitySecondary));
+  }
+
+  @Test
   void specificationFor_systemAndCode() {
     jdbc.execute("create table app.foo (id varchar, value varchar)");
     String tagJoin = TokenListMapping.metadataTagJoin(_questionnaireResponse("clinics", "123"));

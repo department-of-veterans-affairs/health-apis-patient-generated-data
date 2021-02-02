@@ -167,7 +167,7 @@ public class QuestionnaireResponseIT {
             "?_tag=%s,%s", tagSystem + "|" + tagCode, secondaryTagSystem + "|" + secondaryTagCode);
     var response = doGet("application/json", "QuestionnaireResponse" + query, 200);
     QuestionnaireResponse.Bundle bundle = response.expectValid(QuestionnaireResponse.Bundle.class);
-    assertThat(bundle.entry()).hasSize(2);
+    assertThat(bundle.entry()).hasSize(1);
   }
 
   @Test
