@@ -1,16 +1,19 @@
 package gov.va.api.health.patientgenerateddata;
 
+import static gov.va.api.health.patientgenerateddata.MappingUtils.addTerminators;
+import static gov.va.api.health.patientgenerateddata.MappingUtils.selectLikeInList;
 import static java.util.stream.Collectors.joining;
-import static org.apache.commons.lang3.StringUtils.isBlank;
+import static java.util.stream.Collectors.toSet;
 
+import com.google.common.base.Splitter;
 import gov.va.api.health.r4.api.datatypes.Coding;
 import gov.va.api.health.r4.api.resources.QuestionnaireResponse;
 import gov.va.api.lighthouse.vulcan.mappings.SingleParameterMapping;
-import java.util.Locale;
 import java.util.stream.Stream;
 import javax.servlet.http.HttpServletRequest;
 import lombok.Builder;
 import lombok.Value;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.jpa.domain.Specification;
 
 @Value
@@ -19,10 +22,6 @@ public final class TokenListMapping<EntityT> implements SingleParameterMapping<E
   String parameterName;
 
   String fieldName;
-
-  static String addTerminators(String str) {
-    return "|" + str + "|";
-  }
 
   private static Stream<String> codingJoin(Coding tag) {
     if (tag == null) {
@@ -43,9 +42,7 @@ public final class TokenListMapping<EntityT> implements SingleParameterMapping<E
         addTerminators(tag.code()));
   }
 
-  /**
-   * Takes the questionnaire response and creates pairs of systems and codes, delimited by a comma.
-   */
+  /** Return CSV of metadata tag queries. */
   public static String metadataTagJoin(QuestionnaireResponse questionnaireResponse) {
     if (questionnaireResponse == null
         || questionnaireResponse.meta() == null
@@ -59,14 +56,11 @@ public final class TokenListMapping<EntityT> implements SingleParameterMapping<E
 
   @Override
   public Specification<EntityT> specificationFor(HttpServletRequest request) {
-    String value = request.getParameter(parameterName());
-    if (isBlank(value)) {
-      return null;
-    }
-    return (Specification<EntityT>)
-        (root, criteriaQuery, criteriaBuilder) ->
-            criteriaBuilder.like(
-                criteriaBuilder.lower(root.get(fieldName)),
-                "%" + addTerminators(value).toLowerCase(Locale.ENGLISH) + "%");
+    var values =
+        Splitter.on(",").trimResults().splitToList(request.getParameter(parameterName())).stream()
+            .filter(StringUtils::isNotBlank)
+            .filter(str -> !str.equals("|"))
+            .collect(toSet());
+    return selectLikeInList(fieldName(), values);
   }
 }
