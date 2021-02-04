@@ -46,29 +46,6 @@ public class TokenListMappingJpaTest {
   }
 
   @Test
-  void search_tag_edgeCases() {
-    jdbc.execute("create table app.foo (id varchar, value varchar)");
-    String tagJoin = TokenListMapping.metadataTagJoin(_questionnaireResponse("clinics", "123"));
-    FooEntity entity = FooEntity.builder().id("x").value(tagJoin).build();
-    repository.save(entity);
-    TokenListMapping<FooEntity> mapping =
-        TokenListMapping.<FooEntity>builder().parameterName("param").fieldName("value").build();
-
-    Specification<FooEntity> spec =
-        mapping.specificationFor(_requestFromUri("http://fizz.com?param=,"));
-    assertThat(spec).isNull();
-
-    spec = mapping.specificationFor(_requestFromUri("http://fizz.com?param=|,|"));
-    assertThat(spec).isNull();
-
-    spec = mapping.specificationFor(_requestFromUri("http://fizz.com?param=,|"));
-    assertThat(spec).isNull();
-
-    spec = mapping.specificationFor(_requestFromUri("http://fizz.com?param=|,"));
-    assertThat(spec).isNull();
-  }
-
-  @Test
   void specificationFor_csv() {
     jdbc.execute("create table app.foo (id varchar, value varchar)");
     String tagJoin = TokenListMapping.metadataTagJoin(_questionnaireResponse("clinics", "123"));
@@ -84,6 +61,20 @@ public class TokenListMappingJpaTest {
         mapping.specificationFor(
             _requestFromUri("http://fizz.com?param=clinics|123,something|456"));
     assertThat(repository.findAll(spec)).isEqualTo(List.of(entity, entitySecondary));
+  }
+
+  @Test
+  void specificationFor_edgeCases() {
+    jdbc.execute("create table app.foo (id varchar, value varchar)");
+    String tagJoin = TokenListMapping.metadataTagJoin(_questionnaireResponse("clinics", "123"));
+    FooEntity entity = FooEntity.builder().id("x").value(tagJoin).build();
+    repository.save(entity);
+    TokenListMapping<FooEntity> mapping =
+        TokenListMapping.<FooEntity>builder().parameterName("param").fieldName("value").build();
+    assertThat(mapping.specificationFor(_requestFromUri("http://fizz.com?param=,"))).isNull();
+    assertThat(mapping.specificationFor(_requestFromUri("http://fizz.com?param=|,|"))).isNull();
+    assertThat(mapping.specificationFor(_requestFromUri("http://fizz.com?param=,|"))).isNull();
+    assertThat(mapping.specificationFor(_requestFromUri("http://fizz.com?param=|,"))).isNull();
   }
 
   @Test

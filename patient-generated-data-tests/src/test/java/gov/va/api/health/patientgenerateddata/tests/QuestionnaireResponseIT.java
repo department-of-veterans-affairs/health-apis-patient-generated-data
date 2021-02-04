@@ -138,8 +138,8 @@ public class QuestionnaireResponseIT {
 
   @Test
   void search_tag_codeWithAnySystem() {
-    String tagCode = systemDefinition().ids().questionnaireResponseMetas().appointmentTag().code();
-    String query = String.format("?_tag=%s", tagCode);
+    String code = systemDefinition().ids().questionnaireResponseMetas().appointmentTag().code();
+    String query = String.format("?_tag=%s", code);
     var response = doGet("application/json", "QuestionnaireResponse" + query, 200);
     QuestionnaireResponse.Bundle bundle = response.expectValid(QuestionnaireResponse.Bundle.class);
     assertThat(bundle.entry()).hasSizeGreaterThan(0);
@@ -147,8 +147,8 @@ public class QuestionnaireResponseIT {
 
   @Test
   void search_tag_codeWithNoSystem() {
-    String tagCode = systemDefinition().ids().questionnaireResponseMetas().systemTag().code();
-    String query = String.format("?_tag=%s", "|" + tagCode);
+    String code = systemDefinition().ids().questionnaireResponseMetas().applicationTag().code();
+    String query = String.format("?_tag=%s", "|" + code);
     var response = doGet("application/json", "QuestionnaireResponse" + query, 200);
     QuestionnaireResponse.Bundle bundle = response.expectValid(QuestionnaireResponse.Bundle.class);
     assertThat(bundle.entry()).isEmpty();
@@ -156,15 +156,12 @@ public class QuestionnaireResponseIT {
 
   @Test
   void search_tag_csv() {
-    String tagCode = systemDefinition().ids().questionnaireResponseMetas().systemTag().code();
-    String tagSystem = systemDefinition().ids().questionnaireResponseMetas().systemTag().system();
-    String secondaryTagCode =
-        systemDefinition().ids().questionnaireResponseMetas().appointmentTag().code();
-    String secondaryTagSystem =
+    String system = systemDefinition().ids().questionnaireResponseMetas().applicationTag().system();
+    String code = systemDefinition().ids().questionnaireResponseMetas().applicationTag().code();
+    String system2 =
         systemDefinition().ids().questionnaireResponseMetas().appointmentTag().system();
-    String query =
-        String.format(
-            "?_tag=%s,%s", tagSystem + "|" + tagCode, secondaryTagSystem + "|" + secondaryTagCode);
+    String code2 = systemDefinition().ids().questionnaireResponseMetas().appointmentTag().code();
+    String query = String.format("?_tag=%s,%s", system + "|" + code, system2 + "|" + code2);
     var response = doGet("application/json", "QuestionnaireResponse" + query, 200);
     QuestionnaireResponse.Bundle bundle = response.expectValid(QuestionnaireResponse.Bundle.class);
     assertThat(bundle.entry()).hasSize(1);
@@ -172,8 +169,8 @@ public class QuestionnaireResponseIT {
 
   @Test
   void search_tag_systemWithAnyCode() {
-    String tagSystem = systemDefinition().ids().questionnaireResponseMetas().systemTag().system();
-    String query = String.format("?_tag=%s", tagSystem + "|");
+    String system = systemDefinition().ids().questionnaireResponseMetas().applicationTag().system();
+    String query = String.format("?_tag=%s", system + "|");
     var response = doGet("application/json", "QuestionnaireResponse" + query, 200);
     QuestionnaireResponse.Bundle bundle = response.expectValid(QuestionnaireResponse.Bundle.class);
     assertThat(bundle.entry()).hasSizeGreaterThan(0);
@@ -181,9 +178,9 @@ public class QuestionnaireResponseIT {
 
   @Test
   void search_tag_systemWithCode() {
-    String tagCode = systemDefinition().ids().questionnaireResponseMetas().systemTag().code();
-    String tagSystem = systemDefinition().ids().questionnaireResponseMetas().systemTag().system();
-    String query = String.format("?_tag=%s", tagSystem + "|" + tagCode);
+    String system = systemDefinition().ids().questionnaireResponseMetas().applicationTag().system();
+    String code = systemDefinition().ids().questionnaireResponseMetas().applicationTag().code();
+    String query = String.format("?_tag=%s", system + "|" + code);
     var response = doGet("application/json", "QuestionnaireResponse" + query, 200);
     QuestionnaireResponse.Bundle bundle = response.expectValid(QuestionnaireResponse.Bundle.class);
     assertThat(bundle.entry()).hasSizeGreaterThan(0);

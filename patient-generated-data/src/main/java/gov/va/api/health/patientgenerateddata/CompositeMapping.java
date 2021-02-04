@@ -1,7 +1,7 @@
 package gov.va.api.health.patientgenerateddata;
 
-import static gov.va.api.health.patientgenerateddata.SelectionUtils.addTerminators;
-import static gov.va.api.health.patientgenerateddata.SelectionUtils.selectLikeInList;
+import static gov.va.api.health.patientgenerateddata.MappingUtils.addTerminators;
+import static gov.va.api.health.patientgenerateddata.MappingUtils.selectLikeInList;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toSet;
 import static org.apache.commons.lang3.StringUtils.trimToNull;
@@ -85,6 +85,7 @@ public final class CompositeMapping<EntityT> implements SingleParameterMapping<E
     var values =
         Splitter.on(",").trimResults().splitToList(request.getParameter(parameterName())).stream()
             .filter(StringUtils::isNotBlank)
+            .filter(str -> !str.equals("$"))
             .filter(str -> !str.equals("|"))
             .collect(toSet());
     return selectLikeInList(fieldName(), values);

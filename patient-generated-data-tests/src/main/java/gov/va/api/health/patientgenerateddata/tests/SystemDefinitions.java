@@ -36,16 +36,16 @@ class SystemDefinitions {
         .questionnaireResponseUpdates("00000000-0000-0000-0000-000000000000")
         .questionnaireResponseMetas(
             Ids.Metas.builder()
+                .applicationTag(
+                    Ids.MetaTag.builder()
+                        .system("https://api.va.gov/services/pgd")
+                        .code("66a5960c-68ee-4689-88ae-4c7cccf7ca79")
+                        .build())
                 .appointmentTag(
                     Ids.MetaTag.builder()
                         .system(
                             "https://api.va.gov/services/fhir/v0/r4/NamingSystem/va-appointment-identifier")
                         .code("202008211400983000082100000000000000")
-                        .build())
-                .systemTag(
-                    Ids.MetaTag.builder()
-                        .system("https://api.va.gov/services/pgd")
-                        .code("66a5960c-68ee-4689-88ae-4c7cccf7ca79")
                         .build())
                 .build())
         .build();
@@ -181,22 +181,10 @@ class SystemDefinitions {
 
     @Value
     @Builder
-    static final class UsageContextTypeValue {
-      @NonNull String codeWithAnySystem;
-
-      @NonNull String codeWithNoSystem;
-
-      @NonNull String systemAndCode;
-
-      @NonNull String systemWithAnyCode;
-    }
-
-    @Value
-    @Builder
     static final class Metas {
-      @NonNull MetaTag appointmentTag;
+      @NonNull MetaTag applicationTag;
 
-      @NonNull MetaTag systemTag;
+      @NonNull MetaTag appointmentTag;
     }
 
     @Value
@@ -205,6 +193,18 @@ class SystemDefinitions {
       @NonNull String system;
 
       @NonNull String code;
+    }
+
+    @Value
+    @Builder
+    static final class UsageContextTypeValue {
+      @NonNull String codeWithAnySystem;
+
+      @NonNull String codeWithNoSystem;
+
+      @NonNull String systemAndCode;
+
+      @NonNull String systemWithAnyCode;
     }
   }
 

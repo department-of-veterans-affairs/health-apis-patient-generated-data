@@ -54,11 +54,29 @@ public class CompositeMappingJpaTest {
   }
 
   @Test
+  void specificationFor_edgeCases() {
+    jdbc.execute("create table app.foo (id varchar, value varchar)");
+    String join =
+        CompositeMapping.useContextValueJoin(_questionnaire("fizz", "buzz", "something", "else"));
+    FooEntity entity = FooEntity.builder().id("x").value(join).build();
+    repository.save(entity);
+    CompositeMapping<FooEntity> mapping =
+        CompositeMapping.<FooEntity>builder().parameterName("param").fieldName("value").build();
+    assertThat(mapping.specificationFor(_requestFromUri("http://fizz.com?param=,"))).isNull();
+    assertThat(mapping.specificationFor(_requestFromUri("http://fizz.com?param=|,|"))).isNull();
+    assertThat(mapping.specificationFor(_requestFromUri("http://fizz.com?param=,|"))).isNull();
+    assertThat(mapping.specificationFor(_requestFromUri("http://fizz.com?param=|,"))).isNull();
+    assertThat(mapping.specificationFor(_requestFromUri("http://fizz.com?param=$,$"))).isNull();
+    assertThat(mapping.specificationFor(_requestFromUri("http://fizz.com?param=,$"))).isNull();
+    assertThat(mapping.specificationFor(_requestFromUri("http://fizz.com?param=$,"))).isNull();
+  }
+
+  @Test
   void specificationFor_systemAndCode() {
     jdbc.execute("create table app.foo (id varchar, value varchar)");
-    String tagJoin =
+    String join =
         CompositeMapping.useContextValueJoin(_questionnaire("fizz", "buzz", "something", "else"));
-    FooEntity entity = FooEntity.builder().id("x").value(tagJoin).build();
+    FooEntity entity = FooEntity.builder().id("x").value(join).build();
     repository.save(entity);
     CompositeMapping<FooEntity> mapping =
         CompositeMapping.<FooEntity>builder().parameterName("param").fieldName("value").build();

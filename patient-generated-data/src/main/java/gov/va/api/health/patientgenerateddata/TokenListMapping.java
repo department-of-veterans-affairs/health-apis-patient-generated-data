@@ -1,7 +1,7 @@
 package gov.va.api.health.patientgenerateddata;
 
-import static gov.va.api.health.patientgenerateddata.SelectionUtils.addTerminators;
-import static gov.va.api.health.patientgenerateddata.SelectionUtils.selectLikeInList;
+import static gov.va.api.health.patientgenerateddata.MappingUtils.addTerminators;
+import static gov.va.api.health.patientgenerateddata.MappingUtils.selectLikeInList;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toSet;
 
@@ -42,9 +42,7 @@ public final class TokenListMapping<EntityT> implements SingleParameterMapping<E
         addTerminators(tag.code()));
   }
 
-  /**
-   * Takes the questionnaire response and creates pairs of systems and codes, delimited by a comma.
-   */
+  /** Return CSV of metadata tag queries. */
   public static String metadataTagJoin(QuestionnaireResponse questionnaireResponse) {
     if (questionnaireResponse == null
         || questionnaireResponse.meta() == null

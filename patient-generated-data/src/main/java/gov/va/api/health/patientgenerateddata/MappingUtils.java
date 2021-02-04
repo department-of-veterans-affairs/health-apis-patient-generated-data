@@ -6,24 +6,17 @@ import com.google.common.collect.Iterables;
 import java.util.Locale;
 import java.util.Set;
 import javax.persistence.criteria.Predicate;
-import lombok.Builder;
-import lombok.Value;
+import lombok.experimental.UtilityClass;
 import org.springframework.data.jpa.domain.Specification;
 
-@Value
-@Builder
-public class SelectionUtils {
-
+@UtilityClass
+public class MappingUtils {
   static String addTerminators(String str) {
     return "|" + str + "|";
   }
 
-  /**
-   * Takes a set of values to read from the database, and returns any values within the database
-   * that contain a given part of the set.
-   */
   static <E> Specification<E> selectLikeInList(String fieldName, Set<String> values) {
-    if (values == null || isEmpty(values)) {
+    if (isEmpty(values)) {
       return null;
     }
     if (values.size() == 1) {
@@ -35,15 +28,14 @@ public class SelectionUtils {
                   + "%");
     }
     return (root, criteriaQuery, criteriaBuilder) -> {
-      Predicate[] predicates =
+      return criteriaBuilder.or(
           values.stream()
               .map(
                   val ->
                       criteriaBuilder.like(
                           criteriaBuilder.lower(root.get(fieldName)),
                           "%" + addTerminators(val).toLowerCase(Locale.ENGLISH) + "%"))
-              .toArray(Predicate[]::new);
-      return criteriaBuilder.or(predicates);
+              .toArray(Predicate[]::new));
     };
   }
 }

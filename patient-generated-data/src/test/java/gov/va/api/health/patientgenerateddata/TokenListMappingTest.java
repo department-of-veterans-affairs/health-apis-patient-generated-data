@@ -1,6 +1,6 @@
 package gov.va.api.health.patientgenerateddata;
 
-import static gov.va.api.health.patientgenerateddata.SelectionUtils.addTerminators;
+import static gov.va.api.health.patientgenerateddata.MappingUtils.addTerminators;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import gov.va.api.health.r4.api.datatypes.Coding;
@@ -60,7 +60,7 @@ public class TokenListMappingTest {
     assertThat(join).contains(addTerminators("123"));
     assertThat(join).contains(addTerminators("456"));
     assertThat(join).doesNotContain(addTerminators("|123"));
-    assertThat(join).doesNotContain(addTerminators("|123"));
+    assertThat(join).doesNotContain(addTerminators("|456"));
   }
 
   @Test
