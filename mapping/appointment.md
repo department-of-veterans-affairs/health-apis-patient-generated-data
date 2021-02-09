@@ -1,113 +1,141 @@
 # QuestionnaireResponse and Appointment
 
-Example for saving a questionnaire-response with a reference to a FHIR appointment.
+Example for saving a questionnaire-response that references a FHIR appointment
 
 ### Appointment
 
-- `https://api.va.gov/services/fhir/v0/r4/Appointment/202008211400983000084800000000000000`
-- This assumes clinics are also available as FHIR locations
+- Backed by CDW
+- `https://sandbox-api.va.gov/services/fhir/v0/r4/Appointment/I2-SLRRT64GFGJAJGX62Q55NSQV44VEE4ZBB7U7YZQVVGKJGQ4653IQ0000`
 
 ```
 {
   "resourceType" : "Appointment",
-  "id" : "202008211400983000084800000000000000",
-  "text" : {
-    "status" : "generated",
-    "div" : "<div xmlns=\"http://www.w3.org/1999/xhtml\">Brian MRI results discussion</div>"
+  "id" : "I2-SLRRT64GFGJAJGX62Q55NSQV44VEE4ZBB7U7YZQVVGKJGQ4653IQ0000",
+  "status" : "cancelled",
+  "cancelationReason" : {
+    "coding" : [
+      {
+        "system" : "http://terminology.hl7.org/CodeSystem/appointment-cancellation-reason",
+        "display" : "OTHER"
+      }
+    ],
+    "text" : "OTHER"
   },
-  "status" : "booked",
-  "serviceCategory" : [
-    {
-      "coding" : [
-        {
-          "system" : "http://example.org/service-category",
-          "code" : "gp",
-          "display" : "General Practice"
-        }
-      ]
-    }
-  ],
-  "serviceType" : [
-    {
-      "coding" : [
-        {
-          "code" : "52",
-          "display" : "General Discussion"
-        }
-      ]
-    }
-  ],
-  "specialty" : [
-    {
-      "coding" : [
-        {
-          "system" : "http://snomed.info/sct",
-          "code" : "394814009",
-          "display" : "General practice"
-        }
-      ]
-    }
-  ],
   "appointmentType" : {
     "coding" : [
       {
         "system" : "http://terminology.hl7.org/CodeSystem/v2-0276",
-        "code" : "FOLLOWUP",
-        "display" : "A follow up visit from a previous appointment"
+        "display" : "WALKIN"
       }
-    ]
+    ],
+    "text" : "WALKIN"
   },
-  "reasonReference" : [
-    {
-      "reference" : "Condition/example",
-      "display" : "Severe burn of left ear"
-    }
-  ],
-  "priority" : 5,
-  "description" : "Discussion on the results of your recent MRI",
-  "start" : "2013-12-10T09:00:00Z",
-  "end" : "2013-12-10T11:00:00Z",
-  "created" : "2013-10-10",
-  "comment" : "Further expand on the results of the MRI and determine the next actions that may be appropriate.",
-  "basedOn" : [
-    {
-      "reference" : "ServiceRequest/myringotomy"
-    }
-  ],
+  "description" : "Used for veterans with a service connected % of 50% and greater, or veterans being seen for a service connected condition.",
+  "start" : "2017-05-26T07:00:00Z",
+  "end" : "2017-05-26T07:20:00Z",
+  "minutesDuration" : 20,
+  "created" : "2017-05-25T16:00:00Z",
   "participant" : [
     {
       "actor" : {
-        "reference" : "Patient/1008596379V859838",
-        "display" : "Peter James Chalmers"
+        "reference" : "https://blue.qa.lighthouse.va.gov/fhir/v0/r4/Location/I2-XPW2ECZK2LTNSPLNVKISWC5QZABOVEBZD5V2CKFRVEPAU5CNZMJQ0000",
+        "display" : "PROSTHETIC CONSULTS"
       },
-      "required" : "required",
       "status" : "accepted"
     },
     {
-      "type" : [
+      "actor" : {
+        "reference" : "https://blue.qa.lighthouse.va.gov/fhir/v0/r4/Patient/1011537977V693883",
+        "display" : "TEST,PATIENT ONE"
+      },
+      "status" : "accepted"
+    }
+  ]
+}
+```
+
+Appointment has reference to location (clinic), which in turn references managing organization (facility):
+
+```
+{
+  "resourceType" : "Location",
+  "id" : "I2-XPW2ECZK2LTNSPLNVKISWC5QZABOVEBZD5V2CKFRVEPAU5CNZMJQ0000",
+  "identifier" : [
+    {
+      "system" : "https://api.va.gov/services/fhir/v0/r4/NamingSystem/va-clinic-identifier",
+      "value" : "3343"
+    }
+  ],
+  "status" : "active",
+  "name" : "PROSTHETIC CONSULTS",
+  "description" : "RM 1F03",
+  "mode" : "instance",
+  "type" : [
+    {
+      "coding" : [
         {
-          "coding" : [
-            {
-              "system" : "http://terminology.hl7.org/CodeSystem/v3-ParticipationType",
-              "code" : "ATND"
-            }
-          ]
+          "display" : "CLINIC"
         }
       ],
-      "actor" : {
-        "reference" : "Practitioner/I2-6NVSMKEGQKNB3KRDXBGE7NRIEY000000",
-        "display" : "Dr Adam Careful"
-      },
-      "required" : "required",
-      "status" : "accepted"
+      "text" : "CLINIC"
+    }
+  ],
+  "telecom" : [
+    {
+      "system" : "phone",
+      "value" : "8550-3888"
+    }
+  ],
+  "address" : {
+    "text" : "1501 ROXAS BLVD PASAY CITY, METRO MANILA PH 96515-1100",
+    "line" : [
+      "1501 ROXAS BLVD"
+    ],
+    "city" : "PASAY CITY, METRO MANILA",
+    "state" : "PH",
+    "postalCode" : "96515-1100"
+  },
+  "physicalType" : {
+    "coding" : [
+      {
+        "display" : "RM 1F03"
+      }
+    ],
+    "text" : "RM 1F03"
+  },
+  "managingOrganization" : {
+    "reference" : "https://blue.qa.lighthouse.va.gov/fhir/v0/r4/Organization/I2-5R65QGBHXIK5FVLBMFXDK6CDNY000000",
+    "display" : "MANILA-RO"
+  }
+}
+```
+
+
+```
+{
+  "resourceType" : "Organization",
+  "id" : "I2-5R65QGBHXIK5FVLBMFXDK6CDNY000000",
+  "identifier" : [
+    {
+      "system" : "http://hl7.org/fhir/sid/us-npi",
+      "value" : "1215124896"
     },
     {
-      "actor" : {
-        "reference" : "Location/534-12975",
-        "display" : "NORTH CHARLESTON VA CBOC, PRIMARY CARE/MEDICINE"
-      },
-      "required" : "required",
-      "status" : "accepted"
+      "system" : "https://api.va.gov/services/fhir/v0/r4/NamingSystem/va-facility-identifier",
+      "value" : "vha_688"
+    }
+  ],
+  "active" : true,
+  "name" : "MANILA-RO",
+  "address" : [
+    {
+      "text" : "1501 ROXAS BLVD PASAY CITY, METRO MANILA PH 96515-1100",
+      "line" : [
+        "1501 ROXAS BLVD"
+      ],
+      "city" : "PASAY CITY, METRO MANILA",
+      "state" : "PH",
+      "postalCode" : "96515-1100"
     }
   ]
 }
@@ -116,14 +144,10 @@ Example for saving a questionnaire-response with a reference to a FHIR appointme
 ### QuestionnaireResponse
 
 - `https://sandbox-api.va.gov/services/pgd/v0/r4/QuestionnaireResponse/e4601c4c-34bd-4ecc-ba2a-ce39502ed6b9`
-- `subject` is used for appointment, not patient
-- `source` is used for patient
+- `subject` is appointment reference
+- `source` is patient reference
 - Search by appointment parameters with [chaining](https://www.hl7.org/fhir/search.html#chaining):
-    - `QuestionnaireResponse?source=1008596379V859838&authored=2020-08-20&subject.actor=534-12975`
-- Implementation notes
-    - During save, PGD will internally retrieve the corresponding appointment to index its participant fields
-    - What is the desired behavior if appointment API is unavailable, or the appointment can not be found?
-    - Save the QuestionnaireResponse anyway and try to index the appointment again later?
+    - `QuestionnaireResponse?source=1008596379V859838&authored=2020-08-20&subject.actor.identifier=3343&subject.actor.organization.identifier=vha_688`
 
 ```
 {
@@ -145,11 +169,11 @@ Example for saving a questionnaire-response with a reference to a FHIR appointme
   "questionnaire" : "Questionnaire/a4edd60a-f142-4547-8a9e-02a6bba76bcc",
   "status" : "completed",
   "subject" : {
-    "reference" : "https://api.va.gov/services/fhir/v0/r4/Appointment/202008211400983000084800000000000000"
+    "reference" : "https://sandbox-api.va.gov/services/fhir/v0/r4/Appointment/I2-SLRRT64GFGJAJGX62Q55NSQV44VEE4ZBB7U7YZQVVGKJGQ4653IQ0000"
   },
   "authored" : "2020-08-20",
   "source" : {
-    "reference" : "https://api.va.gov/services/fhir/v0/r4/Patient/1008596379V859838"
+    "reference" : "https://sandbox-api.va.gov/services/fhir/v0/r4/Patient/1008596379V859838"
   },
   "item" : [
     {
