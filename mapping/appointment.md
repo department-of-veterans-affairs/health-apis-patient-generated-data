@@ -30,7 +30,7 @@ Example for saving a questionnaire-response that references a FHIR appointment
     ],
     "text" : "WALKIN"
   },
-  "description" : "Used for veterans with a service connected % of 50% and greater, or veterans being seen for a service connected condition.",
+  "description" : "Used for veterans with a service connected % of 50% and greater.",
   "start" : "2017-05-26T07:00:00Z",
   "end" : "2017-05-26T07:20:00Z",
   "minutesDuration" : 20,
