@@ -38,14 +38,14 @@ Example for saving a questionnaire-response that references a FHIR appointment
   "participant" : [
     {
       "actor" : {
-        "reference" : "https://blue.qa.lighthouse.va.gov/fhir/v0/r4/Location/I2-XPW2ECZK2LTNSPLNVKISWC5QZABOVEBZD5V2CKFRVEPAU5CNZMJQ0000",
+        "reference" : "https://sandbox-api.va.gov/services/fhir/v0/r4/Location/I2-XPW2ECZK2LTNSPLNVKISWC5QZABOVEBZD5V2CKFRVEPAU5CNZMJQ0000",
         "display" : "PROSTHETIC CONSULTS"
       },
       "status" : "accepted"
     },
     {
       "actor" : {
-        "reference" : "https://blue.qa.lighthouse.va.gov/fhir/v0/r4/Patient/1011537977V693883",
+        "reference" : "https://sandbox-api.va.gov/services/fhir/v0/r4/Patient/1011537977V693883",
         "display" : "TEST,PATIENT ONE"
       },
       "status" : "accepted"
@@ -104,7 +104,7 @@ Appointment has reference to location (clinic), which in turn references managin
     "text" : "RM 1F03"
   },
   "managingOrganization" : {
-    "reference" : "https://blue.qa.lighthouse.va.gov/fhir/v0/r4/Organization/I2-5R65QGBHXIK5FVLBMFXDK6CDNY000000",
+    "reference" : "https://sandbox-api.va.gov/services/fhir/v0/r4/Organization/I2-5R65QGBHXIK5FVLBMFXDK6CDNY000000",
     "display" : "MANILA-RO"
   }
 }
