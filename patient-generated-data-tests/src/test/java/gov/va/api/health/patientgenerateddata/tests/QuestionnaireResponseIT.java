@@ -98,6 +98,32 @@ public class QuestionnaireResponseIT {
   }
 
   @Test
+  void search_questionnaire() {
+    String questionnaire = systemDefinition().ids().questionnaire();
+    String query = String.format("?questionnaire=%s", questionnaire);
+    var response = doGet("application/json", "QuestionnaireResponse" + query, 200);
+    QuestionnaireResponse.Bundle bundle = response.expectValid(QuestionnaireResponse.Bundle.class);
+    assertThat(bundle.entry()).hasSizeGreaterThan(0);
+  }
+
+  @Test
+  void search_questionnaireUnknown() {
+    String query = String.format("?questionnaire=%s", "unknown");
+    var response = doGet("application/json", "QuestionnaireResponse" + query, 200);
+    QuestionnaireResponse.Bundle bundle = response.expectValid(QuestionnaireResponse.Bundle.class);
+    assertThat(bundle.entry()).isEmpty();
+  }
+
+  @Test
+  void search_questionnaire_csv() {
+    String questionnaireList = systemDefinition().ids().questionnaireList();
+    String query = String.format("?questionnaire=%s", questionnaireList);
+    var response = doGet("application/json", "QuestionnaireResponse" + query, 200);
+    QuestionnaireResponse.Bundle bundle = response.expectValid(QuestionnaireResponse.Bundle.class);
+    assertThat(bundle.entry()).hasSize(2);
+  }
+
+  @Test
   void search_subject() {
     String subject = systemDefinition().ids().questionnaireResponseSubject();
     String query = String.format("?subject=%s", subject);
@@ -112,8 +138,8 @@ public class QuestionnaireResponseIT {
 
   @Test
   void search_tag_codeWithAnySystem() {
-    String tagCode = systemDefinition().ids().questionnaireResponseMetaTag().code();
-    String query = String.format("?_tag=%s", tagCode);
+    String code = systemDefinition().ids().questionnaireResponseMetas().appointmentTag().code();
+    String query = String.format("?_tag=%s", code);
     var response = doGet("application/json", "QuestionnaireResponse" + query, 200);
     QuestionnaireResponse.Bundle bundle = response.expectValid(QuestionnaireResponse.Bundle.class);
     assertThat(bundle.entry()).hasSizeGreaterThan(0);
@@ -121,17 +147,30 @@ public class QuestionnaireResponseIT {
 
   @Test
   void search_tag_codeWithNoSystem() {
-    String tagCode = systemDefinition().ids().questionnaireResponseMetaTag().code();
-    String query = String.format("?_tag=%s", "|" + tagCode);
+    String code = systemDefinition().ids().questionnaireResponseMetas().applicationTag().code();
+    String query = String.format("?_tag=%s", "|" + code);
     var response = doGet("application/json", "QuestionnaireResponse" + query, 200);
     QuestionnaireResponse.Bundle bundle = response.expectValid(QuestionnaireResponse.Bundle.class);
     assertThat(bundle.entry()).isEmpty();
   }
 
   @Test
+  void search_tag_csv() {
+    String system = systemDefinition().ids().questionnaireResponseMetas().applicationTag().system();
+    String code = systemDefinition().ids().questionnaireResponseMetas().applicationTag().code();
+    String system2 =
+        systemDefinition().ids().questionnaireResponseMetas().appointmentTag().system();
+    String code2 = systemDefinition().ids().questionnaireResponseMetas().appointmentTag().code();
+    String query = String.format("?_tag=%s,%s", system + "|" + code, system2 + "|" + code2);
+    var response = doGet("application/json", "QuestionnaireResponse" + query, 200);
+    QuestionnaireResponse.Bundle bundle = response.expectValid(QuestionnaireResponse.Bundle.class);
+    assertThat(bundle.entry()).hasSize(1);
+  }
+
+  @Test
   void search_tag_systemWithAnyCode() {
-    String tagSystem = systemDefinition().ids().questionnaireResponseMetaTag().system();
-    String query = String.format("?_tag=%s", tagSystem + "|");
+    String system = systemDefinition().ids().questionnaireResponseMetas().applicationTag().system();
+    String query = String.format("?_tag=%s", system + "|");
     var response = doGet("application/json", "QuestionnaireResponse" + query, 200);
     QuestionnaireResponse.Bundle bundle = response.expectValid(QuestionnaireResponse.Bundle.class);
     assertThat(bundle.entry()).hasSizeGreaterThan(0);
@@ -139,9 +178,9 @@ public class QuestionnaireResponseIT {
 
   @Test
   void search_tag_systemWithCode() {
-    String tagCode = systemDefinition().ids().questionnaireResponseMetaTag().code();
-    String tagSystem = systemDefinition().ids().questionnaireResponseMetaTag().system();
-    String query = String.format("?_tag=%s", tagSystem + "|" + tagCode);
+    String system = systemDefinition().ids().questionnaireResponseMetas().applicationTag().system();
+    String code = systemDefinition().ids().questionnaireResponseMetas().applicationTag().code();
+    String query = String.format("?_tag=%s", system + "|" + code);
     var response = doGet("application/json", "QuestionnaireResponse" + query, 200);
     QuestionnaireResponse.Bundle bundle = response.expectValid(QuestionnaireResponse.Bundle.class);
     assertThat(bundle.entry()).hasSizeGreaterThan(0);

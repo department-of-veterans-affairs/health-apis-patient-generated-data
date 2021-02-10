@@ -1,13 +1,15 @@
 package gov.va.api.health.patientgenerateddata;
 
+import static gov.va.api.health.patientgenerateddata.MappingUtils.addTerminators;
+import static gov.va.api.health.patientgenerateddata.MappingUtils.selectLikeInList;
 import static java.util.stream.Collectors.joining;
-import static org.apache.commons.lang3.StringUtils.isBlank;
+import static java.util.stream.Collectors.toSet;
 import static org.apache.commons.lang3.StringUtils.trimToNull;
 
+import com.google.common.base.Splitter;
 import gov.va.api.health.r4.api.datatypes.UsageContext;
 import gov.va.api.health.r4.api.resources.Questionnaire;
 import gov.va.api.lighthouse.vulcan.mappings.SingleParameterMapping;
-import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Stream;
 import javax.servlet.http.HttpServletRequest;
@@ -23,10 +25,6 @@ public final class CompositeMapping<EntityT> implements SingleParameterMapping<E
   String parameterName;
 
   String fieldName;
-
-  static String addTerminators(String str) {
-    return "|" + str + "|";
-  }
 
   /** Return CSV of context-type-value queries. */
   public static String useContextValueJoin(Questionnaire questionnaire) {
@@ -84,14 +82,12 @@ public final class CompositeMapping<EntityT> implements SingleParameterMapping<E
 
   @Override
   public Specification<EntityT> specificationFor(HttpServletRequest request) {
-    String value = request.getParameter(parameterName());
-    if (isBlank(value)) {
-      return null;
-    }
-    return (Specification<EntityT>)
-        (root, criteriaQuery, criteriaBuilder) ->
-            criteriaBuilder.like(
-                criteriaBuilder.lower(root.get(fieldName)),
-                "%" + addTerminators(value).toLowerCase(Locale.ENGLISH) + "%");
+    var values =
+        Splitter.on(",").trimResults().splitToList(request.getParameter(parameterName())).stream()
+            .filter(StringUtils::isNotBlank)
+            .filter(str -> !str.equals("$"))
+            .filter(str -> !str.equals("|"))
+            .collect(toSet());
+    return selectLikeInList(fieldName(), values);
   }
 }

@@ -1,6 +1,6 @@
 package gov.va.api.health.patientgenerateddata;
 
-import static gov.va.api.health.patientgenerateddata.CompositeMapping.addTerminators;
+import static gov.va.api.health.patientgenerateddata.MappingUtils.addTerminators;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import gov.va.api.health.r4.api.datatypes.CodeableConcept;
