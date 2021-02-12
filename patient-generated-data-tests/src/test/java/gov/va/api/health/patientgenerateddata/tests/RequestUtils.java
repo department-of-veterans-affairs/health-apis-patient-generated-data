@@ -15,12 +15,12 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class RequestUtils {
+  public static final ObjectMapper MAPPER =
+      JacksonConfig.createMapper().registerModule(new Resource.ResourceModule());
+
   private static final String INTERNAL_R4_PATH = "management/r4/";
 
   private static final String ACCESS_TOKEN = System.getProperty("access-token", "unset");
-
-  public static final ObjectMapper MAPPER =
-      JacksonConfig.createMapper().registerModule(new Resource.ResourceModule());
 
   public static ExpectedResponse doGet(
       String acceptHeader, String request, Integer expectedStatus) {

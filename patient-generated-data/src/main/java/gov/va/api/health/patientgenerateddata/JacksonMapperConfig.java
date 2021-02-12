@@ -11,13 +11,13 @@ import org.springframework.context.annotation.Configuration;
 public class JacksonMapperConfig {
   private final MagicReferenceConfig magicReferences;
 
-  public static ObjectMapper createMapper() {
-    return JacksonConfig.createMapper().registerModule(new Resource.ResourceModule());
-  }
-
   @Autowired
   public JacksonMapperConfig(MagicReferenceConfig magicReferences) {
     this.magicReferences = magicReferences;
+  }
+
+  public static ObjectMapper createMapper() {
+    return JacksonConfig.createMapper().registerModule(new Resource.ResourceModule());
   }
 
   @Bean
