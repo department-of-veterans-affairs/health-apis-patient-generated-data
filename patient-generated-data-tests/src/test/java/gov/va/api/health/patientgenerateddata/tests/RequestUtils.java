@@ -4,7 +4,7 @@ import static gov.va.api.health.patientgenerateddata.tests.SystemDefinitions.sys
 import static gov.va.api.health.sentinel.ExpectedResponse.logAllWithTruncatedBody;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import gov.va.api.health.autoconfig.configuration.JacksonConfig;
+import gov.va.api.health.patientgenerateddata.JacksonMapperConfig;
 import gov.va.api.health.sentinel.ExpectedResponse;
 import io.restassured.RestAssured;
 import io.restassured.http.Method;
@@ -14,9 +14,9 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class RequestUtils {
-  private static final String INTERNAL_R4_PATH = "management/r4/";
+  public static final ObjectMapper MAPPER = JacksonMapperConfig.createMapper();
 
-  private static final ObjectMapper MAPPER = JacksonConfig.createMapper();
+  private static final String INTERNAL_R4_PATH = "management/r4/";
 
   private static final String ACCESS_TOKEN = System.getProperty("access-token", "unset");
 
@@ -39,7 +39,8 @@ public class RequestUtils {
     }
     ExpectedResponse response =
         ExpectedResponse.of(spec.request(Method.GET, svc.urlWithApiPath() + request))
-            .logAction(logAllWithTruncatedBody(2000));
+            .logAction(logAllWithTruncatedBody(2000))
+            .mapper(MAPPER);
     if (expectedStatus != null) {
       response.expect(expectedStatus);
     }
@@ -71,7 +72,8 @@ public class RequestUtils {
     ExpectedResponse response =
         ExpectedResponse.of(
                 spec.request(Method.POST, svc.urlWithApiPath() + INTERNAL_R4_PATH + request))
-            .logAction(logAllWithTruncatedBody(2000));
+            .logAction(logAllWithTruncatedBody(2000))
+            .mapper(MAPPER);
     if (expectedStatus != null) {
       response.expect(expectedStatus);
     }
@@ -97,7 +99,8 @@ public class RequestUtils {
         expectedStatus);
     ExpectedResponse response =
         ExpectedResponse.of(spec.request(Method.POST, svc.urlWithApiPath() + request))
-            .logAction(logAllWithTruncatedBody(2000));
+            .logAction(logAllWithTruncatedBody(2000))
+            .mapper(MAPPER);
     if (expectedStatus != null) {
       response.expect(expectedStatus);
     }
@@ -123,7 +126,8 @@ public class RequestUtils {
         expectedStatus);
     ExpectedResponse response =
         ExpectedResponse.of(spec.request(Method.PUT, svc.urlWithApiPath() + request))
-            .logAction(logAllWithTruncatedBody(2000));
+            .logAction(logAllWithTruncatedBody(2000))
+            .mapper(MAPPER);
     if (expectedStatus != null) {
       response.expect(expectedStatus);
     }
