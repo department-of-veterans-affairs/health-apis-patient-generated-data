@@ -6,9 +6,9 @@ import static gov.va.api.health.patientgenerateddata.Controllers.generateRandomI
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import gov.va.api.health.autoconfig.configuration.JacksonConfig;
 import gov.va.api.health.autoconfig.logging.Loggable;
 import gov.va.api.health.patientgenerateddata.Exceptions;
+import gov.va.api.health.patientgenerateddata.JacksonMapperConfig;
 import gov.va.api.health.patientgenerateddata.LinkProperties;
 import gov.va.api.health.r4.api.resources.Observation;
 import java.net.URI;
@@ -37,7 +37,7 @@ import org.springframework.web.bind.annotation.RestController;
     produces = {"application/json", "application/fhir+json"})
 @AllArgsConstructor(onConstructor_ = @Autowired)
 public class ObservationController {
-  private static final ObjectMapper MAPPER = JacksonConfig.createMapper();
+  private static final ObjectMapper MAPPER = JacksonMapperConfig.createMapper();
 
   private final LinkProperties linkProperties;
 

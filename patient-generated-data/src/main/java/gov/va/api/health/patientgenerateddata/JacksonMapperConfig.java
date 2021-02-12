@@ -15,8 +15,12 @@ public class JacksonMapperConfig {
     this.magicReferences = magicReferences;
   }
 
+  public static ObjectMapper createMapper() {
+    return JacksonConfig.createMapper();
+  }
+
   @Bean
   public ObjectMapper objectMapper() {
-    return magicReferences.configure(JacksonConfig.createMapper());
+    return magicReferences.configure(createMapper());
   }
 }
