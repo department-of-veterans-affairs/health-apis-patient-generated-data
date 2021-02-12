@@ -8,7 +8,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
+import gov.va.api.health.patientgenerateddata.JacksonMapperConfig;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.api.health.autoconfig.configuration.JacksonConfig;
 import gov.va.api.health.patientgenerateddata.Exceptions;
@@ -34,7 +34,7 @@ import org.springframework.validation.DataBinder;
 import org.springframework.web.util.UriComponentsBuilder;
 
 public class QuestionnaireResponseControllerTest {
-  private static final ObjectMapper MAPPER = JacksonConfig.createMapper();
+  private static final ObjectMapper MAPPER = JacksonMapperConfig.createMapper();
 
   LinkProperties pageLinks =
       LinkProperties.builder()

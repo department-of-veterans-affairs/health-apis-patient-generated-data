@@ -19,7 +19,7 @@ import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 
 public class JacksonMapperConfigTest {
-  private static final ObjectMapper MAPPER = JacksonConfig.createMapper();
+  private static final ObjectMapper MAPPER = JacksonMapperConfig.createMapper();
 
   private static Reference reference(String path) {
     return Reference.builder().display("display-value").reference(path).id("id-value").build();

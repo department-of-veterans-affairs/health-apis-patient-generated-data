@@ -41,7 +41,7 @@ import org.springframework.web.client.HttpClientErrorException;
 @RestControllerAdvice
 @RequestMapping(produces = "application/json")
 public final class WebExceptionHandler {
-  private static final ObjectMapper MAPPER = JacksonConfig.createMapper();
+  private static final ObjectMapper MAPPER = JacksonMapperConfig.createMapper();
 
   private final String encryptionKey;
 

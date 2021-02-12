@@ -7,7 +7,7 @@ import static gov.va.api.lighthouse.vulcan.Rules.atLeastOneParameterOf;
 import static gov.va.api.lighthouse.vulcan.Rules.ifParameter;
 import static gov.va.api.lighthouse.vulcan.Vulcan.returnNothing;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
-
+import gov.va.api.health.patientgenerateddata.JacksonMapperConfig;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.api.health.autoconfig.configuration.JacksonConfig;
 import gov.va.api.health.autoconfig.logging.Loggable;
@@ -49,7 +49,7 @@ import org.springframework.web.bind.annotation.RestController;
     produces = {"application/json", "application/fhir+json"})
 @AllArgsConstructor(onConstructor_ = @Autowired)
 public class QuestionnaireResponseController {
-  private static final ObjectMapper MAPPER = JacksonConfig.createMapper();
+  private static final ObjectMapper MAPPER = JacksonMapperConfig.createMapper();
 
   private final LinkProperties linkProperties;
 

@@ -2,6 +2,7 @@ package gov.va.api.health.patientgenerateddata;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.api.health.autoconfig.configuration.JacksonConfig;
+import gov.va.api.health.r4.api.resources.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,6 +11,10 @@ import org.springframework.context.annotation.Configuration;
 public class JacksonMapperConfig {
   private final MagicReferenceConfig magicReferences;
 
+  public static ObjectMapper createMapper() {
+    return JacksonConfig.createMapper().registerModule(new Resource.ResourceModule());
+  }
+
   @Autowired
   public JacksonMapperConfig(MagicReferenceConfig magicReferences) {
     this.magicReferences = magicReferences;
@@ -17,6 +22,6 @@ public class JacksonMapperConfig {
 
   @Bean
   public ObjectMapper objectMapper() {
-    return magicReferences.configure(JacksonConfig.createMapper());
+    return magicReferences.configure(createMapper());
   }
 }

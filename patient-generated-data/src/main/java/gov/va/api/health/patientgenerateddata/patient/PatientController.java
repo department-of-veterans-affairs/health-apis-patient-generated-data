@@ -3,7 +3,7 @@ package gov.va.api.health.patientgenerateddata.patient;
 import static com.google.common.base.Preconditions.checkState;
 import static gov.va.api.health.patientgenerateddata.Controllers.checkRequestState;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
-
+import gov.va.api.health.patientgenerateddata.JacksonMapperConfig;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.api.health.autoconfig.configuration.JacksonConfig;
 import gov.va.api.health.autoconfig.logging.Loggable;
@@ -42,7 +42,7 @@ import org.springframework.web.bind.annotation.RestController;
     produces = {"application/json", "application/fhir+json"})
 @AllArgsConstructor(onConstructor_ = @Autowired)
 public class PatientController {
-  private static final ObjectMapper MAPPER = JacksonConfig.createMapper();
+  private static final ObjectMapper MAPPER = JacksonMapperConfig.createMapper();
 
   private static final Pattern MPI_PATTERN = Pattern.compile("^[0-9]{10}V[0-9]{6}$");
 
