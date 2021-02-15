@@ -112,13 +112,16 @@ public class QuestionnaireResponseController {
                 .dateAsInstant("authored", "authored")
                 .value("subject", "subject")
                 .csvList("questionnaire", "questionnaire")
+                .value("source", "source")
                 .get())
         .defaultQuery(returnNothing())
         .rule(
-            atLeastOneParameterOf("_id", "_tag", "author", "authored", "subject", "questionnaire"))
+            atLeastOneParameterOf(
+                "_id", "_tag", "author", "authored", "subject", "questionnaire", "source"))
         .rule(
             ifParameter("_id")
-                .thenForbidParameters("_tag", "author", "authored", "subject", "questionnaire"))
+                .thenForbidParameters(
+                    "_tag", "author", "authored", "subject", "questionnaire", "source"))
         .build();
   }
 

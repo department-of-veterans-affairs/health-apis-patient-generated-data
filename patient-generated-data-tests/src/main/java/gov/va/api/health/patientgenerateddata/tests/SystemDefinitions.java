@@ -48,6 +48,7 @@ class SystemDefinitions {
                         .code("202008211400983000082100000000000000")
                         .build())
                 .build())
+        .questionnaireResponseSource("1011537977V693883")
         .build();
   }
 
@@ -178,6 +179,8 @@ class SystemDefinitions {
     @NonNull String questionnaireResponseSubject;
 
     @NonNull String questionnaireResponseUpdates;
+
+    @NonNull String questionnaireResponseSource;
 
     @Value
     @Builder
