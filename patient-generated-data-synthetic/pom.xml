@@ -11,7 +11,7 @@
   <version>0.0.76-SNAPSHOT</version>
   <packaging>jar</packaging>
   <properties>
-    <fhir-resources.version>6.0.0-SNAPSHOT</fhir-resources.version>
+    <fhir-resources.version>6.0.0</fhir-resources.version>
     <health-apis-parent.version>7.0.21</health-apis-parent.version>
     <javax.el.version>3.0.1-b12</javax.el.version>
     <populaterator.sqlserver>false</populaterator.sqlserver>
