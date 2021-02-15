@@ -23,6 +23,9 @@
   "subject" : {
     "reference" : "https://api.va.gov/services/fhir/v0/r4/Patient/1011537977V693883"
   },
+  "source" : {
+    "reference" : "https://api.va.gov/services/fhir/v0/r4/Patient/1011537977V693883"
+  },
   "authored" : "2013-02-19T14:15:00-05:00",
   "author" : {
     "reference" : "https://api.va.gov/services/fhir/v0/r4/Patient/1011537977V693883"
