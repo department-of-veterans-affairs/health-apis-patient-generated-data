@@ -27,6 +27,9 @@
   "author" : {
     "reference" : "https://api.va.gov/services/fhir/v0/r4/Patient/1011537977V693883"
   },
+  "source" : {
+    "reference" : "https://api.va.gov/services/fhir/v0/r4/Patient/1011537977V693883"
+  },
   "item" : [
     {
       "linkId" : "01",
