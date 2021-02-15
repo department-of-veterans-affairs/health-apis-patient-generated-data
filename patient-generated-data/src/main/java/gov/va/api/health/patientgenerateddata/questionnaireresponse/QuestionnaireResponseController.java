@@ -76,12 +76,14 @@ public class QuestionnaireResponseController {
     String subject = ReferenceUtils.resourceId(questionnaireResponse.subject());
     String questionnaire = ReferenceUtils.resourceId(questionnaireResponse.questionnaire());
     String metaTag = TokenListMapping.metadataTagJoin(questionnaireResponse);
+    String source = ReferenceUtils.resourceId(questionnaireResponse.source());
     entity.payload(payload);
     entity.author(authorId);
     entity.authored(authored);
     entity.subject(subject);
     entity.questionnaire(questionnaire);
     entity.metaTag(metaTag);
+    entity.source(source);
     return entity;
   }
 
