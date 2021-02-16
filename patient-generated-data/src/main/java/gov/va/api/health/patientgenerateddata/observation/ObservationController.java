@@ -3,6 +3,8 @@ package gov.va.api.health.patientgenerateddata.observation;
 import static com.google.common.base.Preconditions.checkState;
 import static gov.va.api.health.patientgenerateddata.Controllers.checkRequestState;
 import static gov.va.api.health.patientgenerateddata.Controllers.generateRandomId;
+import static gov.va.api.lighthouse.vulcan.Rules.atLeastOneParameterOf;
+import static gov.va.api.lighthouse.vulcan.Vulcan.returnNothing;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -10,9 +12,14 @@ import gov.va.api.health.autoconfig.logging.Loggable;
 import gov.va.api.health.patientgenerateddata.Exceptions;
 import gov.va.api.health.patientgenerateddata.JacksonMapperConfig;
 import gov.va.api.health.patientgenerateddata.LinkProperties;
+import gov.va.api.health.patientgenerateddata.VulcanizedBundler;
 import gov.va.api.health.r4.api.resources.Observation;
+import gov.va.api.lighthouse.vulcan.Vulcan;
+import gov.va.api.lighthouse.vulcan.VulcanConfiguration;
+import gov.va.api.lighthouse.vulcan.mappings.Mappings;
 import java.net.URI;
 import java.util.Optional;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
@@ -65,6 +72,15 @@ public class ObservationController {
     return populate(observation, ObservationEntity.builder().id(observation.id()).build());
   }
 
+  private VulcanConfiguration<ObservationEntity> configuration() {
+    return VulcanConfiguration.forEntity(ObservationEntity.class)
+        .paging(linkProperties.pagingConfiguration("Observation", ObservationEntity.naturalOrder()))
+        .mappings(Mappings.forEntity(ObservationEntity.class).csvList("id", "id").get())
+        .defaultQuery(returnNothing())
+        .rule(atLeastOneParameterOf("id"))
+        .build();
+  }
+
   @PostMapping
   ResponseEntity<Observation> create(@Valid @RequestBody Observation observation) {
     return create(generateRandomId(), observation);
@@ -89,6 +105,27 @@ public class ObservationController {
     Optional<ObservationEntity> maybeEntity = repository.findById(id);
     ObservationEntity entity = maybeEntity.orElseThrow(() -> new Exceptions.NotFound(id));
     return entity.deserializePayload();
+  }
+
+  @GetMapping
+  Observation.Bundle search(HttpServletRequest request) {
+    return Vulcan.forRepo(repository)
+        .config(configuration())
+        .build()
+        .search(request)
+        .map(toBundle());
+  }
+
+  VulcanizedBundler<ObservationEntity, Observation, Observation.Entry, Observation.Bundle>
+      toBundle() {
+    return VulcanizedBundler.forBundling(
+            ObservationEntity.class,
+            VulcanizedBundler.Bundling.newBundle(Observation.Bundle::new)
+                .newEntry(Observation.Entry::new)
+                .linkProperties(linkProperties)
+                .build())
+        .toResource(ObservationEntity::deserializePayload)
+        .build();
   }
 
   @SneakyThrows

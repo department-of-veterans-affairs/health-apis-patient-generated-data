@@ -15,6 +15,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.springframework.data.domain.Sort;
 
 @Data
 @Entity
@@ -31,6 +32,10 @@ public class ObservationEntity implements PayloadEntity<Observation> {
   private String payload;
 
   @Version private Integer version;
+
+  public static Sort naturalOrder() {
+    return Sort.by("id").ascending();
+  }
 
   @Override
   public Class<Observation> resourceType() {

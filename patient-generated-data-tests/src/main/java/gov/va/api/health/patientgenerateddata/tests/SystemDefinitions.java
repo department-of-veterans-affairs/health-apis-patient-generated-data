@@ -14,6 +14,8 @@ class SystemDefinitions {
   private static Ids ids() {
     return Ids.builder()
         .observation("fc691a7f-a0f3-47b4-9d00-2786d055e8ba")
+        .observationList(
+            "fc691a7f-a0f3-47b4-9d00-2786d055e8ba," + "0b9d2e37-f84d-4f9e-9ba3-995772f368d3")
         .patient("1011537977V693883")
         .patientGenerated("9999999999V999999")
         .patientNotMe("1017283180V801730")
@@ -154,6 +156,8 @@ class SystemDefinitions {
   @Builder
   static final class Ids {
     @NonNull String observation;
+
+    @NonNull String observationList;
 
     @NonNull String patient;
 

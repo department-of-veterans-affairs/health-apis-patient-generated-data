@@ -2,6 +2,7 @@ package gov.va.api.health.patientgenerateddata.observation;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -14,14 +15,53 @@ import gov.va.api.health.patientgenerateddata.LinkProperties;
 import gov.va.api.health.r4.api.resources.Observation;
 import gov.va.api.health.r4.api.resources.Observation.ObservationStatus;
 import java.net.URI;
+import java.util.List;
 import java.util.Optional;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
+import org.mockito.ArgumentMatchers;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.validation.DataBinder;
+import org.springframework.web.util.UriComponentsBuilder;
 
 public class ObservationControllerTest {
   private static final ObjectMapper MAPPER = JacksonMapperConfig.createMapper();
+
+  LinkProperties pageLinks =
+      LinkProperties.builder()
+          .defaultPageSize(500)
+          .maxPageSize(20)
+          .baseUrl("http://foo.com")
+          .r4BasePath("r4")
+          .build();
+
+  private static MockHttpServletRequest requestFromUri(String uri) {
+    var u = UriComponentsBuilder.fromUriString(uri).build();
+    MockHttpServletRequest request = new MockHttpServletRequest();
+    request.setRequestURI(u.getPath());
+    request.setRemoteHost(u.getHost());
+    request.setProtocol(u.getScheme());
+    request.setServerPort(u.getPort());
+    u.getQueryParams()
+        .entrySet()
+        .forEach(e -> request.addParameter(e.getKey(), e.getValue().toArray(new String[0])));
+    return request;
+  }
+
+  private ObservationController controller() {
+    ObservationRepository repo = mock(ObservationRepository.class);
+    return controller(repo);
+  }
+
+  private ObservationController controller(ObservationRepository repo) {
+    return new ObservationController(pageLinks, repo);
+  }
 
   @Test
   @SneakyThrows
@@ -102,5 +142,24 @@ public class ObservationControllerTest {
     assertThrows(
         Exceptions.NotFound.class,
         () -> new ObservationController(pageLinks, repo).update("x", observation));
+  }
+
+  @SneakyThrows
+  @ParameterizedTest
+  @ValueSource(strings = "?id=1")
+  void validSearch(String query) {
+    ObservationRepository repo = mock(ObservationRepository.class);
+    ObservationController controller = controller(repo);
+    var anySpec = ArgumentMatchers.<Specification<ObservationEntity>>any();
+    when(repo.findAll(anySpec, any(Pageable.class)))
+        .thenAnswer(
+            i ->
+                new PageImpl<ObservationEntity>(
+                    List.of(ObservationEntity.builder().build().id("1").payload("{ \"id\": 1}")),
+                    i.getArgument(1, Pageable.class),
+                    1));
+    var r = requestFromUri("http://fonzy.com/r4/Observation" + query);
+    var actual = controller.search(r);
+    assertThat(actual.entry()).hasSize(1);
   }
 }
