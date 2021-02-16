@@ -24,13 +24,17 @@ Include FHIR Resource in request body in json format
 
 `GET [base]/QuestionnaireResponse?authored=2013-02-19T14:15:00-05:00`
 
-**Search by subject (patient):**
+**Search by source (patient):**
 
-`GET [base]/QuestionnaireResponse?subject=1008596379V859838`
+`GET [base]/QuestionnaireResponse?source=1008596379V859838`
 
-**Search by meta tag (MAP appointment):**
+**Search by subject (appointment ID):**
 
-`GET [base]/QuestionnaireResponse?_tag=https://api.va.gov/services/fhir/v0/r4/NamingSystem/va-appointment-identifier|202008211400983000084800000000000000`
+`GET [base]/QuestionnaireResponse?subject=I2-SLRRT64GFGJAJGX62Q55NSQV44VEE4ZBB7U7YZQVVGKJGQ4653IQ0000`
+
+**Search by meta tag:**
+
+`GET [base]/QuestionnaireResponse?_tag=https://api.va.gov/services/pgd|66a5960c-68ee-4689-88ae-4c7cccf7ca79`
 
 ```
 {
@@ -42,10 +46,6 @@ Include FHIR Resource in request body in json format
         "system" : "https://api.va.gov/services/pgd",
         "code" : "66a5960c-68ee-4689-88ae-4c7cccf7ca79",
         "display" : "VA GOV CLIPBOARD"
-      },
-      {
-        "system" : "https://api.va.gov/services/fhir/v0/r4/NamingSystem/va-appointment-identifier",
-        "code" : "202008211400983000084800000000000000"
       }
     ]
   },
@@ -56,9 +56,12 @@ Include FHIR Resource in request body in json format
   "questionnaire" : "Questionnaire/a4edd60a-f142-4547-8a9e-02a6bba76bcc",
   "status" : "completed",
   "subject" : {
-    "reference" : "https://api.va.gov/services/fhir/v0/r4/Patient/1008596379V859838"
+    "reference" : "https://sandbox-api.va.gov/services/fhir/v0/r4/Appointment/I2-SLRRT64GFGJAJGX62Q55NSQV44VEE4ZBB7U7YZQVVGKJGQ4653IQ0000"
   },
   "authored" : "2020-08-20",
+  "source" : {
+    "reference" : "https://sandbox-api.va.gov/services/fhir/v0/r4/Patient/1008596379V859838"
+  },
   "item" : [
     {
       "linkId" : "01",

@@ -7,7 +7,7 @@ See [Questionnaire Response](questionnaire-response.md) for create, read, and up
 `https://veteran.apps.va.gov/cdw/v3/facilities/534/clinics/12975`:
 
 ```
-GET [base]/Questionnaire?context-type-value=venue$https://api.va.gov/services/fhir/v0/r4/NamingSystem/va-clinic-identifier|534/12975
+GET [base]/Questionnaire?context-type-value=venue$https://api.va.gov/services/fhir/v0/r4/NamingSystem/va-clinic-identifier|vha_534_12975
 ```
 
 Search for questionnaires with context-type-value containing at least one of these clinics:
@@ -17,15 +17,16 @@ Search for questionnaires with context-type-value containing at least one of the
 
 ```
 GET [base]/Questionnaire?context-type-value=
-  venue$https://api.va.gov/services/fhir/v0/r4/NamingSystem/va-clinic-identifier|534/12974,
-  venue$https://api.va.gov/services/fhir/v0/r4/NamingSystem/va-clinic-identifier|534/12975,
-  venue$https://api.va.gov/services/fhir/v0/r4/NamingSystem/va-clinic-identifier|534/12976
+  venue$https://api.va.gov/services/fhir/v0/r4/NamingSystem/va-clinic-identifier|vha_534_12974,
+  venue$https://api.va.gov/services/fhir/v0/r4/NamingSystem/va-clinic-identifier|vha_534_12975,
+  venue$https://api.va.gov/services/fhir/v0/r4/NamingSystem/va-clinic-identifier|vha_534_12976
 ```
 
 System value may also be omitted from the search:
+
 ```
-GET [base]/Questionnaire?context-type-value=venue$534/12975
-GET [base]/Questionnaire?context-type-value=venue$534/12974,venue$534/12975,venue$534/12976
+GET [base]/Questionnaire?context-type-value=venue$vha_534_12975
+GET [base]/Questionnaire?context-type-value=venue$vha_534_12974,venue$vha_534_12975,venue$vha_534_12976
 ```
 
 ```
@@ -41,12 +42,6 @@ GET [base]/Questionnaire?context-type-value=venue$534/12974,venue$534/12975,venu
       }
     ]
   },
-  "identifier" : [
-    {
-      "system" : "https://api.va.gov/services/fhir/v0/r4/NamingSystem/va-facility-identifier",
-      "value" : "vha_534"
-    }
-  ],
   "title" : "VA GOV Pre-Visit Agenda Questionnaire",
   "status" : "active",
   "publisher" : "clipboard.gov.va",
@@ -60,7 +55,7 @@ GET [base]/Questionnaire?context-type-value=venue$534/12974,venue$534/12975,venu
         "coding" : [
           {
             "system" : "https://api.va.gov/services/fhir/v0/r4/NamingSystem/va-clinic-identifier",
-            "code" : "534/12975"
+            "code" : "vha_534_12975"
           }
         ]
       }

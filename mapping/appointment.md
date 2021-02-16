@@ -62,8 +62,12 @@ Appointment has reference to location (clinic), which in turn references managin
   "id" : "I2-XPW2ECZK2LTNSPLNVKISWC5QZABOVEBZD5V2CKFRVEPAU5CNZMJQ0000",
   "identifier" : [
     {
+      "system" : "https://api.va.gov/services/fhir/v0/r4/NamingSystem/va-facility-identifier",
+      "value" : "vha_688"
+    },
+    {
       "system" : "https://api.va.gov/services/fhir/v0/r4/NamingSystem/va-clinic-identifier",
-      "value" : "3343"
+      "value" : "vha_688_3343"
     }
   ],
   "status" : "active",
@@ -146,8 +150,6 @@ Appointment has reference to location (clinic), which in turn references managin
 - `https://sandbox-api.va.gov/services/pgd/v0/r4/QuestionnaireResponse/e4601c4c-34bd-4ecc-ba2a-ce39502ed6b9`
 - `subject` is appointment reference
 - `source` is patient reference
-- Search by appointment parameters with [chaining](https://www.hl7.org/fhir/search.html#chaining):
-    - `QuestionnaireResponse?source=1011537977V693883&authored=2020-08-20&subject.location.identifier=3343&subject.location.organization.identifier=vha_688`
 
 ```
 {
@@ -216,3 +218,46 @@ Appointment has reference to location (clinic), which in turn references managin
 }
 ```
 
+### Example Searches
+
+Search `Location` by facility:
+
+```
+Location?identifier=vha_688
+```
+
+Search `Location` by clinic:
+
+```
+Location?identifier=vha_688_3343
+```
+
+Search `Appointment` by patient and start time:
+
+```
+Appointment?patient=1011537977V693883&date=eq2017-05-26
+```
+
+To search `Appointment` by clinic, search by `Location` first:
+
+```
+Location?identifier=vha_688_3343
+extract location ID from bundle
+Appointment?location=I2-LOCATIONID
+```
+
+Search `QuestionnaireResponse` by patient and authored date:
+
+```
+QuestionnaireResponse?source=1011537977V693883&authored=2020-08-20
+```
+
+To search QuestionnaireResponse by appointment details, search `Location` and `Appointment` first:
+
+```
+Location?identifier=vha_688_3343
+Extract location ID from bundle
+Appointment?patient=1011537977V693883&date=eq2017-05-26&location=I2-LOCATIONID
+Extract appointment ID from bundle
+QuestionnaireResponse?source=1011537977V693883&subject=I2-APPOINTMENTID
+```
