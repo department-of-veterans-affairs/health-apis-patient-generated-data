@@ -31,6 +31,8 @@ class SystemDefinitions {
                 .build())
         .questionnaireUpdates("00000000-0000-0000-0000-000000000000")
         .questionnaireResponse("f003043a-9047-4c3a-b15b-a26c67f4e723")
+        .questionnaireResponseList(
+            "f003043a-9047-4c3a-b15b-a26c67f4e723," + "e7c5799f-14fd-420d-8671-e24386773e7e")
         .questionnaireResponseAuthor("1011537977V693883")
         .questionnaireResponseSubject("1011537977V693883")
         .questionnaireResponseUpdates("00000000-0000-0000-0000-000000000000")
@@ -178,6 +180,8 @@ class SystemDefinitions {
     @NonNull String questionnaireResponseSubject;
 
     @NonNull String questionnaireResponseUpdates;
+
+    @NonNull String questionnaireResponseList;
 
     @Value
     @Builder
