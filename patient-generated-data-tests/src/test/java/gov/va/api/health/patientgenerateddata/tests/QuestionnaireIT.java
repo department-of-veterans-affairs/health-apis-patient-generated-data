@@ -79,7 +79,7 @@ public class QuestionnaireIT {
 
   @Test
   void search_id_csv() {
-    var ids = systemDefinition().ids().questionnaireList();
+    var ids = String.join(",", systemDefinition().ids().questionnaireList());
     var response = doGet("application/json", "Questionnaire?_id=" + ids, 200);
     Questionnaire.Bundle bundle = response.expectValid(Questionnaire.Bundle.class);
     assertThat(bundle.entry()).hasSize(2);

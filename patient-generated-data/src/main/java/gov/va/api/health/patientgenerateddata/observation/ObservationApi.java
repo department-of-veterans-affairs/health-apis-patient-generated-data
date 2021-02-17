@@ -69,7 +69,7 @@ public interface ObservationApi {
   Observation observationRead(
       @Parameter(
               in = ParameterIn.PATH,
-              name = "id",
+              name = "_id",
               required = true,
               description =
                   "The logical ID of the resource. Once assigned, this value never changes.")
