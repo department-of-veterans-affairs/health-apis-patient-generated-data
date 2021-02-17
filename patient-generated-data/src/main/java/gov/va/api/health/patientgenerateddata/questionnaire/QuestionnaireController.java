@@ -82,7 +82,7 @@ public class QuestionnaireController {
             linkProperties.pagingConfiguration("Questionnaire", QuestionnaireEntity.naturalOrder()))
         .mappings(
             Mappings.forEntity(QuestionnaireEntity.class)
-                .value("_id", "id")
+                .csvList("_id", "id")
                 .add(
                     CompositeMapping.<QuestionnaireEntity>builder()
                         .parameterName("context-type-value")

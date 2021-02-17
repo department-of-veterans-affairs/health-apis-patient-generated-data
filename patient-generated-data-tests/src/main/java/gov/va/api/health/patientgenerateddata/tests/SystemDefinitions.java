@@ -32,6 +32,8 @@ class SystemDefinitions {
         .questionnaireUpdates("00000000-0000-0000-0000-000000000000")
         .questionnaireResponse("f003043a-9047-4c3a-b15b-a26c67f4e723")
         .questionnaireResponseAuthor("1011537977V693883")
+        .questionnaireResponseList(
+            "f003043a-9047-4c3a-b15b-a26c67f4e723," + "e7c5799f-14fd-420d-8671-e24386773e7e")
         .questionnaireResponseMetas(
             Ids.Metas.builder()
                 .applicationTag(
@@ -173,6 +175,8 @@ class SystemDefinitions {
     @NonNull String questionnaireResponse;
 
     @NonNull String questionnaireResponseAuthor;
+
+    @NonNull String questionnaireResponseList;
 
     @NonNull Metas questionnaireResponseMetas;
 
