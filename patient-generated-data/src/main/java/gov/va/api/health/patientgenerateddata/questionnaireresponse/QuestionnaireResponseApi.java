@@ -124,6 +124,11 @@ public interface QuestionnaireResponseApi {
           String[] authored,
       @Parameter(
               in = ParameterIn.QUERY,
+              name = "source",
+              description = "The person who answered the questions")
+          String source,
+      @Parameter(
+              in = ParameterIn.QUERY,
               name = "subject",
               description = "Who or what the answers apply to.")
           String subject,
