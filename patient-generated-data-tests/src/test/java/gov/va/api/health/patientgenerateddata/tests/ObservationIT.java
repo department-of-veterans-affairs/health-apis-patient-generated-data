@@ -30,16 +30,16 @@ public class ObservationIT {
   }
 
   @Test
-  void read_csv() {
-    String id = systemDefinition().ids().observationList();
-    String query = String.format("?id=%s", id);
-    var response = doGet("application/json", "Observation" + query, 200);
-    Observation.Bundle bundle = response.expectValid(Observation.Bundle.class);
-    assertThat(bundle.entry()).hasSize(2);
+  void read_notFound() {
+    doGet("application/json", "Observation/5555555", 404);
   }
 
   @Test
-  void read_notFound() {
-    doGet("application/json", "Observation/5555555", 404);
+  void search_csv() {
+    String id = String.join(",", systemDefinition().ids().observationList());
+    String query = String.format("?_id=%s", id);
+    var response = doGet("application/json", "Observation" + query, 200);
+    Observation.Bundle bundle = response.expectValid(Observation.Bundle.class);
+    assertThat(bundle.entry()).hasSize(2);
   }
 }

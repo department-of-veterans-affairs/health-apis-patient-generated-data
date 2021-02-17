@@ -2,6 +2,7 @@ package gov.va.api.health.patientgenerateddata.tests;
 
 import gov.va.api.health.sentinel.Environment;
 import gov.va.api.health.sentinel.SentinelProperties;
+import java.util.List;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.Value;
@@ -15,7 +16,7 @@ class SystemDefinitions {
     return Ids.builder()
         .observation("fc691a7f-a0f3-47b4-9d00-2786d055e8ba")
         .observationList(
-            "fc691a7f-a0f3-47b4-9d00-2786d055e8ba," + "0b9d2e37-f84d-4f9e-9ba3-995772f368d3")
+            List.of("fc691a7f-a0f3-47b4-9d00-2786d055e8ba", "0b9d2e37-f84d-4f9e-9ba3-995772f368d3"))
         .patient("1011537977V693883")
         .patientGenerated("9999999999V999999")
         .patientNotMe("1017283180V801730")
@@ -157,7 +158,7 @@ class SystemDefinitions {
   static final class Ids {
     @NonNull String observation;
 
-    @NonNull String observationList;
+    @NonNull List<String> observationList;
 
     @NonNull String patient;
 

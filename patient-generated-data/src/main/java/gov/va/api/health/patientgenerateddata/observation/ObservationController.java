@@ -75,9 +75,9 @@ public class ObservationController {
   private VulcanConfiguration<ObservationEntity> configuration() {
     return VulcanConfiguration.forEntity(ObservationEntity.class)
         .paging(linkProperties.pagingConfiguration("Observation", ObservationEntity.naturalOrder()))
-        .mappings(Mappings.forEntity(ObservationEntity.class).csvList("id", "id").get())
+        .mappings(Mappings.forEntity(ObservationEntity.class).csvList("_id", "id").get())
         .defaultQuery(returnNothing())
-        .rule(atLeastOneParameterOf("id"))
+        .rule(atLeastOneParameterOf("_id"))
         .build();
   }
 
