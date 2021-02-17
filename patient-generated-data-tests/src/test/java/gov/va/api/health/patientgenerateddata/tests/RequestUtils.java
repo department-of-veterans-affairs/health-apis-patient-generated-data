@@ -39,7 +39,8 @@ public class RequestUtils {
     }
     ExpectedResponse response =
         ExpectedResponse.of(spec.request(Method.GET, svc.urlWithApiPath() + request))
-            .logAction(logAllWithTruncatedBody(2000));
+            .logAction(logAllWithTruncatedBody(2000))
+            .mapper(MAPPER);
     if (expectedStatus != null) {
       response.expect(expectedStatus);
     }
@@ -71,7 +72,8 @@ public class RequestUtils {
     ExpectedResponse response =
         ExpectedResponse.of(
                 spec.request(Method.POST, svc.urlWithApiPath() + INTERNAL_R4_PATH + request))
-            .logAction(logAllWithTruncatedBody(2000));
+            .logAction(logAllWithTruncatedBody(2000))
+            .mapper(MAPPER);
     if (expectedStatus != null) {
       response.expect(expectedStatus);
     }
@@ -97,7 +99,8 @@ public class RequestUtils {
         expectedStatus);
     ExpectedResponse response =
         ExpectedResponse.of(spec.request(Method.POST, svc.urlWithApiPath() + request))
-            .logAction(logAllWithTruncatedBody(2000));
+            .logAction(logAllWithTruncatedBody(2000))
+            .mapper(MAPPER);
     if (expectedStatus != null) {
       response.expect(expectedStatus);
     }
@@ -123,7 +126,8 @@ public class RequestUtils {
         expectedStatus);
     ExpectedResponse response =
         ExpectedResponse.of(spec.request(Method.PUT, svc.urlWithApiPath() + request))
-            .logAction(logAllWithTruncatedBody(2000));
+            .logAction(logAllWithTruncatedBody(2000))
+            .mapper(MAPPER);
     if (expectedStatus != null) {
       response.expect(expectedStatus);
     }
