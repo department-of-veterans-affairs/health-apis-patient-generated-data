@@ -4,7 +4,8 @@ import static gov.va.api.health.patientgenerateddata.tests.SystemDefinitions.sys
 import static gov.va.api.health.sentinel.ExpectedResponse.logAllWithTruncatedBody;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import gov.va.api.health.patientgenerateddata.JacksonMapperConfig;
+import gov.va.api.health.autoconfig.configuration.JacksonConfig;
+import gov.va.api.health.r4.api.resources.Resource;
 import gov.va.api.health.sentinel.ExpectedResponse;
 import io.restassured.RestAssured;
 import io.restassured.http.Method;
@@ -14,7 +15,8 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class RequestUtils {
-  public static final ObjectMapper MAPPER = JacksonMapperConfig.createMapper();
+  public static final ObjectMapper MAPPER =
+      JacksonConfig.createMapper().registerModule(new Resource.ResourceModule());
 
   private static final String INTERNAL_R4_PATH = "management/r4/";
 
