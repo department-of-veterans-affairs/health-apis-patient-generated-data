@@ -28,13 +28,6 @@
     </dependency>
     <dependency>
       <groupId>gov.va.api.health</groupId>
-      <artifactId>patient-generated-data</artifactId>
-      <version>${project.version}</version>
-      <classifier>library</classifier>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>gov.va.api.health</groupId>
       <artifactId>patient-generated-data-synthetic</artifactId>
       <version>${project.version}</version>
       <scope>test</scope>
