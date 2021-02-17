@@ -3,7 +3,7 @@ package gov.va.api.health.patientgenerateddata;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.util.UriComponentsBuilder;
 
-public class RequestUtils {
+public class MockRequests {
 
   public static MockHttpServletRequest requestFromUri(String uri) {
     var u = UriComponentsBuilder.fromUriString(uri).build();

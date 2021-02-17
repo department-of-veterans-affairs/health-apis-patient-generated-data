@@ -1,6 +1,6 @@
 package gov.va.api.health.patientgenerateddata.questionnaire;
 
-import static gov.va.api.health.patientgenerateddata.RequestUtils.requestFromUri;
+import static gov.va.api.health.patientgenerateddata.MockRequests.requestFromUri;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertThrows;
