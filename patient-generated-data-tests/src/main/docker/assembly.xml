@@ -11,8 +11,6 @@
       <outputDirectory/>
       <includes>
         <include>**/junit-platform-console-standalone.jar</include>
-        <include>**/patient-generated-data-library.jar</include>
-        <include>**/patient-generated-data-library-*.jar</include>
         <include>**/patient-generated-data-tests-*.jar</include>
       </includes>
       <useDefaultExcludes>true</useDefaultExcludes>
