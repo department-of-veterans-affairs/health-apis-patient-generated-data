@@ -31,12 +31,12 @@ class SystemDefinitions {
                     "venue$https://api.va.gov/services/fhir/v0/r4/NamingSystem/va-clinic-identifier|")
                 .build())
         .questionnaireList(
-            "37953b72-961b-41ee-bd05-86c62bacc46b," + "842479ed-9c5b-474b-bf97-fc295617900c")
+            List.of("37953b72-961b-41ee-bd05-86c62bacc46b", "842479ed-9c5b-474b-bf97-fc295617900c"))
         .questionnaireUpdates("00000000-0000-0000-0000-000000000000")
         .questionnaireResponse("f003043a-9047-4c3a-b15b-a26c67f4e723")
         .questionnaireResponseAuthor("1011537977V693883")
         .questionnaireResponseList(
-            "f003043a-9047-4c3a-b15b-a26c67f4e723," + "e7c5799f-14fd-420d-8671-e24386773e7e")
+            List.of("f003043a-9047-4c3a-b15b-a26c67f4e723", "e7c5799f-14fd-420d-8671-e24386773e7e"))
         .questionnaireResponseMetas(
             Ids.Metas.builder()
                 .applicationTag(
@@ -173,7 +173,7 @@ class SystemDefinitions {
 
     @NonNull UsageContextTypeValue questionnaireContextTypeValue;
 
-    @NonNull String questionnaireList;
+    @NonNull List<String> questionnaireList;
 
     @NonNull String questionnaireUpdates;
 
@@ -181,7 +181,7 @@ class SystemDefinitions {
 
     @NonNull String questionnaireResponseAuthor;
 
-    @NonNull String questionnaireResponseList;
+    @NonNull List<String> questionnaireResponseList;
 
     @NonNull Metas questionnaireResponseMetas;
 

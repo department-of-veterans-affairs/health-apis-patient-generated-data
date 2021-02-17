@@ -99,7 +99,7 @@ public class QuestionnaireResponseIT {
 
   @Test
   void search_id_csv() {
-    var ids = systemDefinition().ids().questionnaireResponseList();
+    var ids = String.join(",", systemDefinition().ids().questionnaireResponseList());
     var query = String.format("?_id=%s", ids);
     var response = doGet("application/json", "QuestionnaireResponse" + query, 200);
     QuestionnaireResponse.Bundle bundle = response.expectValid(QuestionnaireResponse.Bundle.class);
@@ -125,7 +125,7 @@ public class QuestionnaireResponseIT {
 
   @Test
   void search_questionnaire_csv() {
-    String questionnaireList = systemDefinition().ids().questionnaireList();
+    var questionnaireList = String.join(",", systemDefinition().ids().questionnaireList());
     String query = String.format("?questionnaire=%s", questionnaireList);
     var response = doGet("application/json", "QuestionnaireResponse" + query, 200);
     QuestionnaireResponse.Bundle bundle = response.expectValid(QuestionnaireResponse.Bundle.class);

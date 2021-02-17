@@ -1,5 +1,6 @@
 package gov.va.api.health.patientgenerateddata;
 
+import static gov.va.api.health.patientgenerateddata.MockRequests.requestFromUri;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import gov.va.api.health.r4.api.datatypes.CodeableConcept;
@@ -12,9 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.web.util.UriComponentsBuilder;
 
 @DataJpaTest
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
@@ -40,19 +39,6 @@ public class CompositeMappingJpaTest {
         .build();
   }
 
-  private static MockHttpServletRequest _requestFromUri(String uri) {
-    var u = UriComponentsBuilder.fromUriString(uri).build();
-    MockHttpServletRequest request = new MockHttpServletRequest();
-    request.setRequestURI(u.getPath());
-    request.setRemoteHost(u.getHost());
-    request.setProtocol(u.getScheme());
-    request.setServerPort(u.getPort());
-    u.getQueryParams()
-        .entrySet()
-        .forEach(e -> request.addParameter(e.getKey(), e.getValue().toArray(new String[0])));
-    return request;
-  }
-
   @Test
   void specificationFor_edgeCases() {
     jdbc.execute("create table app.foo (id varchar, value varchar)");
@@ -62,13 +48,13 @@ public class CompositeMappingJpaTest {
     repository.save(entity);
     CompositeMapping<FooEntity> mapping =
         CompositeMapping.<FooEntity>builder().parameterName("param").fieldName("value").build();
-    assertThat(mapping.specificationFor(_requestFromUri("http://fizz.com?param=,"))).isNull();
-    assertThat(mapping.specificationFor(_requestFromUri("http://fizz.com?param=|,|"))).isNull();
-    assertThat(mapping.specificationFor(_requestFromUri("http://fizz.com?param=,|"))).isNull();
-    assertThat(mapping.specificationFor(_requestFromUri("http://fizz.com?param=|,"))).isNull();
-    assertThat(mapping.specificationFor(_requestFromUri("http://fizz.com?param=$,$"))).isNull();
-    assertThat(mapping.specificationFor(_requestFromUri("http://fizz.com?param=,$"))).isNull();
-    assertThat(mapping.specificationFor(_requestFromUri("http://fizz.com?param=$,"))).isNull();
+    assertThat(mapping.specificationFor(requestFromUri("http://fizz.com?param=,"))).isNull();
+    assertThat(mapping.specificationFor(requestFromUri("http://fizz.com?param=|,|"))).isNull();
+    assertThat(mapping.specificationFor(requestFromUri("http://fizz.com?param=,|"))).isNull();
+    assertThat(mapping.specificationFor(requestFromUri("http://fizz.com?param=|,"))).isNull();
+    assertThat(mapping.specificationFor(requestFromUri("http://fizz.com?param=$,$"))).isNull();
+    assertThat(mapping.specificationFor(requestFromUri("http://fizz.com?param=,$"))).isNull();
+    assertThat(mapping.specificationFor(requestFromUri("http://fizz.com?param=$,"))).isNull();
   }
 
   @Test
@@ -81,7 +67,7 @@ public class CompositeMappingJpaTest {
     CompositeMapping<FooEntity> mapping =
         CompositeMapping.<FooEntity>builder().parameterName("param").fieldName("value").build();
     Specification<FooEntity> spec =
-        mapping.specificationFor(_requestFromUri("http://fizz.com?param=buzz$something|else"));
+        mapping.specificationFor(requestFromUri("http://fizz.com?param=buzz$something|else"));
     assertThat(repository.findAll(spec)).isEqualTo(List.of(entity));
   }
 }
