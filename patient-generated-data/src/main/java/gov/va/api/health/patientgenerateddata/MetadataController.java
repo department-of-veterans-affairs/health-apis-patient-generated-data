@@ -95,19 +95,20 @@ class MetadataController {
             SupportedResource.builder()
                 .type("Questionnaire")
                 .profileUrl("https://www.hl7.org/fhir/r4/questionnaire.html")
-                .searches(Set.of(SearchParam.ID, SearchParam.CONTEXT_TYPE_VALUE))
+                .searches(Set.of(SearchParam._ID, SearchParam.CONTEXT_TYPE_VALUE))
                 .build(),
             SupportedResource.builder()
                 .type("QuestionnaireResponse")
                 .profileUrl("https://www.hl7.org/fhir/r4/questionnaireresponse.html")
                 .searches(
                     Set.of(
-                        SearchParam.ID,
+                        SearchParam._ID,
+                        SearchParam._TAG,
                         SearchParam.AUTHOR,
                         SearchParam.AUTHORED,
-                        SearchParam.TAG,
-                        SearchParam.SUBJECT,
-                        SearchParam.QUESTIONNAIRE))
+                        SearchParam.QUESTIONNAIRE,
+                        SearchParam.SOURCE,
+                        SearchParam.SUBJECT))
                 .build())
         .map(SupportedResource::asResource)
         .collect(toList());
@@ -176,14 +177,15 @@ class MetadataController {
   @Getter
   @AllArgsConstructor
   enum SearchParam {
+    _ID("_id", CapabilityStatement.SearchParamType.token),
+    _TAG("_tag", CapabilityStatement.SearchParamType.token),
     AUTHOR("author", CapabilityStatement.SearchParamType.reference),
     AUTHORED("authored", CapabilityStatement.SearchParamType.date),
     CONTEXT_TYPE_VALUE("context-type-value", CapabilityStatement.SearchParamType.composite),
-    ID("_id", CapabilityStatement.SearchParamType.token),
     PATIENT("patient", CapabilityStatement.SearchParamType.reference),
     QUESTIONNAIRE("questionnaire", CapabilityStatement.SearchParamType.reference),
-    SUBJECT("subject", CapabilityStatement.SearchParamType.reference),
-    TAG("_tag", CapabilityStatement.SearchParamType.token);
+    SOURCE("source", CapabilityStatement.SearchParamType.reference),
+    SUBJECT("subject", CapabilityStatement.SearchParamType.reference);
 
     private final String param;
 

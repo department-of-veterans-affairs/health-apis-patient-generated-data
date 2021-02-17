@@ -203,6 +203,12 @@ public class MetadataControllerTest {
                                                             .reference)
                                                     .build(),
                                                 CapabilityStatement.SearchParam.builder()
+                                                    .name("source")
+                                                    .type(
+                                                        CapabilityStatement.SearchParamType
+                                                            .reference)
+                                                    .build(),
+                                                CapabilityStatement.SearchParam.builder()
                                                     .name("subject")
                                                     .type(
                                                         CapabilityStatement.SearchParamType

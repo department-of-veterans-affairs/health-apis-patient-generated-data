@@ -125,7 +125,7 @@ public interface QuestionnaireResponseApi {
       @Parameter(
               in = ParameterIn.QUERY,
               name = "source",
-              description = "Who is providing the answers in the questionnaire response")
+              description = "The person who answered the questions")
           String source,
       @Parameter(
               in = ParameterIn.QUERY,

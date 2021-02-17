@@ -73,15 +73,15 @@ public class QuestionnaireResponseController {
         questionnaireResponse.id());
     String authorId = ReferenceUtils.resourceId(questionnaireResponse.author());
     Instant authored = ParseUtils.parseDateTime(questionnaireResponse.authored());
-    String subject = ReferenceUtils.resourceId(questionnaireResponse.subject());
     String questionnaire = ReferenceUtils.resourceId(questionnaireResponse.questionnaire());
+    String subject = ReferenceUtils.resourceId(questionnaireResponse.subject());
     String metaTag = TokenListMapping.metadataTagJoin(questionnaireResponse);
     String source = ReferenceUtils.resourceId(questionnaireResponse.source());
     entity.payload(payload);
     entity.author(authorId);
     entity.authored(authored);
-    entity.subject(subject);
     entity.questionnaire(questionnaire);
+    entity.subject(subject);
     entity.metaTag(metaTag);
     entity.source(source);
     return entity;
@@ -110,18 +110,18 @@ public class QuestionnaireResponseController {
                         .build())
                 .value("author", "author")
                 .dateAsInstant("authored", "authored")
-                .value("subject", "subject")
                 .csvList("questionnaire", "questionnaire")
                 .value("source", "source")
+                .value("subject", "subject")
                 .get())
         .defaultQuery(returnNothing())
         .rule(
             atLeastOneParameterOf(
-                "_id", "_tag", "author", "authored", "subject", "questionnaire", "source"))
+                "_id", "_tag", "author", "authored", "questionnaire", "source", "subject"))
         .rule(
             ifParameter("_id")
                 .thenForbidParameters(
-                    "_tag", "author", "authored", "subject", "questionnaire", "source"))
+                    "_tag", "author", "authored", "questionnaire", "source", "subject"))
         .build();
   }
 
