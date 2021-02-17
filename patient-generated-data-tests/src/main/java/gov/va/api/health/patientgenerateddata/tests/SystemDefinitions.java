@@ -21,8 +21,6 @@ class SystemDefinitions {
         .patientGenerated("9999999999V999999")
         .patientNotMe("1017283180V801730")
         .questionnaire("37953b72-961b-41ee-bd05-86c62bacc46b")
-        .questionnaireList(
-            "37953b72-961b-41ee-bd05-86c62bacc46b," + "842479ed-9c5b-474b-bf97-fc295617900c")
         .questionnaireContextTypeValue(
             Ids.UsageContextTypeValue.builder()
                 .codeWithAnySystem("venue$534/12975")
@@ -32,11 +30,13 @@ class SystemDefinitions {
                 .systemWithAnyCode(
                     "venue$https://api.va.gov/services/fhir/v0/r4/NamingSystem/va-clinic-identifier|")
                 .build())
+        .questionnaireList(
+            "37953b72-961b-41ee-bd05-86c62bacc46b," + "842479ed-9c5b-474b-bf97-fc295617900c")
         .questionnaireUpdates("00000000-0000-0000-0000-000000000000")
         .questionnaireResponse("f003043a-9047-4c3a-b15b-a26c67f4e723")
         .questionnaireResponseAuthor("1011537977V693883")
-        .questionnaireResponseSubject("1011537977V693883")
-        .questionnaireResponseUpdates("00000000-0000-0000-0000-000000000000")
+        .questionnaireResponseList(
+            "f003043a-9047-4c3a-b15b-a26c67f4e723," + "e7c5799f-14fd-420d-8671-e24386773e7e")
         .questionnaireResponseMetas(
             Ids.Metas.builder()
                 .applicationTag(
@@ -51,6 +51,9 @@ class SystemDefinitions {
                         .code("202008211400983000082100000000000000")
                         .build())
                 .build())
+        .questionnaireResponseSource("1011537977V693883")
+        .questionnaireResponseSubject("1011537977V693883")
+        .questionnaireResponseUpdates("00000000-0000-0000-0000-000000000000")
         .build();
   }
 
@@ -168,9 +171,9 @@ class SystemDefinitions {
 
     @NonNull String questionnaire;
 
-    @NonNull String questionnaireList;
-
     @NonNull UsageContextTypeValue questionnaireContextTypeValue;
+
+    @NonNull String questionnaireList;
 
     @NonNull String questionnaireUpdates;
 
@@ -178,7 +181,11 @@ class SystemDefinitions {
 
     @NonNull String questionnaireResponseAuthor;
 
+    @NonNull String questionnaireResponseList;
+
     @NonNull Metas questionnaireResponseMetas;
+
+    @NonNull String questionnaireResponseSource;
 
     @NonNull String questionnaireResponseSubject;
 

@@ -98,6 +98,15 @@ public class QuestionnaireResponseIT {
   }
 
   @Test
+  void search_id_csv() {
+    var ids = systemDefinition().ids().questionnaireResponseList();
+    var query = String.format("?_id=%s", ids);
+    var response = doGet("application/json", "QuestionnaireResponse" + query, 200);
+    QuestionnaireResponse.Bundle bundle = response.expectValid(QuestionnaireResponse.Bundle.class);
+    assertThat(bundle.entry()).hasSize(2);
+  }
+
+  @Test
   void search_questionnaire() {
     String questionnaire = systemDefinition().ids().questionnaire();
     String query = String.format("?questionnaire=%s", questionnaire);
@@ -121,6 +130,20 @@ public class QuestionnaireResponseIT {
     var response = doGet("application/json", "QuestionnaireResponse" + query, 200);
     QuestionnaireResponse.Bundle bundle = response.expectValid(QuestionnaireResponse.Bundle.class);
     assertThat(bundle.entry()).hasSize(2);
+  }
+
+  @Test
+  void search_source() {
+    assumeEnvironmentIn(Environment.LOCAL);
+    // Environment.QA
+    // Environment.STAGING
+    // Environment.STAGING_LAB
+    // Environment.LAB
+    String source = systemDefinition().ids().questionnaireResponseSource();
+    String query = String.format("?source=%s", source);
+    var response = doGet("application/json", "QuestionnaireResponse" + query, 200);
+    QuestionnaireResponse.Bundle bundle = response.expectValid(QuestionnaireResponse.Bundle.class);
+    assertThat(bundle.entry()).hasSizeGreaterThan(0);
   }
 
   @Test
