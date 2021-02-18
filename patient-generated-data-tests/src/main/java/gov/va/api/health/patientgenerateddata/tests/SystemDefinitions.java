@@ -17,9 +17,6 @@ class SystemDefinitions {
         .observation("fc691a7f-a0f3-47b4-9d00-2786d055e8ba")
         .observationList(
             List.of("fc691a7f-a0f3-47b4-9d00-2786d055e8ba", "0b9d2e37-f84d-4f9e-9ba3-995772f368d3"))
-        .patient("1011537977V693883")
-        .patientGenerated("9999999999V999999")
-        .patientNotMe("1017283180V801730")
         .questionnaire("37953b72-961b-41ee-bd05-86c62bacc46b")
         .questionnaireContextTypeValue(
             Ids.UsageContextTypeValue.builder()
@@ -161,12 +158,6 @@ class SystemDefinitions {
     @NonNull String observation;
 
     @NonNull List<String> observationList;
-
-    @NonNull String patient;
-
-    @NonNull String patientGenerated;
-
-    @NonNull String patientNotMe;
 
     @NonNull String questionnaire;
 

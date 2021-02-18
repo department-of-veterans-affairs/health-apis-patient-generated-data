@@ -6,11 +6,8 @@ import static gov.va.api.health.sentinel.EnvironmentAssumptions.assumeEnvironmen
 
 import gov.va.api.health.r4.api.datatypes.CodeableConcept;
 import gov.va.api.health.r4.api.datatypes.Coding;
-import gov.va.api.health.r4.api.datatypes.HumanName;
-import gov.va.api.health.r4.api.datatypes.Identifier;
 import gov.va.api.health.r4.api.elements.Reference;
 import gov.va.api.health.r4.api.resources.Observation;
-import gov.va.api.health.r4.api.resources.Patient;
 import gov.va.api.health.r4.api.resources.Questionnaire;
 import gov.va.api.health.r4.api.resources.QuestionnaireResponse;
 import gov.va.api.health.sentinel.Environment;
@@ -50,16 +47,6 @@ public class ManagementControllerCreateIT {
         .build();
   }
 
-  private Patient _patient(String icn) {
-    return Patient.builder()
-        .resourceType("Patient")
-        .id(icn)
-        .identifier(List.of(Identifier.builder().value(icn).build()))
-        .name(List.of(HumanName.builder().text("Test McTest").build()))
-        .gender(Patient.Gender.unknown)
-        .build();
-  }
-
   private Questionnaire _questionnaire(String id) {
     return Questionnaire.builder()
         .id(id)
@@ -79,13 +66,6 @@ public class ManagementControllerCreateIT {
   void create_observation() {
     var observation = _observation("it" + System.currentTimeMillis());
     doInternalPost("Observation", observation, "create resource", 201, CLIENT_KEY);
-  }
-
-  @Test
-  void create_patient() {
-    // ID must be in MPI format!
-    var patient = _patient("it" + System.currentTimeMillis());
-    doInternalPost("Patient", patient, "create resource", 201, CLIENT_KEY);
   }
 
   @Test
