@@ -7,7 +7,6 @@ import gov.va.api.health.r4.api.datatypes.CodeableConcept;
 import gov.va.api.health.r4.api.datatypes.Coding;
 import gov.va.api.health.r4.api.elements.Reference;
 import gov.va.api.health.r4.api.resources.Observation;
-import gov.va.api.health.r4.api.resources.Observation.ObservationStatus;
 import gov.va.api.health.sentinel.Environment;
 import java.util.List;
 import org.junit.jupiter.api.BeforeAll;
@@ -23,7 +22,7 @@ public class ObservationCreateIT {
 
   private static Observation observation() {
     return Observation.builder()
-        .status(ObservationStatus.unknown)
+        .status(Observation.ObservationStatus.unknown)
         .effectiveDateTime("2020-01-01T01:00:00Z")
         .category(
             List.of(
@@ -43,13 +42,13 @@ public class ObservationCreateIT {
   }
 
   @Test
-  public void create_invalid() {
+  void create_invalid() {
     Observation observation = observation().id("123");
     doPost("Observation", observation, "create invalid resource, existing id", 400);
   }
 
   @Test
-  public void create_valid() {
+  void create_valid() {
     Observation observation = observation();
     doPost("Observation", observation, "create resource", 201);
   }

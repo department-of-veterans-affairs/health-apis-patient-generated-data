@@ -15,7 +15,6 @@ import gov.va.api.health.patientgenerateddata.Exceptions;
 import gov.va.api.health.patientgenerateddata.JacksonMapperConfig;
 import gov.va.api.health.patientgenerateddata.LinkProperties;
 import gov.va.api.health.r4.api.resources.Questionnaire;
-import gov.va.api.health.r4.api.resources.Questionnaire.PublicationStatus;
 import gov.va.api.lighthouse.vulcan.InvalidRequest;
 import java.net.URI;
 import java.util.List;
@@ -35,7 +34,10 @@ public class QuestionnaireControllerTest {
   private static final ObjectMapper MAPPER = JacksonMapperConfig.createMapper();
 
   private Questionnaire _questionnaire() {
-    return Questionnaire.builder().title("x").status(PublicationStatus.active).build();
+    return Questionnaire.builder()
+        .title("x")
+        .status(Questionnaire.PublicationStatus.active)
+        .build();
   }
 
   @Test

@@ -14,7 +14,6 @@ import gov.va.api.health.patientgenerateddata.Exceptions;
 import gov.va.api.health.patientgenerateddata.JacksonMapperConfig;
 import gov.va.api.health.patientgenerateddata.LinkProperties;
 import gov.va.api.health.r4.api.resources.Observation;
-import gov.va.api.health.r4.api.resources.Observation.ObservationStatus;
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
@@ -39,11 +38,6 @@ public class ObservationControllerTest {
           .baseUrl("http://foo.com")
           .r4BasePath("r4")
           .build();
-
-  private ObservationController controller() {
-    ObservationRepository repo = mock(ObservationRepository.class);
-    return controller(repo);
-  }
 
   private ObservationController controller(ObservationRepository repo) {
     return new ObservationController(pageLinks, repo);
@@ -83,7 +77,7 @@ public class ObservationControllerTest {
   }
 
   private Observation observation() {
-    return Observation.builder().status(ObservationStatus.unknown).build();
+    return Observation.builder().status(Observation.ObservationStatus.unknown).build();
   }
 
   @Test

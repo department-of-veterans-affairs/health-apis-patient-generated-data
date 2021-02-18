@@ -7,7 +7,6 @@ import static gov.va.api.health.sentinel.EnvironmentAssumptions.assumeEnvironmen
 import gov.va.api.health.r4.api.datatypes.HumanName;
 import gov.va.api.health.r4.api.datatypes.Identifier;
 import gov.va.api.health.r4.api.resources.Patient;
-import gov.va.api.health.r4.api.resources.Patient.Gender;
 import gov.va.api.health.sentinel.Environment;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,8 +21,22 @@ public class PatientCreateIT {
     assumeEnvironmentIn(Environment.LOCAL);
   }
 
+  static Identifier identifier() {
+    return Identifier.builder().system("http://foo.com/foo").value("foo").build();
+  }
+
+  static Patient patient(String id) {
+    return Patient.builder()
+        .resourceType("Patient")
+        .id(id)
+        .identifier(new ArrayList<>(List.of(identifier())))
+        .name(List.of(HumanName.builder().family("Smith").build()))
+        .gender(Patient.Gender.unknown)
+        .build();
+  }
+
   @Test
-  public void create_invalid() {
+  void create_invalid() {
     // not an mpi id
     String id = "123";
     Patient patient = patient(id);
@@ -39,25 +52,11 @@ public class PatientCreateIT {
   }
 
   @Test
-  public void create_valid() {
+  void create_valid() {
     var id = systemDefinition().ids().patientGenerated();
     Patient patient = patient(id);
     doPost("Patient", patient, "create resource", 201);
     // duplicate is rejected
     doPost("Patient", patient, "create resource (duplicate)", 400);
-  }
-
-  Identifier identifier() {
-    return Identifier.builder().system("http://foo.com/foo").value("foo").build();
-  }
-
-  Patient patient(String id) {
-    return Patient.builder()
-        .resourceType("Patient")
-        .id(id)
-        .identifier(new ArrayList<>(List.of(identifier())))
-        .name(List.of(HumanName.builder().family("Smith").build()))
-        .gender(Gender.unknown)
-        .build();
   }
 }

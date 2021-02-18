@@ -4,7 +4,6 @@ import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.doPost;
 import static gov.va.api.health.sentinel.EnvironmentAssumptions.assumeEnvironmentIn;
 
 import gov.va.api.health.r4.api.resources.QuestionnaireResponse;
-import gov.va.api.health.r4.api.resources.QuestionnaireResponse.Status;
 import gov.va.api.health.sentinel.Environment;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -17,8 +16,12 @@ public class QuestionnaireResponseCreateIT {
     assumeEnvironmentIn(Environment.LOCAL);
   }
 
+  private static QuestionnaireResponse questionnaireResponse() {
+    return QuestionnaireResponse.builder().status(QuestionnaireResponse.Status.completed).build();
+  }
+
   @Test
-  public void create_invalid() {
+  void create_invalid() {
     QuestionnaireResponse questionnaireResponse = questionnaireResponse().id("123");
     doPost(
         "QuestionnaireResponse",
@@ -28,12 +31,8 @@ public class QuestionnaireResponseCreateIT {
   }
 
   @Test
-  public void create_valid() {
+  void create_valid() {
     QuestionnaireResponse questionnaireResponse = questionnaireResponse();
     doPost("QuestionnaireResponse", questionnaireResponse, "create resource", 201);
-  }
-
-  private QuestionnaireResponse questionnaireResponse() {
-    return QuestionnaireResponse.builder().status(Status.completed).build();
   }
 }

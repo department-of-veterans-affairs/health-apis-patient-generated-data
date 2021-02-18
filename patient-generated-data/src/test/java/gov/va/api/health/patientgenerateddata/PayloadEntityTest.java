@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 public class PayloadEntityTest {
   @Test
-  public void badPayload() {
+  void badPayload() {
     PatientEntity entity = PatientEntity.builder().id("x").payload("notjson").build();
     assertThrows(Exceptions.InvalidPayload.class, () -> entity.deserializePayload());
   }

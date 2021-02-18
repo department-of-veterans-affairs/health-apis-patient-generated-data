@@ -26,7 +26,7 @@ public class JacksonMapperConfigTest {
 
   @Test
   @SneakyThrows
-  public void preExistingDarsArePreserved() {
+  void preExistingDarsArePreserved() {
     FugaziReferenceMajig input =
         FugaziReferenceMajig.builder()
             .ref(reference("https://example.com/api/Practitioner/1234"))
@@ -55,7 +55,7 @@ public class JacksonMapperConfigTest {
 
   @Test
   @SneakyThrows
-  public void referencesAreQualified() {
+  void referencesAreQualified() {
     FugaziReferenceMajig input =
         FugaziReferenceMajig.builder()
             .whocares("noone")
@@ -131,7 +131,7 @@ public class JacksonMapperConfigTest {
   @Data
   @Builder
   @NoArgsConstructor(access = AccessLevel.PRIVATE)
-  @AllArgsConstructor
+  @AllArgsConstructor(access = AccessLevel.PRIVATE)
   @JsonAutoDetect(
       fieldVisibility = JsonAutoDetect.Visibility.ANY,
       isGetterVisibility = JsonAutoDetect.Visibility.NONE)

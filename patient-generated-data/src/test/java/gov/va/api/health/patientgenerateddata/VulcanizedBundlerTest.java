@@ -2,14 +2,17 @@ package gov.va.api.health.patientgenerateddata;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import gov.va.api.health.patientgenerateddata.Foos.FooBundle;
-import gov.va.api.health.patientgenerateddata.Foos.FooEntity;
-import gov.va.api.health.patientgenerateddata.Foos.FooEntry;
-import gov.va.api.health.patientgenerateddata.Foos.FooResource;
+import gov.va.api.health.r4.api.bundle.AbstractBundle;
+import gov.va.api.health.r4.api.bundle.AbstractEntry;
+import gov.va.api.health.r4.api.elements.Meta;
+import gov.va.api.health.r4.api.resources.Resource;
 import gov.va.api.lighthouse.vulcan.VulcanResult;
 import gov.va.api.lighthouse.vulcan.VulcanResult.Paging;
 import java.util.Optional;
 import java.util.stream.Stream;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
 import org.junit.jupiter.api.Test;
 
 public class VulcanizedBundlerTest {
@@ -63,5 +66,46 @@ public class VulcanizedBundlerTest {
                 .build())
         .toResource(FooEntity::deserializePayload)
         .build();
+  }
+
+  @Builder
+  private static final class FooBundle extends AbstractBundle<FooEntry> {}
+
+  @Data
+  @AllArgsConstructor
+  private static final class FooEntity implements PayloadEntity<FooResource> {
+    String id;
+
+    String payload;
+
+    @Override
+    public FooResource deserializePayload() {
+      return FooResource.builder().id(id).build();
+    }
+
+    public String payload() {
+      return payload;
+    }
+
+    @Override
+    public Class<FooResource> resourceType() {
+      return FooResource.class;
+    }
+  }
+
+  private static final class FooEntry extends AbstractEntry<FooResource> {}
+
+  @Data
+  @Builder
+  private static final class FooResource implements Resource {
+    String id;
+
+    String implicitRules;
+
+    String language;
+
+    Meta meta;
+
+    String ref;
   }
 }
