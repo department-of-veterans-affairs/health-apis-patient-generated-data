@@ -1,7 +1,6 @@
 package gov.va.api.health.patientgenerateddata;
 
 import gov.va.api.health.patientgenerateddata.observation.ObservationApi;
-import gov.va.api.health.patientgenerateddata.patient.PatientApi;
 import gov.va.api.health.patientgenerateddata.questionnaire.QuestionnaireApi;
 import gov.va.api.health.patientgenerateddata.questionnaireresponse.QuestionnaireResponseApi;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
@@ -20,5 +19,4 @@ import javax.ws.rs.Path;
             description = "US Core Implementation Guide",
             url = "https://build.fhir.org/ig/HL7/US-Core-R4/index.html"))
 @Path("/")
-public interface OpenApi
-    extends ObservationApi, PatientApi, QuestionnaireApi, QuestionnaireResponseApi {}
+public interface OpenApi extends ObservationApi, QuestionnaireApi, QuestionnaireResponseApi {}

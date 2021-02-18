@@ -29,7 +29,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
 public class IncludesIcnMajigTest {
   @Test
-  public void icnHeaderIsPresentForResource() {
+  void icnHeaderIsPresentForResource() {
     ServerHttpResponse mockResponse = mock(ServerHttpResponse.class);
     HttpHeaders mockHeaders = mock(HttpHeaders.class);
     when(mockResponse.getHeaders()).thenReturn(mockHeaders);
@@ -42,7 +42,7 @@ public class IncludesIcnMajigTest {
   }
 
   @Test
-  public void icnHeadersAreDistictValuesForResourceBundle() {
+  void icnHeadersAreDistictValuesForResourceBundle() {
     ServerHttpResponse mockResponse = mock(ServerHttpResponse.class);
     HttpHeaders mockHeaders = mock(HttpHeaders.class);
     when(mockResponse.getHeaders()).thenReturn(mockHeaders);
@@ -73,7 +73,7 @@ public class IncludesIcnMajigTest {
   }
 
   @Test
-  public void icnHeadersArePresentForResourceBundle() {
+  void icnHeadersArePresentForResourceBundle() {
     ServerHttpResponse mockResponse = mock(ServerHttpResponse.class);
     HttpHeaders mockHeaders = mock(HttpHeaders.class);
     when(mockResponse.getHeaders()).thenReturn(mockHeaders);
@@ -98,7 +98,7 @@ public class IncludesIcnMajigTest {
   }
 
   @Test
-  public void supportedAcceptsResourceOrResourceBundle() {
+  void supportedAcceptsResourceOrResourceBundle() {
     MethodParameter supportedResource = mock(MethodParameter.class);
     doReturn(FakeResource.class).when(supportedResource).getParameterType();
     assertThat(new FakeMajg().supports(supportedResource, null)).isTrue();
@@ -114,7 +114,7 @@ public class IncludesIcnMajigTest {
    * Silly Test implementation of the AbstractIncludesIcnMajig.java Because we are using Templates,
    * we also need a a fake Resource, Entry, and Bundle class
    */
-  public static final class FakeMajg implements ResponseBodyAdvice<Object> {
+  static final class FakeMajg implements ResponseBodyAdvice<Object> {
     @Delegate
     private final ResponseBodyAdvice<Object> delegate =
         IncludesIcnMajig.<FakeResource, FakeBundle>builder()
@@ -125,8 +125,8 @@ public class IncludesIcnMajigTest {
             .build();
   }
 
-  @Builder
   @Data
+  @Builder
   static final class FakeResource implements Resource {
     String id;
 

@@ -5,7 +5,6 @@ import static java.util.stream.Collectors.joining;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.api.health.r4.api.resources.Observation;
-import gov.va.api.health.r4.api.resources.Patient;
 import gov.va.api.health.r4.api.resources.Questionnaire;
 import gov.va.api.health.r4.api.resources.QuestionnaireResponse;
 import gov.va.api.health.r4.api.resources.Resource;
@@ -114,20 +113,6 @@ public final class Populaterator {
   }
 
   @SneakyThrows
-  private static void patient(@NonNull Connection connection) {
-    for (File f : new File(baseDir() + "/src/test/resources/patient").listFiles()) {
-      Patient patient = readFile(Patient.class, f);
-      String sqlInsert = sqlInsert("app.Patient", List.of("id", "payload", "version"));
-      try (PreparedStatement statement = connection.prepareStatement(sqlInsert)) {
-        statement.setObject(1, patient.id());
-        statement.setObject(2, MAPPER.writeValueAsString(patient));
-        statement.setObject(3, 0);
-        statement.execute();
-      }
-    }
-  }
-
-  @SneakyThrows
   private static void populate(@NonNull Db db) {
     log("Populating " + db.name());
     waitForStartup(db);
@@ -135,7 +120,6 @@ public final class Populaterator {
     liquibase(db);
     var connection = db.connection();
     observation(connection);
-    patient(connection);
     questionnaire(connection);
     questionnaireResponse(connection);
     connection.commit();

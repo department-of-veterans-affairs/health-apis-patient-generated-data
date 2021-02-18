@@ -5,7 +5,6 @@ import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.doIntern
 import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.doPut;
 
 import gov.va.api.health.r4.api.resources.Observation;
-import gov.va.api.health.r4.api.resources.Patient;
 import gov.va.api.health.r4.api.resources.Questionnaire;
 import gov.va.api.health.r4.api.resources.QuestionnaireResponse;
 import gov.va.api.health.r4.api.resources.Resource;
@@ -21,7 +20,6 @@ public class SyntheticRefresh {
 
   public static void main(String[] args) {
     refresh("observation", Observation.class);
-    refresh("patient", Patient.class);
     refresh("questionnaire", Questionnaire.class);
     refresh("questionnaire-response", QuestionnaireResponse.class);
   }

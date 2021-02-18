@@ -17,16 +17,13 @@ class SystemDefinitions {
         .observation("fc691a7f-a0f3-47b4-9d00-2786d055e8ba")
         .observationList(
             List.of("fc691a7f-a0f3-47b4-9d00-2786d055e8ba", "0b9d2e37-f84d-4f9e-9ba3-995772f368d3"))
-        .patient("1011537977V693883")
-        .patientGenerated("9999999999V999999")
-        .patientNotMe("1017283180V801730")
         .questionnaire("37953b72-961b-41ee-bd05-86c62bacc46b")
         .questionnaireContextTypeValue(
             Ids.UsageContextTypeValue.builder()
-                .codeWithAnySystem("venue$534/12975")
-                .codeWithNoSystem("venue$|534/12975")
+                .codeWithAnySystem("venue$vha_534_12975")
+                .codeWithNoSystem("venue$|vha_534_12975")
                 .systemAndCode(
-                    "venue$https://api.va.gov/services/fhir/v0/r4/NamingSystem/va-clinic-identifier|534/12975")
+                    "venue$https://api.va.gov/services/fhir/v0/r4/NamingSystem/va-clinic-identifier|vha_534_12975")
                 .systemWithAnyCode(
                     "venue$https://api.va.gov/services/fhir/v0/r4/NamingSystem/va-clinic-identifier|")
                 .build())
@@ -44,11 +41,10 @@ class SystemDefinitions {
                         .system("https://api.va.gov/services/pgd")
                         .code("66a5960c-68ee-4689-88ae-4c7cccf7ca79")
                         .build())
-                .appointmentTag(
+                .commonTag(
                     Ids.MetaTag.builder()
-                        .system(
-                            "https://api.va.gov/services/fhir/v0/r4/NamingSystem/va-appointment-identifier")
-                        .code("202008211400983000082100000000000000")
+                        .system("http://terminology.hl7.org/CodeSystem/common-tags")
+                        .code("actionable")
                         .build())
                 .build())
         .questionnaireResponseSource("1011537977V693883")
@@ -163,12 +159,6 @@ class SystemDefinitions {
 
     @NonNull List<String> observationList;
 
-    @NonNull String patient;
-
-    @NonNull String patientGenerated;
-
-    @NonNull String patientNotMe;
-
     @NonNull String questionnaire;
 
     @NonNull UsageContextTypeValue questionnaireContextTypeValue;
@@ -196,7 +186,7 @@ class SystemDefinitions {
     static final class Metas {
       @NonNull MetaTag applicationTag;
 
-      @NonNull MetaTag appointmentTag;
+      @NonNull MetaTag commonTag;
     }
 
     @Value

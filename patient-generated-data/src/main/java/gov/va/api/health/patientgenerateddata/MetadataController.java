@@ -89,10 +89,6 @@ class MetadataController {
                 .profileUrl("https://www.hl7.org/fhir/r4/observation.html")
                 .build(),
             SupportedResource.builder()
-                .type("Patient")
-                .profileUrl("https://www.hl7.org/fhir/r4/patient.html")
-                .build(),
-            SupportedResource.builder()
                 .type("Questionnaire")
                 .profileUrl("https://www.hl7.org/fhir/r4/questionnaire.html")
                 .searches(Set.of(SearchParam._ID, SearchParam.CONTEXT_TYPE_VALUE))
@@ -182,7 +178,6 @@ class MetadataController {
     AUTHOR("author", CapabilityStatement.SearchParamType.reference),
     AUTHORED("authored", CapabilityStatement.SearchParamType.date),
     CONTEXT_TYPE_VALUE("context-type-value", CapabilityStatement.SearchParamType.composite),
-    PATIENT("patient", CapabilityStatement.SearchParamType.reference),
     QUESTIONNAIRE("questionnaire", CapabilityStatement.SearchParamType.reference),
     SOURCE("source", CapabilityStatement.SearchParamType.reference),
     SUBJECT("subject", CapabilityStatement.SearchParamType.reference);

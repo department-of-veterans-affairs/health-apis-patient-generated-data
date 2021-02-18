@@ -27,7 +27,7 @@
         "coding" : [
           {
             "system" : "https://api.va.gov/services/fhir/v0/r4/NamingSystem/va-clinic-identifier",
-            "code" : "534/12975"
+            "code" : "vha_534_12975"
           }
         ]
       }
@@ -41,7 +41,7 @@
         "coding" : [
           {
             "system" : "https://api.va.gov/services/fhir/v0/r4/NamingSystem/va-clinic-identifier",
-            "code" : "534/12976"
+            "code" : "vha_534_12976"
           }
         ]
       }

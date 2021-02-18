@@ -16,7 +16,6 @@ import gov.va.api.health.patientgenerateddata.JacksonMapperConfig;
 import gov.va.api.health.patientgenerateddata.LinkProperties;
 import gov.va.api.health.r4.api.elements.Reference;
 import gov.va.api.health.r4.api.resources.QuestionnaireResponse;
-import gov.va.api.health.r4.api.resources.QuestionnaireResponse.Status;
 import gov.va.api.lighthouse.vulcan.InvalidRequest;
 import java.net.URI;
 import java.util.List;
@@ -97,7 +96,7 @@ public class QuestionnaireResponseControllerTest {
   }
 
   private QuestionnaireResponse questionnaireResponse() {
-    return QuestionnaireResponse.builder().status(Status.completed).build();
+    return QuestionnaireResponse.builder().status(QuestionnaireResponse.Status.completed).build();
   }
 
   @Test
