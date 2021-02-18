@@ -15,7 +15,6 @@ import gov.va.api.health.patientgenerateddata.LinkProperties;
 import gov.va.api.health.r4.api.datatypes.CodeableConcept;
 import gov.va.api.health.r4.api.datatypes.Coding;
 import gov.va.api.health.r4.api.datatypes.Identifier;
-import gov.va.api.health.r4.api.datatypes.Identifier.IdentifierUse;
 import gov.va.api.health.r4.api.resources.Patient;
 import java.net.URI;
 import java.util.ArrayList;
@@ -32,7 +31,7 @@ public class PatientControllerTest {
 
   private static Identifier mpi(String icn) {
     return Identifier.builder()
-        .use(IdentifierUse.usual)
+        .use(Identifier.IdentifierUse.usual)
         .type(
             CodeableConcept.builder()
                 .coding(

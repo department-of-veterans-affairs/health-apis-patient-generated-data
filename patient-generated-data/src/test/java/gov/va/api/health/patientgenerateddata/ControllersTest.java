@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 public class ControllersTest {
   @Test
-  public void badRequest() {
+  void badRequest() {
     Throwable ex =
         assertThrows(
             Exceptions.BadRequest.class, () -> Controllers.checkRequestState(false, "message"));
