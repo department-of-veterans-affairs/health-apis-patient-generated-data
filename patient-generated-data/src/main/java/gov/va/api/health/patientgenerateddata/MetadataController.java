@@ -242,8 +242,7 @@ class MetadataController {
       if (isEmpty(searches)) {
         return null;
       }
-      return searches
-          .stream()
+      return searches.stream()
           .sorted((a, b) -> a.param().compareTo(b.param()))
           .map(
               s -> CapabilityStatement.SearchParam.builder().name(s.param()).type(s.type()).build())
