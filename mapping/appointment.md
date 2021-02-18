@@ -38,7 +38,7 @@ Example for saving a questionnaire-response that references a FHIR appointment
   "participant" : [
     {
       "actor" : {
-        "reference" : "https://sandbox-api.va.gov/services/fhir/v0/r4/Location/I2-XPW2ECZK2LTNSPLNVKISWC5QZABOVEBZD5V2CKFRVEPAU5CNZMJQ0000",
+        "reference" : "https://sandbox-api.va.gov/services/fhir/v0/r4/Location/I2-2FPCKUIXVR7RJLLG34XVWGZERM000000",
         "display" : "PROSTHETIC CONSULTS"
       },
       "status" : "accepted"
@@ -59,7 +59,7 @@ Appointment has reference to location (clinic), which in turn references managin
 ```
 {
   "resourceType" : "Location",
-  "id" : "I2-XPW2ECZK2LTNSPLNVKISWC5QZABOVEBZD5V2CKFRVEPAU5CNZMJQ0000",
+  "id" : "I2-2FPCKUIXVR7RJLLG34XVWGZERM000000",
   "identifier" : [
     {
       "system" : "https://api.va.gov/services/fhir/v0/r4/NamingSystem/va-facility-identifier",
