@@ -4,9 +4,7 @@ import static com.google.common.base.Preconditions.checkState;
 import static java.util.stream.Collectors.joining;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import gov.va.api.health.autoconfig.configuration.JacksonConfig;
 import gov.va.api.health.r4.api.resources.Observation;
-import gov.va.api.health.r4.api.resources.Patient;
 import gov.va.api.health.r4.api.resources.Questionnaire;
 import gov.va.api.health.r4.api.resources.QuestionnaireResponse;
 import gov.va.api.health.r4.api.resources.Resource;
@@ -38,7 +36,7 @@ import lombok.SneakyThrows;
 import lombok.Value;
 
 public final class Populaterator {
-  private static final ObjectMapper MAPPER = JacksonConfig.createMapper();
+  private static final ObjectMapper MAPPER = JacksonMapperConfig.createMapper();
 
   private static String baseDir() {
     return System.getProperty("basedir", ".");
@@ -115,20 +113,6 @@ public final class Populaterator {
   }
 
   @SneakyThrows
-  private static void patient(@NonNull Connection connection) {
-    for (File f : new File(baseDir() + "/src/test/resources/patient").listFiles()) {
-      Patient patient = readFile(Patient.class, f);
-      String sqlInsert = sqlInsert("app.Patient", List.of("id", "payload", "version"));
-      try (PreparedStatement statement = connection.prepareStatement(sqlInsert)) {
-        statement.setObject(1, patient.id());
-        statement.setObject(2, MAPPER.writeValueAsString(patient));
-        statement.setObject(3, 0);
-        statement.execute();
-      }
-    }
-  }
-
-  @SneakyThrows
   private static void populate(@NonNull Db db) {
     log("Populating " + db.name());
     waitForStartup(db);
@@ -136,7 +120,6 @@ public final class Populaterator {
     liquibase(db);
     var connection = db.connection();
     observation(connection);
-    patient(connection);
     questionnaire(connection);
     questionnaireResponse(connection);
     connection.commit();
@@ -175,7 +158,8 @@ public final class Populaterator {
                   "author",
                   "subject",
                   "metaTag",
-                  "questionnaire"));
+                  "questionnaire",
+                  "source"));
       try (PreparedStatement statement = connection.prepareStatement(sqlInsert)) {
         statement.setObject(1, response.id());
         statement.setObject(2, MAPPER.writeValueAsString(response));
@@ -185,6 +169,7 @@ public final class Populaterator {
         statement.setObject(6, ReferenceUtils.resourceId(response.subject()));
         statement.setObject(7, TokenListMapping.metadataTagJoin(response));
         statement.setObject(8, ReferenceUtils.resourceId(response.questionnaire()));
+        statement.setObject(9, ReferenceUtils.resourceId(response.source()));
         statement.execute();
       }
     }

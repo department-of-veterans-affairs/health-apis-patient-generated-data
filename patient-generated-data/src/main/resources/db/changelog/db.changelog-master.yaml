@@ -275,3 +275,25 @@ databaseChangeLog:
                   type: varchar(255)
                   constraints:
                     - nullable: true
+
+  - changeSet:
+      id: 13
+      author: pteracuda
+      changes:
+        - addColumn:
+            tableName: QuestionnaireResponse
+            schemaName: app
+            columns:
+              - column:
+                  name: source
+                  type: varchar(255)
+                  constraints:
+                    - nullable: true
+
+  - changeSet:
+      id: 14
+      author: pteracuda
+      changes:
+        - dropTable:
+            tableName: Patient
+            schemaName: app

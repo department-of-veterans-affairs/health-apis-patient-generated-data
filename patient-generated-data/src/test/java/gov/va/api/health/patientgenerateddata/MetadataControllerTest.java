@@ -8,7 +8,6 @@ import gov.va.api.health.r4.api.datatypes.ContactDetail;
 import gov.va.api.health.r4.api.datatypes.ContactPoint;
 import gov.va.api.health.r4.api.elements.Extension;
 import gov.va.api.health.r4.api.resources.CapabilityStatement;
-import gov.va.api.health.r4.api.resources.CapabilityStatement.Security;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
@@ -81,26 +80,6 @@ public class MetadataControllerTest {
                                     CapabilityStatement.CapabilityResource.builder()
                                         .type("Observation")
                                         .profile("https://www.hl7.org/fhir/r4/observation.html")
-                                        .interaction(
-                                            List.of(
-                                                resourceInteraction(
-                                                    CapabilityStatement.TypeRestfulInteraction
-                                                        .create),
-                                                resourceInteraction(
-                                                    CapabilityStatement.TypeRestfulInteraction
-                                                        .read),
-                                                resourceInteraction(
-                                                    CapabilityStatement.TypeRestfulInteraction
-                                                        .update)))
-                                        .versioning(CapabilityStatement.Versioning.no_version)
-                                        .referencePolicy(
-                                            List.of(
-                                                CapabilityStatement.ReferencePolicy.literal,
-                                                CapabilityStatement.ReferencePolicy.local))
-                                        .build(),
-                                    CapabilityStatement.CapabilityResource.builder()
-                                        .type("Patient")
-                                        .profile("https://www.hl7.org/fhir/r4/patient.html")
                                         .interaction(
                                             List.of(
                                                 resourceInteraction(
@@ -203,6 +182,12 @@ public class MetadataControllerTest {
                                                             .reference)
                                                     .build(),
                                                 CapabilityStatement.SearchParam.builder()
+                                                    .name("source")
+                                                    .type(
+                                                        CapabilityStatement.SearchParamType
+                                                            .reference)
+                                                    .build(),
+                                                CapabilityStatement.SearchParam.builder()
                                                     .name("subject")
                                                     .type(
                                                         CapabilityStatement.SearchParamType
@@ -210,7 +195,7 @@ public class MetadataControllerTest {
                                                     .build()))
                                         .build()))
                             .security(
-                                Security.builder()
+                                CapabilityStatement.Security.builder()
                                     .cors(true)
                                     .description("http://docs.smarthealthit.org/")
                                     .service(
@@ -268,7 +253,7 @@ public class MetadataControllerTest {
             MetadataController.SupportedResource.builder()
                 .type("type")
                 .profileUrl("url")
-                .searches(Set.of(MetadataController.SearchParam.PATIENT))
+                .searches(Set.of(MetadataController.SearchParam.AUTHOR))
                 .build()
                 .asResource())
         .isEqualTo(
@@ -305,7 +290,7 @@ public class MetadataControllerTest {
                 .searchParam(
                     List.of(
                         CapabilityStatement.SearchParam.builder()
-                            .name("patient")
+                            .name("author")
                             .type(CapabilityStatement.SearchParamType.reference)
                             .build()))
                 .build());

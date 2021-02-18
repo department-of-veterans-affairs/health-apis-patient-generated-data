@@ -11,7 +11,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 public class ParseUtilsTest {
   @Test
-  public void emptyDates() {
+  void emptyDates() {
     // null or empty
     assertThat(ParseUtils.parseDateTime(null)).isNull();
     assertThat(ParseUtils.parseDateTime("")).isNull();
@@ -29,13 +29,13 @@ public class ParseUtilsTest {
         "2013-06-18T00:00:00/02:00",
       })
   @SneakyThrows
-  public void invalidDates(String datetime) {
+  void invalidDates(String datetime) {
     assertThatExceptionOfType(DateTimeParseException.class)
         .isThrownBy(() -> ParseUtils.parseDateTime(datetime));
   }
 
   @Test
-  public void validDates() {
+  void validDates() {
     // Year
     assertThat(ParseUtils.parseDateTime("2013").toString()).isEqualTo("2013-01-01T00:00:00Z");
     // Year month

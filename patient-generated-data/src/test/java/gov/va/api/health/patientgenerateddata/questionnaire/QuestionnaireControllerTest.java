@@ -1,5 +1,6 @@
 package gov.va.api.health.patientgenerateddata.questionnaire;
 
+import static gov.va.api.health.patientgenerateddata.MockRequests.requestFromUri;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -10,11 +11,10 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import gov.va.api.health.autoconfig.configuration.JacksonConfig;
 import gov.va.api.health.patientgenerateddata.Exceptions;
+import gov.va.api.health.patientgenerateddata.JacksonMapperConfig;
 import gov.va.api.health.patientgenerateddata.LinkProperties;
 import gov.va.api.health.r4.api.resources.Questionnaire;
-import gov.va.api.health.r4.api.resources.Questionnaire.PublicationStatus;
 import gov.va.api.lighthouse.vulcan.InvalidRequest;
 import java.net.URI;
 import java.util.List;
@@ -28,28 +28,16 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.validation.DataBinder;
-import org.springframework.web.util.UriComponentsBuilder;
 
 public class QuestionnaireControllerTest {
-  private static final ObjectMapper MAPPER = JacksonConfig.createMapper();
-
-  private static MockHttpServletRequest _requestFromUri(String uri) {
-    var u = UriComponentsBuilder.fromUriString(uri).build();
-    MockHttpServletRequest request = new MockHttpServletRequest();
-    request.setRequestURI(u.getPath());
-    request.setRemoteHost(u.getHost());
-    request.setProtocol(u.getScheme());
-    request.setServerPort(u.getPort());
-    u.getQueryParams()
-        .entrySet()
-        .forEach(e -> request.addParameter(e.getKey(), e.getValue().toArray(new String[0])));
-    return request;
-  }
+  private static final ObjectMapper MAPPER = JacksonMapperConfig.createMapper();
 
   private Questionnaire _questionnaire() {
-    return Questionnaire.builder().title("x").status(PublicationStatus.active).build();
+    return Questionnaire.builder()
+        .title("x")
+        .status(Questionnaire.PublicationStatus.active)
+        .build();
   }
 
   @Test
@@ -116,7 +104,7 @@ public class QuestionnaireControllerTest {
             .build();
     QuestionnaireController controller =
         new QuestionnaireController(pageLinks, mock(QuestionnaireRepository.class));
-    var req = _requestFromUri("http://fonzy.com/r4/Questionnaire" + query);
+    var req = requestFromUri("http://fonzy.com/r4/Questionnaire" + query);
     assertThatExceptionOfType(InvalidRequest.class).isThrownBy(() -> controller.search(req));
   }
 
@@ -140,7 +128,7 @@ public class QuestionnaireControllerTest {
                     List.of(QuestionnaireEntity.builder().build().id("1").payload("{ \"id\": 1}")),
                     i.getArgument(1, Pageable.class),
                     1));
-    var r = _requestFromUri("http://fonzy.com/r4/Questionnaire" + query);
+    var r = requestFromUri("http://fonzy.com/r4/Questionnaire" + query);
     var actual = controller.search(r);
     assertThat(actual.entry()).hasSize(1);
   }

@@ -1,5 +1,6 @@
 package gov.va.api.health.patientgenerateddata.questionnaireresponse;
 
+import static gov.va.api.health.patientgenerateddata.MockRequests.requestFromUri;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -10,12 +11,11 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import gov.va.api.health.autoconfig.configuration.JacksonConfig;
 import gov.va.api.health.patientgenerateddata.Exceptions;
+import gov.va.api.health.patientgenerateddata.JacksonMapperConfig;
 import gov.va.api.health.patientgenerateddata.LinkProperties;
 import gov.va.api.health.r4.api.elements.Reference;
 import gov.va.api.health.r4.api.resources.QuestionnaireResponse;
-import gov.va.api.health.r4.api.resources.QuestionnaireResponse.Status;
 import gov.va.api.lighthouse.vulcan.InvalidRequest;
 import java.net.URI;
 import java.util.List;
@@ -29,12 +29,10 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.validation.DataBinder;
-import org.springframework.web.util.UriComponentsBuilder;
 
 public class QuestionnaireResponseControllerTest {
-  private static final ObjectMapper MAPPER = JacksonConfig.createMapper();
+  private static final ObjectMapper MAPPER = JacksonMapperConfig.createMapper();
 
   LinkProperties pageLinks =
       LinkProperties.builder()
@@ -43,19 +41,6 @@ public class QuestionnaireResponseControllerTest {
           .baseUrl("http://foo.com")
           .r4BasePath("r4")
           .build();
-
-  private static MockHttpServletRequest requestFromUri(String uri) {
-    var u = UriComponentsBuilder.fromUriString(uri).build();
-    MockHttpServletRequest request = new MockHttpServletRequest();
-    request.setRequestURI(u.getPath());
-    request.setRemoteHost(u.getHost());
-    request.setProtocol(u.getScheme());
-    request.setServerPort(u.getPort());
-    u.getQueryParams()
-        .entrySet()
-        .forEach(e -> request.addParameter(e.getKey(), e.getValue().toArray(new String[0])));
-    return request;
-  }
 
   private QuestionnaireResponseController controller() {
     QuestionnaireResponseRepository repo = mock(QuestionnaireResponseRepository.class);
@@ -111,7 +96,7 @@ public class QuestionnaireResponseControllerTest {
   }
 
   private QuestionnaireResponse questionnaireResponse() {
-    return QuestionnaireResponse.builder().status(Status.completed).build();
+    return QuestionnaireResponse.builder().status(QuestionnaireResponse.Status.completed).build();
   }
 
   @Test

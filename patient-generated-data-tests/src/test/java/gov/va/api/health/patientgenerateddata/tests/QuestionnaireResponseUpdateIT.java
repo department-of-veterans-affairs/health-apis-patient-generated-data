@@ -1,14 +1,15 @@
 package gov.va.api.health.patientgenerateddata.tests;
 
 import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.doGet;
+import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.doInternalPost;
 import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.doPut;
+import static gov.va.api.health.patientgenerateddata.tests.SystemDefinitions.CLIENT_KEY_DEFAULT;
 import static gov.va.api.health.patientgenerateddata.tests.SystemDefinitions.systemDefinition;
 import static gov.va.api.health.sentinel.EnvironmentAssumptions.assumeEnvironmentIn;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import gov.va.api.health.r4.api.elements.Reference;
 import gov.va.api.health.r4.api.resources.QuestionnaireResponse;
-import gov.va.api.health.r4.api.resources.QuestionnaireResponse.Status;
 import gov.va.api.health.sentinel.Environment;
 import gov.va.api.health.sentinel.ExpectedResponse;
 import java.time.Instant;
@@ -18,7 +19,10 @@ import org.junit.jupiter.api.Test;
 
 public class QuestionnaireResponseUpdateIT {
   static QuestionnaireResponse questionnaireResponse(String id) {
-    return QuestionnaireResponse.builder().id(id).status(Status.completed).build();
+    return QuestionnaireResponse.builder()
+        .id(id)
+        .status(QuestionnaireResponse.Status.completed)
+        .build();
   }
 
   @BeforeAll
@@ -28,7 +32,11 @@ public class QuestionnaireResponseUpdateIT {
     assumeEnvironmentIn(
         Environment.LOCAL, Environment.QA, Environment.STAGING, Environment.STAGING_LAB);
     var id = systemDefinition().ids().questionnaireResponseUpdates();
-    doGet("application/json", "QuestionnaireResponse/" + id, 200);
+    ExpectedResponse response = doGet("application/json", "QuestionnaireResponse/" + id, null);
+    if (response.response().statusCode() == 404) {
+      String clientKey = System.getProperty("client-key", CLIENT_KEY_DEFAULT);
+      doInternalPost("QuestionnaireResponse", questionnaireResponse(id), "create", 201, clientKey);
+    }
   }
 
   @Test
