@@ -6,9 +6,6 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 import gov.va.api.health.patientgenerateddata.observation.ObservationController;
 import gov.va.api.health.patientgenerateddata.observation.ObservationEntity;
 import gov.va.api.health.patientgenerateddata.observation.ObservationRepository;
-import gov.va.api.health.patientgenerateddata.patient.PatientController;
-import gov.va.api.health.patientgenerateddata.patient.PatientEntity;
-import gov.va.api.health.patientgenerateddata.patient.PatientRepository;
 import gov.va.api.health.patientgenerateddata.questionnaire.QuestionnaireController;
 import gov.va.api.health.patientgenerateddata.questionnaire.QuestionnaireEntity;
 import gov.va.api.health.patientgenerateddata.questionnaire.QuestionnaireRepository;
@@ -16,7 +13,6 @@ import gov.va.api.health.patientgenerateddata.questionnaireresponse.Questionnair
 import gov.va.api.health.patientgenerateddata.questionnaireresponse.QuestionnaireResponseEntity;
 import gov.va.api.health.patientgenerateddata.questionnaireresponse.QuestionnaireResponseRepository;
 import gov.va.api.health.r4.api.resources.Observation;
-import gov.va.api.health.r4.api.resources.Patient;
 import gov.va.api.health.r4.api.resources.Questionnaire;
 import gov.va.api.health.r4.api.resources.QuestionnaireResponse;
 import gov.va.api.health.r4.api.resources.Resource;
@@ -44,8 +40,6 @@ public class ManagementController {
 
   @Getter private final ObservationRepository observationRepository;
 
-  @Getter private final PatientRepository patientRepository;
-
   @Getter private final QuestionnaireRepository questionnaireRepository;
 
   @Getter private final QuestionnaireResponseRepository questionnaireResponseRepository;
@@ -57,15 +51,6 @@ public class ManagementController {
     observationRepository.save(entity);
     return ResponseEntity.created(URI.create(linkProperties.r4Url() + "/Observation/" + id))
         .body(observation);
-  }
-
-  @PostMapping(value = "/Patient")
-  ResponseEntity<Patient> create(@Valid @RequestBody Patient patient) {
-    String id = verifyAndGetId(patient, patientRepository);
-    PatientEntity entity = PatientController.toEntity(patient);
-    patientRepository.save(entity);
-    return ResponseEntity.created(URI.create(linkProperties.r4Url() + "/Patient/" + id))
-        .body(patient);
   }
 
   @PostMapping(value = "/Questionnaire")
