@@ -9,8 +9,8 @@
         "display" : "TEST APP"
       },
       {
-        "system" : "https://api.va.gov/services/fhir/v0/r4/NamingSystem/va-appointment-identifier",
-        "code" : "202008211400983000082100000000000000"
+        "system" : "http://terminology.hl7.org/CodeSystem/common-tags",
+        "code" : "actionable"
       }
     ]
   },
@@ -21,14 +21,14 @@
   "questionnaire" : "Questionnaire/37953b72-961b-41ee-bd05-86c62bacc46b",
   "status" : "completed",
   "subject" : {
-    "reference" : "https://api.va.gov/services/fhir/v0/r4/Patient/1011537977V693883"
+    "reference" : "https://sandbox-api.va.gov/services/fhir/v0/r4/Appointment/I2-ZGHFNASLCRYERJF3R5KUT2JTEQAASLOKBKX5BCCJWT7U7G2DBEWQ0000"
   },
   "authored" : "2013-02-19T14:15:00-05:00",
   "author" : {
-    "reference" : "https://api.va.gov/services/fhir/v0/r4/Patient/1011537977V693883"
+    "reference" : "https://sandbox-api.va.gov/services/fhir/v0/r4/Patient/1011537977V693883"
   },
   "source" : {
-    "reference" : "https://api.va.gov/services/fhir/v0/r4/Patient/1011537977V693883"
+    "reference" : "https://sandbox-api.va.gov/services/fhir/v0/r4/Patient/1011537977V693883"
   },
   "item" : [
     {
