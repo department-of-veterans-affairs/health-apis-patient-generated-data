@@ -98,26 +98,6 @@ public class MetadataControllerTest {
                                                 CapabilityStatement.ReferencePolicy.local))
                                         .build(),
                                     CapabilityStatement.CapabilityResource.builder()
-                                        .type("Patient")
-                                        .profile("https://www.hl7.org/fhir/r4/patient.html")
-                                        .interaction(
-                                            List.of(
-                                                resourceInteraction(
-                                                    CapabilityStatement.TypeRestfulInteraction
-                                                        .create),
-                                                resourceInteraction(
-                                                    CapabilityStatement.TypeRestfulInteraction
-                                                        .read),
-                                                resourceInteraction(
-                                                    CapabilityStatement.TypeRestfulInteraction
-                                                        .update)))
-                                        .versioning(CapabilityStatement.Versioning.no_version)
-                                        .referencePolicy(
-                                            List.of(
-                                                CapabilityStatement.ReferencePolicy.literal,
-                                                CapabilityStatement.ReferencePolicy.local))
-                                        .build(),
-                                    CapabilityStatement.CapabilityResource.builder()
                                         .type("Questionnaire")
                                         .profile("https://www.hl7.org/fhir/r4/questionnaire.html")
                                         .interaction(
@@ -273,7 +253,7 @@ public class MetadataControllerTest {
             MetadataController.SupportedResource.builder()
                 .type("type")
                 .profileUrl("url")
-                .searches(Set.of(MetadataController.SearchParam.PATIENT))
+                .searches(Set.of(MetadataController.SearchParam.AUTHOR))
                 .build()
                 .asResource())
         .isEqualTo(
@@ -310,7 +290,7 @@ public class MetadataControllerTest {
                 .searchParam(
                     List.of(
                         CapabilityStatement.SearchParam.builder()
-                            .name("patient")
+                            .name("author")
                             .type(CapabilityStatement.SearchParamType.reference)
                             .build()))
                 .build());
