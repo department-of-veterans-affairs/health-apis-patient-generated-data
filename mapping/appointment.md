@@ -11,42 +11,25 @@ Example for saving a questionnaire-response that references a FHIR appointment
 {
   "resourceType" : "Appointment",
   "id" : "I2-ZGHFNASLCRYERJF3R5KUT2JTEQAASLOKBKX5BCCJWT7U7G2DBEWQ0000",
-  "status" : "cancelled",
-  "cancelationReason" : {
-    "coding" : [
-      {
-        "system" : "http://terminology.hl7.org/CodeSystem/appointment-cancellation-reason",
-        "display" : "OTHER"
-      }
-    ],
-    "text" : "OTHER"
-  },
-  "appointmentType" : {
-    "coding" : [
-      {
-        "system" : "http://terminology.hl7.org/CodeSystem/v2-0276",
-        "display" : "WALKIN"
-      }
-    ],
-    "text" : "WALKIN"
-  },
-  "description" : "Used for veterans with a service connected % of 50% and greater.",
-  "start" : "2017-05-26T07:00:00Z",
-  "end" : "2017-05-26T07:20:00Z",
-  "minutesDuration" : 20,
-  "created" : "2017-05-25T16:00:00Z",
+  "status" : "fulfilled",
+  "description" : "Scheduled Visit",
+  "start" : "2020-10-02T13:30:00Z",
+  "end" : "2020-10-02T14:00:00Z",
+  "minutesDuration" : 30,
+  "created" : "2020-10-02",
+  "comment" : "PID: 10/2/20  LS: 9/16/20  OVERBOOK APPROVED BY CHAN  F2F",
   "participant" : [
     {
       "actor" : {
         "reference" : "https://sandbox-api.va.gov/services/fhir/v0/r4/Location/I2-2FPCKUIXVR7RJLLG34XVWGZERM000000",
-        "display" : "PROSTHETIC CONSULTS"
+        "display" : "MENTAL HEALTH SERVICES"
       },
       "status" : "accepted"
     },
     {
       "actor" : {
         "reference" : "https://sandbox-api.va.gov/services/fhir/v0/r4/Patient/1011537977V693883",
-        "display" : "TEST,PATIENT ONE"
+        "display" : "Kautzer186, Carlita746"
       },
       "status" : "accepted"
     }
@@ -54,7 +37,7 @@ Example for saving a questionnaire-response that references a FHIR appointment
 }
 ```
 
-Appointment has reference to location (clinic), which in turn references managing organization (facility):
+Appointment has reference to a participant location (clinic), which in turn references managing organization (facility):
 
 ```
 {
@@ -71,75 +54,102 @@ Appointment has reference to location (clinic), which in turn references managin
     }
   ],
   "status" : "active",
-  "name" : "PROSTHETIC CONSULTS",
-  "description" : "RM 1F03",
+  "name" : "MENTAL HEALTH SERVICES",
+  "description" : "MENTAL HEALTH SERVICES",
   "mode" : "instance",
   "type" : [
     {
       "coding" : [
         {
-          "display" : "CLINIC"
+          "display" : "PSYCHIATRY CLINIC"
         }
       ],
-      "text" : "CLINIC"
+      "text" : "PSYCHIATRY CLINIC"
     }
   ],
   "telecom" : [
     {
       "system" : "phone",
-      "value" : "8550-3888"
+      "value" : "202-745-8267"
     }
   ],
   "address" : {
-    "text" : "1501 ROXAS BLVD PASAY CITY, METRO MANILA PH 96515-1100",
+    "text" : "50 IRVING STREET, NORTHWEST WASHINGTON DC 20422",
     "line" : [
-      "1501 ROXAS BLVD"
+      "50 IRVING STREET, NORTHWEST"
     ],
-    "city" : "PASAY CITY, METRO MANILA",
-    "state" : "PH",
-    "postalCode" : "96515-1100"
+    "city" : "WASHINGTON",
+    "state" : "DC",
+    "postalCode" : "20422"
   },
   "physicalType" : {
     "coding" : [
       {
-        "display" : "RM 1F03"
+        "display" : "1ST FLOOR, 1D107"
       }
     ],
-    "text" : "RM 1F03"
+    "text" : "1ST FLOOR, 1D107"
   },
   "managingOrganization" : {
-    "reference" : "https://sandbox-api.va.gov/services/fhir/v0/r4/Organization/I2-5R65QGBHXIK5FVLBMFXDK6CDNY000000",
-    "display" : "MANILA-RO"
+    "reference" : "https://sandbox-api.va.gov/services/fhir/v0/r4/Organization/I2-YCRI7L52BYQL63ZFALGWIWF2WU000000",
+    "display" : "WASHINGTON VA MEDICAL CENTER"
   }
 }
 ```
 
+(Note that Location identifiers above for facility and clinic are not yet populated in sandbox data. They are estimated for the sake of this example.)
 
 ```
 {
   "resourceType" : "Organization",
-  "id" : "I2-5R65QGBHXIK5FVLBMFXDK6CDNY000000",
+  "id" : "I2-YCRI7L52BYQL63ZFALGWIWF2WU000000",
   "identifier" : [
     {
       "system" : "http://hl7.org/fhir/sid/us-npi",
-      "value" : "1215124896"
+      "value" : "8223895021"
     },
     {
+      "use" : "usual",
+      "type" : {
+        "coding" : [
+          {
+            "system" : "http://terminology.hl7.org/CodeSystem/v2-0203",
+            "code" : "FI",
+            "display" : "Facility ID"
+          }
+        ],
+        "text" : "Facility ID"
+      },
       "system" : "https://api.va.gov/services/fhir/v0/r4/NamingSystem/va-facility-identifier",
       "value" : "vha_688"
     }
   ],
   "active" : true,
-  "name" : "MANILA-RO",
+  "name" : "WASHINGTON VA MEDICAL CENTER",
+  "telecom" : [
+    {
+      "system" : "phone",
+      "value" : "202-745-8000"
+    },
+    {
+      "system" : "phone",
+      "value" : "202-745-8588"
+    },
+    {
+      "system" : "fax",
+      "value" : "202-745-8530"
+    }
+  ],
   "address" : [
     {
-      "text" : "1501 ROXAS BLVD PASAY CITY, METRO MANILA PH 96515-1100",
+      "text" : "50 IRVING STREET NORTHWEST WASHINGTON DC 20422-0001",
       "line" : [
-        "1501 ROXAS BLVD"
+        "50 IRVING STREET",
+        "NORTHWEST"
       ],
-      "city" : "PASAY CITY, METRO MANILA",
-      "state" : "PH",
-      "postalCode" : "96515-1100"
+      "city" : "WASHINGTON",
+      "state" : "DC",
+      "postalCode" : "20422-0001"
     }
   ]
 }
