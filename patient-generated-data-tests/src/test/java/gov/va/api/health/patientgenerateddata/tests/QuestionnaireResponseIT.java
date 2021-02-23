@@ -154,9 +154,6 @@ public class QuestionnaireResponseIT {
 
   @Test
   void search_source() {
-    assumeEnvironmentIn(
-        Environment.LOCAL, Environment.QA, Environment.STAGING, Environment.STAGING_LAB);
-    // Environment.LAB
     String source = systemDefinition().ids().questionnaireResponseSource();
     String query = String.format("QuestionnaireResponse?source=%s", source);
     var response = doGet("application/json", query, 200);
