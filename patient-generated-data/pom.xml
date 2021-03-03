@@ -4,16 +4,16 @@
   <parent>
     <groupId>gov.va.api.health</groupId>
     <artifactId>service-starter</artifactId>
-    <version>7.0.21</version>
+    <version>7.0.22</version>
     <relativePath/>
   </parent>
   <artifactId>patient-generated-data</artifactId>
-  <version>0.0.87-SNAPSHOT</version>
+  <version>0.0.87</version>
   <packaging>jar</packaging>
   <properties>
-    <fhir-resources.version>6.0.3</fhir-resources.version>
+    <fhir-resources.version>6.0.6</fhir-resources.version>
     <swagger-maven-plugin.version>2.1.5</swagger-maven-plugin.version>
-    <vulcan.version>1.0.0</vulcan.version>
+    <vulcan.version>1.0.5</vulcan.version>
   </properties>
   <dependencies>
     <dependency>
