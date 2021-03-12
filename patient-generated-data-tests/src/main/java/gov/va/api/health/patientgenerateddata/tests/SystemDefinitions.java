@@ -20,10 +20,10 @@ class SystemDefinitions {
         .questionnaire("37953b72-961b-41ee-bd05-86c62bacc46b")
         .questionnaireContextTypeValue(
             Ids.UsageContextTypeValue.builder()
-                .codeWithAnySystem("venue$vha_534_12975")
-                .codeWithNoSystem("venue$|vha_534_12975")
+                .codeWithAnySystem("venue$vha_688_3485")
+                .codeWithNoSystem("venue$|vha_688_3485")
                 .systemAndCode(
-                    "venue$https://api.va.gov/services/fhir/v0/r4/NamingSystem/va-clinic-identifier|vha_534_12975")
+                    "venue$https://api.va.gov/services/fhir/v0/r4/NamingSystem/va-clinic-identifier|vha_688_3485")
                 .systemWithAnyCode(
                     "venue$https://api.va.gov/services/fhir/v0/r4/NamingSystem/va-clinic-identifier|")
                 .build())
