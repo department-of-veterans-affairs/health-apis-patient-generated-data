@@ -22,6 +22,32 @@ public class RequestUtils {
 
   private static final String ACCESS_TOKEN = System.getProperty("access-token", "unset");
 
+  @SneakyThrows
+  public static ExpectedResponse doDelete(
+      String request, String description, Integer expectedStatus) {
+    SystemDefinitions.Service svc = systemDefinition().deletion();
+    RequestSpecification spec =
+        RestAssured.given()
+            .baseUri(svc.url())
+            .port(svc.port())
+            .relaxedHTTPSValidation()
+            .header("Authorization", "Bearer " + ACCESS_TOKEN)
+            .header("Content-Type", "application/json");
+    log.info(
+        "Expect {} POST '{}' is status code ({})",
+        svc.apiPath() + request,
+        description,
+        expectedStatus);
+    ExpectedResponse response =
+        ExpectedResponse.of(spec.request(Method.POST, svc.urlWithApiPath() + request))
+            .logAction(logAllWithTruncatedBody(2000))
+            .mapper(MAPPER);
+    if (expectedStatus != null) {
+      response.expect(expectedStatus);
+    }
+    return response;
+  }
+
   public static ExpectedResponse doGet(
       String acceptHeader, String request, Integer expectedStatus) {
     SystemDefinitions.Service svc = systemDefinition().r4();

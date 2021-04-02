@@ -59,6 +59,8 @@ class SystemDefinitions {
             serviceDefinition(
                 "internal", "https://blue.lab.lighthouse.va.gov", 443, "/patient-generated-data/"))
         .r4(serviceDefinition("r4", "https://blue.lab.lighthouse.va.gov", 443, "/pgd/v0/r4/"))
+        .deletion(
+            serviceDefinition("deletion", "https://blue.lab.lighthouse.va.gov", 8095, "/pgd/v0/"))
         .ids(ids())
         .build();
   }
@@ -67,6 +69,7 @@ class SystemDefinitions {
     return SystemDefinition.builder()
         .internal(serviceDefinition("internal", "http://localhost", 8095, "/"))
         .r4(serviceDefinition("r4", "http://localhost", 8095, "/r4/"))
+        .deletion(serviceDefinition("deletion", "http://localhost", 8095, "/sandbox-data/r4"))
         .ids(ids())
         .build();
   }
@@ -82,6 +85,9 @@ class SystemDefinitions {
         .r4(
             serviceDefinition(
                 "r4", "https://blue.production.lighthouse.va.gov", 443, "/pgd/v0/r4/"))
+        .deletion(
+            serviceDefinition(
+                "deletion", "https://blue.production.lighthouse.va.gov", 8095, "/pgd/v0/"))
         .ids(ids())
         .build();
   }
@@ -92,6 +98,8 @@ class SystemDefinitions {
             serviceDefinition(
                 "internal", "https://blue.qa.lighthouse.va.gov", 443, "/patient-generated-data/"))
         .r4(serviceDefinition("r4", "https://blue.qa.lighthouse.va.gov", 443, "/pgd/v0/r4/"))
+        .deletion(
+            serviceDefinition("deletion", "https://blue.qa.lighthouse.va.gov", 8095, "/pgd/v0/"))
         .ids(ids())
         .build();
   }
@@ -113,6 +121,9 @@ class SystemDefinitions {
                 443,
                 "/patient-generated-data/"))
         .r4(serviceDefinition("r4", "https://blue.staging.lighthouse.va.gov", 443, "/pgd/v0/r4/"))
+        .deletion(
+            serviceDefinition(
+                "deletion", "https://blue.staging.lighthouse.va.gov", 8095, "/pgd/v0/"))
         .ids(ids())
         .build();
   }
@@ -128,6 +139,9 @@ class SystemDefinitions {
         .r4(
             serviceDefinition(
                 "r4", "https://blue.staging-lab.lighthouse.va.gov", 443, "/pgd/v0/r4/"))
+        .deletion(
+            serviceDefinition(
+                "deletion", "https://blue.staging-lab.lighthouse.va.gov", 8095, "/pgd/v0/"))
         .ids(ids())
         .build();
   }
@@ -238,6 +252,8 @@ class SystemDefinitions {
     @NonNull Service internal;
 
     @NonNull Service r4;
+
+    @NonNull Service deletion;
 
     @NonNull Ids ids;
   }
