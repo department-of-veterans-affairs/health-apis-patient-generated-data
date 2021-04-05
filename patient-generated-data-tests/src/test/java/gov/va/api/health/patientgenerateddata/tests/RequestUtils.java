@@ -39,7 +39,7 @@ public class RequestUtils {
         description,
         expectedStatus);
     ExpectedResponse response =
-        ExpectedResponse.of(spec.request(Method.POST, svc.urlWithApiPath() + request))
+        ExpectedResponse.of(spec.request(Method.DELETE, svc.urlWithApiPath() + request))
             .logAction(logAllWithTruncatedBody(2000))
             .mapper(MAPPER);
     if (expectedStatus != null) {
