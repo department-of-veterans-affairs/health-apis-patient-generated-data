@@ -26,30 +26,24 @@ public class SandboxDeleteController {
   @DeleteMapping(value = "/Observation/{id}")
   void deleteObservation(@PathVariable("id") String id) {
     var optionalObservation = observationRepository.findById(id);
-    var observation = optionalObservation.orElseGet(null);
-    if (observation == null) {
-      return;
+    if (optionalObservation.isPresent()) {
+      observationRepository.delete(optionalObservation.get());
     }
-    observationRepository.delete(observation);
   }
 
   @DeleteMapping(value = "/Questionnaire/{id}")
   void deleteQuestionnaire(@PathVariable("id") String id) {
     var optionalQuestionnaire = questionnaireRepository.findById(id);
-    var questionnaire = optionalQuestionnaire.orElseGet(null);
-    if (questionnaire == null) {
-      return;
+    if (optionalQuestionnaire.isPresent()) {
+      questionnaireRepository.delete(optionalQuestionnaire.get());
     }
-    questionnaireRepository.delete(questionnaire);
   }
 
   @DeleteMapping(value = "/QuestionnaireResponse/{id}")
   void deleteQuestionnaireResponse(@PathVariable("id") String id) {
     var optionalQuestionnaireResponse = questionnaireResponseRepository.findById(id);
-    var questionnaireResponse = optionalQuestionnaireResponse.orElseGet(null);
-    if (questionnaireResponse == null) {
-      return;
+    if (optionalQuestionnaireResponse.isPresent()) {
+      questionnaireResponseRepository.delete(optionalQuestionnaireResponse.get());
     }
-    questionnaireResponseRepository.delete(questionnaireResponse);
   }
 }

@@ -25,7 +25,7 @@ public class RequestUtils {
   @SneakyThrows
   public static ExpectedResponse doDelete(
       String request, String description, Integer expectedStatus) {
-    SystemDefinitions.Service svc = systemDefinition().deletion();
+    SystemDefinitions.Service svc = systemDefinition().sandboxDataR4();
     RequestSpecification spec =
         RestAssured.given()
             .baseUri(svc.url())
