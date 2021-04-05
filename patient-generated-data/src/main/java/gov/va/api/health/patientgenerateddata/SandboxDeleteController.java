@@ -17,11 +17,11 @@ import org.springframework.web.bind.annotation.RestController;
 @AllArgsConstructor(onConstructor_ = @Autowired)
 public class SandboxDeleteController {
 
-  final ObservationRepository observationRepository;
+  private final ObservationRepository observationRepository;
 
-  final QuestionnaireRepository questionnaireRepository;
+  private final QuestionnaireRepository questionnaireRepository;
 
-  final QuestionnaireResponseRepository questionnaireResponseRepository;
+  private final QuestionnaireResponseRepository questionnaireResponseRepository;
 
   @DeleteMapping(value = "/Observation/{id}")
   void deleteObservation(@PathVariable("id") String id) {

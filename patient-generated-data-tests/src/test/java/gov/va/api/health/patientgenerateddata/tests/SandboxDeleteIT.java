@@ -17,10 +17,11 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-public class SandboxDeleteControllerIT {
+public class SandboxDeleteIT {
   @BeforeAll
   static void assumeEnvironment() {
-    assumeEnvironmentIn(Environment.LOCAL);
+    assumeEnvironmentIn(
+        Environment.LOCAL, Environment.QA, Environment.STAGING, Environment.STAGING_LAB);
   }
 
   private static Observation observation() {
@@ -62,9 +63,10 @@ public class SandboxDeleteControllerIT {
     assertThat(response).isNotNull();
     Observation observationWritten = response.expectValid(Observation.class);
     String id = observationWritten.id();
+    doGet("application/json", "Observation/" + id, 200);
     String query = String.format("Observation/%s", id);
-    response = doDelete(query, "delete resource", 200);
-    assertThat(response).isNotNull();
+    doDelete(query, "delete resource", 200);
+    doGet("application/json", "Observation/" + id, 404);
   }
 
   @Test
@@ -74,9 +76,10 @@ public class SandboxDeleteControllerIT {
     assertThat(response).isNotNull();
     Questionnaire questionnaireWritten = response.expectValid(Questionnaire.class);
     String id = questionnaireWritten.id();
+    doGet("application/json", "Questionnaire/" + id, 200);
     String query = String.format("Questionnaire/%s", id);
-    response = doDelete(query, "delete resource", 200);
-    assertThat(response).isNotNull();
+    doDelete(query, "delete resource", 200);
+    doGet("application/json", "Questionnaire/" + id, 404);
   }
 
   @Test
@@ -86,13 +89,9 @@ public class SandboxDeleteControllerIT {
     QuestionnaireResponse questionnaireResponseWritten =
         response.expectValid(QuestionnaireResponse.class);
     String id = questionnaireResponseWritten.id();
-    var verifierReponse = doGet("application/json", "QuestionnaireResponse?_id=" + id, 200);
-    var bundle = verifierReponse.expectValid(QuestionnaireResponse.Bundle.class);
-    assertThat(bundle.entry()).hasSizeGreaterThan(0);
+    doGet("application/json", "QuestionnaireResponse/" + id, 200);
     String query = String.format("QuestionnaireResponse/%s", id);
-    response = doDelete(query, "delete resource", 200);
-    verifierReponse = doGet("application/json", "QuestionnaireResponse?_id=" + id, 200);
-    bundle = verifierReponse.expectValid(QuestionnaireResponse.Bundle.class);
-    assertThat(bundle.entry()).hasSize(0);
+    doDelete(query, "delete resource", 200);
+    doGet("application/json", "QuestionnaireResponse/" + id, 404);
   }
 }

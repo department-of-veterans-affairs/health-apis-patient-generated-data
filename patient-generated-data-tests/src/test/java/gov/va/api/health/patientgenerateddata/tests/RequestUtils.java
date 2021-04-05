@@ -31,11 +31,10 @@ public class RequestUtils {
             .baseUri(svc.url())
             .port(svc.port())
             .relaxedHTTPSValidation()
-            .header("Authorization", "Bearer " + ACCESS_TOKEN)
             .header("Content-Type", "application/json");
     log.info(
-        "Expect {} POST '{}' is status code ({})",
-        svc.apiPath() + request,
+        "Expect {} DELETE '{}' is status code ({})",
+        svc.urlWithApiPath() + request,
         description,
         expectedStatus);
     ExpectedResponse response =
@@ -59,7 +58,7 @@ public class RequestUtils {
             .header("Authorization", "Bearer " + ACCESS_TOKEN);
     log.info(
         "Expect {} with accept header ({}) is status code ({})",
-        svc.apiPath() + request,
+        svc.urlWithApiPath() + request,
         acceptHeader,
         expectedStatus);
     if (acceptHeader != null) {
@@ -94,7 +93,7 @@ public class RequestUtils {
             .body(MAPPER.writeValueAsString(payload));
     log.info(
         "Expect {} POST '{}' is status code ({})",
-        svc.apiPath() + INTERNAL_R4_PATH + request,
+        svc.urlWithApiPath() + INTERNAL_R4_PATH + request,
         description,
         expectedStatus);
     ExpectedResponse response =
@@ -122,7 +121,7 @@ public class RequestUtils {
             .body(MAPPER.writeValueAsString(payload));
     log.info(
         "Expect {} POST '{}' is status code ({})",
-        svc.apiPath() + request,
+        svc.urlWithApiPath() + request,
         description,
         expectedStatus);
     ExpectedResponse response =
@@ -149,7 +148,7 @@ public class RequestUtils {
             .body(MAPPER.writeValueAsString(payload));
     log.info(
         "Expect {} PUT '{}' is status code ({})",
-        svc.apiPath() + request,
+        svc.urlWithApiPath() + request,
         description,
         expectedStatus);
     ExpectedResponse response =
