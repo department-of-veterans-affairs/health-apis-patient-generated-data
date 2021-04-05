@@ -12,37 +12,37 @@ import gov.va.api.health.patientgenerateddata.questionnaireresponse.Questionnair
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 
-public class ResourceDeleteControllerTest {
+public class SandboxDeleteControllerTest {
 
-  private ResourceDeleteController controller() {
+  private SandboxDeleteController controller() {
     var observationRepo = mock(ObservationRepository.class);
     var questionnaireRepo = mock(QuestionnaireRepository.class);
     var questionnaireResponseRepo = mock(QuestionnaireResponseRepository.class);
-    return new ResourceDeleteController(
+    when(observationRepo.findById("x"))
+        .thenReturn(Optional.of(ObservationEntity.builder().id("x").build()));
+    when(questionnaireRepo.findById("x"))
+        .thenReturn(Optional.of(QuestionnaireEntity.builder().id("x").build()));
+    when(questionnaireResponseRepo.findById("x"))
+        .thenReturn(Optional.of(QuestionnaireResponseEntity.builder().id("x").build()));
+    return new SandboxDeleteController(
         observationRepo, questionnaireRepo, questionnaireResponseRepo);
   }
 
   @Test
   void deleteObservation() {
     var controller = controller();
-    when(controller.observationRepository().findById("x"))
-        .thenReturn(Optional.of(ObservationEntity.builder().id("x").build()));
     controller.deleteObservation("x");
   }
 
   @Test
   void deleteQuestionnaire() {
     var controller = controller();
-    when(controller.questionnaireRepository().findById("x"))
-        .thenReturn(Optional.of(QuestionnaireEntity.builder().id("x").build()));
     controller.deleteQuestionnaire("x");
   }
 
   @Test
   void deleteQuestionnaireResponse() {
     var controller = controller();
-    when(controller.questionnaireResponseRepository().findById("x"))
-        .thenReturn(Optional.of(QuestionnaireResponseEntity.builder().id("x").build()));
     controller.deleteQuestionnaireResponse("x");
   }
 }

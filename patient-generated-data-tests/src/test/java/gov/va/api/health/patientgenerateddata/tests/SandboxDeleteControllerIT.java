@@ -17,7 +17,7 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-public class ResourceDeleteControllerIT {
+public class SandboxDeleteControllerIT {
   @BeforeAll
   static void assumeEnvironment() {
     assumeEnvironmentIn(Environment.LOCAL);
