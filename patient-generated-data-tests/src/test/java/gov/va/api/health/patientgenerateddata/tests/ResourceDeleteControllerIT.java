@@ -1,6 +1,7 @@
 package gov.va.api.health.patientgenerateddata.tests;
 
 import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.doDelete;
+import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.doGet;
 import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.doPost;
 import static gov.va.api.health.sentinel.EnvironmentAssumptions.assumeEnvironmentIn;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -82,12 +83,16 @@ public class ResourceDeleteControllerIT {
   void deleteQuestionnaireResponse() {
     QuestionnaireResponse questionnaireResponse = questionnaireResponse();
     var response = doPost("QuestionnaireResponse", questionnaireResponse, "create resource", 201);
-    assertThat(response).isNotNull();
     QuestionnaireResponse questionnaireResponseWritten =
         response.expectValid(QuestionnaireResponse.class);
     String id = questionnaireResponseWritten.id();
+    var verifierReponse = doGet("application/json", "QuestionnaireResponse?_id=" + id, 200);
+    var bundle = verifierReponse.expectValid(QuestionnaireResponse.Bundle.class);
+    assertThat(bundle.entry()).hasSizeGreaterThan(0);
     String query = String.format("QuestionnaireResponse/%s", id);
     response = doDelete(query, "delete resource", 200);
-    assertThat(response).isNotNull();
+    verifierReponse = doGet("application/json", "QuestionnaireResponse?_id=" + id, 200);
+    bundle = verifierReponse.expectValid(QuestionnaireResponse.Bundle.class);
+    assertThat(bundle.entry()).hasSize(0);
   }
 }
