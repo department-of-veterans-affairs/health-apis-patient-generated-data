@@ -61,7 +61,10 @@ class SystemDefinitions {
         .r4(serviceDefinition("r4", "https://blue.lab.lighthouse.va.gov", 443, "/pgd/v0/r4/"))
         .sandboxDataR4(
             serviceDefinition(
-                "sandboxDataR4", "https://blue.lab.lighthouse.va.gov", 443, "/sandbox-data/r4/"))
+                "sandbox-data-r4",
+                "https://blue.lab.lighthouse.va.gov",
+                443,
+                "/pgd/v0/sandbox-data/r4/"))
         .ids(ids())
         .build();
   }
@@ -71,7 +74,7 @@ class SystemDefinitions {
         .internal(serviceDefinition("internal", "http://localhost", 8095, "/"))
         .r4(serviceDefinition("r4", "http://localhost", 8095, "/r4/"))
         .sandboxDataR4(
-            serviceDefinition("sandboxDataR4", "http://localhost", 8095, "/sandbox-data/r4/"))
+            serviceDefinition("sandbox-data-r4", "http://localhost", 8095, "/sandbox-data/r4/"))
         .ids(ids())
         .build();
   }
@@ -89,10 +92,10 @@ class SystemDefinitions {
                 "r4", "https://blue.production.lighthouse.va.gov", 443, "/pgd/v0/r4/"))
         .sandboxDataR4(
             serviceDefinition(
-                "sandboxDataR4",
+                "sandbox-data-r4",
                 "https://blue.production.lighthouse.va.gov",
                 443,
-                "/sandbox-data/r4/"))
+                "/pgd/v0/sandbox-data/r4/"))
         .ids(ids())
         .build();
   }
@@ -105,7 +108,10 @@ class SystemDefinitions {
         .r4(serviceDefinition("r4", "https://blue.qa.lighthouse.va.gov", 443, "/pgd/v0/r4/"))
         .sandboxDataR4(
             serviceDefinition(
-                "sandboxDataR4", "https://blue.qa.lighthouse.va.gov", 443, "/sandbox-data/r4/"))
+                "sandbox-data-r4",
+                "https://blue.qa.lighthouse.va.gov",
+                443,
+                "/pgd/v0/sandbox-data/r4/"))
         .ids(ids())
         .build();
   }
@@ -129,10 +135,10 @@ class SystemDefinitions {
         .r4(serviceDefinition("r4", "https://blue.staging.lighthouse.va.gov", 443, "/pgd/v0/r4/"))
         .sandboxDataR4(
             serviceDefinition(
-                "sandboxDataR4",
+                "sandbox-data-r4",
                 "https://blue.staging.lighthouse.va.gov",
                 443,
-                "/sandbox-data/r4/"))
+                "/pgd/v0/sandbox-data/r4/"))
         .ids(ids())
         .build();
   }
@@ -150,10 +156,10 @@ class SystemDefinitions {
                 "r4", "https://blue.staging-lab.lighthouse.va.gov", 443, "/pgd/v0/r4/"))
         .sandboxDataR4(
             serviceDefinition(
-                "sandboxDataR4",
+                "sandbox-data-r4",
                 "https://blue.staging-lab.lighthouse.va.gov",
                 443,
-                "/sandbox-data/r4/"))
+                "/pgd/v0/sandbox-data/r4/"))
         .ids(ids())
         .build();
   }

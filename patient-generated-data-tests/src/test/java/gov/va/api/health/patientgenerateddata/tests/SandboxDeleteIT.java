@@ -4,7 +4,6 @@ import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.doDelete
 import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.doGet;
 import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.doPost;
 import static gov.va.api.health.sentinel.EnvironmentAssumptions.assumeEnvironmentIn;
-import static org.assertj.core.api.Assertions.assertThat;
 
 import gov.va.api.health.r4.api.datatypes.CodeableConcept;
 import gov.va.api.health.r4.api.datatypes.Coding;
@@ -20,6 +19,7 @@ import org.junit.jupiter.api.Test;
 public class SandboxDeleteIT {
   @BeforeAll
   static void assumeEnvironment() {
+    // Do not run in SLA'd environments
     assumeEnvironmentIn(
         Environment.LOCAL, Environment.QA, Environment.STAGING, Environment.STAGING_LAB);
   }
@@ -60,12 +60,10 @@ public class SandboxDeleteIT {
   void deleteObservation() {
     Observation observation = observation();
     var response = doPost("Observation", observation, "create resource", 201);
-    assertThat(response).isNotNull();
     Observation observationWritten = response.expectValid(Observation.class);
     String id = observationWritten.id();
     doGet("application/json", "Observation/" + id, 200);
-    String query = String.format("Observation/%s", id);
-    doDelete(query, "delete resource", 200);
+    doDelete("Observation/" + id, "delete resource", 200);
     doGet("application/json", "Observation/" + id, 404);
   }
 
@@ -73,12 +71,10 @@ public class SandboxDeleteIT {
   void deleteQuestionnaire() {
     Questionnaire questionnaire = questionnaire();
     var response = doPost("Questionnaire", questionnaire, "create resource", 201);
-    assertThat(response).isNotNull();
     Questionnaire questionnaireWritten = response.expectValid(Questionnaire.class);
     String id = questionnaireWritten.id();
     doGet("application/json", "Questionnaire/" + id, 200);
-    String query = String.format("Questionnaire/%s", id);
-    doDelete(query, "delete resource", 200);
+    doDelete("Questionnaire/" + id, "delete resource", 200);
     doGet("application/json", "Questionnaire/" + id, 404);
   }
 
@@ -90,8 +86,7 @@ public class SandboxDeleteIT {
         response.expectValid(QuestionnaireResponse.class);
     String id = questionnaireResponseWritten.id();
     doGet("application/json", "QuestionnaireResponse/" + id, 200);
-    String query = String.format("QuestionnaireResponse/%s", id);
-    doDelete(query, "delete resource", 200);
+    doDelete("QuestionnaireResponse/" + id, "delete resource", 200);
     doGet("application/json", "QuestionnaireResponse/" + id, 404);
   }
 }

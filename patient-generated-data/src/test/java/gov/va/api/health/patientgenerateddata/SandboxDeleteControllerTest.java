@@ -16,15 +16,29 @@ import org.junit.jupiter.api.Test;
 
 public class SandboxDeleteControllerTest {
 
-  @Test
-  void deleteInvalid() {
+  SandboxDeleteController defaultMockedController() {
     var observationRepo = mock(ObservationRepository.class);
     var questionnaireRepo = mock(QuestionnaireRepository.class);
     var questionnaireResponseRepo = mock(QuestionnaireResponseRepository.class);
-    var controller =
-        new SandboxDeleteController(observationRepo, questionnaireRepo, questionnaireResponseRepo);
+    return new SandboxDeleteController(
+        observationRepo, questionnaireRepo, questionnaireResponseRepo);
+  }
+
+  @Test
+  void deleteInvalidObservation() {
+    var controller = defaultMockedController();
     controller.deleteObservation("y");
+  }
+
+  @Test
+  void deleteInvalidQuestionnaire() {
+    var controller = defaultMockedController();
     controller.deleteQuestionnaire("y");
+  }
+
+  @Test
+  void deleteInvalidQuestionnaireResponse() {
+    var controller = defaultMockedController();
     controller.deleteQuestionnaireResponse("y");
   }
 
