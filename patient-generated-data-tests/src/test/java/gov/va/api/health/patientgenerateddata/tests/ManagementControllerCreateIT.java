@@ -6,17 +6,10 @@ import static gov.va.api.health.sentinel.EnvironmentAssumptions.assumeEnvironmen
 
 import gov.va.api.health.r4.api.datatypes.CodeableConcept;
 import gov.va.api.health.r4.api.datatypes.Coding;
-import gov.va.api.health.r4.api.datatypes.HumanName;
-import gov.va.api.health.r4.api.datatypes.Identifier;
 import gov.va.api.health.r4.api.elements.Reference;
 import gov.va.api.health.r4.api.resources.Observation;
-import gov.va.api.health.r4.api.resources.Observation.ObservationStatus;
-import gov.va.api.health.r4.api.resources.Patient;
-import gov.va.api.health.r4.api.resources.Patient.Gender;
 import gov.va.api.health.r4.api.resources.Questionnaire;
-import gov.va.api.health.r4.api.resources.Questionnaire.PublicationStatus;
 import gov.va.api.health.r4.api.resources.QuestionnaireResponse;
-import gov.va.api.health.r4.api.resources.QuestionnaireResponse.Status;
 import gov.va.api.health.sentinel.Environment;
 import java.util.List;
 import org.junit.jupiter.api.BeforeAll;
@@ -35,7 +28,7 @@ public class ManagementControllerCreateIT {
   private Observation _observation(String id) {
     return Observation.builder()
         .id(id)
-        .status(ObservationStatus.unknown)
+        .status(Observation.ObservationStatus.unknown)
         .effectiveDateTime("2020-01-01T01:00:00Z")
         .category(
             List.of(
@@ -54,35 +47,25 @@ public class ManagementControllerCreateIT {
         .build();
   }
 
-  private Patient _patient(String icn) {
-    return Patient.builder()
-        .resourceType("Patient")
-        .id(icn)
-        .identifier(List.of(Identifier.builder().value(icn).build()))
-        .name(List.of(HumanName.builder().text("Test McTest").build()))
-        .gender(Gender.unknown)
+  private Questionnaire _questionnaire(String id) {
+    return Questionnaire.builder()
+        .id(id)
+        .title("x")
+        .status(Questionnaire.PublicationStatus.active)
         .build();
   }
 
-  private Questionnaire _questionnaire(String id) {
-    return Questionnaire.builder().id(id).title("x").status(PublicationStatus.active).build();
-  }
-
   private QuestionnaireResponse _questionnaireResponse(String id) {
-    return QuestionnaireResponse.builder().id(id).status(Status.completed).build();
+    return QuestionnaireResponse.builder()
+        .id(id)
+        .status(QuestionnaireResponse.Status.completed)
+        .build();
   }
 
   @Test
   void create_observation() {
     var observation = _observation("it" + System.currentTimeMillis());
     doInternalPost("Observation", observation, "create resource", 201, CLIENT_KEY);
-  }
-
-  @Test
-  void create_patient() {
-    // ID must be in MPI format!
-    var patient = _patient("it" + System.currentTimeMillis());
-    doInternalPost("Patient", patient, "create resource", 201, CLIENT_KEY);
   }
 
   @Test

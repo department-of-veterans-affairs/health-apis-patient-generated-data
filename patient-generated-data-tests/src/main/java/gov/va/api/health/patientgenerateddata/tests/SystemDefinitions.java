@@ -2,6 +2,7 @@ package gov.va.api.health.patientgenerateddata.tests;
 
 import gov.va.api.health.sentinel.Environment;
 import gov.va.api.health.sentinel.SentinelProperties;
+import java.util.List;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.Value;
@@ -14,31 +15,41 @@ class SystemDefinitions {
   private static Ids ids() {
     return Ids.builder()
         .observation("fc691a7f-a0f3-47b4-9d00-2786d055e8ba")
-        .patient("1011537977V693883")
-        .patientGenerated("9999999999V999999")
-        .patientNotMe("1017283180V801730")
+        .observationList(
+            List.of("fc691a7f-a0f3-47b4-9d00-2786d055e8ba", "0b9d2e37-f84d-4f9e-9ba3-995772f368d3"))
         .questionnaire("37953b72-961b-41ee-bd05-86c62bacc46b")
-        .questionnaireList(
-            "37953b72-961b-41ee-bd05-86c62bacc46b,"
-                + "9c930b5c-6e0e-4e84-9f3a-1c1a6cb4313e,"
-                + "842479ed-9c5b-474b-bf97-fc295617900c")
         .questionnaireContextTypeValue(
             Ids.UsageContextTypeValue.builder()
-                .codeWithAnySystem("venue$534/12975")
-                .codeWithNoSystem("venue$|534/12975")
-                .systemAndCode("venue$https://staff.apps.va.gov/VistaEmrService/clinics|534/12975")
-                .systemWithAnyCode("venue$https://staff.apps.va.gov/VistaEmrService/clinics|")
+                .codeWithAnySystem("venue$vha_688_3485")
+                .codeWithNoSystem("venue$|vha_688_3485")
+                .systemAndCode(
+                    "venue$https://api.va.gov/services/fhir/v0/r4/NamingSystem/va-clinic-identifier|vha_688_3485")
+                .systemWithAnyCode(
+                    "venue$https://api.va.gov/services/fhir/v0/r4/NamingSystem/va-clinic-identifier|")
                 .build())
+        .questionnaireList(
+            List.of("37953b72-961b-41ee-bd05-86c62bacc46b", "842479ed-9c5b-474b-bf97-fc295617900c"))
         .questionnaireUpdates("00000000-0000-0000-0000-000000000000")
         .questionnaireResponse("f003043a-9047-4c3a-b15b-a26c67f4e723")
         .questionnaireResponseAuthor("1011537977V693883")
+        .questionnaireResponseList(
+            List.of("f003043a-9047-4c3a-b15b-a26c67f4e723", "e7c5799f-14fd-420d-8671-e24386773e7e"))
+        .questionnaireResponseMetas(
+            Ids.Metas.builder()
+                .applicationTag(
+                    Ids.MetaTag.builder()
+                        .system("https://api.va.gov/services/pgd")
+                        .code("66a5960c-68ee-4689-88ae-4c7cccf7ca79")
+                        .build())
+                .commonTag(
+                    Ids.MetaTag.builder()
+                        .system("http://terminology.hl7.org/CodeSystem/common-tags")
+                        .code("actionable")
+                        .build())
+                .build())
+        .questionnaireResponseSource("1011537977V693883")
         .questionnaireResponseSubject("1011537977V693883")
         .questionnaireResponseUpdates("00000000-0000-0000-0000-000000000000")
-        .questionnaireResponseMetaTag(
-            Ids.MetaTag.builder()
-                .system("https://veteran.apps.va.gov/appointments/v1")
-                .code("202008211400983000082100000000000000")
-                .build())
         .build();
   }
 
@@ -146,17 +157,13 @@ class SystemDefinitions {
   static final class Ids {
     @NonNull String observation;
 
-    @NonNull String patient;
-
-    @NonNull String patientGenerated;
-
-    @NonNull String patientNotMe;
+    @NonNull List<String> observationList;
 
     @NonNull String questionnaire;
 
-    @NonNull String questionnaireList;
-
     @NonNull UsageContextTypeValue questionnaireContextTypeValue;
+
+    @NonNull List<String> questionnaireList;
 
     @NonNull String questionnaireUpdates;
 
@@ -164,11 +171,31 @@ class SystemDefinitions {
 
     @NonNull String questionnaireResponseAuthor;
 
-    @NonNull MetaTag questionnaireResponseMetaTag;
+    @NonNull List<String> questionnaireResponseList;
+
+    @NonNull Metas questionnaireResponseMetas;
+
+    @NonNull String questionnaireResponseSource;
 
     @NonNull String questionnaireResponseSubject;
 
     @NonNull String questionnaireResponseUpdates;
+
+    @Value
+    @Builder
+    static final class Metas {
+      @NonNull MetaTag applicationTag;
+
+      @NonNull MetaTag commonTag;
+    }
+
+    @Value
+    @Builder
+    static final class MetaTag {
+      @NonNull String system;
+
+      @NonNull String code;
+    }
 
     @Value
     @Builder
@@ -180,14 +207,6 @@ class SystemDefinitions {
       @NonNull String systemAndCode;
 
       @NonNull String systemWithAnyCode;
-    }
-
-    @Value
-    @Builder
-    static final class MetaTag {
-      @NonNull String system;
-
-      @NonNull String code;
     }
   }
 

@@ -76,4 +76,12 @@ public class QuestionnaireIT {
     var response = doGet("application/json", "Questionnaire?_id=" + id, 200);
     response.expectValid(Questionnaire.Bundle.class);
   }
+
+  @Test
+  void search_id_csv() {
+    var ids = String.join(",", systemDefinition().ids().questionnaireList());
+    var response = doGet("application/json", "Questionnaire?_id=" + ids, 200);
+    Questionnaire.Bundle bundle = response.expectValid(Questionnaire.Bundle.class);
+    assertThat(bundle.entry()).hasSize(2);
+  }
 }

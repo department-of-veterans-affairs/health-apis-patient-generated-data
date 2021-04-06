@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import gov.va.api.health.autoconfig.configuration.JacksonConfig;
 import gov.va.api.health.r4.api.DataAbsentReason;
 import gov.va.api.health.r4.api.elements.Extension;
 import gov.va.api.health.r4.api.elements.Reference;
@@ -19,7 +18,7 @@ import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 
 public class JacksonMapperConfigTest {
-  private static final ObjectMapper MAPPER = JacksonConfig.createMapper();
+  private static final ObjectMapper MAPPER = JacksonMapperConfig.createMapper();
 
   private static Reference reference(String path) {
     return Reference.builder().display("display-value").reference(path).id("id-value").build();
@@ -27,7 +26,7 @@ public class JacksonMapperConfigTest {
 
   @Test
   @SneakyThrows
-  public void preExistingDarsArePreserved() {
+  void preExistingDarsArePreserved() {
     FugaziReferenceMajig input =
         FugaziReferenceMajig.builder()
             .ref(reference("https://example.com/api/Practitioner/1234"))
@@ -56,7 +55,7 @@ public class JacksonMapperConfigTest {
 
   @Test
   @SneakyThrows
-  public void referencesAreQualified() {
+  void referencesAreQualified() {
     FugaziReferenceMajig input =
         FugaziReferenceMajig.builder()
             .whocares("noone")
@@ -132,7 +131,7 @@ public class JacksonMapperConfigTest {
   @Data
   @Builder
   @NoArgsConstructor(access = AccessLevel.PRIVATE)
-  @AllArgsConstructor
+  @AllArgsConstructor(access = AccessLevel.PRIVATE)
   @JsonAutoDetect(
       fieldVisibility = JsonAutoDetect.Visibility.ANY,
       isGetterVisibility = JsonAutoDetect.Visibility.NONE)

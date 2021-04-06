@@ -4,15 +4,15 @@
   <parent>
     <groupId>gov.va.api.health</groupId>
     <artifactId>health-apis-parent</artifactId>
-    <version>7.0.20</version>
+    <version>7.0.23</version>
     <relativePath/>
   </parent>
   <artifactId>patient-generated-data-synthetic</artifactId>
-  <version>0.0.71-SNAPSHOT</version>
+  <version>0.0.90-SNAPSHOT</version>
   <packaging>jar</packaging>
   <properties>
-    <fhir-resources.version>5.0.17</fhir-resources.version>
-    <health-apis-parent.version>7.0.20</health-apis-parent.version>
+    <fhir-resources.version>6.0.6</fhir-resources.version>
+    <health-apis-parent.version>7.0.23</health-apis-parent.version>
     <javax.el.version>3.0.1-b12</javax.el.version>
     <populaterator.sqlserver>false</populaterator.sqlserver>
   </properties>

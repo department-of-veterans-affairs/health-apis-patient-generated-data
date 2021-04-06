@@ -4,7 +4,6 @@ import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.doIntern
 import static gov.va.api.health.sentinel.EnvironmentAssumptions.assumeEnvironmentIn;
 
 import gov.va.api.health.r4.api.resources.Observation;
-import gov.va.api.health.r4.api.resources.Patient;
 import gov.va.api.health.r4.api.resources.Questionnaire;
 import gov.va.api.health.r4.api.resources.QuestionnaireResponse;
 import gov.va.api.health.sentinel.Environment;
@@ -23,12 +22,6 @@ public class ManagementControllerProtectionIT {
   void create_observation_invalidKey() {
     var obs = Observation.builder().id("it-bad").build();
     doInternalPost("Observation", obs, "create resource (invalid key)", 401, "NOPE");
-  }
-
-  @Test
-  void create_patient_invalidKey() {
-    var patient = Patient.builder().id("it-bad").build();
-    doInternalPost("Patient", patient, "create resource (invalid key)", 401, "NOPE");
   }
 
   @Test

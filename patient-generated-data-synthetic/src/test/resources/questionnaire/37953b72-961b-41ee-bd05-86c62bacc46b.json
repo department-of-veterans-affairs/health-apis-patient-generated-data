@@ -26,22 +26,8 @@
       "valueCodeableConcept" : {
         "coding" : [
           {
-            "system" : "https://staff.apps.va.gov/VistaEmrService/clinics",
-            "code" : "534/12975"
-          }
-        ]
-      }
-    },
-    {
-      "code" : {
-        "system" : "http://terminology.hl7.org/CodeSystem/usage-context-type",
-        "code" : "venue"
-      },
-      "valueCodeableConcept" : {
-        "coding" : [
-          {
-            "system" : "https://staff.apps.va.gov/VistaEmrService/clinics",
-            "code" : "534/12976"
+            "system" : "https://api.va.gov/services/fhir/v0/r4/NamingSystem/va-clinic-identifier",
+            "code" : "vha_688_3485"
           }
         ]
       }
