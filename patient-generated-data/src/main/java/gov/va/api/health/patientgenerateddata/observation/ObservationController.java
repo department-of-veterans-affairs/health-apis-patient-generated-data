@@ -134,8 +134,9 @@ public class ObservationController {
   ResponseEntity<Observation> update(
       @PathVariable("id") String id, @Valid @RequestBody Observation observation) {
     checkState(id.equals(observation.id()), "%s != %s", id, observation.id());
-    Optional<ObservationEntity> maybeEntity = repository.findById(id);
-    ObservationEntity entity = maybeEntity.orElseThrow(() -> new Exceptions.NotFound(id));
+    Optional<ObservationEntity> maybeEntity = repository.findById(observation.id());
+    ObservationEntity entity =
+        maybeEntity.orElseThrow(() -> new Exceptions.NotFound(observation.id()));
     entity = populate(observation, entity);
     repository.save(entity);
     return ResponseEntity.ok(observation);

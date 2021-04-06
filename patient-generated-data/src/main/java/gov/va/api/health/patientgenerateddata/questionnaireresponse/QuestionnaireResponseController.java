@@ -190,8 +190,10 @@ public class QuestionnaireResponseController {
       @PathVariable("id") String id,
       @Valid @RequestBody QuestionnaireResponse questionnaireResponse) {
     checkState(id.equals(questionnaireResponse.id()), "%s != %s", id, questionnaireResponse.id());
-    Optional<QuestionnaireResponseEntity> maybeEntity = repository.findById(id);
-    QuestionnaireResponseEntity entity = maybeEntity.orElseThrow(() -> new Exceptions.NotFound(id));
+    Optional<QuestionnaireResponseEntity> maybeEntity =
+        repository.findById(questionnaireResponse.id());
+    QuestionnaireResponseEntity entity =
+        maybeEntity.orElseThrow(() -> new Exceptions.NotFound(questionnaireResponse.id()));
     entity = populate(questionnaireResponse, entity);
     repository.save(entity);
     return ResponseEntity.ok(questionnaireResponse);
