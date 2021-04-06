@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
     produces = {"application/json", "application/fhir+json"})
 @AllArgsConstructor(onConstructor_ = @Autowired)
 public class SandboxDeleteController {
-
   private final ObservationRepository observationRepository;
 
   private final QuestionnaireRepository questionnaireRepository;
