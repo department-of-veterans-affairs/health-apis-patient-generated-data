@@ -151,8 +151,9 @@ public class QuestionnaireController {
       @PathVariable("id") String id, @Valid @RequestBody Questionnaire questionnaire) {
     String payload = MAPPER.writeValueAsString(questionnaire);
     checkState(id.equals(questionnaire.id()), "%s != %s", id, questionnaire.id());
-    Optional<QuestionnaireEntity> maybeEntity = repository.findById(id);
-    QuestionnaireEntity entity = maybeEntity.orElseThrow(() -> new Exceptions.NotFound(id));
+    Optional<QuestionnaireEntity> maybeEntity = repository.findById(questionnaire.id());
+    QuestionnaireEntity entity =
+        maybeEntity.orElseThrow(() -> new Exceptions.NotFound(questionnaire.id()));
     entity = populate(questionnaire, entity, payload);
     repository.save(entity);
     return ResponseEntity.ok(questionnaire);
