@@ -20,6 +20,7 @@ java-tests \
   -Dsentinel="$SENTINEL_ENV" \
   -Dsentinel.internal.url="${SENTINEL_URL}" \
   -Dsentinel.r4.url="${SENTINEL_URL}" \
+  -Dsentinel.sandbox-data-r4.url="${SENTINEL_URL}" \
   $@
 
 exit $?

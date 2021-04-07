@@ -44,7 +44,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(
     value = "/r4/Questionnaire",
     produces = {"application/json", "application/fhir+json"})
-@AllArgsConstructor(onConstructor = @__({@Autowired}))
+@AllArgsConstructor(onConstructor_ = @Autowired)
 public class QuestionnaireController {
   private static final ObjectMapper MAPPER = JacksonMapperConfig.createMapper();
 
