@@ -128,8 +128,10 @@ public class QuestionnaireResponseIT {
 
   @Test
   void search_questionnaire() {
+    String source = systemDefinition().ids().questionnaireResponseSource();
     String questionnaire = systemDefinition().ids().questionnaire();
-    String query = String.format("QuestionnaireResponse?questionnaire=%s", questionnaire);
+    String query =
+        String.format("QuestionnaireResponse?source=%s&questionnaire=%s", source, questionnaire);
     var response = doGet("application/json", query, 200);
     QuestionnaireResponse.Bundle bundle = response.expectValid(QuestionnaireResponse.Bundle.class);
     assertThat(bundle.entry()).hasSizeGreaterThan(0);
@@ -145,8 +147,11 @@ public class QuestionnaireResponseIT {
 
   @Test
   void search_questionnaire_csv() {
+    String source = systemDefinition().ids().questionnaireResponseSource();
     var questionnaireList = String.join(",", systemDefinition().ids().questionnaireList());
-    String query = String.format("QuestionnaireResponse?questionnaire=%s", questionnaireList);
+    String query =
+        String.format(
+            "QuestionnaireResponse?source=%s&questionnaire=%s", source, questionnaireList);
     var response = doGet("application/json", query, 200);
     QuestionnaireResponse.Bundle bundle = response.expectValid(QuestionnaireResponse.Bundle.class);
     assertThat(bundle.entry()).hasSize(2);
@@ -198,12 +203,15 @@ public class QuestionnaireResponseIT {
 
   @Test
   void search_tag_csv() {
+    String source = systemDefinition().ids().questionnaireResponseSource();
     String system = systemDefinition().ids().questionnaireResponseMetas().applicationTag().system();
     String code = systemDefinition().ids().questionnaireResponseMetas().applicationTag().code();
     String system2 = systemDefinition().ids().questionnaireResponseMetas().commonTag().system();
     String code2 = systemDefinition().ids().questionnaireResponseMetas().commonTag().code();
     String query =
-        String.format("QuestionnaireResponse?_tag=%s|%s,%s|%s", system, code, system2, code2);
+        String.format(
+            "QuestionnaireResponse?source=%s&_tag=%s|%s,%s|%s",
+            source, system, code, system2, code2);
     var response = doGet("application/json", query, 200);
     QuestionnaireResponse.Bundle bundle = response.expectValid(QuestionnaireResponse.Bundle.class);
     assertThat(bundle.entry()).hasSize(1);
@@ -211,8 +219,9 @@ public class QuestionnaireResponseIT {
 
   @Test
   void search_tag_systemWithAnyCode() {
+    String source = systemDefinition().ids().questionnaireResponseSource();
     String system = systemDefinition().ids().questionnaireResponseMetas().applicationTag().system();
-    String query = String.format("QuestionnaireResponse?_tag=%s|", system);
+    String query = String.format("QuestionnaireResponse?source=%s&_tag=%s|", source, system);
     var response = doGet("application/json", query, 200);
     QuestionnaireResponse.Bundle bundle = response.expectValid(QuestionnaireResponse.Bundle.class);
     assertThat(bundle.entry()).hasSizeGreaterThan(0);
@@ -220,9 +229,11 @@ public class QuestionnaireResponseIT {
 
   @Test
   void search_tag_systemWithCode() {
+    String source = systemDefinition().ids().questionnaireResponseSource();
     String system = systemDefinition().ids().questionnaireResponseMetas().applicationTag().system();
     String code = systemDefinition().ids().questionnaireResponseMetas().applicationTag().code();
-    String query = String.format("QuestionnaireResponse?_tag=%s|%s", system, code);
+    String query =
+        String.format("QuestionnaireResponse?source=%s&_tag=%s|%s", source, system, code);
     var response = doGet("application/json", query, 200);
     QuestionnaireResponse.Bundle bundle = response.expectValid(QuestionnaireResponse.Bundle.class);
     assertThat(bundle.entry()).hasSizeGreaterThan(0);
