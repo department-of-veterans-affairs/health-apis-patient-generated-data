@@ -41,7 +41,7 @@ public class SandboxDeleteIT {
                     .text("laboratory")
                     .build()))
         .code(CodeableConcept.builder().text("code").build())
-        .subject(Reference.builder().reference("Patient/1").build())
+        .subject(Reference.builder().reference("Patient/1011537977V693883").build())
         .build();
   }
 
