@@ -54,7 +54,7 @@ public class SandboxDeleteIT {
   @Test
   void deleteDisallowed() {
     assumeEnvironmentIn(Environment.STAGING, Environment.PROD);
-    doDelete("Observation/12345", "delete resource", 200);
+    doDelete("Observation/12345", "delete resource", 404);
   }
 
   @Test
