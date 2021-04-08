@@ -13,16 +13,9 @@ import gov.va.api.health.r4.api.resources.Questionnaire;
 import gov.va.api.health.r4.api.resources.QuestionnaireResponse;
 import gov.va.api.health.sentinel.Environment;
 import java.util.List;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 public class SandboxDeleteIT {
-  @BeforeAll
-  static void assumeEnvironment() {
-    // Do not run in SLA'd environments
-    assumeEnvironmentIn(
-        Environment.LOCAL, Environment.QA, Environment.STAGING, Environment.STAGING_LAB);
-  }
 
   private static Observation observation() {
     return Observation.builder()
@@ -46,6 +39,8 @@ public class SandboxDeleteIT {
   }
 
   private static Questionnaire questionnaire() {
+    assumeEnvironmentIn(
+        Environment.LOCAL, Environment.QA, Environment.LAB, Environment.STAGING_LAB);
     return Questionnaire.builder()
         .title("x")
         .status(Questionnaire.PublicationStatus.active)
@@ -57,7 +52,16 @@ public class SandboxDeleteIT {
   }
 
   @Test
+  void deleteDisallowed() {
+    assumeEnvironmentIn(Environment.STAGING, Environment.PROD);
+    doDelete("Observation/12345", "delete resource", 200);
+  }
+
+  @Test
   void deleteObservation() {
+    // Do not run in SLA'd environments
+    assumeEnvironmentIn(
+        Environment.LOCAL, Environment.QA, Environment.STAGING, Environment.STAGING_LAB);
     Observation observation = observation();
     var response = doPost("Observation", observation, "create resource", 201);
     Observation observationWritten = response.expectValid(Observation.class);
@@ -69,6 +73,9 @@ public class SandboxDeleteIT {
 
   @Test
   void deleteQuestionnaire() {
+    // Do not run in SLA'd environments
+    assumeEnvironmentIn(
+        Environment.LOCAL, Environment.QA, Environment.STAGING, Environment.STAGING_LAB);
     Questionnaire questionnaire = questionnaire();
     var response = doPost("Questionnaire", questionnaire, "create resource", 201);
     Questionnaire questionnaireWritten = response.expectValid(Questionnaire.class);
@@ -80,6 +87,9 @@ public class SandboxDeleteIT {
 
   @Test
   void deleteQuestionnaireResponse() {
+    // Do not run in SLA'd environments
+    assumeEnvironmentIn(
+        Environment.LOCAL, Environment.QA, Environment.STAGING, Environment.STAGING_LAB);
     QuestionnaireResponse questionnaireResponse = questionnaireResponse();
     var response = doPost("QuestionnaireResponse", questionnaireResponse, "create resource", 201);
     QuestionnaireResponse questionnaireResponseWritten =
