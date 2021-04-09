@@ -1,5 +1,6 @@
 package gov.va.api.health.patientgenerateddata;
 
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -15,13 +16,24 @@ import java.util.Optional;
 import org.junit.jupiter.api.Test;
 
 public class SandboxDeleteControllerTest {
+  @Test
+  void catchUnsetProperty() {
+    var observationRepo = mock(ObservationRepository.class);
+    var questionnaireRepo = mock(QuestionnaireRepository.class);
+    var questionnaireResponseRepo = mock(QuestionnaireResponseRepository.class);
+    assertThatExceptionOfType(IllegalStateException.class)
+        .isThrownBy(
+            () ->
+                new SandboxDeleteController(
+                    "unset", observationRepo, questionnaireRepo, questionnaireResponseRepo));
+  }
 
   SandboxDeleteController defaultMockedController() {
     var observationRepo = mock(ObservationRepository.class);
     var questionnaireRepo = mock(QuestionnaireRepository.class);
     var questionnaireResponseRepo = mock(QuestionnaireResponseRepository.class);
     return new SandboxDeleteController(
-        observationRepo, questionnaireRepo, questionnaireResponseRepo);
+        "true", observationRepo, questionnaireRepo, questionnaireResponseRepo);
   }
 
   @Test
@@ -50,7 +62,8 @@ public class SandboxDeleteControllerTest {
     when(observationRepo.findById("x"))
         .thenReturn(Optional.of(ObservationEntity.builder().id("x").build()));
     var controller =
-        new SandboxDeleteController(observationRepo, questionnaireRepo, questionnaireResponseRepo);
+        new SandboxDeleteController(
+            "true", observationRepo, questionnaireRepo, questionnaireResponseRepo);
     controller.deleteObservation("x");
     verify(observationRepo).delete(any(ObservationEntity.class));
   }
@@ -63,7 +76,8 @@ public class SandboxDeleteControllerTest {
     when(questionnaireRepo.findById("x"))
         .thenReturn(Optional.of(QuestionnaireEntity.builder().id("x").build()));
     var controller =
-        new SandboxDeleteController(observationRepo, questionnaireRepo, questionnaireResponseRepo);
+        new SandboxDeleteController(
+            "true", observationRepo, questionnaireRepo, questionnaireResponseRepo);
     controller.deleteQuestionnaire("x");
     verify(questionnaireRepo).delete(any(QuestionnaireEntity.class));
   }
@@ -76,7 +90,8 @@ public class SandboxDeleteControllerTest {
     when(questionnaireResponseRepo.findById("x"))
         .thenReturn(Optional.of(QuestionnaireResponseEntity.builder().id("x").build()));
     var controller =
-        new SandboxDeleteController(observationRepo, questionnaireRepo, questionnaireResponseRepo);
+        new SandboxDeleteController(
+            "true", observationRepo, questionnaireRepo, questionnaireResponseRepo);
     controller.deleteQuestionnaireResponse("x");
     verify(questionnaireResponseRepo).delete(any(QuestionnaireResponseEntity.class));
   }

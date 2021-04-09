@@ -4,6 +4,7 @@ import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.doDelete
 import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.doGet;
 import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.doPost;
 import static gov.va.api.health.sentinel.EnvironmentAssumptions.assumeEnvironmentIn;
+import static gov.va.api.health.sentinel.EnvironmentAssumptions.assumeEnvironmentNotIn;
 
 import gov.va.api.health.r4.api.datatypes.CodeableConcept;
 import gov.va.api.health.r4.api.datatypes.Coding;
@@ -13,16 +14,9 @@ import gov.va.api.health.r4.api.resources.Questionnaire;
 import gov.va.api.health.r4.api.resources.QuestionnaireResponse;
 import gov.va.api.health.sentinel.Environment;
 import java.util.List;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 public class SandboxDeleteIT {
-  @BeforeAll
-  static void assumeEnvironment() {
-    // Do not run in SLA'd environments
-    assumeEnvironmentIn(
-        Environment.LOCAL, Environment.QA, Environment.STAGING, Environment.STAGING_LAB);
-  }
 
   private static Observation observation() {
     return Observation.builder()
@@ -57,7 +51,14 @@ public class SandboxDeleteIT {
   }
 
   @Test
+  void deleteDisallowed() {
+    assumeEnvironmentIn(Environment.STAGING, Environment.PROD);
+    doDelete("Observation/5555555", "delete disallowed", 404);
+  }
+
+  @Test
   void deleteObservation() {
+    assumeEnvironmentNotIn(Environment.STAGING, Environment.PROD);
     Observation observation = observation();
     var response = doPost("Observation", observation, "create resource", 201);
     Observation observationWritten = response.expectValid(Observation.class);
@@ -69,6 +70,7 @@ public class SandboxDeleteIT {
 
   @Test
   void deleteQuestionnaire() {
+    assumeEnvironmentNotIn(Environment.STAGING, Environment.PROD);
     Questionnaire questionnaire = questionnaire();
     var response = doPost("Questionnaire", questionnaire, "create resource", 201);
     Questionnaire questionnaireWritten = response.expectValid(Questionnaire.class);
@@ -80,6 +82,7 @@ public class SandboxDeleteIT {
 
   @Test
   void deleteQuestionnaireResponse() {
+    assumeEnvironmentNotIn(Environment.STAGING, Environment.PROD);
     QuestionnaireResponse questionnaireResponse = questionnaireResponse();
     var response = doPost("QuestionnaireResponse", questionnaireResponse, "create resource", 201);
     QuestionnaireResponse questionnaireResponseWritten =
