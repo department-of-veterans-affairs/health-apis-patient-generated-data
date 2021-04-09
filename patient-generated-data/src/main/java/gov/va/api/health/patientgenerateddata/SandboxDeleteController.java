@@ -32,7 +32,7 @@ public class SandboxDeleteController {
       ObservationRepository observationRepository,
       QuestionnaireRepository questionnaireRepository,
       QuestionnaireResponseRepository questionnaireResponseRepository) {
-    checkState("true".equals(isSandboxEnabled) || "false".equals(isSandboxEnabled));
+    checkState("true".equalsIgnoreCase(isSandboxEnabled), "This class is currently disabled as per environment configuration");
     log.info("Sandbox Data Management Enabled: {}", isSandboxEnabled);
     this.observationRepository = observationRepository;
     this.questionnaireRepository = questionnaireRepository;
