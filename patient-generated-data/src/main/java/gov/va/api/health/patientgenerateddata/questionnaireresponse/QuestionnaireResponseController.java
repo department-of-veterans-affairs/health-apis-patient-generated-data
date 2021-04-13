@@ -102,7 +102,7 @@ public class QuestionnaireResponseController {
                 "QuestionnaireResponse", QuestionnaireResponseEntity.naturalOrder()))
         .mappings(
             Mappings.forEntity(QuestionnaireResponseEntity.class)
-                .csvList("_id", "id")
+                .value("_id", "id")
                 .add(
                     TokenListMapping.<QuestionnaireResponseEntity>builder()
                         .parameterName("_tag")
@@ -110,7 +110,7 @@ public class QuestionnaireResponseController {
                         .build())
                 .value("author", "author")
                 .dateAsInstant("authored", "authored")
-                .csvList("questionnaire", "questionnaire")
+                .value("questionnaire", "questionnaire")
                 .value("source", "source")
                 .value("subject", "subject")
                 .get())

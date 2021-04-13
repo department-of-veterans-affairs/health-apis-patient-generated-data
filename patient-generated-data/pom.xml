@@ -13,7 +13,7 @@
   <properties>
     <fhir-resources.version>6.0.9</fhir-resources.version>
     <swagger-maven-plugin.version>2.1.5</swagger-maven-plugin.version>
-    <vulcan.version>1.0.6</vulcan.version>
+    <vulcan.version>1.0.7</vulcan.version>
   </properties>
   <dependencies>
     <dependency>
