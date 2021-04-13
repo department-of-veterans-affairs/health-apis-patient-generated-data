@@ -11,7 +11,7 @@ compliant resources.
 The API Gateway handles authentication and rate limiting before traffic is received by Patient Generated Data.
 
 - **Kong** is responsible for token validation and SMART-on-FHIR OAuth scope enforcement
-- **Patient Generated Data** processes consumer requests for the `/Patient/<<id>>/$health-cards-issue` endpoint
+- **Patient Generated Data** the underlying application that processes the requests
 - **Database** is an AWS database instance for persistence
 
 ## Modules
