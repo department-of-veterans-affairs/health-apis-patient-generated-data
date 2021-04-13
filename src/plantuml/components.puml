@@ -1,0 +1,22 @@
+@startuml
+
+skinparam {
+  handwritten true
+  shadowing false
+  monochrome true
+}
+
+actor Consumer
+cloud "API Gateway\nLoad Balancer\nIngress Controller" as ALB
+rectangle "Token Validation Service" as TV
+rectangle Kong as KONG
+rectangle "Patient Generated Data" as PGD
+database "Database" as DB
+
+Consumer -> ALB
+ALB -> KONG
+KONG --> PGD
+PGD --> DB
+KONG -> TV
+
+@enduml
