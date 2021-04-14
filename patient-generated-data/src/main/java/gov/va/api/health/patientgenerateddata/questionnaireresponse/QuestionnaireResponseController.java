@@ -102,7 +102,7 @@ public class QuestionnaireResponseController {
                 "QuestionnaireResponse", QuestionnaireResponseEntity.naturalOrder()))
         .mappings(
             Mappings.forEntity(QuestionnaireResponseEntity.class)
-                .csvList("_id", "id")
+                .value("_id", "id")
                 .add(
                     TokenListMapping.<QuestionnaireResponseEntity>builder()
                         .parameterName("_tag")
@@ -110,7 +110,7 @@ public class QuestionnaireResponseController {
                         .build())
                 .value("author", "author")
                 .dateAsInstant("authored", "authored")
-                .csvList("questionnaire", "questionnaire")
+                .value("questionnaire", "questionnaire")
                 .value("source", "source")
                 .value("subject", "subject")
                 .get())
@@ -190,8 +190,10 @@ public class QuestionnaireResponseController {
       @PathVariable("id") String id,
       @Valid @RequestBody QuestionnaireResponse questionnaireResponse) {
     checkState(id.equals(questionnaireResponse.id()), "%s != %s", id, questionnaireResponse.id());
-    Optional<QuestionnaireResponseEntity> maybeEntity = repository.findById(id);
-    QuestionnaireResponseEntity entity = maybeEntity.orElseThrow(() -> new Exceptions.NotFound(id));
+    Optional<QuestionnaireResponseEntity> maybeEntity =
+        repository.findById(questionnaireResponse.id());
+    QuestionnaireResponseEntity entity =
+        maybeEntity.orElseThrow(() -> new Exceptions.NotFound(questionnaireResponse.id()));
     entity = populate(questionnaireResponse, entity);
     repository.save(entity);
     return ResponseEntity.ok(questionnaireResponse);

@@ -44,7 +44,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(
     value = "/r4/Questionnaire",
     produces = {"application/json", "application/fhir+json"})
-@AllArgsConstructor(onConstructor = @__({@Autowired}))
+@AllArgsConstructor(onConstructor_ = @Autowired)
 public class QuestionnaireController {
   private static final ObjectMapper MAPPER = JacksonMapperConfig.createMapper();
 
@@ -82,7 +82,7 @@ public class QuestionnaireController {
             linkProperties.pagingConfiguration("Questionnaire", QuestionnaireEntity.naturalOrder()))
         .mappings(
             Mappings.forEntity(QuestionnaireEntity.class)
-                .csvList("_id", "id")
+                .value("_id", "id")
                 .add(
                     CompositeMapping.<QuestionnaireEntity>builder()
                         .parameterName("context-type-value")
@@ -151,8 +151,9 @@ public class QuestionnaireController {
       @PathVariable("id") String id, @Valid @RequestBody Questionnaire questionnaire) {
     String payload = MAPPER.writeValueAsString(questionnaire);
     checkState(id.equals(questionnaire.id()), "%s != %s", id, questionnaire.id());
-    Optional<QuestionnaireEntity> maybeEntity = repository.findById(id);
-    QuestionnaireEntity entity = maybeEntity.orElseThrow(() -> new Exceptions.NotFound(id));
+    Optional<QuestionnaireEntity> maybeEntity = repository.findById(questionnaire.id());
+    QuestionnaireEntity entity =
+        maybeEntity.orElseThrow(() -> new Exceptions.NotFound(questionnaire.id()));
     entity = populate(questionnaire, entity, payload);
     repository.save(entity);
     return ResponseEntity.ok(questionnaire);

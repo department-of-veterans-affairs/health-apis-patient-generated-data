@@ -8,10 +8,10 @@
     <relativePath/>
   </parent>
   <artifactId>patient-generated-data-tests</artifactId>
-  <version>0.0.90-SNAPSHOT</version>
+  <version>0.0.98-SNAPSHOT</version>
   <packaging>jar</packaging>
   <properties>
-    <fhir-resources.version>6.0.6</fhir-resources.version>
+    <fhir-resources.version>6.0.9</fhir-resources.version>
     <sentinel.skipLaunch>false</sentinel.skipLaunch>
   </properties>
   <dependencies>
@@ -93,6 +93,7 @@
                 <argument>-Dlogging.level.root=INFO</argument>
                 <argument>-Dpublic-r4-base-path=r4</argument>
                 <argument>-Dpublic-url=http://localhost:8095</argument>
+                <argument>-Dsandbox-data-management.enabled=true</argument>
                 <argument>-Dspring.datasource.driver-class-name=org.h2.Driver</argument>
                 <argument>-Dspring.datasource.password=sa</argument>
                 <argument>-Dspring.datasource.url=jdbc:h2:${project.basedir}/../patient-generated-data-synthetic/target/pgd-db</argument>

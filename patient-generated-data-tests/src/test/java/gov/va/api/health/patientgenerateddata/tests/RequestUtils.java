@@ -22,6 +22,31 @@ public class RequestUtils {
 
   private static final String ACCESS_TOKEN = System.getProperty("access-token", "unset");
 
+  @SneakyThrows
+  public static ExpectedResponse doDelete(
+      String request, String description, Integer expectedStatus) {
+    SystemDefinitions.Service svc = systemDefinition().sandboxDataR4();
+    RequestSpecification spec =
+        RestAssured.given()
+            .baseUri(svc.url())
+            .port(svc.port())
+            .relaxedHTTPSValidation()
+            .header("Content-Type", "application/json");
+    log.info(
+        "Expect {} DELETE '{}' is status code ({})",
+        svc.urlWithApiPath() + request,
+        description,
+        expectedStatus);
+    ExpectedResponse response =
+        ExpectedResponse.of(spec.request(Method.DELETE, svc.urlWithApiPath() + request))
+            .logAction(logAllWithTruncatedBody(2000))
+            .mapper(MAPPER);
+    if (expectedStatus != null) {
+      response.expect(expectedStatus);
+    }
+    return response;
+  }
+
   public static ExpectedResponse doGet(
       String acceptHeader, String request, Integer expectedStatus) {
     SystemDefinitions.Service svc = systemDefinition().r4();
@@ -33,7 +58,7 @@ public class RequestUtils {
             .header("Authorization", "Bearer " + ACCESS_TOKEN);
     log.info(
         "Expect {} with accept header ({}) is status code ({})",
-        svc.apiPath() + request,
+        svc.urlWithApiPath() + request,
         acceptHeader,
         expectedStatus);
     if (acceptHeader != null) {
@@ -68,7 +93,7 @@ public class RequestUtils {
             .body(MAPPER.writeValueAsString(payload));
     log.info(
         "Expect {} POST '{}' is status code ({})",
-        svc.apiPath() + INTERNAL_R4_PATH + request,
+        svc.urlWithApiPath() + INTERNAL_R4_PATH + request,
         description,
         expectedStatus);
     ExpectedResponse response =
@@ -96,7 +121,7 @@ public class RequestUtils {
             .body(MAPPER.writeValueAsString(payload));
     log.info(
         "Expect {} POST '{}' is status code ({})",
-        svc.apiPath() + request,
+        svc.urlWithApiPath() + request,
         description,
         expectedStatus);
     ExpectedResponse response =
@@ -123,7 +148,7 @@ public class RequestUtils {
             .body(MAPPER.writeValueAsString(payload));
     log.info(
         "Expect {} PUT '{}' is status code ({})",
-        svc.apiPath() + request,
+        svc.urlWithApiPath() + request,
         description,
         expectedStatus);
     ExpectedResponse response =
