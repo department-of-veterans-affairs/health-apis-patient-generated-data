@@ -4,6 +4,10 @@ A [Spring Boot](https://spring.io/projects/spring-boot) application that provide
 basic read and write operations for [FHIR R4](https://hl7.org/fhir/R4/)
 compliant resources.
 
+For details about available endpoints and interactions, refer to the
+OpenAPI documentation on the
+[Lighthouse Developer Portal](https://sandbox-api.va.gov/services/pgd/v0/r4/openapi.json).
+
 ## System Components
 
 ![components](src/plantuml/components.png)
