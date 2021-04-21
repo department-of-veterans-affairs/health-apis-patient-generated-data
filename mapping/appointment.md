@@ -224,10 +224,10 @@ Appointment has reference to a participant location (clinic), which in turn refe
 
 ### Example Searches
 
-Search `Location` by facility:
+Search `Organization` by facility:
 
 ```
-Location?identifier=vha_688
+Organization?identifier=vha_688
 ```
 
 Search `Location` by clinic:
