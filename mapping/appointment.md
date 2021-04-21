@@ -236,6 +236,14 @@ Search `Location` by clinic:
 Location?identifier=vha_688_3343
 ```
 
+Search `Location` by facility:
+
+```
+Organization?identifier=vha_688
+extract organization ID from bundle
+Location?organization=I2-ORGID
+```
+
 Search `Appointment` by patient and start time:
 
 ```
