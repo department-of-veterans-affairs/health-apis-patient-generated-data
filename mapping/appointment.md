@@ -45,21 +45,6 @@ Appointment has reference to a participant location (clinic), which in turn refe
   "id" : "I2-2FPCKUIXVR7RJLLG34XVWGZERM000000",
   "identifier" : [
     {
-      "use" : "usual",
-      "type" : {
-        "coding" : [
-          {
-            "system" : "http://terminology.hl7.org/CodeSystem/v2-0203",
-            "code" : "FI",
-            "display" : "Facility ID"
-          }
-        ],
-        "text" : "Facility ID"
-      },
-      "system" : "https://api.va.gov/services/fhir/v0/r4/NamingSystem/va-facility-identifier",
-      "value" : "vha_688"
-    },
-    {
       "system" : "https://api.va.gov/services/fhir/v0/r4/NamingSystem/va-clinic-identifier",
       "value" : "vha_688_3485"
     }
