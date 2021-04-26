@@ -8,10 +8,10 @@
     <relativePath/>
   </parent>
   <artifactId>patient-generated-data</artifactId>
-  <version>0.0.98-SNAPSHOT</version>
+  <version>0.0.98</version>
   <packaging>jar</packaging>
   <properties>
-    <fhir-resources.version>6.0.9</fhir-resources.version>
+    <fhir-resources.version>6.0.10</fhir-resources.version>
     <swagger-maven-plugin.version>2.1.5</swagger-maven-plugin.version>
     <vulcan.version>1.0.7</vulcan.version>
   </properties>
