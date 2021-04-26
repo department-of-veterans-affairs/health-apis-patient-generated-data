@@ -12,14 +12,14 @@ Use `less config/application-dev.properties` to verify application properties fo
 
 ### Build
 
-To run full build:
+Full build:
 
 `mvn clean install`
 
-To run build without additional formatting, code coverage enforcement, static code analysis, integration tests, etc., disable the `standard` profile:
+Build without additional formatting, code coverage enforcement, static code analysis, integration tests, etc:
 
 `mvn -P'!standard' package`
 
-Start Java app:
+Start application:
 
 `java -Dspring.profiles.active=dev -jar target/patient-generated-data-${VERSION}.jar`
