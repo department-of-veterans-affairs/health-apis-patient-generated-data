@@ -20,6 +20,7 @@ import gov.va.api.lighthouse.vulcan.Vulcan;
 import gov.va.api.lighthouse.vulcan.VulcanConfiguration;
 import gov.va.api.lighthouse.vulcan.mappings.Mappings;
 import java.net.URI;
+import java.time.Instant;
 import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -68,6 +69,7 @@ public class QuestionnaireController {
         questionnaire.id());
     entity.payload(payload);
     entity.contextTypeValue(CompositeMapping.useContextValueJoin(questionnaire));
+    entity.lastUpdated(Instant.now());
     return entity;
   }
 

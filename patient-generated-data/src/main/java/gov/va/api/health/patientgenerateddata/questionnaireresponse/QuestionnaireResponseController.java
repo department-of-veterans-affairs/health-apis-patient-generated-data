@@ -84,6 +84,7 @@ public class QuestionnaireResponseController {
     entity.subject(subject);
     entity.metaTag(metaTag);
     entity.source(source);
+    entity.lastUpdated(Instant.now());
     return entity;
   }
 
