@@ -14,10 +14,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.api.health.patientgenerateddata.Exceptions;
 import gov.va.api.health.patientgenerateddata.JacksonMapperConfig;
 import gov.va.api.health.patientgenerateddata.LinkProperties;
+import gov.va.api.health.r4.api.elements.Meta;
 import gov.va.api.health.r4.api.elements.Reference;
 import gov.va.api.health.r4.api.resources.QuestionnaireResponse;
 import gov.va.api.lighthouse.vulcan.InvalidRequest;
 import java.net.URI;
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import lombok.SneakyThrows;
@@ -42,6 +44,17 @@ public class QuestionnaireResponseControllerTest {
           .r4BasePath("r4")
           .build();
 
+  private static QuestionnaireResponse questionnaireResponse() {
+    return QuestionnaireResponse.builder().status(QuestionnaireResponse.Status.completed).build();
+  }
+
+  private static QuestionnaireResponse withAddedFields(
+      QuestionnaireResponse qr, String id, Instant lastUpdated) {
+    qr.id(id);
+    qr.meta(Meta.builder().lastUpdated(lastUpdated.toString()).build());
+    return qr;
+  }
+
   private QuestionnaireResponseController controller() {
     QuestionnaireResponseRepository repo = mock(QuestionnaireResponseRepository.class);
     return controller(repo);
@@ -54,18 +67,19 @@ public class QuestionnaireResponseControllerTest {
   @Test
   @SneakyThrows
   void create() {
+    Instant now = Instant.parse("2021-01-01T01:00:00.001Z");
     LinkProperties pageLinks =
         LinkProperties.builder().baseUrl("http://foo.com").r4BasePath("r4").build();
     QuestionnaireResponseRepository repo = mock(QuestionnaireResponseRepository.class);
     QuestionnaireResponseController controller =
         new QuestionnaireResponseController(pageLinks, repo);
     var questionnaireResponse = questionnaireResponse();
-    var questionnaireResponseWithId = questionnaireResponse().id("123");
-    var persisted = MAPPER.writeValueAsString(questionnaireResponseWithId);
-    assertThat(controller.create("123", questionnaireResponse))
+    var persistedQuestionnaireResponse = withAddedFields(questionnaireResponse(), "123", now);
+    var persisted = MAPPER.writeValueAsString(persistedQuestionnaireResponse);
+    assertThat(controller.create("123", now, questionnaireResponse))
         .isEqualTo(
             ResponseEntity.created(URI.create("http://foo.com/r4/QuestionnaireResponse/123"))
-                .body(questionnaireResponseWithId));
+                .body(persistedQuestionnaireResponse));
     verify(repo, times(1))
         .save(QuestionnaireResponseEntity.builder().id("123").payload(persisted).build());
   }
@@ -95,10 +109,6 @@ public class QuestionnaireResponseControllerTest {
     assertThatExceptionOfType(InvalidRequest.class).isThrownBy(() -> controller().search(r));
   }
 
-  private QuestionnaireResponse questionnaireResponse() {
-    return QuestionnaireResponse.builder().status(QuestionnaireResponse.Status.completed).build();
-  }
-
   @Test
   @SneakyThrows
   void read() {
@@ -122,17 +132,28 @@ public class QuestionnaireResponseControllerTest {
   @Test
   @SneakyThrows
   void update_existing() {
+    Instant now = Instant.parse("2021-01-01T01:00:00.001Z");
     QuestionnaireResponseRepository repo = mock(QuestionnaireResponseRepository.class);
-    Reference authorRef = Reference.builder().reference("1011537977V693883").build();
     QuestionnaireResponse questionnaireResponse =
-        QuestionnaireResponse.builder().id("x").author(authorRef).build();
+        QuestionnaireResponse.builder()
+            .id("x")
+            .author(Reference.builder().reference("1011537977V693883").build())
+            .build();
     String payload = MAPPER.writeValueAsString(questionnaireResponse);
     when(repo.findById("x"))
         .thenReturn(
             Optional.of(QuestionnaireResponseEntity.builder().id("x").payload(payload).build()));
+    QuestionnaireResponse expectedQr =
+        withAddedFields(
+            QuestionnaireResponse.builder()
+                .author(Reference.builder().reference("1011537977V693883").build())
+                .build(),
+            "x",
+            now);
     assertThat(
-            new QuestionnaireResponseController(pageLinks, repo).update("x", questionnaireResponse))
-        .isEqualTo(ResponseEntity.ok(questionnaireResponse));
+            new QuestionnaireResponseController(pageLinks, repo)
+                .update("x", now, questionnaireResponse))
+        .isEqualTo(ResponseEntity.ok(expectedQr));
     verify(repo, times(1))
         .save(QuestionnaireResponseEntity.builder().id("x").payload(payload).build());
   }
