@@ -14,6 +14,7 @@ class SystemDefinitions {
 
   private static Ids ids() {
     return Ids.builder()
+        .lastUpdated("2021-05-03T12:00:00Z")
         .observation("fc691a7f-a0f3-47b4-9d00-2786d055e8ba")
         .observationList(
             List.of("fc691a7f-a0f3-47b4-9d00-2786d055e8ba", "0b9d2e37-f84d-4f9e-9ba3-995772f368d3"))
@@ -187,6 +188,8 @@ class SystemDefinitions {
   @Value
   @Builder
   static final class Ids {
+    @NonNull String lastUpdated;
+
     @NonNull String observation;
 
     @NonNull List<String> observationList;

@@ -2,6 +2,7 @@
   "resourceType" : "Observation",
   "id" : "0b9d2e37-f84d-4f9e-9ba3-995772f368d3",
   "meta" : {
+    "lastUpdated" : "2021-05-03T12:00:00Z",
     "profile" : [
       "http://hl7.org/fhir/StructureDefinition/vitalsigns"
     ]

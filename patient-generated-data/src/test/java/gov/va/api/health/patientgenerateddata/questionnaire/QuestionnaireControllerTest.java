@@ -103,7 +103,7 @@ public class QuestionnaireControllerTest {
   }
 
   @ParameterizedTest
-  @ValueSource(strings = {"", "?_id=123&context-type-value=x$y"})
+  @ValueSource(strings = {"", "?_id=123&context-type-value=x$y", "?_id=123&_lastUpdated=gt2020"})
   void search_invalid(String query) {
     LinkProperties pageLinks =
         LinkProperties.builder()
@@ -119,7 +119,7 @@ public class QuestionnaireControllerTest {
   }
 
   @ParameterizedTest
-  @ValueSource(strings = {"?_id=1", "?context-type-value=x$y"})
+  @ValueSource(strings = {"?_id=1", "?_lastUpdated=gt2020", "?context-type-value=x$y"})
   void search_valid(String query) {
     LinkProperties pageLinks =
         LinkProperties.builder()

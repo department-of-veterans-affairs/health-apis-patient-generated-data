@@ -102,7 +102,8 @@ public class QuestionnaireResponseControllerTest {
   }
 
   @ParameterizedTest
-  @ValueSource(strings = {"", "?_id=123&authored=2000-01-01T00:00:00Z"})
+  @ValueSource(
+      strings = {"", "?_id=123&authored=2000-01-01T00:00:00Z", "?_id=123&_lastUpdated=gt2020"})
   @SneakyThrows
   void invalidRequests(String query) {
     var r = requestFromUri("http://fonzy.com/r4/QuestionnaireResponse" + query);
@@ -176,6 +177,7 @@ public class QuestionnaireResponseControllerTest {
   @ValueSource(
       strings = {
         "?_id=1",
+        "?_lastUpdated=gt2020",
         "?author=1011537977V693883",
         "?questionnaire=37953b72-961b-41ee-bd05-86c62bacc46b"
       })

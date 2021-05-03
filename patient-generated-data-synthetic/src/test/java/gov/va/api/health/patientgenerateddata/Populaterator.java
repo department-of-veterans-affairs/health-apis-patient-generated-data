@@ -108,7 +108,7 @@ public final class Populaterator {
         statement.setObject(1, observation.id());
         statement.setObject(2, MAPPER.writeValueAsString(observation));
         statement.setObject(3, 0);
-        statement.setTimestamp(4, timestamp(Instant.now()));
+        statement.setTimestamp(4, timestamp(observation.meta().lastUpdated()));
         statement.execute();
       }
     }
@@ -142,7 +142,7 @@ public final class Populaterator {
         statement.setObject(2, MAPPER.writeValueAsString(questionnaire));
         statement.setObject(3, 0);
         statement.setObject(4, CompositeMapping.useContextValueJoin(questionnaire));
-        statement.setTimestamp(5, timestamp(Instant.now()));
+        statement.setTimestamp(5, timestamp(questionnaire.meta().lastUpdated()));
         statement.execute();
       }
     }
@@ -176,7 +176,7 @@ public final class Populaterator {
         statement.setObject(7, TokenListMapping.metadataTagJoin(response));
         statement.setObject(8, ReferenceUtils.resourceId(response.questionnaire()));
         statement.setObject(9, ReferenceUtils.resourceId(response.source()));
-        statement.setTimestamp(10, timestamp(Instant.now()));
+        statement.setTimestamp(10, timestamp(response.meta().lastUpdated()));
         statement.execute();
       }
     }
@@ -199,6 +199,10 @@ public final class Populaterator {
         table,
         columns.stream().collect(joining(",")),
         IntStream.range(0, columns.size()).mapToObj(v -> "?").collect(joining(",")));
+  }
+
+  private static Timestamp timestamp(String value) {
+    return timestamp(ParseUtils.parseDateTime(value));
   }
 
   private static Timestamp timestamp(Instant instant) {

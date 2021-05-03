@@ -1,6 +1,9 @@
 {
   "resourceType" : "Observation",
   "id" : "fc691a7f-a0f3-47b4-9d00-2786d055e8ba",
+  "meta" : {
+    "lastUpdated" : "2021-05-03T12:00:00Z"
+  },
   "text" : {
     "status" : "generated",
     "div" : "<div><p><b>Generated Narrative with Details</b></p></div>"

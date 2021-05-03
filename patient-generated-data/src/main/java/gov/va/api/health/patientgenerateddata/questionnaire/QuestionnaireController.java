@@ -92,6 +92,7 @@ public class QuestionnaireController {
         .mappings(
             Mappings.forEntity(QuestionnaireEntity.class)
                 .value("_id", "id")
+                .dateAsInstant("_lastUpdated", "lastUpdated")
                 .add(
                     CompositeMapping.<QuestionnaireEntity>builder()
                         .parameterName("context-type-value")
@@ -99,8 +100,8 @@ public class QuestionnaireController {
                         .build())
                 .get())
         .defaultQuery(returnNothing())
-        .rule(atLeastOneParameterOf("_id", "context-type-value"))
-        .rule(ifParameter("_id").thenForbidParameters("context-type-value"))
+        .rule(atLeastOneParameterOf("_id", "_lastUpdated", "context-type-value"))
+        .rule(ifParameter("_id").thenForbidParameters("_lastUpdated", "context-type-value"))
         .build();
   }
 

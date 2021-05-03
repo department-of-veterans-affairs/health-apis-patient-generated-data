@@ -110,6 +110,7 @@ public class QuestionnaireResponseController {
         .mappings(
             Mappings.forEntity(QuestionnaireResponseEntity.class)
                 .value("_id", "id")
+                .dateAsInstant("_lastUpdated", "lastUpdated")
                 .add(
                     TokenListMapping.<QuestionnaireResponseEntity>builder()
                         .parameterName("_tag")
@@ -124,11 +125,24 @@ public class QuestionnaireResponseController {
         .defaultQuery(returnNothing())
         .rule(
             atLeastOneParameterOf(
-                "_id", "_tag", "author", "authored", "questionnaire", "source", "subject"))
+                "_id",
+                "_lastUpdated",
+                "_tag",
+                "author",
+                "authored",
+                "questionnaire",
+                "source",
+                "subject"))
         .rule(
             ifParameter("_id")
                 .thenForbidParameters(
-                    "_tag", "author", "authored", "questionnaire", "source", "subject"))
+                    "_lastUpdated",
+                    "_tag",
+                    "author",
+                    "authored",
+                    "questionnaire",
+                    "source",
+                    "subject"))
         .build();
   }
 

@@ -2,6 +2,7 @@ package gov.va.api.health.patientgenerateddata.observation;
 
 import static gov.va.api.health.patientgenerateddata.MockRequests.requestFromUri;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -15,6 +16,7 @@ import gov.va.api.health.patientgenerateddata.JacksonMapperConfig;
 import gov.va.api.health.patientgenerateddata.LinkProperties;
 import gov.va.api.health.r4.api.elements.Meta;
 import gov.va.api.health.r4.api.resources.Observation;
+import gov.va.api.lighthouse.vulcan.InvalidRequest;
 import java.net.URI;
 import java.time.Instant;
 import java.util.List;
@@ -56,6 +58,11 @@ public class ObservationControllerTest {
     return new ObservationController(pageLinks, repo);
   }
 
+  private ObservationController controller() {
+    ObservationRepository repo = mock(ObservationRepository.class);
+    return controller(repo);
+  }
+
   @Test
   @SneakyThrows
   void create() {
@@ -88,6 +95,13 @@ public class ObservationControllerTest {
   void initDirectFieldAccess() {
     new ObservationController(mock(LinkProperties.class), mock(ObservationRepository.class))
         .initDirectFieldAccess(mock(DataBinder.class));
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"", "?_id=123&_lastUpdated=gt2020"})
+  void invalidRequests(String query) {
+    var r = requestFromUri("http://fonzy.com/r4/Observation" + query);
+    assertThatExceptionOfType(InvalidRequest.class).isThrownBy(() -> controller().search(r));
   }
 
   @Test
@@ -138,7 +152,7 @@ public class ObservationControllerTest {
 
   @SneakyThrows
   @ParameterizedTest
-  @ValueSource(strings = "?_id=1")
+  @ValueSource(strings = {"?_id=1", "?_lastUpdated=gt2020"})
   void validSearch(String query) {
     ObservationRepository repo = mock(ObservationRepository.class);
     ObservationController controller = controller(repo);
