@@ -73,7 +73,12 @@ public interface ObservationApi {
               required = true,
               description =
                   "The logical ID of the resource. Once assigned, this value never changes.")
-          String id);
+          String id,
+      @Parameter(
+              in = ParameterIn.QUERY,
+              name = "_lastUpdated",
+              description = "The date when the record was last updated.")
+          String lastUpdated);
 
   @Operation(
       summary = "Observation Update",

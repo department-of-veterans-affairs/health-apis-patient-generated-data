@@ -14,9 +14,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.api.health.patientgenerateddata.Exceptions;
 import gov.va.api.health.patientgenerateddata.JacksonMapperConfig;
 import gov.va.api.health.patientgenerateddata.LinkProperties;
+import gov.va.api.health.r4.api.elements.Meta;
 import gov.va.api.health.r4.api.resources.Questionnaire;
 import gov.va.api.lighthouse.vulcan.InvalidRequest;
 import java.net.URI;
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import lombok.SneakyThrows;
@@ -33,34 +35,42 @@ import org.springframework.validation.DataBinder;
 public class QuestionnaireControllerTest {
   private static final ObjectMapper MAPPER = JacksonMapperConfig.createMapper();
 
-  private Questionnaire _questionnaire() {
+  private static Questionnaire questionnaire() {
     return Questionnaire.builder()
         .title("x")
         .status(Questionnaire.PublicationStatus.active)
         .build();
   }
 
+  private static Questionnaire withAddedFields(
+      Questionnaire questionnaire, String id, Instant lastUpdated) {
+    questionnaire.id(id);
+    questionnaire.meta(Meta.builder().lastUpdated(lastUpdated.toString()).build());
+    return questionnaire;
+  }
+
   @Test
   @SneakyThrows
   void create() {
+    Instant now = Instant.parse("2021-01-01T01:00:00.001Z");
     LinkProperties pageLinks =
         LinkProperties.builder().baseUrl("http://foo.com").r4BasePath("r4").build();
     QuestionnaireRepository repo = mock(QuestionnaireRepository.class);
     QuestionnaireController controller = new QuestionnaireController(pageLinks, repo);
-    var questionnaire = _questionnaire();
-    var questionnaireWithId = _questionnaire().id("123");
+    var questionnaire = questionnaire();
+    var persistedQuestionnaire = withAddedFields(questionnaire(), "123", now);
     var persisted = MAPPER.writeValueAsString(questionnaire);
-    assertThat(controller.create("123", questionnaire))
+    assertThat(controller.create("123", now, questionnaire))
         .isEqualTo(
             ResponseEntity.created(URI.create("http://foo.com/r4/Questionnaire/" + 123))
-                .body(questionnaireWithId));
+                .body(persistedQuestionnaire));
     verify(repo, times(1)).save(QuestionnaireEntity.builder().id("123").payload(persisted).build());
   }
 
   @Test
   @SneakyThrows
   void create_invalid() {
-    var questionnaire = _questionnaire().id("123");
+    var questionnaire = questionnaire().id("123");
     var repo = mock(QuestionnaireRepository.class);
     var pageLinks = mock(LinkProperties.class);
     var controller = new QuestionnaireController(pageLinks, repo);
@@ -93,7 +103,7 @@ public class QuestionnaireControllerTest {
   }
 
   @ParameterizedTest
-  @ValueSource(strings = {"", "?_id=123&context-type-value=x$y"})
+  @ValueSource(strings = {"", "?_id=123&context-type-value=x$y", "?_id=123&_lastUpdated=gt2020"})
   void search_invalid(String query) {
     LinkProperties pageLinks =
         LinkProperties.builder()
@@ -109,7 +119,7 @@ public class QuestionnaireControllerTest {
   }
 
   @ParameterizedTest
-  @ValueSource(strings = {"?_id=1", "?context-type-value=x$y"})
+  @ValueSource(strings = {"?_id=1", "?_lastUpdated=gt2020", "?context-type-value=x$y"})
   void search_valid(String query) {
     LinkProperties pageLinks =
         LinkProperties.builder()
@@ -136,15 +146,18 @@ public class QuestionnaireControllerTest {
   @Test
   @SneakyThrows
   void update_existing() {
+    Instant now = Instant.parse("2021-01-01T01:00:00.001Z");
     QuestionnaireRepository repo = mock(QuestionnaireRepository.class);
-    Questionnaire questionnaire = Questionnaire.builder().id("x").build();
+    Questionnaire questionnaire = questionnaire();
+    questionnaire.id("x");
+    Questionnaire persistedQuestionnaire = withAddedFields(questionnaire(), "x", now);
     String payload = MAPPER.writeValueAsString(questionnaire);
     when(repo.findById("x"))
         .thenReturn(Optional.of(QuestionnaireEntity.builder().id("x").payload(payload).build()));
     assertThat(
             new QuestionnaireController(mock(LinkProperties.class), repo)
-                .update("x", questionnaire))
-        .isEqualTo(ResponseEntity.ok(questionnaire));
+                .update("x", now, questionnaire))
+        .isEqualTo(ResponseEntity.ok(persistedQuestionnaire));
     verify(repo, times(1)).save(QuestionnaireEntity.builder().id("x").payload(payload).build());
   }
 

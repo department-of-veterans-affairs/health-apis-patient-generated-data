@@ -102,11 +102,13 @@ public final class Populaterator {
   private static void observation(@NonNull Connection connection) {
     for (File f : new File(baseDir() + "/src/test/resources/observation").listFiles()) {
       Observation observation = readFile(Observation.class, f);
-      String sqlInsert = sqlInsert("app.Observation", List.of("id", "payload", "version"));
+      String sqlInsert =
+          sqlInsert("app.Observation", List.of("id", "payload", "version", "lastUpdated"));
       try (PreparedStatement statement = connection.prepareStatement(sqlInsert)) {
         statement.setObject(1, observation.id());
         statement.setObject(2, MAPPER.writeValueAsString(observation));
         statement.setObject(3, 0);
+        statement.setTimestamp(4, timestamp(Controllers.nowMillis()));
         statement.execute();
       }
     }
@@ -132,12 +134,15 @@ public final class Populaterator {
     for (File f : new File(baseDir() + "/src/test/resources/questionnaire").listFiles()) {
       Questionnaire questionnaire = readFile(Questionnaire.class, f);
       String sqlInsert =
-          sqlInsert("app.Questionnaire", List.of("id", "payload", "version", "contextTypeValue"));
+          sqlInsert(
+              "app.Questionnaire",
+              List.of("id", "payload", "version", "contextTypeValue", "lastUpdated"));
       try (PreparedStatement statement = connection.prepareStatement(sqlInsert)) {
         statement.setObject(1, questionnaire.id());
         statement.setObject(2, MAPPER.writeValueAsString(questionnaire));
         statement.setObject(3, 0);
         statement.setObject(4, CompositeMapping.useContextValueJoin(questionnaire));
+        statement.setTimestamp(5, timestamp(Controllers.nowMillis()));
         statement.execute();
       }
     }
@@ -159,7 +164,8 @@ public final class Populaterator {
                   "subject",
                   "metaTag",
                   "questionnaire",
-                  "source"));
+                  "source",
+                  "lastUpdated"));
       try (PreparedStatement statement = connection.prepareStatement(sqlInsert)) {
         statement.setObject(1, response.id());
         statement.setObject(2, MAPPER.writeValueAsString(response));
@@ -170,6 +176,7 @@ public final class Populaterator {
         statement.setObject(7, TokenListMapping.metadataTagJoin(response));
         statement.setObject(8, ReferenceUtils.resourceId(response.questionnaire()));
         statement.setObject(9, ReferenceUtils.resourceId(response.source()));
+        statement.setTimestamp(10, timestamp(Controllers.nowMillis()));
         statement.execute();
       }
     }
@@ -192,6 +199,10 @@ public final class Populaterator {
         table,
         columns.stream().collect(joining(",")),
         IntStream.range(0, columns.size()).mapToObj(v -> "?").collect(joining(",")));
+  }
+
+  private static Timestamp timestamp(String value) {
+    return timestamp(ParseUtils.parseDateTime(value));
   }
 
   private static Timestamp timestamp(Instant instant) {

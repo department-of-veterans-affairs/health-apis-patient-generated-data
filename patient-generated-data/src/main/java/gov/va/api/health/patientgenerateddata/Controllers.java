@@ -1,7 +1,11 @@
 package gov.va.api.health.patientgenerateddata;
 
 import static com.google.common.base.Preconditions.checkState;
+import static java.time.temporal.ChronoUnit.MILLIS;
 
+import gov.va.api.health.r4.api.elements.Meta;
+import java.time.Instant;
+import java.util.Optional;
 import java.util.UUID;
 import lombok.NonNull;
 import lombok.SneakyThrows;
@@ -32,5 +36,27 @@ public class Controllers {
   /** Generate random ID. */
   public static String generateRandomId() {
     return UUID.randomUUID().toString();
+  }
+
+  /** Find and parse lastUpdated from Meta object. */
+  public static Optional<Instant> lastUpdatedFromMeta(Meta meta) {
+    if (meta == null || meta.lastUpdated() == null) {
+      return Optional.empty();
+    }
+    return Optional.ofNullable(ParseUtils.parseDateTime(meta.lastUpdated()));
+  }
+
+  /** Publishes lastUpdated in Meta. */
+  public static Meta metaWithLastUpdated(Meta meta, Instant lastUpdated) {
+    if (meta == null) {
+      meta = Meta.builder().build();
+    }
+    meta.lastUpdated(lastUpdated.toString());
+    return meta;
+  }
+
+  /** Current Instant truncated to milliseconds. */
+  public static Instant nowMillis() {
+    return Instant.now().truncatedTo(MILLIS);
   }
 }

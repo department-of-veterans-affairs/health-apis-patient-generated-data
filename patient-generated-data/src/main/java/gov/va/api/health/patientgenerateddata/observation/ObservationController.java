@@ -3,7 +3,11 @@ package gov.va.api.health.patientgenerateddata.observation;
 import static com.google.common.base.Preconditions.checkState;
 import static gov.va.api.health.patientgenerateddata.Controllers.checkRequestState;
 import static gov.va.api.health.patientgenerateddata.Controllers.generateRandomId;
+import static gov.va.api.health.patientgenerateddata.Controllers.lastUpdatedFromMeta;
+import static gov.va.api.health.patientgenerateddata.Controllers.metaWithLastUpdated;
+import static gov.va.api.health.patientgenerateddata.Controllers.nowMillis;
 import static gov.va.api.lighthouse.vulcan.Rules.atLeastOneParameterOf;
+import static gov.va.api.lighthouse.vulcan.Rules.ifParameter;
 import static gov.va.api.lighthouse.vulcan.Vulcan.returnNothing;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 
@@ -18,6 +22,7 @@ import gov.va.api.lighthouse.vulcan.Vulcan;
 import gov.va.api.lighthouse.vulcan.VulcanConfiguration;
 import gov.va.api.lighthouse.vulcan.mappings.Mappings;
 import java.net.URI;
+import java.time.Instant;
 import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -63,6 +68,12 @@ public class ObservationController {
         entity.id(),
         observation.id());
     entity.payload(payload);
+
+    Optional<Instant> maybeLastUpdated = lastUpdatedFromMeta(observation.meta());
+    if (maybeLastUpdated.isPresent()) {
+      entity.lastUpdated(maybeLastUpdated.get());
+    }
+
     return entity;
   }
 
@@ -75,20 +86,26 @@ public class ObservationController {
   private VulcanConfiguration<ObservationEntity> configuration() {
     return VulcanConfiguration.forEntity(ObservationEntity.class)
         .paging(linkProperties.pagingConfiguration("Observation", ObservationEntity.naturalOrder()))
-        .mappings(Mappings.forEntity(ObservationEntity.class).value("_id", "id").get())
+        .mappings(
+            Mappings.forEntity(ObservationEntity.class)
+                .value("_id", "id")
+                .dateAsInstant("_lastUpdated", "lastUpdated")
+                .get())
         .defaultQuery(returnNothing())
-        .rule(atLeastOneParameterOf("_id"))
+        .rule(atLeastOneParameterOf("_id", "_lastUpdated"))
+        .rule(ifParameter("_id").thenForbidParameters("_lastUpdated"))
         .build();
   }
 
   @PostMapping
   ResponseEntity<Observation> create(@Valid @RequestBody Observation observation) {
-    return create(generateRandomId(), observation);
+    return create(generateRandomId(), nowMillis(), observation);
   }
 
-  ResponseEntity<Observation> create(String id, Observation observation) {
+  ResponseEntity<Observation> create(String id, Instant now, Observation observation) {
     checkRequestState(isEmpty(observation.id()), "ID must be empty, found %s", observation.id());
     observation.id(id);
+    observation.meta(metaWithLastUpdated(observation.meta(), now));
     ObservationEntity entity = toEntity(observation);
     repository.save(entity);
     return ResponseEntity.created(URI.create(linkProperties.r4Url() + "/Observation/" + id))
@@ -128,12 +145,16 @@ public class ObservationController {
         .build();
   }
 
-  @SneakyThrows
   @PutMapping(value = "/{id}")
   @Loggable(arguments = false)
   ResponseEntity<Observation> update(
       @PathVariable("id") String id, @Valid @RequestBody Observation observation) {
+    return update(id, nowMillis(), observation);
+  }
+
+  ResponseEntity<Observation> update(String id, Instant now, Observation observation) {
     checkState(id.equals(observation.id()), "%s != %s", id, observation.id());
+    observation.meta(metaWithLastUpdated(observation.meta(), now));
     Optional<ObservationEntity> maybeEntity = repository.findById(observation.id());
     ObservationEntity entity =
         maybeEntity.orElseThrow(() -> new Exceptions.NotFound(observation.id()));

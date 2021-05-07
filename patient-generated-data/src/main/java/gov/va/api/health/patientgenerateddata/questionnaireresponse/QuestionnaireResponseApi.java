@@ -112,6 +112,11 @@ public interface QuestionnaireResponseApi {
           String id,
       @Parameter(
               in = ParameterIn.QUERY,
+              name = "_lastUpdated",
+              description = "The date when the record was last updated.")
+          String lastUpdated,
+      @Parameter(
+              in = ParameterIn.QUERY,
               name = "author",
               description = "The person or entity who received and recorded the answers.")
           String author,

@@ -297,3 +297,35 @@ databaseChangeLog:
         - dropTable:
             tableName: Patient
             schemaName: app
+
+  - changeSet:
+      id: 15
+      author: pteracuda
+      changes:
+        - addColumn:
+            tableName: Observation
+            schemaName: app
+            columns:
+              - column:
+                  name: lastUpdated
+                  type: datetime2
+                  constraints:
+                    - nullable: true
+        - addColumn:
+            tableName: Questionnaire
+            schemaName: app
+            columns:
+              - column:
+                  name: lastUpdated
+                  type: datetime2
+                  constraints:
+                    - nullable: true
+        - addColumn:
+            tableName: QuestionnaireResponse
+            schemaName: app
+            columns:
+              - column:
+                  name: lastUpdated
+                  type: datetime2
+                  constraints:
+                    - nullable: true

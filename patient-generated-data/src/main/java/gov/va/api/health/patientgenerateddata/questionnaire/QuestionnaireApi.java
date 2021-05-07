@@ -112,6 +112,11 @@ public interface QuestionnaireApi {
           String id,
       @Parameter(
               in = ParameterIn.QUERY,
+              name = "_lastUpdated",
+              description = "The date when the record was last updated.")
+          String lastUpdated,
+      @Parameter(
+              in = ParameterIn.QUERY,
               name = "context-type-value",
               description = "A use-context type and value assigned to the questionnaire.")
           String author,

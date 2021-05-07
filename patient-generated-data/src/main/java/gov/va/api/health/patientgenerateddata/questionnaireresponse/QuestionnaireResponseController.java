@@ -3,6 +3,9 @@ package gov.va.api.health.patientgenerateddata.questionnaireresponse;
 import static com.google.common.base.Preconditions.checkState;
 import static gov.va.api.health.patientgenerateddata.Controllers.checkRequestState;
 import static gov.va.api.health.patientgenerateddata.Controllers.generateRandomId;
+import static gov.va.api.health.patientgenerateddata.Controllers.lastUpdatedFromMeta;
+import static gov.va.api.health.patientgenerateddata.Controllers.metaWithLastUpdated;
+import static gov.va.api.health.patientgenerateddata.Controllers.nowMillis;
 import static gov.va.api.lighthouse.vulcan.Rules.atLeastOneParameterOf;
 import static gov.va.api.lighthouse.vulcan.Rules.ifParameter;
 import static gov.va.api.lighthouse.vulcan.Vulcan.returnNothing;
@@ -84,6 +87,10 @@ public class QuestionnaireResponseController {
     entity.subject(subject);
     entity.metaTag(metaTag);
     entity.source(source);
+    Optional<Instant> maybeLastUpdated = lastUpdatedFromMeta(questionnaireResponse.meta());
+    if (maybeLastUpdated.isPresent()) {
+      entity.lastUpdated(maybeLastUpdated.get());
+    }
     return entity;
   }
 
@@ -103,6 +110,7 @@ public class QuestionnaireResponseController {
         .mappings(
             Mappings.forEntity(QuestionnaireResponseEntity.class)
                 .value("_id", "id")
+                .dateAsInstant("_lastUpdated", "lastUpdated")
                 .add(
                     TokenListMapping.<QuestionnaireResponseEntity>builder()
                         .parameterName("_tag")
@@ -117,27 +125,41 @@ public class QuestionnaireResponseController {
         .defaultQuery(returnNothing())
         .rule(
             atLeastOneParameterOf(
-                "_id", "_tag", "author", "authored", "questionnaire", "source", "subject"))
+                "_id",
+                "_lastUpdated",
+                "_tag",
+                "author",
+                "authored",
+                "questionnaire",
+                "source",
+                "subject"))
         .rule(
             ifParameter("_id")
                 .thenForbidParameters(
-                    "_tag", "author", "authored", "questionnaire", "source", "subject"))
+                    "_lastUpdated",
+                    "_tag",
+                    "author",
+                    "authored",
+                    "questionnaire",
+                    "source",
+                    "subject"))
         .build();
   }
 
   @PostMapping
   ResponseEntity<QuestionnaireResponse> create(
       @Valid @RequestBody QuestionnaireResponse questionnaireResponse) {
-    return create(generateRandomId(), questionnaireResponse);
+    return create(generateRandomId(), nowMillis(), questionnaireResponse);
   }
 
   ResponseEntity<QuestionnaireResponse> create(
-      String id, QuestionnaireResponse questionnaireResponse) {
+      String id, Instant now, QuestionnaireResponse questionnaireResponse) {
     checkRequestState(
         isEmpty(questionnaireResponse.id()),
         "ID must be empty, found %s",
         questionnaireResponse.id());
     questionnaireResponse.id(id);
+    questionnaireResponse.meta(metaWithLastUpdated(questionnaireResponse.meta(), now));
     QuestionnaireResponseEntity entity = toEntity(questionnaireResponse);
     repository.save(entity);
     return ResponseEntity.created(
@@ -183,13 +205,19 @@ public class QuestionnaireResponseController {
         .build();
   }
 
-  @SneakyThrows
   @PutMapping(value = "/{id}")
   @Loggable(arguments = false)
   ResponseEntity<QuestionnaireResponse> update(
       @PathVariable("id") String id,
       @Valid @RequestBody QuestionnaireResponse questionnaireResponse) {
+    return update(id, nowMillis(), questionnaireResponse);
+  }
+
+  @SneakyThrows
+  ResponseEntity<QuestionnaireResponse> update(
+      String id, Instant now, QuestionnaireResponse questionnaireResponse) {
     checkState(id.equals(questionnaireResponse.id()), "%s != %s", id, questionnaireResponse.id());
+    questionnaireResponse.meta(metaWithLastUpdated(questionnaireResponse.meta(), now));
     Optional<QuestionnaireResponseEntity> maybeEntity =
         repository.findById(questionnaireResponse.id());
     QuestionnaireResponseEntity entity =

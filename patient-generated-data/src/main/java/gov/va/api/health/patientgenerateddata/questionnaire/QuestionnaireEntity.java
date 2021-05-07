@@ -2,6 +2,7 @@ package gov.va.api.health.patientgenerateddata.questionnaire;
 
 import gov.va.api.health.patientgenerateddata.PayloadEntity;
 import gov.va.api.health.r4.api.resources.Questionnaire;
+import java.time.Instant;
 import javax.persistence.Basic;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -36,6 +37,8 @@ public class QuestionnaireEntity implements PayloadEntity<Questionnaire> {
   @Lob
   @Basic(fetch = FetchType.EAGER)
   private String contextTypeValue;
+
+  private Instant lastUpdated;
 
   public static Sort naturalOrder() {
     return Sort.by("id").ascending();
