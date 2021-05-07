@@ -1,9 +1,6 @@
 {
   "resourceType" : "QuestionnaireResponse",
   "id" : "e7c5799f-14fd-420d-8671-e24386773e7e",
-  "meta" : {
-    "lastUpdated" : "2021-05-03T12:00:00Z"
-  },
   "text" : {
     "status" : "generated",
     "div" : "<div><h1>Lifelines Questionnaire</h1></div>"

@@ -1,9 +1,6 @@
 {
   "resourceType" : "Questionnaire",
   "id" : "9c930b5c-6e0e-4e84-9f3a-1c1a6cb4313e",
-  "meta" : {
-    "lastUpdated" : "2021-05-03T12:00:00Z"
-  },
   "text" : {
     "status" : "generated",
     "div" : "<div>Cancer Quality Forum Questionnaire 2012</div>"

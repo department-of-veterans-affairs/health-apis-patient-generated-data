@@ -2,7 +2,6 @@
   "resourceType" : "Questionnaire",
   "id" : "37953b72-961b-41ee-bd05-86c62bacc46b",
   "meta" : {
-    "lastUpdated" : "2021-05-03T12:00:00Z",
     "tag" : [
       {
         "system" : "https://api.va.gov/services/pgd",
