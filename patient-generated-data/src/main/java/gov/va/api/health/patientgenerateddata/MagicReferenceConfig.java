@@ -18,6 +18,27 @@ import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+/**
+ * This class provides the Jackson magic necessary to globally apply special logic for References.
+ * It will
+ *
+ * <ul>
+ *   <li>Automatically fully qualify reference URLs with a configurable base url and path
+ *   <li>Automatically filter out references for resources that are optional, such as Location
+ * </ul>
+ *
+ * The goal of this class is to minimize impact of reference logic through out the application code
+ * base. Instead, the above rules are applied universally during serialization. Unfortunately, to
+ * accomplish all of this, we have to get deep in the bowel of Jackson.
+ *
+ * <ul>
+ *   <li>To omit fields that are references to optional resources, we will create a property filter
+ *       and apply to all objects using a mix-in. The filter will inspect the value of the field to
+ *       determine if the value should be omitted.
+ *   <li>To omit references in lists, a bean serialization customizer will be attached.
+ *   <li>To fully qualify references, a bean property customizer will be attached.
+ * </ul>
+ */
 @Component
 @AllArgsConstructor(onConstructor_ = @Autowired)
 public class MagicReferenceConfig {

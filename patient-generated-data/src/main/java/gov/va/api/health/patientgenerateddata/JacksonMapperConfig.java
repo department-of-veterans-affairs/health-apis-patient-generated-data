@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/** Jackson mapper with additional configuration that handles FHIR resources. */
 @Configuration
 public class JacksonMapperConfig {
   private final MagicReferenceConfig magicReferences;

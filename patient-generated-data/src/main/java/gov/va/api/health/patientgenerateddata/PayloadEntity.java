@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.api.health.r4.api.resources.Resource;
 import lombok.SneakyThrows;
 
+/** Base interface for DB R4 Entities. */
 public interface PayloadEntity<R extends Resource> {
   static final ObjectMapper MAPPER = JacksonMapperConfig.createMapper();
 
