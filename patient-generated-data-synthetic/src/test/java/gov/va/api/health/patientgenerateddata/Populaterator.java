@@ -66,9 +66,8 @@ public final class Populaterator {
             .findCorrectDatabaseImplementation(new JdbcConnection(connection));
     try (Liquibase liquibase =
         new Liquibase(
-            baseDir()
-                + "/../patient-generated-data/src/main/resources/db/changelog/db.changelog-master.yaml",
-            new FileSystemResourceAccessor(),
+            "/../patient-generated-data/src/main/resources/db/changelog/db.changelog-master.yaml",
+            new FileSystemResourceAccessor(new File(baseDir())),
             database)) {
       liquibase.update(new Contexts(), new LabelExpression());
     }
@@ -199,10 +198,6 @@ public final class Populaterator {
         table,
         columns.stream().collect(joining(",")),
         IntStream.range(0, columns.size()).mapToObj(v -> "?").collect(joining(",")));
-  }
-
-  private static Timestamp timestamp(String value) {
-    return timestamp(ParseUtils.parseDateTime(value));
   }
 
   private static Timestamp timestamp(Instant instant) {

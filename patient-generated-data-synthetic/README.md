@@ -16,15 +16,15 @@ username `SA` and password `<YourStrong!Passw0rd>`.
 To resolve
 `error reading liquibase-core.jar; zip END header not found`,
 execute the `initialize-build.sh` script or download the artifact from
-[Maven Central](https://search.maven.org/artifact/org.liquibase/liquibase-core/3.8.9/jar)
+[Maven Central](https://search.maven.org/artifact/org.liquibase/liquibase-core/4.3.5/jar)
 and install manually:
 
 ```
 mvn install:install-file \
-  -Dfile=/path/to/liquibase-core-3.8.9.jar \
+  -Dfile=/path/to/liquibase-core-4.3.5.jar \
   -DgroupId=org.liquibase \
   -DartifactId=liquibase-core \
-  -Dversion=3.8.9 \
+  -Dversion=4.3.5 \
   -Dpackaging=jar
 ```
 

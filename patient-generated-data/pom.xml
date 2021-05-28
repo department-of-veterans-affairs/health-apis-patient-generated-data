@@ -12,6 +12,7 @@
   <packaging>jar</packaging>
   <properties>
     <fhir-resources.version>7.0.0</fhir-resources.version>
+    <swagger-examples-maven-plugin.version>3.0.0</swagger-examples-maven-plugin.version>
     <swagger-maven-plugin.version>2.1.5</swagger-maven-plugin.version>
     <vulcan.version>2.0.3</vulcan.version>
   </properties>
@@ -71,7 +72,7 @@
       <plugin>
         <groupId>gov.va.plugin.maven</groupId>
         <artifactId>swagger-examples-maven-plugin</artifactId>
-        <version>3.0.0</version>
+        <version>${swagger-examples-maven-plugin.version}</version>
         <dependencies>
           <dependency>
             <groupId>gov.va.api.health</groupId>

@@ -24,6 +24,7 @@ import gov.va.api.lighthouse.vulcan.VulcanConfiguration;
 import gov.va.api.lighthouse.vulcan.mappings.Mappings;
 import java.net.URI;
 import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -100,8 +101,10 @@ public class QuestionnaireController {
                         .build())
                 .get())
         .defaultQuery(returnNothing())
-        .rule(atLeastOneParameterOf("_id", "_lastUpdated", "context-type-value"))
-        .rule(ifParameter("_id").thenForbidParameters("_lastUpdated", "context-type-value"))
+        .rules(
+            List.of(
+                atLeastOneParameterOf("_id", "_lastUpdated", "context-type-value"),
+                ifParameter("_id").thenForbidParameters("_lastUpdated", "context-type-value")))
         .build();
   }
 

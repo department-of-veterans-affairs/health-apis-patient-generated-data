@@ -30,4 +30,4 @@ EOF
 
 mvn dependency:get -B \
   -P'!gov.va.api.health' \
-  -Dartifact=org.liquibase:liquibase-core:3.8.9:jar
+  -Dartifact=org.liquibase:liquibase-core:4.3.5:jar
