@@ -11,6 +11,7 @@ import lombok.NonNull;
 import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 
+/** Utilities for R4 controllers. */
 @UtilityClass
 public class Controllers {
   /** Wrapper for Preconditions.checkState which throws a BadRequest. */
