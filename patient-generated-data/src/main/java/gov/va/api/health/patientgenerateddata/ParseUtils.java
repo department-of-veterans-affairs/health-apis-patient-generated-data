@@ -6,6 +6,7 @@ import java.time.Instant;
 import java.time.OffsetDateTime;
 import lombok.experimental.UtilityClass;
 
+/** Provides static utils for parsing Strings. */
 @UtilityClass
 public class ParseUtils {
   // Date parser switchers based on input length

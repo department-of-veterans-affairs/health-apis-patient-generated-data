@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.servers.Server;
 import javax.ws.rs.Path;
 
+/** Swagger definition. */
 @OpenAPIDefinition(
     info = @Info(title = "US Core R4", version = "v1"),
     servers = {

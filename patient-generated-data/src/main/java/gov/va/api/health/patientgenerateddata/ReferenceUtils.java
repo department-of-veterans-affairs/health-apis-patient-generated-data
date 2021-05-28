@@ -7,6 +7,7 @@ import gov.va.api.health.r4.api.elements.Reference;
 import java.util.List;
 import lombok.experimental.UtilityClass;
 
+/** Static utilities for parsing FHIR reference values. */
 @UtilityClass
 public final class ReferenceUtils {
   /**

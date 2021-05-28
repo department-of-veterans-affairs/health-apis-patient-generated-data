@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
+/** Configuration for public URLs. */
 @Getter
 @Component
 public class LinkProperties {

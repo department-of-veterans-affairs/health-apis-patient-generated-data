@@ -16,6 +16,7 @@ import lombok.Value;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.jpa.domain.Specification;
 
+/** Vulcan mapping handler for CSV-formatted values. */
 @Value
 @Builder
 public final class TokenListMapping<EntityT> implements SingleParameterMapping<EntityT> {

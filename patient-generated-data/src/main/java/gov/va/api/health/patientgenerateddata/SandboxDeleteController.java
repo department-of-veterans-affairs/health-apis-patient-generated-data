@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/** Data deletion handler. This controller should only be enabled in test environments. */
 @Slf4j
 @RestController
 @RequestMapping(

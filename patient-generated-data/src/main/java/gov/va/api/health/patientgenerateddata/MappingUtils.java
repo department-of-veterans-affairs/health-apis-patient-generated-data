@@ -9,6 +9,7 @@ import javax.persistence.criteria.Predicate;
 import lombok.experimental.UtilityClass;
 import org.springframework.data.jpa.domain.Specification;
 
+/** Utility methods used by Vulcan Mappings. */
 @UtilityClass
 public class MappingUtils {
   static String addTerminators(String str) {

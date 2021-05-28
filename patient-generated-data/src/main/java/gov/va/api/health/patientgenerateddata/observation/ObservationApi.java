@@ -14,6 +14,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 
+/** Observation Swagger definition. */
 public interface ObservationApi {
   @Operation(
       summary = "Observation Create",
