@@ -8,11 +8,11 @@
     <relativePath/>
   </parent>
   <artifactId>patient-generated-data-synthetic</artifactId>
-  <version>0.0.100-SNAPSHOT</version>
+  <version>0.0.100</version>
   <packaging>jar</packaging>
   <properties>
     <fhir-resources.version>6.0.10</fhir-resources.version>
-    <health-apis-parent.version>7.0.24</health-apis-parent.version>
+    <health-apis-parent.version>7.0.25</health-apis-parent.version>
     <javax.el.version>3.0.1-b12</javax.el.version>
     <populaterator.sqlserver>false</populaterator.sqlserver>
   </properties>
