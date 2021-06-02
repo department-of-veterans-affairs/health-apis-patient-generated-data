@@ -23,6 +23,7 @@ import gov.va.api.lighthouse.vulcan.VulcanConfiguration;
 import gov.va.api.lighthouse.vulcan.mappings.Mappings;
 import java.net.URI;
 import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -93,8 +94,10 @@ public class ObservationController {
                 .dateAsInstant("_lastUpdated", "lastUpdated")
                 .get())
         .defaultQuery(returnNothing())
-        .rule(atLeastOneParameterOf("_id", "_lastUpdated"))
-        .rule(ifParameter("_id").thenForbidParameters("_lastUpdated"))
+        .rules(
+            List.of(
+                atLeastOneParameterOf("_id", "_lastUpdated"),
+                ifParameter("_id").thenForbidParameters("_lastUpdated")))
         .build();
   }
 

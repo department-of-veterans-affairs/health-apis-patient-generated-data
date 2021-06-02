@@ -8,9 +8,12 @@ Main application.
 
 `../make-configs.sh`
 
-Use `less config/application-dev.properties` to verify application properties for local development.
+Use `less config/application-dev.properties` to verify application properties for local development
 
 ### Build
+
+To resolve `error reading liquibase-core.jar; zip END header not found`,
+execute `../initialize-build.sh`
 
 Full build:
 
