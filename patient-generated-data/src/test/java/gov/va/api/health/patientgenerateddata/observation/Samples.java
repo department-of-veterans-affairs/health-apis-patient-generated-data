@@ -11,6 +11,6 @@ public class Samples {
   }
 
   public static Observation observation(String id) {
-    return Observation.builder().status(Observation.ObservationStatus.unknown).id(id).build();
+    return Observation.builder().id(id).status(Observation.ObservationStatus.unknown).build();
   }
 }

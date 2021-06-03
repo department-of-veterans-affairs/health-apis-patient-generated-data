@@ -25,9 +25,9 @@ public class Samples {
         .build();
   }
 
-  public static Questionnaire questionnaire(
+  public static Questionnaire questionnaireWithUseContext(
       String ucSystem, String ucCode, String valueSystem, String valueCode) {
-    return Questionnaire.builder()
+    return questionnaire()
         .useContext(
             List.of(
                 UsageContext.builder()
@@ -38,7 +38,6 @@ public class Samples {
                                 List.of(
                                     Coding.builder().system(valueSystem).code(valueCode).build()))
                             .build())
-                    .build()))
-        .build();
+                    .build()));
   }
 }

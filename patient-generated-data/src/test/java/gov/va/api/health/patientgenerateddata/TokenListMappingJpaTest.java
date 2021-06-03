@@ -1,7 +1,7 @@
 package gov.va.api.health.patientgenerateddata;
 
 import static gov.va.api.health.patientgenerateddata.MockRequests.requestFromUri;
-import static gov.va.api.health.patientgenerateddata.questionnaireresponse.Samples.questionnaireResponse;
+import static gov.va.api.health.patientgenerateddata.questionnaireresponse.Samples.questionnaireResponseCsv;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
@@ -22,9 +22,9 @@ public class TokenListMappingJpaTest {
   @Test
   void specificationFor_csv() {
     jdbc.execute("create table app.foo (id varchar, value varchar)");
-    String tagJoin = TokenListMapping.metadataTagJoin(questionnaireResponse("clinics", "123"));
+    String tagJoin = TokenListMapping.metadataTagJoin(questionnaireResponseCsv("clinics", "123"));
     String tagJoinSecondary =
-        TokenListMapping.metadataTagJoin(questionnaireResponse("something", "456"));
+        TokenListMapping.metadataTagJoin(questionnaireResponseCsv("something", "456"));
     FooEntity entity = FooEntity.builder().id("x").value(tagJoin).build();
     FooEntity entitySecondary = FooEntity.builder().id("y").value(tagJoinSecondary).build();
     repository.save(entity);
@@ -39,7 +39,7 @@ public class TokenListMappingJpaTest {
   @Test
   void specificationFor_edgeCases() {
     jdbc.execute("create table app.foo (id varchar, value varchar)");
-    String tagJoin = TokenListMapping.metadataTagJoin(questionnaireResponse("clinics", "123"));
+    String tagJoin = TokenListMapping.metadataTagJoin(questionnaireResponseCsv("clinics", "123"));
     FooEntity entity = FooEntity.builder().id("x").value(tagJoin).build();
     repository.save(entity);
     TokenListMapping<FooEntity> mapping =
@@ -53,7 +53,7 @@ public class TokenListMappingJpaTest {
   @Test
   void specificationFor_systemAndCode() {
     jdbc.execute("create table app.foo (id varchar, value varchar)");
-    String tagJoin = TokenListMapping.metadataTagJoin(questionnaireResponse("clinics", "123"));
+    String tagJoin = TokenListMapping.metadataTagJoin(questionnaireResponseCsv("clinics", "123"));
     FooEntity entity = FooEntity.builder().id("x").value(tagJoin).build();
     repository.save(entity);
     TokenListMapping<FooEntity> mapping =

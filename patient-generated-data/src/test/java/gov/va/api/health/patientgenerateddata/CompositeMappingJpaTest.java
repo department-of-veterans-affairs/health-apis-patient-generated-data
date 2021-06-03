@@ -1,7 +1,7 @@
 package gov.va.api.health.patientgenerateddata;
 
 import static gov.va.api.health.patientgenerateddata.MockRequests.requestFromUri;
-import static gov.va.api.health.patientgenerateddata.questionnaire.Samples.questionnaire;
+import static gov.va.api.health.patientgenerateddata.questionnaire.Samples.questionnaireWithUseContext;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
@@ -23,7 +23,8 @@ public class CompositeMappingJpaTest {
   void specificationFor_edgeCases() {
     jdbc.execute("create table app.foo (id varchar, value varchar)");
     String join =
-        CompositeMapping.useContextValueJoin(questionnaire("fizz", "buzz", "something", "else"));
+        CompositeMapping.useContextValueJoin(
+            questionnaireWithUseContext("fizz", "buzz", "something", "else"));
     FooEntity entity = FooEntity.builder().id("x").value(join).build();
     repository.save(entity);
     CompositeMapping<FooEntity> mapping =
@@ -41,7 +42,8 @@ public class CompositeMappingJpaTest {
   void specificationFor_systemAndCode() {
     jdbc.execute("create table app.foo (id varchar, value varchar)");
     String join =
-        CompositeMapping.useContextValueJoin(questionnaire("fizz", "buzz", "something", "else"));
+        CompositeMapping.useContextValueJoin(
+            questionnaireWithUseContext("fizz", "buzz", "something", "else"));
     FooEntity entity = FooEntity.builder().id("x").value(join).build();
     repository.save(entity);
     CompositeMapping<FooEntity> mapping =

@@ -4,43 +4,37 @@ import gov.va.api.health.r4.api.datatypes.Coding;
 import gov.va.api.health.r4.api.elements.Meta;
 import gov.va.api.health.r4.api.elements.Reference;
 import gov.va.api.health.r4.api.resources.QuestionnaireResponse;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class Samples {
   public static QuestionnaireResponse questionnaireResponse() {
-    return QuestionnaireResponse.builder().status(QuestionnaireResponse.Status.completed).build();
+    return questionnaireResponse(null);
   }
 
   public static QuestionnaireResponse questionnaireResponse(String id) {
-    return QuestionnaireResponse.builder().id(id).build();
-  }
-
-  public static QuestionnaireResponse questionnaireResponse(String valueSystem, String valueCode) {
     return QuestionnaireResponse.builder()
-        .meta(
-            Meta.builder()
-                .tag(List.of(Coding.builder().code(valueCode).system(valueSystem).build()))
-                .build())
+        .id(id)
+        .status(QuestionnaireResponse.Status.completed)
         .build();
   }
 
-  public static QuestionnaireResponse questionnaireResponseCsv(
-      String valueSystem, String valueCode, String secondarySystem, String secondaryCode) {
-    return QuestionnaireResponse.builder()
-        .meta(
-            Meta.builder()
-                .tag(
-                    List.of(
-                        Coding.builder().code(valueCode).system(valueSystem).build(),
-                        Coding.builder().code(secondaryCode).system(secondarySystem).build()))
-                .build())
-        .build();
-  }
+  public static QuestionnaireResponse questionnaireResponseCsv(String... args) {
 
-  public static QuestionnaireResponse questionnaireResponseNullValues() {
-    return QuestionnaireResponse.builder().meta(Meta.builder().build()).build();
+    if (args.length % 2 != 0) {
+      return null;
+    }
+
+    List<Coding> tag = new ArrayList<>();
+
+    for (int i = 0; i < args.length; i += 2) {
+      var system = args[i];
+      var code = args[i + 1];
+      tag.add(Coding.builder().code(code).system(system).build());
+    }
+    return QuestionnaireResponse.builder().meta(Meta.builder().tag(tag).build()).build();
   }
 
   public static QuestionnaireResponse questionnaireResponseWithAuthor(String author) {
