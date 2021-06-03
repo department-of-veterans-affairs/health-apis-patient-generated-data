@@ -51,7 +51,7 @@ public class QuestionnaireControllerTest {
         LinkProperties.builder().baseUrl("http://foo.com").r4BasePath("r4").build();
     QuestionnaireRepository repo = mock(QuestionnaireRepository.class);
     QuestionnaireController controller = new QuestionnaireController(pageLinks, repo);
-    var questionnaire = questionnaire();
+    var questionnaire = questionnaire(null);
     var persistedQuestionnaire = withAddedFields(questionnaire(), "123", now);
     var persisted = MAPPER.writeValueAsString(questionnaire);
     assertThat(controller.create("123", now, questionnaire))

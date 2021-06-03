@@ -11,10 +11,7 @@ import lombok.experimental.UtilityClass;
 public class Samples {
 
   public static Questionnaire questionnaire() {
-    return Questionnaire.builder()
-        .title("x")
-        .status(Questionnaire.PublicationStatus.active)
-        .build();
+    return questionnaire("x");
   }
 
   public static Questionnaire questionnaire(String id) {
