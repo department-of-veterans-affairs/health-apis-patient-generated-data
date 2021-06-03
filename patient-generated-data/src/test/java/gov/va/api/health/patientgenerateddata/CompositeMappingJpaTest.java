@@ -1,7 +1,7 @@
 package gov.va.api.health.patientgenerateddata;
 
 import static gov.va.api.health.patientgenerateddata.MockRequests.requestFromUri;
-import static gov.va.api.health.patientgenerateddata.questionnaire.QuestionnaireSamples.questionnaire;
+import static gov.va.api.health.patientgenerateddata.questionnaire.Samples.questionnaire;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;

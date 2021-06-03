@@ -5,8 +5,10 @@ import gov.va.api.health.r4.api.elements.Meta;
 import gov.va.api.health.r4.api.elements.Reference;
 import gov.va.api.health.r4.api.resources.QuestionnaireResponse;
 import java.util.List;
+import lombok.experimental.UtilityClass;
 
-public class QuestionnaireResponseSamples {
+@UtilityClass
+public class Samples {
   public static QuestionnaireResponse questionnaireResponse() {
     return QuestionnaireResponse.builder().status(QuestionnaireResponse.Status.completed).build();
   }

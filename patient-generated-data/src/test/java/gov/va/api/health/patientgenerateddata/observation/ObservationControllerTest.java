@@ -1,7 +1,7 @@
 package gov.va.api.health.patientgenerateddata.observation;
 
 import static gov.va.api.health.patientgenerateddata.MockRequests.requestFromUri;
-import static gov.va.api.health.patientgenerateddata.observation.ObservationSamples.observation;
+import static gov.va.api.health.patientgenerateddata.observation.Samples.observation;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertThrows;

@@ -1,7 +1,9 @@
 package gov.va.api.health.patientgenerateddata;
 
 import static gov.va.api.health.patientgenerateddata.MappingUtils.addTerminators;
-import static gov.va.api.health.patientgenerateddata.questionnaireresponse.QuestionnaireResponseSamples.*;
+import static gov.va.api.health.patientgenerateddata.questionnaireresponse.Samples.questionnaireResponse;
+import static gov.va.api.health.patientgenerateddata.questionnaireresponse.Samples.questionnaireResponseCsv;
+import static gov.va.api.health.patientgenerateddata.questionnaireresponse.Samples.questionnaireResponseNullValues;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import gov.va.api.health.r4.api.resources.QuestionnaireResponse;

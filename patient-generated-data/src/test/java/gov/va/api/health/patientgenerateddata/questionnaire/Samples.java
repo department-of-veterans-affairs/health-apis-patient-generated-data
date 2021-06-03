@@ -8,7 +8,7 @@ import java.util.List;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
-public class QuestionnaireSamples {
+public class Samples {
 
   public static Questionnaire questionnaire() {
     return Questionnaire.builder()

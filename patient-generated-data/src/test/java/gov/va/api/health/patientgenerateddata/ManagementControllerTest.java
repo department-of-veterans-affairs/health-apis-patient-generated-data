@@ -1,8 +1,8 @@
 package gov.va.api.health.patientgenerateddata;
 
-import static gov.va.api.health.patientgenerateddata.observation.ObservationSamples.observation;
-import static gov.va.api.health.patientgenerateddata.questionnaire.QuestionnaireSamples.questionnaire;
-import static gov.va.api.health.patientgenerateddata.questionnaireresponse.QuestionnaireResponseSamples.questionnaireResponse;
+import static gov.va.api.health.patientgenerateddata.observation.Samples.observation;
+import static gov.va.api.health.patientgenerateddata.questionnaire.Samples.questionnaire;
+import static gov.va.api.health.patientgenerateddata.questionnaireresponse.Samples.questionnaireResponse;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;

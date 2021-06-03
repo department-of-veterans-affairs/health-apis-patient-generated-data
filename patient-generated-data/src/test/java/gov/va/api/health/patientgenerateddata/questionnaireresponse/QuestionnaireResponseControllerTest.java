@@ -1,8 +1,8 @@
 package gov.va.api.health.patientgenerateddata.questionnaireresponse;
 
 import static gov.va.api.health.patientgenerateddata.MockRequests.requestFromUri;
-import static gov.va.api.health.patientgenerateddata.questionnaireresponse.QuestionnaireResponseSamples.questionnaireResponse;
-import static gov.va.api.health.patientgenerateddata.questionnaireresponse.QuestionnaireResponseSamples.questionnaireResponseWithAuthor;
+import static gov.va.api.health.patientgenerateddata.questionnaireresponse.Samples.questionnaireResponse;
+import static gov.va.api.health.patientgenerateddata.questionnaireresponse.Samples.questionnaireResponseWithAuthor;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertThrows;
