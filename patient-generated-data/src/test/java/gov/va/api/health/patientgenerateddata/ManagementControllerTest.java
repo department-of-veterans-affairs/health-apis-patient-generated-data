@@ -1,5 +1,8 @@
 package gov.va.api.health.patientgenerateddata;
 
+import static gov.va.api.health.patientgenerateddata.observation.ObservationSamples.observation;
+import static gov.va.api.health.patientgenerateddata.questionnaire.QuestionnaireSamples.questionnaire;
+import static gov.va.api.health.patientgenerateddata.questionnaireresponse.QuestionnaireResponseSamples.questionnaireResponse;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
@@ -8,9 +11,6 @@ import static org.mockito.Mockito.when;
 import gov.va.api.health.patientgenerateddata.observation.ObservationRepository;
 import gov.va.api.health.patientgenerateddata.questionnaire.QuestionnaireRepository;
 import gov.va.api.health.patientgenerateddata.questionnaireresponse.QuestionnaireResponseRepository;
-import gov.va.api.health.r4.api.resources.Observation;
-import gov.va.api.health.r4.api.resources.Questionnaire;
-import gov.va.api.health.r4.api.resources.QuestionnaireResponse;
 import java.net.URI;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
@@ -31,22 +31,6 @@ public class ManagementControllerTest {
 
   static Stream<String> invalid_formats_strings() {
     return Stream.of("", " ", null);
-  }
-
-  private static Observation observation() {
-    return Observation.builder().status(Observation.ObservationStatus.unknown).build();
-  }
-
-  private static Questionnaire questionnaire(String id) {
-    return Questionnaire.builder()
-        .id(id)
-        .title("x")
-        .status(Questionnaire.PublicationStatus.active)
-        .build();
-  }
-
-  private static QuestionnaireResponse questionnaireResponse() {
-    return QuestionnaireResponse.builder().status(QuestionnaireResponse.Status.completed).build();
   }
 
   @Test

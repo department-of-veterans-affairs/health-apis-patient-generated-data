@@ -1,6 +1,8 @@
 package gov.va.api.health.patientgenerateddata.questionnaireresponse;
 
 import static gov.va.api.health.patientgenerateddata.MockRequests.requestFromUri;
+import static gov.va.api.health.patientgenerateddata.questionnaireresponse.QuestionnaireResponseSamples.questionnaireResponse;
+import static gov.va.api.health.patientgenerateddata.questionnaireresponse.QuestionnaireResponseSamples.questionnaireResponseWithAuthor;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -43,10 +45,6 @@ public class QuestionnaireResponseControllerTest {
           .baseUrl("http://foo.com")
           .r4BasePath("r4")
           .build();
-
-  private static QuestionnaireResponse questionnaireResponse() {
-    return QuestionnaireResponse.builder().status(QuestionnaireResponse.Status.completed).build();
-  }
 
   private static QuestionnaireResponse withAddedFields(
       QuestionnaireResponse qr, String id, Instant lastUpdated) {
@@ -114,12 +112,12 @@ public class QuestionnaireResponseControllerTest {
   @SneakyThrows
   void read() {
     QuestionnaireResponseRepository repo = mock(QuestionnaireResponseRepository.class);
-    String payload = MAPPER.writeValueAsString(QuestionnaireResponse.builder().id("x").build());
+    String payload = MAPPER.writeValueAsString(questionnaireResponse("x"));
     when(repo.findById("x"))
         .thenReturn(
             Optional.of(QuestionnaireResponseEntity.builder().id("x").payload(payload).build()));
     assertThat(new QuestionnaireResponseController(pageLinks, repo).read("x"))
-        .isEqualTo(QuestionnaireResponse.builder().id("x").build());
+        .isEqualTo(questionnaireResponse("x"));
   }
 
   @Test
@@ -136,21 +134,13 @@ public class QuestionnaireResponseControllerTest {
     Instant now = Instant.parse("2021-01-01T01:00:00.001Z");
     QuestionnaireResponseRepository repo = mock(QuestionnaireResponseRepository.class);
     QuestionnaireResponse questionnaireResponse =
-        QuestionnaireResponse.builder()
-            .id("x")
-            .author(Reference.builder().reference("1011537977V693883").build())
-            .build();
+        questionnaireResponseWithAuthor("x", "1011537977V693883");
     String payload = MAPPER.writeValueAsString(questionnaireResponse);
     when(repo.findById("x"))
         .thenReturn(
             Optional.of(QuestionnaireResponseEntity.builder().id("x").payload(payload).build()));
     QuestionnaireResponse expectedQr =
-        withAddedFields(
-            QuestionnaireResponse.builder()
-                .author(Reference.builder().reference("1011537977V693883").build())
-                .build(),
-            "x",
-            now);
+        withAddedFields(questionnaireResponseWithAuthor("1011537977V693883"), "x", now);
     assertThat(
             new QuestionnaireResponseController(pageLinks, repo)
                 .update("x", now, questionnaireResponse))
@@ -164,8 +154,7 @@ public class QuestionnaireResponseControllerTest {
   void update_not_existing() {
     QuestionnaireResponseRepository repo = mock(QuestionnaireResponseRepository.class);
     Reference authorRef = Reference.builder().reference("1011537977V693883").build();
-    QuestionnaireResponse questionnaireResponse =
-        QuestionnaireResponse.builder().id("x").author(authorRef).build();
+    QuestionnaireResponse questionnaireResponse = questionnaireResponse("x");
     assertThrows(
         Exceptions.NotFound.class,
         () ->

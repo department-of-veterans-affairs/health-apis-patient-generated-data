@@ -1,6 +1,7 @@
 package gov.va.api.health.patientgenerateddata.questionnaire;
 
 import static gov.va.api.health.patientgenerateddata.MockRequests.requestFromUri;
+import static gov.va.api.health.patientgenerateddata.questionnaire.QuestionnaireSamples.questionnaire;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -34,13 +35,6 @@ import org.springframework.validation.DataBinder;
 
 public class QuestionnaireControllerTest {
   private static final ObjectMapper MAPPER = JacksonMapperConfig.createMapper();
-
-  private static Questionnaire questionnaire() {
-    return Questionnaire.builder()
-        .title("x")
-        .status(Questionnaire.PublicationStatus.active)
-        .build();
-  }
 
   private static Questionnaire withAddedFields(
       Questionnaire questionnaire, String id, Instant lastUpdated) {
@@ -87,11 +81,11 @@ public class QuestionnaireControllerTest {
   @SneakyThrows
   void read() {
     QuestionnaireRepository repo = mock(QuestionnaireRepository.class);
-    String payload = MAPPER.writeValueAsString(Questionnaire.builder().id("x").build());
+    String payload = MAPPER.writeValueAsString(questionnaire());
     when(repo.findById("x"))
         .thenReturn(Optional.of(QuestionnaireEntity.builder().id("x").payload(payload).build()));
     assertThat(new QuestionnaireController(mock(LinkProperties.class), repo).read("x"))
-        .isEqualTo(Questionnaire.builder().id("x").build());
+        .isEqualTo(questionnaire());
   }
 
   @Test
@@ -167,7 +161,7 @@ public class QuestionnaireControllerTest {
     LinkProperties pageLinks =
         LinkProperties.builder().baseUrl("http://foo.com").r4BasePath("r4").build();
     QuestionnaireRepository repo = mock(QuestionnaireRepository.class);
-    Questionnaire questionnaire = Questionnaire.builder().id("x").build();
+    Questionnaire questionnaire = questionnaire("x");
     assertThrows(
         Exceptions.NotFound.class,
         () -> new QuestionnaireController(pageLinks, repo).update("x", questionnaire));

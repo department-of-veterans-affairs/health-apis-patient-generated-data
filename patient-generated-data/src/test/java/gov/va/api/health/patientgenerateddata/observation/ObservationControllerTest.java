@@ -1,6 +1,7 @@
 package gov.va.api.health.patientgenerateddata.observation;
 
 import static gov.va.api.health.patientgenerateddata.MockRequests.requestFromUri;
+import static gov.va.api.health.patientgenerateddata.observation.ObservationSamples.observation;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -43,10 +44,6 @@ public class ObservationControllerTest {
           .r4BasePath("r4")
           .build();
 
-  private static Observation observation() {
-    return Observation.builder().status(Observation.ObservationStatus.unknown).build();
-  }
-
   private static Observation withAddedFields(
       Observation observation, String id, Instant lastUpdated) {
     observation.id(id);
@@ -71,9 +68,9 @@ public class ObservationControllerTest {
         LinkProperties.builder().baseUrl("http://foo.com").r4BasePath("r4").build();
     ObservationRepository repo = mock(ObservationRepository.class);
     ObservationController controller = new ObservationController(pageLinks, repo);
-    var observation = observation();
+    var observation = observation(null);
     var persisted = MAPPER.writeValueAsString(observation);
-    var expectedObservation = withAddedFields(observation(), "123", now);
+    var expectedObservation = withAddedFields(observation(null), "123", now);
     assertThat(controller.create("123", now, observation))
         .isEqualTo(
             ResponseEntity.created(URI.create("http://foo.com/r4/Observation/" + 123))
@@ -108,11 +105,11 @@ public class ObservationControllerTest {
   @SneakyThrows
   void read() {
     ObservationRepository repo = mock(ObservationRepository.class);
-    String payload = MAPPER.writeValueAsString(Observation.builder().id("x").build());
+    String payload = MAPPER.writeValueAsString(observation());
     when(repo.findById("x"))
         .thenReturn(Optional.of(ObservationEntity.builder().id("x").payload(payload).build()));
     assertThat(new ObservationController(mock(LinkProperties.class), repo).read("x"))
-        .isEqualTo(Observation.builder().id("x").build());
+        .isEqualTo(observation());
   }
 
   @Test
@@ -128,7 +125,7 @@ public class ObservationControllerTest {
   void update_existing() {
     Instant now = Instant.parse("2021-01-01T01:00:00.001Z");
     ObservationRepository repo = mock(ObservationRepository.class);
-    Observation observation = Observation.builder().id("x").build();
+    Observation observation = observation();
     String payload = MAPPER.writeValueAsString(observation);
     when(repo.findById("x"))
         .thenReturn(Optional.of(ObservationEntity.builder().id("x").payload(payload).build()));
@@ -144,7 +141,7 @@ public class ObservationControllerTest {
     LinkProperties pageLinks =
         LinkProperties.builder().baseUrl("http://foo.com").r4BasePath("r4").build();
     ObservationRepository repo = mock(ObservationRepository.class);
-    Observation observation = Observation.builder().id("x").build();
+    Observation observation = observation();
     assertThrows(
         Exceptions.NotFound.class,
         () -> new ObservationController(pageLinks, repo).update("x", observation));
