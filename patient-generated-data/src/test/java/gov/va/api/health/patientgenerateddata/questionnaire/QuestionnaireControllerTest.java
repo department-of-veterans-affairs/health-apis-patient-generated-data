@@ -2,6 +2,7 @@ package gov.va.api.health.patientgenerateddata.questionnaire;
 
 import static gov.va.api.health.patientgenerateddata.MockRequests.requestFromUri;
 import static gov.va.api.health.patientgenerateddata.questionnaire.Samples.questionnaire;
+import static gov.va.api.health.patientgenerateddata.questionnaire.Samples.questionnaireWithLastUpdated;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -15,7 +16,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.api.health.patientgenerateddata.Exceptions;
 import gov.va.api.health.patientgenerateddata.JacksonMapperConfig;
 import gov.va.api.health.patientgenerateddata.LinkProperties;
-import gov.va.api.health.r4.api.elements.Meta;
 import gov.va.api.health.r4.api.resources.Questionnaire;
 import gov.va.api.lighthouse.vulcan.InvalidRequest;
 import java.net.URI;
@@ -36,33 +36,24 @@ import org.springframework.validation.DataBinder;
 public class QuestionnaireControllerTest {
   private static final ObjectMapper MAPPER = JacksonMapperConfig.createMapper();
 
-  private static Questionnaire withAddedFields(
-      Questionnaire questionnaire, String id, Instant lastUpdated) {
-    questionnaire.id(id);
-    questionnaire.meta(Meta.builder().lastUpdated(lastUpdated.toString()).build());
-    return questionnaire;
-  }
-
   @Test
   @SneakyThrows
   void create() {
-    Instant now = Instant.parse("2021-01-01T01:00:00.001Z");
+    Instant time = Instant.parse("2021-01-01T01:00:00.001Z");
     LinkProperties pageLinks =
         LinkProperties.builder().baseUrl("http://foo.com").r4BasePath("r4").build();
     QuestionnaireRepository repo = mock(QuestionnaireRepository.class);
     QuestionnaireController controller = new QuestionnaireController(pageLinks, repo);
-    var questionnaire = questionnaire(null);
-    var persistedQuestionnaire = withAddedFields(questionnaire(), "123", now);
+    var questionnaire = questionnaire().id(null);
     var persisted = MAPPER.writeValueAsString(questionnaire);
-    assertThat(controller.create("123", now, questionnaire))
+    assertThat(controller.create("x", time, questionnaire))
         .isEqualTo(
-            ResponseEntity.created(URI.create("http://foo.com/r4/Questionnaire/" + 123))
-                .body(persistedQuestionnaire));
-    verify(repo, times(1)).save(QuestionnaireEntity.builder().id("123").payload(persisted).build());
+            ResponseEntity.created(URI.create("http://foo.com/r4/Questionnaire/x"))
+                .body(questionnaireWithLastUpdated(time)));
+    verify(repo, times(1)).save(QuestionnaireEntity.builder().id("x").payload(persisted).build());
   }
 
   @Test
-  @SneakyThrows
   void create_invalid() {
     var questionnaire = questionnaire().id("123");
     var repo = mock(QuestionnaireRepository.class);
@@ -141,22 +132,19 @@ public class QuestionnaireControllerTest {
   @SneakyThrows
   void update_existing() {
     Instant now = Instant.parse("2021-01-01T01:00:00.001Z");
-    QuestionnaireRepository repo = mock(QuestionnaireRepository.class);
     Questionnaire questionnaire = questionnaire();
-    questionnaire.id("x");
-    Questionnaire persistedQuestionnaire = withAddedFields(questionnaire(), "x", now);
     String payload = MAPPER.writeValueAsString(questionnaire);
+    QuestionnaireRepository repo = mock(QuestionnaireRepository.class);
     when(repo.findById("x"))
         .thenReturn(Optional.of(QuestionnaireEntity.builder().id("x").payload(payload).build()));
     assertThat(
             new QuestionnaireController(mock(LinkProperties.class), repo)
                 .update("x", now, questionnaire))
-        .isEqualTo(ResponseEntity.ok(persistedQuestionnaire));
+        .isEqualTo(ResponseEntity.ok(questionnaireWithLastUpdated(now)));
     verify(repo, times(1)).save(QuestionnaireEntity.builder().id("x").payload(payload).build());
   }
 
   @Test
-  @SneakyThrows
   void update_not_existing() {
     LinkProperties pageLinks =
         LinkProperties.builder().baseUrl("http://foo.com").r4BasePath("r4").build();

@@ -17,7 +17,6 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 public class SandboxDeleteIT {
-
   private static Observation observation() {
     return Observation.builder()
         .status(Observation.ObservationStatus.unknown)

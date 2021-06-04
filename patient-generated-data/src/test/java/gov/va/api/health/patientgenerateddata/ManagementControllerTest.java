@@ -35,7 +35,7 @@ public class ManagementControllerTest {
 
   @Test
   void create_observation() {
-    var observation = observation().id("x");
+    var observation = observation();
     assertThat(controller().create(observation))
         .isEqualTo(
             ResponseEntity.created(URI.create("http://foo.com/r4/Observation/x"))
@@ -52,27 +52,26 @@ public class ManagementControllerTest {
   }
 
   @Test
-  void create_questionnaire_duplicate() {
-    var controller = controller();
-    var questionnaire = questionnaire("x");
-    when(controller.questionnaireRepository().existsById("x")).thenReturn(true);
-    assertThrows(Exceptions.AlreadyExists.class, () -> controller.create(questionnaire));
-  }
-
-  @Test
-  void create_questionnaire_response() {
-    var questionnaireResponse = questionnaireResponse().id("x");
+  void create_questionnaireResponse() {
+    var questionnaireResponse = questionnaireResponse("x");
     assertThat(controller().create(questionnaireResponse))
         .isEqualTo(
             ResponseEntity.created(URI.create("http://foo.com/r4/QuestionnaireResponse/x"))
                 .body(questionnaireResponse));
   }
 
+  @Test
+  void create_questionnaire_duplicate() {
+    var questionnaire = questionnaire("x");
+    ManagementController controller = controller();
+    when(controller.questionnaireRepository().existsById("x")).thenReturn(true);
+    assertThrows(Exceptions.AlreadyExists.class, () -> controller.create(questionnaire));
+  }
+
   @ParameterizedTest
   @MethodSource("invalid_formats_strings")
   void invalid_formats(String id) {
-    var controller = controller();
     var questionnaire = questionnaire(id);
-    assertThrows(Exceptions.BadRequest.class, () -> controller.create(questionnaire));
+    assertThrows(Exceptions.BadRequest.class, () -> controller().create(questionnaire));
   }
 }

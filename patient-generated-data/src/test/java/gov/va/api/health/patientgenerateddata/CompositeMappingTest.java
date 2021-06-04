@@ -8,7 +8,6 @@ import gov.va.api.health.r4.api.resources.Questionnaire;
 import org.junit.jupiter.api.Test;
 
 public class CompositeMappingTest {
-
   @Test
   void useContextValueJoin_missingUcCode() {
     Questionnaire x = questionnaireWithUseContext("uct", null, "clinics", "123");
