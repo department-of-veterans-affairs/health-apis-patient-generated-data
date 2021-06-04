@@ -1,6 +1,8 @@
 package gov.va.api.health.patientgenerateddata.observation;
 
 import static gov.va.api.health.patientgenerateddata.MockRequests.requestFromUri;
+import static gov.va.api.health.patientgenerateddata.observation.Samples.observation;
+import static gov.va.api.health.patientgenerateddata.observation.Samples.observationWithLastUpdated;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -14,7 +16,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.api.health.patientgenerateddata.Exceptions;
 import gov.va.api.health.patientgenerateddata.JacksonMapperConfig;
 import gov.va.api.health.patientgenerateddata.LinkProperties;
-import gov.va.api.health.r4.api.elements.Meta;
 import gov.va.api.health.r4.api.resources.Observation;
 import gov.va.api.lighthouse.vulcan.InvalidRequest;
 import java.net.URI;
@@ -35,7 +36,7 @@ import org.springframework.validation.DataBinder;
 public class ObservationControllerTest {
   private static final ObjectMapper MAPPER = JacksonMapperConfig.createMapper();
 
-  LinkProperties pageLinks =
+  static LinkProperties pageLinks =
       LinkProperties.builder()
           .defaultPageSize(500)
           .maxPageSize(20)
@@ -43,46 +44,33 @@ public class ObservationControllerTest {
           .r4BasePath("r4")
           .build();
 
-  private static Observation observation() {
-    return Observation.builder().status(Observation.ObservationStatus.unknown).build();
-  }
-
-  private static Observation withAddedFields(
-      Observation observation, String id, Instant lastUpdated) {
-    observation.id(id);
-    observation.meta(Meta.builder().lastUpdated(lastUpdated.toString()).build());
-    return observation;
-  }
-
-  private ObservationController controller(ObservationRepository repo) {
+  private static ObservationController controller(ObservationRepository repo) {
     return new ObservationController(pageLinks, repo);
   }
 
-  private ObservationController controller() {
-    ObservationRepository repo = mock(ObservationRepository.class);
-    return controller(repo);
+  private static ObservationController controller() {
+    return controller(mock(ObservationRepository.class));
   }
 
   @Test
   @SneakyThrows
   void create() {
-    Instant now = Instant.parse("2021-01-01T01:00:00.001Z");
+    Instant time = Instant.parse("2021-01-01T01:00:00.001Z");
     LinkProperties pageLinks =
         LinkProperties.builder().baseUrl("http://foo.com").r4BasePath("r4").build();
     ObservationRepository repo = mock(ObservationRepository.class);
     ObservationController controller = new ObservationController(pageLinks, repo);
-    var observation = observation();
+    var observation = observation(null);
     var persisted = MAPPER.writeValueAsString(observation);
-    var expectedObservation = withAddedFields(observation(), "123", now);
-    assertThat(controller.create("123", now, observation))
+    var expectedObservation = observationWithLastUpdated(time);
+    assertThat(controller.create("x", time, observation))
         .isEqualTo(
-            ResponseEntity.created(URI.create("http://foo.com/r4/Observation/" + 123))
+            ResponseEntity.created(URI.create("http://foo.com/r4/Observation/x"))
                 .body(expectedObservation));
-    verify(repo, times(1)).save(ObservationEntity.builder().id("123").payload(persisted).build());
+    verify(repo, times(1)).save(ObservationEntity.builder().id("x").payload(persisted).build());
   }
 
   @Test
-  @SneakyThrows
   void create_invalid() {
     var observation = observation().id("123");
     var repo = mock(ObservationRepository.class);
@@ -108,11 +96,11 @@ public class ObservationControllerTest {
   @SneakyThrows
   void read() {
     ObservationRepository repo = mock(ObservationRepository.class);
-    String payload = MAPPER.writeValueAsString(Observation.builder().id("x").build());
+    String payload = MAPPER.writeValueAsString(observation());
     when(repo.findById("x"))
         .thenReturn(Optional.of(ObservationEntity.builder().id("x").payload(payload).build()));
     assertThat(new ObservationController(mock(LinkProperties.class), repo).read("x"))
-        .isEqualTo(Observation.builder().id("x").build());
+        .isEqualTo(observation());
   }
 
   @Test
@@ -126,31 +114,29 @@ public class ObservationControllerTest {
   @Test
   @SneakyThrows
   void update_existing() {
-    Instant now = Instant.parse("2021-01-01T01:00:00.001Z");
+    Instant time = Instant.parse("2021-01-01T01:00:00.001Z");
     ObservationRepository repo = mock(ObservationRepository.class);
-    Observation observation = Observation.builder().id("x").build();
-    String payload = MAPPER.writeValueAsString(observation);
+    String payload = MAPPER.writeValueAsString(observation());
     when(repo.findById("x"))
         .thenReturn(Optional.of(ObservationEntity.builder().id("x").payload(payload).build()));
-    Observation expectedObservation = withAddedFields(observation, "x", now);
-    assertThat(new ObservationController(mock(LinkProperties.class), repo).update("x", observation))
-        .isEqualTo(ResponseEntity.ok(expectedObservation));
+    Observation hasLastUpdated = observationWithLastUpdated(time);
+    assertThat(
+            new ObservationController(mock(LinkProperties.class), repo).update("x", hasLastUpdated))
+        .isEqualTo(ResponseEntity.ok(hasLastUpdated));
     verify(repo, times(1)).save(ObservationEntity.builder().id("x").payload(payload).build());
   }
 
   @Test
-  @SneakyThrows
   void update_not_existing() {
     LinkProperties pageLinks =
         LinkProperties.builder().baseUrl("http://foo.com").r4BasePath("r4").build();
     ObservationRepository repo = mock(ObservationRepository.class);
-    Observation observation = Observation.builder().id("x").build();
+    Observation observation = observation();
     assertThrows(
         Exceptions.NotFound.class,
         () -> new ObservationController(pageLinks, repo).update("x", observation));
   }
 
-  @SneakyThrows
   @ParameterizedTest
   @ValueSource(strings = {"?_id=1", "?_lastUpdated=gt2020"})
   void validSearch(String query) {
