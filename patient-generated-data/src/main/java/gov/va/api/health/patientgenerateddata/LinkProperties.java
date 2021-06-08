@@ -57,7 +57,7 @@ public class LinkProperties {
         .countParameter("_count")
         .defaultCount(defaultPageSize)
         .maxCount(maxPageSize)
-        .sort(sorting)
+        .sortDefault(sorting)
         .build();
   }
 

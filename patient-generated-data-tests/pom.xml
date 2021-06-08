@@ -4,14 +4,14 @@
   <parent>
     <groupId>gov.va.api.health</groupId>
     <artifactId>test-starter</artifactId>
-    <version>8.0.10</version>
+    <version>8.0.20</version>
     <relativePath/>
   </parent>
   <artifactId>patient-generated-data-tests</artifactId>
   <version>1.0.2-SNAPSHOT</version>
   <packaging>jar</packaging>
   <properties>
-    <fhir-resources.version>7.0.0</fhir-resources.version>
+    <fhir-resources.version>7.0.2</fhir-resources.version>
     <sentinel.skipLaunch>false</sentinel.skipLaunch>
   </properties>
   <dependencies>
