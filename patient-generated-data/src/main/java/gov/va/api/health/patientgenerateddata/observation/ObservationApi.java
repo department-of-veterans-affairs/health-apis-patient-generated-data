@@ -132,7 +132,7 @@ public interface ObservationApi {
 
   @Operation(
       summary = "Observation Update",
-      description = "https://www.hl7.org/fhir/R4/observation.html",
+      description = "https://www.hl7.org/fhir/r4/observation.html",
       tags = {"Observation"})
   @PUT
   @Path("Observation/{id}")
