@@ -18,7 +18,7 @@ import javax.ws.rs.Path;
 public interface ObservationApi {
   @Operation(
       summary = "Observation Create",
-      description = "https://www.hl7.org/fhir/R4/observation.html",
+      description = "https://www.hl7.org/fhir/r4/observation.html",
       tags = {"Observation"})
   @POST
   @Path("Observation")
@@ -42,7 +42,7 @@ public interface ObservationApi {
 
   @Operation(
       summary = "Observation Read",
-      description = "https://www.hl7.org/fhir/R4/observation.html",
+      description = "https://www.hl7.org/fhir/r4/observation.html",
       tags = {"Observation"})
   @GET
   @Path("Observation/{id}")
