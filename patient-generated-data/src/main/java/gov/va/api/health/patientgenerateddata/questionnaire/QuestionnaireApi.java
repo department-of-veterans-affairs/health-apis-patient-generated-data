@@ -15,7 +15,6 @@ import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 
-/** Questionnaire Swagger definition. */
 public interface QuestionnaireApi {
   @Operation(
       summary = "Questionnaire Create",
