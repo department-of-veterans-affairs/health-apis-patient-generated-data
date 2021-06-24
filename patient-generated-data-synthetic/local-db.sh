@@ -7,7 +7,7 @@ docker stop "pgd-db"
 echo "Removing existing database container"
 docker rm "pgd-db"
 
-docker pull mcr.microsoft.com/mssql/server:2017-latest
+docker pull docker pull cockroachdb/cockroach
 
 echo "Creating new database container"
 docker run \
@@ -15,6 +15,6 @@ docker run \
   -e 'ACCEPT_EULA=Y' \
   -e "SA_PASSWORD=<YourStrong!Passw0rd>" \
   -p 1633:1433 \
-  -d mcr.microsoft.com/mssql/server:2017-latest
+  -d cockroachdb/cockroach
 
 mvn clean install -Ppopulaterator -P'!standard' -Dexec.cleanupDaemonThreads=false
