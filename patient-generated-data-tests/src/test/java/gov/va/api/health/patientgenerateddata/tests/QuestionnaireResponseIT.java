@@ -127,16 +127,6 @@ public class QuestionnaireResponseIT {
   }
 
   @Test
-  void search_lastUpdated() {
-    assumeEnvironmentIn(Environment.LOCAL);
-    var lastUpdated = systemDefinition().ids().lastUpdated();
-    var response =
-        doGet("application/json", "QuestionnaireResponse?_lastUpdated=" + lastUpdated, 200);
-    QuestionnaireResponse.Bundle bundle = response.expectValid(QuestionnaireResponse.Bundle.class);
-    assertThat(bundle.entry()).isNotEmpty();
-  }
-
-  @Test
   void search_questionnaire() {
     String source = systemDefinition().ids().questionnaireResponseSource();
     String questionnaire = systemDefinition().ids().questionnaire();
