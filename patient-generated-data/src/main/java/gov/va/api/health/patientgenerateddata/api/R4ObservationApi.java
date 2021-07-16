@@ -1,7 +1,7 @@
 package gov.va.api.health.patientgenerateddata.api;
 
+import gov.va.api.health.r4.api.resources.Observation;
 import gov.va.api.health.r4.api.resources.OperationOutcome;
-import gov.va.api.health.r4.api.resources.Questionnaire;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -15,20 +15,20 @@ import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 
-public interface QuestionnaireApi {
+public interface R4ObservationApi {
   @Operation(
-      summary = "Questionnaire Create",
-      description = "https://www.hl7.org/fhir/R4/questionnaire.html",
-      tags = {"Questionnaire"})
+      summary = "Observation Create",
+      description = "https://www.hl7.org/fhir/r4/observation.html",
+      tags = {"Observation"})
   @POST
-  @Path("Questionnaire")
+  @Path("Observation")
   @ApiResponse(
       responseCode = "201",
       description = "Record created",
       content =
           @Content(
               mediaType = "application/fhir+json",
-              schema = @Schema(implementation = Questionnaire.class)))
+              schema = @Schema(implementation = Observation.class)))
   @ApiResponse(
       responseCode = "400",
       description = "Bad request",
@@ -36,23 +36,23 @@ public interface QuestionnaireApi {
           @Content(
               mediaType = "application/fhir+json",
               schema = @Schema(implementation = OperationOutcome.class)))
-  Questionnaire questionnaireCreate(
+  Observation observationCreate(
       @RequestBody(required = true, description = "The FHIR resource in JSON format.")
-          Questionnaire body);
+          Observation body);
 
   @Operation(
-      summary = "Questionnaire Read",
-      description = "https://www.hl7.org/fhir/R4/questionnaire.html",
-      tags = {"Questionnaire"})
+      summary = "Observation Read",
+      description = "https://www.hl7.org/fhir/r4/observation.html",
+      tags = {"Observation"})
   @GET
-  @Path("Questionnaire/{id}")
+  @Path("Observation/{id}")
   @ApiResponse(
       responseCode = "200",
       description = "Record found",
       content =
           @Content(
               mediaType = "application/fhir+json",
-              schema = @Schema(implementation = Questionnaire.class)))
+              schema = @Schema(implementation = Observation.class)))
   @ApiResponse(
       responseCode = "400",
       description = "Bad request",
@@ -67,7 +67,7 @@ public interface QuestionnaireApi {
           @Content(
               mediaType = "application/fhir+json",
               schema = @Schema(implementation = OperationOutcome.class)))
-  Questionnaire questionnaireRead(
+  Observation observationRead(
       @Parameter(
               in = ParameterIn.PATH,
               name = "id",
@@ -77,17 +77,17 @@ public interface QuestionnaireApi {
           String id);
 
   @Operation(
-      summary = "Questionnaire Search",
-      description = "https://www.hl7.org/fhir/R4/questionnaire.html",
-      tags = {"Questionnaire"})
+      summary = "Observation Search",
+      description = "https://www.hl7.org/fhir/R4/observation.html",
+      tags = {"Observation"})
   @GET
-  @Path("Questionnaire")
+  @Path("Observation")
   @ApiResponse(
       responseCode = "200",
       description = "Record found",
       content =
           @Content(
-              schema = @Schema(implementation = Questionnaire.Bundle.class),
+              schema = @Schema(implementation = Observation.Bundle.class),
               mediaType = "application/fhir+json"))
   @ApiResponse(
       responseCode = "400",
@@ -103,7 +103,7 @@ public interface QuestionnaireApi {
           @Content(
               mediaType = "application/fhir+json",
               schema = @Schema(implementation = OperationOutcome.class)))
-  Questionnaire.Bundle questionnaireSearch(
+  Observation.Bundle observationSearch(
       @Parameter(
               in = ParameterIn.QUERY,
               name = "_id",
@@ -115,11 +115,6 @@ public interface QuestionnaireApi {
               name = "_lastUpdated",
               description = "The date when the record was last updated.")
           String lastUpdated,
-      @Parameter(
-              in = ParameterIn.QUERY,
-              name = "context-type-value",
-              description = "A use-context type and value assigned to the questionnaire.")
-          String author,
       @Parameter(
               in = ParameterIn.QUERY,
               name = "page",
@@ -136,25 +131,25 @@ public interface QuestionnaireApi {
           int count);
 
   @Operation(
-      summary = "Questionnaire Update",
-      description = "https://www.hl7.org/fhir/R4/questionnaire.html",
-      tags = {"Questionnaire"})
+      summary = "Observation Update",
+      description = "https://www.hl7.org/fhir/r4/observation.html",
+      tags = {"Observation"})
   @PUT
-  @Path("Questionnaire/{id}")
+  @Path("Observation/{id}")
   @ApiResponse(
       responseCode = "200",
       description = "Record updated",
       content =
           @Content(
               mediaType = "application/fhir+json",
-              schema = @Schema(implementation = Questionnaire.class)))
+              schema = @Schema(implementation = Observation.class)))
   @ApiResponse(
       responseCode = "201",
       description = "Record created",
       content =
           @Content(
               mediaType = "application/fhir+json",
-              schema = @Schema(implementation = Questionnaire.class)))
+              schema = @Schema(implementation = Observation.class)))
   @ApiResponse(
       responseCode = "400",
       description = "Bad request",
@@ -162,7 +157,7 @@ public interface QuestionnaireApi {
           @Content(
               mediaType = "application/fhir+json",
               schema = @Schema(implementation = OperationOutcome.class)))
-  Questionnaire questionnaireUpdate(
+  Observation observationUpdate(
       @Parameter(
               in = ParameterIn.PATH,
               name = "id",
@@ -171,5 +166,5 @@ public interface QuestionnaireApi {
                   "The logical ID of the resource. Once assigned, this value never changes.")
           String id,
       @RequestBody(required = true, description = "The FHIR resource in JSON format.")
-          Questionnaire body);
+          Observation body);
 }

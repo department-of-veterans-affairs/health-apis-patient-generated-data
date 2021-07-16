@@ -114,4 +114,5 @@ import javax.ws.rs.Path;
                       })))
 })
 @Path("/")
-public interface OpenApi extends ObservationApi, QuestionnaireApi, QuestionnaireResponseApi {}
+public interface R4PatientGeneratedDataService
+    extends R4ObservationApi, R4QuestionnaireApi, R4QuestionnaireResponseApi {}
