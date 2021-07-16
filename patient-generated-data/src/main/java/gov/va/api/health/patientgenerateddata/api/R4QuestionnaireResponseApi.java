@@ -1,4 +1,4 @@
-package gov.va.api.health.patientgenerateddata.questionnaireresponse;
+package gov.va.api.health.patientgenerateddata.api;
 
 import gov.va.api.health.r4.api.resources.OperationOutcome;
 import gov.va.api.health.r4.api.resources.QuestionnaireResponse;
@@ -15,7 +15,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 
-public interface QuestionnaireResponseApi {
+public interface R4QuestionnaireResponseApi {
   @Operation(
       summary = "QuestionnaireResponse Create",
       description = "https://www.hl7.org/fhir/R4/questionnaireresponse.html",
