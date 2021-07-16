@@ -1,8 +1,5 @@
-package gov.va.api.health.patientgenerateddata;
+package gov.va.api.health.patientgenerateddata.api;
 
-import gov.va.api.health.patientgenerateddata.observation.ObservationApi;
-import gov.va.api.health.patientgenerateddata.questionnaire.QuestionnaireApi;
-import gov.va.api.health.patientgenerateddata.questionnaireresponse.QuestionnaireResponseApi;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;

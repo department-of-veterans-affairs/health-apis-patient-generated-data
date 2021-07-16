@@ -1,4 +1,4 @@
-package gov.va.api.health.patientgenerateddata.questionnaire;
+package gov.va.api.health.patientgenerateddata.api;
 
 import gov.va.api.health.r4.api.resources.OperationOutcome;
 import gov.va.api.health.r4.api.resources.Questionnaire;
