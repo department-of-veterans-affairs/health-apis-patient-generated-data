@@ -84,4 +84,13 @@ public class QuestionnaireIT {
     Questionnaire.Bundle bundle = response.expectValid(Questionnaire.Bundle.class);
     assertThat(bundle.entry()).hasSize(2);
   }
+
+  @Test
+  void search_lastUpdated() {
+    assumeEnvironmentIn(Environment.LOCAL);
+    var lastUpdated = systemDefinition().ids().lastUpdated();
+    var response = doGet("application/json", "Questionnaire?_lastUpdated=" + lastUpdated, 200);
+    Questionnaire.Bundle bundle = response.expectValid(Questionnaire.Bundle.class);
+    assertThat(bundle.entry()).isNotEmpty();
+  }
 }
