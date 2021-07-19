@@ -6,8 +6,8 @@ databaseChangeLog:
       author: pteracuda
       changes:
         - sql:
-            dbms: h2, mssql
-            sql: create schema app;
+            dbms: h2, mssql, postgreSQL
+            sql: create database pgd;
 
   - changeSet:
       id: 2
@@ -19,7 +19,7 @@ databaseChangeLog:
             columns:
               - column:
                   name: id
-                  type: varchar(32)
+                  type: varchar(36)
                   constraints:
                     primaryKey: true
                     nullable: false
@@ -58,7 +58,7 @@ databaseChangeLog:
             columns:
               - column:
                   name: id
-                  type: varchar(32)
+                  type: varchar(36)
                   constraints:
                     primaryKey: true
                     nullable: false
@@ -83,7 +83,7 @@ databaseChangeLog:
             columns:
               - column:
                   name: id
-                  type: varchar(32)
+                  type: varchar(36)
                   constraints:
                     primaryKey: true
                     nullable: false
@@ -108,7 +108,7 @@ databaseChangeLog:
             columns:
               - column:
                   name: id
-                  type: varchar(32)
+                  type: varchar(36)
                   constraints:
                     primaryKey: true
                     nullable: false
@@ -133,7 +133,7 @@ databaseChangeLog:
             columns:
               - column:
                   name: author
-                  type: varchar
+                  type: varchar(255)
                   constraints:
                     - nullable: true
               - column:
@@ -146,79 +146,9 @@ databaseChangeLog:
       id: 8
       author: pteracuda
       changes:
-        - dropPrimaryKey:
-            tableName: Observation
+        - sqlFile:
+            path: changeset8_.sql
             schemaName: app
-        - modifyDataType:
-            tableName: Observation
-            schemaName: app
-            columnName: id
-            newDataType: varchar(36)
-        - addNotNullConstraint:
-            tableName: Observation
-            schemaName: app
-            columnName: id
-            columnDataType: varchar(36)
-        - addPrimaryKey:
-            tableName: Observation
-            schemaName: app
-            columnNames: id
-        - dropPrimaryKey:
-            tableName: Patient
-            schemaName: app
-        - modifyDataType:
-            tableName: Patient
-            schemaName: app
-            columnName: id
-            newDataType: varchar(36)
-        - addNotNullConstraint:
-            tableName: Patient
-            schemaName: app
-            columnName: id
-            columnDataType: varchar(36)
-        - addPrimaryKey:
-            tableName: Patient
-            schemaName: app
-            columnNames: id
-        - dropPrimaryKey:
-            tableName: Questionnaire
-            schemaName: app
-        - modifyDataType:
-            tableName: Questionnaire
-            schemaName: app
-            columnName: id
-            newDataType: varchar(36)
-        - addNotNullConstraint:
-            tableName: Questionnaire
-            schemaName: app
-            columnName: id
-            columnDataType: varchar(36)
-        - addPrimaryKey:
-            tableName: Questionnaire
-            schemaName: app
-            columnNames: id
-        - dropPrimaryKey:
-            tableName: QuestionnaireResponse
-            schemaName: app
-        - modifyDataType:
-            tableName: QuestionnaireResponse
-            schemaName: app
-            columnName: id
-            newDataType: varchar(36)
-        - addNotNullConstraint:
-            tableName: QuestionnaireResponse
-            schemaName: app
-            columnName: id
-            columnDataType: varchar(36)
-        - addPrimaryKey:
-            tableName: QuestionnaireResponse
-            schemaName: app
-            columnNames: id
-        - modifyDataType:
-            tableName: QuestionnaireResponse
-            schemaName: app
-            columnName: author
-            newDataType: varchar(255)
 
   - changeSet:
       id: 9
@@ -297,35 +227,3 @@ databaseChangeLog:
         - dropTable:
             tableName: Patient
             schemaName: app
-
-  - changeSet:
-      id: 15
-      author: pteracuda
-      changes:
-        - addColumn:
-            tableName: Observation
-            schemaName: app
-            columns:
-              - column:
-                  name: lastUpdated
-                  type: datetime2
-                  constraints:
-                    - nullable: true
-        - addColumn:
-            tableName: Questionnaire
-            schemaName: app
-            columns:
-              - column:
-                  name: lastUpdated
-                  type: datetime2
-                  constraints:
-                    - nullable: true
-        - addColumn:
-            tableName: QuestionnaireResponse
-            schemaName: app
-            columns:
-              - column:
-                  name: lastUpdated
-                  type: datetime2
-                  constraints:
-                    - nullable: true
