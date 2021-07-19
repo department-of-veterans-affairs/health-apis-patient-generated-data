@@ -8,14 +8,14 @@
     <relativePath/>
   </parent>
   <artifactId>patient-generated-data</artifactId>
-  <version>1.0.7-SNAPSHOT</version>
+  <version>1.0.7</version>
   <packaging>jar</packaging>
   <properties>
     <fhir-resources.version>7.0.7</fhir-resources.version>
     <jacoco.skip>true</jacoco.skip>
     <swagger-examples-maven-plugin.version>3.0.0</swagger-examples-maven-plugin.version>
     <swagger-maven-plugin.version>2.1.5</swagger-maven-plugin.version>
-    <vulcan.version>2.0.7</vulcan.version>
+    <vulcan.version>2.0.8</vulcan.version>
   </properties>
   <dependencies>
     <dependency>
