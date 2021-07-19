@@ -2,7 +2,6 @@ package gov.va.api.health.patientgenerateddata.observation;
 
 import gov.va.api.health.patientgenerateddata.PayloadEntity;
 import gov.va.api.health.r4.api.resources.Observation;
-import java.time.Instant;
 import javax.persistence.Basic;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -34,8 +33,6 @@ public class ObservationEntity implements PayloadEntity<Observation> {
   private String payload;
 
   @Version private Integer version;
-
-  private Instant lastUpdated;
 
   public static Sort naturalOrder() {
     return Sort.by("id").ascending();

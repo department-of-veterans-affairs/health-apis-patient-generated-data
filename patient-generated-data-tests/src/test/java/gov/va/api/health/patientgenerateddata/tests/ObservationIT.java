@@ -42,13 +42,4 @@ public class ObservationIT {
     Observation.Bundle bundle = response.expectValid(Observation.Bundle.class);
     assertThat(bundle.entry()).hasSize(2);
   }
-
-  @Test
-  void search_lastUpdated() {
-    assumeEnvironmentIn(Environment.LOCAL);
-    var lastUpdated = systemDefinition().ids().lastUpdated();
-    var response = doGet("application/json", "Observation?_lastUpdated=" + lastUpdated, 200);
-    Observation.Bundle bundle = response.expectValid(Observation.Bundle.class);
-    assertThat(bundle.entry()).isNotEmpty();
-  }
 }
