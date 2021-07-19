@@ -147,7 +147,7 @@ databaseChangeLog:
       author: pteracuda
       changes:
         - sqlFile:
-            path: changeset8_.sql
+            path: db/changelog/changeset8_.sql
             schemaName: app
 
   - changeSet:
