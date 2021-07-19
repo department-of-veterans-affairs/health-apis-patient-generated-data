@@ -73,7 +73,7 @@ public class ObservationController {
 
     Optional<Instant> maybeLastUpdated = lastUpdatedFromMeta(observation.meta());
     if (maybeLastUpdated.isPresent()) {
-      // entity.lastUpdated(maybeLastUpdated.get());
+      entity.lastUpdated(maybeLastUpdated.get());
     }
 
     return entity;

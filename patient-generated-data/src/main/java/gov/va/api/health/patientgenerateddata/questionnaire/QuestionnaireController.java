@@ -77,7 +77,7 @@ public class QuestionnaireController {
 
     Optional<Instant> maybeLastUpdated = lastUpdatedFromMeta(questionnaire.meta());
     if (maybeLastUpdated.isPresent()) {
-      // entity.lastUpdated(maybeLastUpdated.get());
+      entity.lastUpdated(maybeLastUpdated.get());
     }
     return entity;
   }
