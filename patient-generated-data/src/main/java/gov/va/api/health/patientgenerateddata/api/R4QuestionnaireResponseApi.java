@@ -36,8 +36,39 @@ public interface R4QuestionnaireResponseApi {
           @Content(
               mediaType = "application/fhir+json",
               schema = @Schema(implementation = OperationOutcome.class)))
+  @ApiResponse(
+      responseCode = "401",
+      description = "Unauthorized",
+      content =
+          @Content(
+              mediaType = "application/fhir+json",
+              schema = @Schema(implementation = OperationOutcome.class)))
+  @ApiResponse(
+      responseCode = "403",
+      description = "Forbidden",
+      content =
+          @Content(
+              mediaType = "application/fhir+json",
+              schema = @Schema(implementation = OperationOutcome.class)))
+  @ApiResponse(
+      responseCode = "429",
+      description = "Too many requests",
+      content =
+          @Content(
+              mediaType = "application/fhir+json",
+              schema = @Schema(implementation = OperationOutcome.class)))
+  @ApiResponse(
+      responseCode = "500",
+      description = "Internal server error",
+      content =
+          @Content(
+              mediaType = "application/fhir+json",
+              schema = @Schema(implementation = OperationOutcome.class)))
   QuestionnaireResponse questionnaireResponseCreate(
-      @RequestBody(required = true, description = "The FHIR resource in JSON format.")
+      @RequestBody(
+              required = true,
+              description = "The FHIR resource in JSON format.",
+              content = @Content(mediaType = "application/fhir+json"))
           QuestionnaireResponse body);
 
   @Operation(
@@ -61,8 +92,36 @@ public interface R4QuestionnaireResponseApi {
               mediaType = "application/fhir+json",
               schema = @Schema(implementation = OperationOutcome.class)))
   @ApiResponse(
+      responseCode = "401",
+      description = "Unauthorized",
+      content =
+          @Content(
+              mediaType = "application/fhir+json",
+              schema = @Schema(implementation = OperationOutcome.class)))
+  @ApiResponse(
+      responseCode = "403",
+      description = "Forbidden",
+      content =
+          @Content(
+              mediaType = "application/fhir+json",
+              schema = @Schema(implementation = OperationOutcome.class)))
+  @ApiResponse(
       responseCode = "404",
       description = "Not found",
+      content =
+          @Content(
+              mediaType = "application/fhir+json",
+              schema = @Schema(implementation = OperationOutcome.class)))
+  @ApiResponse(
+      responseCode = "429",
+      description = "Too many requests",
+      content =
+          @Content(
+              mediaType = "application/fhir+json",
+              schema = @Schema(implementation = OperationOutcome.class)))
+  @ApiResponse(
+      responseCode = "500",
+      description = "Internal server error",
       content =
           @Content(
               mediaType = "application/fhir+json",
@@ -73,7 +132,8 @@ public interface R4QuestionnaireResponseApi {
               name = "id",
               required = true,
               description =
-                  "The logical ID of the resource. Once assigned, this value never changes.")
+                  "The logical ID of the resource. Once assigned, this value never changes.",
+              example = "f003043a-9047-4c3a-b15b-a26c67f4e723")
           String id);
 
   @Operation(
@@ -97,8 +157,36 @@ public interface R4QuestionnaireResponseApi {
               mediaType = "application/fhir+json",
               schema = @Schema(implementation = OperationOutcome.class)))
   @ApiResponse(
+      responseCode = "401",
+      description = "Unauthorized",
+      content =
+          @Content(
+              mediaType = "application/fhir+json",
+              schema = @Schema(implementation = OperationOutcome.class)))
+  @ApiResponse(
+      responseCode = "403",
+      description = "Forbidden",
+      content =
+          @Content(
+              mediaType = "application/fhir+json",
+              schema = @Schema(implementation = OperationOutcome.class)))
+  @ApiResponse(
       responseCode = "404",
       description = "Not found",
+      content =
+          @Content(
+              mediaType = "application/fhir+json",
+              schema = @Schema(implementation = OperationOutcome.class)))
+  @ApiResponse(
+      responseCode = "429",
+      description = "Too many requests",
+      content =
+          @Content(
+              mediaType = "application/fhir+json",
+              schema = @Schema(implementation = OperationOutcome.class)))
+  @ApiResponse(
+      responseCode = "500",
+      description = "Internal server error",
       content =
           @Content(
               mediaType = "application/fhir+json",
@@ -108,45 +196,53 @@ public interface R4QuestionnaireResponseApi {
               in = ParameterIn.QUERY,
               name = "_id",
               description =
-                  "The logical ID of the resource. Once assigned, this value never changes.")
+                  "The logical ID of the resource. Once assigned, this value never changes.",
+              example = "f003043a-9047-4c3a-b15b-a26c67f4e723")
           String id,
       @Parameter(
               in = ParameterIn.QUERY,
               name = "_lastUpdated",
-              description = "The date when the record was last updated.")
+              description = "The date when the record was last updated.",
+              example = "gt2021-01-01T00:00:00Z")
           String lastUpdated,
       @Parameter(
               in = ParameterIn.QUERY,
               name = "author",
-              description = "The person or entity who received and recorded the answers.")
+              description = "The person or entity who received and recorded the answers.",
+              example = "1011537977V693883")
           String author,
       @Parameter(
               in = ParameterIn.QUERY,
               name = "authored",
               description =
                   "A date or range of dates (maximum of 2) that describes "
-                      + "the date that the response was recorded.")
+                      + "the date that the response was recorded.",
+              example = "2013-02-19T19:15:00Z")
           String[] authored,
       @Parameter(
               in = ParameterIn.QUERY,
               name = "source",
-              description = "The person who answered the questions")
+              description = "The person who answered the questions",
+              example = "1011537977V693883")
           String source,
       @Parameter(
               in = ParameterIn.QUERY,
               name = "subject",
-              description = "Who or what the answers apply to.")
+              description = "Who or what the answers apply to.",
+              example = "1011537977V693883")
           String subject,
       @Parameter(in = ParameterIn.QUERY, name = "_tag", description = "A metadata tag") String tag,
       @Parameter(
               in = ParameterIn.QUERY,
               name = "questionnaire",
-              description = "The questionnaire that is being responded")
+              description = "The questionnaire that is being responded",
+              example = "37953b72-961b-41ee-bd05-86c62bacc46b")
           String questionnaire,
       @Parameter(
               in = ParameterIn.QUERY,
               name = "page",
-              description = "The page number of the search result.")
+              description = "The page number of the search result.",
+              example = "1")
           @DefaultValue("1")
           int page,
       @Parameter(
@@ -154,7 +250,8 @@ public interface R4QuestionnaireResponseApi {
               name = "_count",
               description =
                   "The number of resources that should be returned in a single page. "
-                      + "The maximum count size is 100.")
+                      + "The maximum count size is 100.",
+              example = "15")
           @DefaultValue("15")
           int count);
 
@@ -185,14 +282,46 @@ public interface R4QuestionnaireResponseApi {
           @Content(
               mediaType = "application/fhir+json",
               schema = @Schema(implementation = OperationOutcome.class)))
+  @ApiResponse(
+      responseCode = "401",
+      description = "Unauthorized",
+      content =
+          @Content(
+              mediaType = "application/fhir+json",
+              schema = @Schema(implementation = OperationOutcome.class)))
+  @ApiResponse(
+      responseCode = "403",
+      description = "Forbidden",
+      content =
+          @Content(
+              mediaType = "application/fhir+json",
+              schema = @Schema(implementation = OperationOutcome.class)))
+  @ApiResponse(
+      responseCode = "429",
+      description = "Too many requests",
+      content =
+          @Content(
+              mediaType = "application/fhir+json",
+              schema = @Schema(implementation = OperationOutcome.class)))
+  @ApiResponse(
+      responseCode = "500",
+      description = "Internal server error",
+      content =
+          @Content(
+              mediaType = "application/fhir+json",
+              schema = @Schema(implementation = OperationOutcome.class)))
   QuestionnaireResponse questionnaireResponseUpdate(
       @Parameter(
               in = ParameterIn.PATH,
               name = "id",
               required = true,
               description =
-                  "The logical ID of the resource. Once assigned, this value never changes.")
+                  "The logical ID of the resource. Once assigned, this value never changes.",
+              example = "f003043a-9047-4c3a-b15b-a26c67f4e723")
           String id,
-      @RequestBody(required = true, description = "The FHIR resource in JSON format.")
+      @RequestBody(
+              required = true,
+              description = "The FHIR resource in JSON format.",
+              content = @Content(mediaType = "application/fhir+json"))
           QuestionnaireResponse body);
 }
