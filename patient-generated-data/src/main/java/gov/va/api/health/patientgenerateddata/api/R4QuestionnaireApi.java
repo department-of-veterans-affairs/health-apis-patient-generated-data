@@ -210,7 +210,7 @@ public interface R4QuestionnaireApi {
               name = "context-type-value",
               description = "A use-context type and value assigned to the questionnaire.",
               example = "venue$vha_688_3485")
-          String author,
+          String contextTypeValue,
       @Parameter(
               in = ParameterIn.QUERY,
               name = "page",
