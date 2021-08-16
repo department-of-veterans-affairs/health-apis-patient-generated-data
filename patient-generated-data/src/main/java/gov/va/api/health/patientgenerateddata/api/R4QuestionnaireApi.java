@@ -34,35 +34,35 @@ public interface R4QuestionnaireApi {
       description = "Bad request",
       content =
           @Content(
-              mediaType = "application/fhir+json",
+              mediaType = "application/json",
               schema = @Schema(implementation = OperationOutcome.class)))
   @ApiResponse(
       responseCode = "401",
       description = "Unauthorized",
       content =
           @Content(
-              mediaType = "application/fhir+json",
+              mediaType = "application/json",
               schema = @Schema(implementation = OperationOutcome.class)))
   @ApiResponse(
       responseCode = "403",
       description = "Forbidden",
       content =
           @Content(
-              mediaType = "application/fhir+json",
+              mediaType = "application/json",
               schema = @Schema(implementation = OperationOutcome.class)))
   @ApiResponse(
       responseCode = "429",
       description = "Too many requests",
       content =
           @Content(
-              mediaType = "application/fhir+json",
+              mediaType = "application/json",
               schema = @Schema(implementation = OperationOutcome.class)))
   @ApiResponse(
       responseCode = "500",
       description = "Internal server error",
       content =
           @Content(
-              mediaType = "application/fhir+json",
+              mediaType = "application/json",
               schema = @Schema(implementation = OperationOutcome.class)))
   Questionnaire questionnaireCreate(
       @RequestBody(
@@ -89,42 +89,42 @@ public interface R4QuestionnaireApi {
       description = "Bad request",
       content =
           @Content(
-              mediaType = "application/fhir+json",
+              mediaType = "application/json",
               schema = @Schema(implementation = OperationOutcome.class)))
   @ApiResponse(
       responseCode = "401",
       description = "Unauthorized",
       content =
           @Content(
-              mediaType = "application/fhir+json",
+              mediaType = "application/json",
               schema = @Schema(implementation = OperationOutcome.class)))
   @ApiResponse(
       responseCode = "403",
       description = "Forbidden",
       content =
           @Content(
-              mediaType = "application/fhir+json",
+              mediaType = "application/json",
               schema = @Schema(implementation = OperationOutcome.class)))
   @ApiResponse(
       responseCode = "404",
       description = "Not found",
       content =
           @Content(
-              mediaType = "application/fhir+json",
+              mediaType = "application/json",
               schema = @Schema(implementation = OperationOutcome.class)))
   @ApiResponse(
       responseCode = "429",
       description = "Too many requests",
       content =
           @Content(
-              mediaType = "application/fhir+json",
+              mediaType = "application/json",
               schema = @Schema(implementation = OperationOutcome.class)))
   @ApiResponse(
       responseCode = "500",
       description = "Internal server error",
       content =
           @Content(
-              mediaType = "application/fhir+json",
+              mediaType = "application/json",
               schema = @Schema(implementation = OperationOutcome.class)))
   Questionnaire questionnaireRead(
       @Parameter(
@@ -154,35 +154,35 @@ public interface R4QuestionnaireApi {
       description = "Bad request",
       content =
           @Content(
-              mediaType = "application/fhir+json",
+              mediaType = "application/json",
               schema = @Schema(implementation = OperationOutcome.class)))
   @ApiResponse(
       responseCode = "401",
       description = "Unauthorized",
       content =
           @Content(
-              mediaType = "application/fhir+json",
+              mediaType = "application/json",
               schema = @Schema(implementation = OperationOutcome.class)))
   @ApiResponse(
       responseCode = "403",
       description = "Forbidden",
       content =
           @Content(
-              mediaType = "application/fhir+json",
+              mediaType = "application/json",
               schema = @Schema(implementation = OperationOutcome.class)))
   @ApiResponse(
       responseCode = "404",
       description = "Not found",
       content =
           @Content(
-              mediaType = "application/fhir+json",
+              mediaType = "application/json",
               schema = @Schema(implementation = OperationOutcome.class)))
   @ApiResponse(
       responseCode = "429",
       description = "Too many requests",
       content =
           @Content(
-              mediaType = "application/fhir+json",
+              mediaType = "application/json",
               schema = @Schema(implementation = OperationOutcome.class)))
   @ApiResponse(
       responseCode = "500",
@@ -242,46 +242,39 @@ public interface R4QuestionnaireApi {
               mediaType = "application/fhir+json",
               schema = @Schema(implementation = Questionnaire.class)))
   @ApiResponse(
-      responseCode = "201",
-      description = "Record created",
-      content =
-          @Content(
-              mediaType = "application/fhir+json",
-              schema = @Schema(implementation = Questionnaire.class)))
-  @ApiResponse(
       responseCode = "400",
       description = "Bad request",
       content =
           @Content(
-              mediaType = "application/fhir+json",
+              mediaType = "application/json",
               schema = @Schema(implementation = OperationOutcome.class)))
   @ApiResponse(
       responseCode = "401",
       description = "Unauthorized",
       content =
           @Content(
-              mediaType = "application/fhir+json",
+              mediaType = "application/json",
               schema = @Schema(implementation = OperationOutcome.class)))
   @ApiResponse(
       responseCode = "403",
       description = "Forbidden",
       content =
           @Content(
-              mediaType = "application/fhir+json",
+              mediaType = "application/json",
               schema = @Schema(implementation = OperationOutcome.class)))
   @ApiResponse(
       responseCode = "429",
       description = "Too many requests",
       content =
           @Content(
-              mediaType = "application/fhir+json",
+              mediaType = "application/json",
               schema = @Schema(implementation = OperationOutcome.class)))
   @ApiResponse(
       responseCode = "500",
       description = "Internal server error",
       content =
           @Content(
-              mediaType = "application/fhir+json",
+              mediaType = "application/json",
               schema = @Schema(implementation = OperationOutcome.class)))
   Questionnaire questionnaireUpdate(
       @Parameter(
