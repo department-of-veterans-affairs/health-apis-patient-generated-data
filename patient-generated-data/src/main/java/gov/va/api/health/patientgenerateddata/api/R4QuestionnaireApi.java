@@ -189,7 +189,7 @@ public interface R4QuestionnaireApi {
       description = "Internal server error",
       content =
           @Content(
-              mediaType = "application/fhir+json",
+              mediaType = "application/json",
               schema = @Schema(implementation = OperationOutcome.class)))
   Questionnaire.Bundle questionnaireSearch(
       @Parameter(
