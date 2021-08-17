@@ -34,10 +34,41 @@ public interface R4QuestionnaireApi {
       description = "Bad request",
       content =
           @Content(
-              mediaType = "application/fhir+json",
+              mediaType = "application/json",
+              schema = @Schema(implementation = OperationOutcome.class)))
+  @ApiResponse(
+      responseCode = "401",
+      description = "Unauthorized",
+      content =
+          @Content(
+              mediaType = "application/json",
+              schema = @Schema(implementation = OperationOutcome.class)))
+  @ApiResponse(
+      responseCode = "403",
+      description = "Forbidden",
+      content =
+          @Content(
+              mediaType = "application/json",
+              schema = @Schema(implementation = OperationOutcome.class)))
+  @ApiResponse(
+      responseCode = "429",
+      description = "Too many requests",
+      content =
+          @Content(
+              mediaType = "application/json",
+              schema = @Schema(implementation = OperationOutcome.class)))
+  @ApiResponse(
+      responseCode = "500",
+      description = "Internal server error",
+      content =
+          @Content(
+              mediaType = "application/json",
               schema = @Schema(implementation = OperationOutcome.class)))
   Questionnaire questionnaireCreate(
-      @RequestBody(required = true, description = "The FHIR resource in JSON format.")
+      @RequestBody(
+              required = true,
+              description = "The FHIR resource in JSON format.",
+              content = @Content(mediaType = "application/fhir+json"))
           Questionnaire body);
 
   @Operation(
@@ -58,14 +89,42 @@ public interface R4QuestionnaireApi {
       description = "Bad request",
       content =
           @Content(
-              mediaType = "application/fhir+json",
+              mediaType = "application/json",
+              schema = @Schema(implementation = OperationOutcome.class)))
+  @ApiResponse(
+      responseCode = "401",
+      description = "Unauthorized",
+      content =
+          @Content(
+              mediaType = "application/json",
+              schema = @Schema(implementation = OperationOutcome.class)))
+  @ApiResponse(
+      responseCode = "403",
+      description = "Forbidden",
+      content =
+          @Content(
+              mediaType = "application/json",
               schema = @Schema(implementation = OperationOutcome.class)))
   @ApiResponse(
       responseCode = "404",
       description = "Not found",
       content =
           @Content(
-              mediaType = "application/fhir+json",
+              mediaType = "application/json",
+              schema = @Schema(implementation = OperationOutcome.class)))
+  @ApiResponse(
+      responseCode = "429",
+      description = "Too many requests",
+      content =
+          @Content(
+              mediaType = "application/json",
+              schema = @Schema(implementation = OperationOutcome.class)))
+  @ApiResponse(
+      responseCode = "500",
+      description = "Internal server error",
+      content =
+          @Content(
+              mediaType = "application/json",
               schema = @Schema(implementation = OperationOutcome.class)))
   Questionnaire questionnaireRead(
       @Parameter(
@@ -73,7 +132,8 @@ public interface R4QuestionnaireApi {
               name = "id",
               required = true,
               description =
-                  "The logical ID of the resource. Once assigned, this value never changes.")
+                  "The logical ID of the resource. Once assigned, this value never changes.",
+              example = "37953b72-961b-41ee-bd05-86c62bacc46b")
           String id);
 
   @Operation(
@@ -94,36 +154,68 @@ public interface R4QuestionnaireApi {
       description = "Bad request",
       content =
           @Content(
-              mediaType = "application/fhir+json",
+              mediaType = "application/json",
+              schema = @Schema(implementation = OperationOutcome.class)))
+  @ApiResponse(
+      responseCode = "401",
+      description = "Unauthorized",
+      content =
+          @Content(
+              mediaType = "application/json",
+              schema = @Schema(implementation = OperationOutcome.class)))
+  @ApiResponse(
+      responseCode = "403",
+      description = "Forbidden",
+      content =
+          @Content(
+              mediaType = "application/json",
               schema = @Schema(implementation = OperationOutcome.class)))
   @ApiResponse(
       responseCode = "404",
       description = "Not found",
       content =
           @Content(
-              mediaType = "application/fhir+json",
+              mediaType = "application/json",
+              schema = @Schema(implementation = OperationOutcome.class)))
+  @ApiResponse(
+      responseCode = "429",
+      description = "Too many requests",
+      content =
+          @Content(
+              mediaType = "application/json",
+              schema = @Schema(implementation = OperationOutcome.class)))
+  @ApiResponse(
+      responseCode = "500",
+      description = "Internal server error",
+      content =
+          @Content(
+              mediaType = "application/json",
               schema = @Schema(implementation = OperationOutcome.class)))
   Questionnaire.Bundle questionnaireSearch(
       @Parameter(
               in = ParameterIn.QUERY,
               name = "_id",
               description =
-                  "The logical ID of the resource. Once assigned, this value never changes.")
+                  "The logical ID of the resource. Once assigned, this value never changes.",
+              example = "37953b72-961b-41ee-bd05-86c62bacc46b")
           String id,
       @Parameter(
               in = ParameterIn.QUERY,
               name = "_lastUpdated",
-              description = "The date when the record was last updated.")
+              description = "The date when the record was last updated.",
+              example = "gt2021-01-01T00:00:00Z")
           String lastUpdated,
       @Parameter(
               in = ParameterIn.QUERY,
               name = "context-type-value",
-              description = "A use-context type and value assigned to the questionnaire.")
-          String author,
+              description = "A use-context type and value assigned to the questionnaire.",
+              example = "venue$vha_688_3485")
+          String contextTypeValue,
       @Parameter(
               in = ParameterIn.QUERY,
               name = "page",
-              description = "The page number of the search result.")
+              description = "The page number of the search result.",
+              example = "1")
           @DefaultValue("1")
           int page,
       @Parameter(
@@ -131,7 +223,8 @@ public interface R4QuestionnaireApi {
               name = "_count",
               description =
                   "The number of resources that should be returned in a single page. "
-                      + "The maximum count size is 100.")
+                      + "The maximum count size is 100.",
+              example = "15")
           @DefaultValue("15")
           int count);
 
@@ -149,18 +242,39 @@ public interface R4QuestionnaireApi {
               mediaType = "application/fhir+json",
               schema = @Schema(implementation = Questionnaire.class)))
   @ApiResponse(
-      responseCode = "201",
-      description = "Record created",
-      content =
-          @Content(
-              mediaType = "application/fhir+json",
-              schema = @Schema(implementation = Questionnaire.class)))
-  @ApiResponse(
       responseCode = "400",
       description = "Bad request",
       content =
           @Content(
-              mediaType = "application/fhir+json",
+              mediaType = "application/json",
+              schema = @Schema(implementation = OperationOutcome.class)))
+  @ApiResponse(
+      responseCode = "401",
+      description = "Unauthorized",
+      content =
+          @Content(
+              mediaType = "application/json",
+              schema = @Schema(implementation = OperationOutcome.class)))
+  @ApiResponse(
+      responseCode = "403",
+      description = "Forbidden",
+      content =
+          @Content(
+              mediaType = "application/json",
+              schema = @Schema(implementation = OperationOutcome.class)))
+  @ApiResponse(
+      responseCode = "429",
+      description = "Too many requests",
+      content =
+          @Content(
+              mediaType = "application/json",
+              schema = @Schema(implementation = OperationOutcome.class)))
+  @ApiResponse(
+      responseCode = "500",
+      description = "Internal server error",
+      content =
+          @Content(
+              mediaType = "application/json",
               schema = @Schema(implementation = OperationOutcome.class)))
   Questionnaire questionnaireUpdate(
       @Parameter(
@@ -168,8 +282,12 @@ public interface R4QuestionnaireApi {
               name = "id",
               required = true,
               description =
-                  "The logical ID of the resource. Once assigned, this value never changes.")
+                  "The logical ID of the resource. Once assigned, this value never changes.",
+              example = "37953b72-961b-41ee-bd05-86c62bacc46b")
           String id,
-      @RequestBody(required = true, description = "The FHIR resource in JSON format.")
+      @RequestBody(
+              required = true,
+              description = "The FHIR resource in JSON format.",
+              content = @Content(mediaType = "application/fhir+json"))
           Questionnaire body);
 }

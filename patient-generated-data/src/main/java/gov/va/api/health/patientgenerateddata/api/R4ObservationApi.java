@@ -34,10 +34,41 @@ public interface R4ObservationApi {
       description = "Bad request",
       content =
           @Content(
-              mediaType = "application/fhir+json",
+              mediaType = "application/json",
+              schema = @Schema(implementation = OperationOutcome.class)))
+  @ApiResponse(
+      responseCode = "401",
+      description = "Unauthorized",
+      content =
+          @Content(
+              mediaType = "application/json",
+              schema = @Schema(implementation = OperationOutcome.class)))
+  @ApiResponse(
+      responseCode = "403",
+      description = "Forbidden",
+      content =
+          @Content(
+              mediaType = "application/json",
+              schema = @Schema(implementation = OperationOutcome.class)))
+  @ApiResponse(
+      responseCode = "429",
+      description = "Too many requests",
+      content =
+          @Content(
+              mediaType = "application/json",
+              schema = @Schema(implementation = OperationOutcome.class)))
+  @ApiResponse(
+      responseCode = "500",
+      description = "Internal server error",
+      content =
+          @Content(
+              mediaType = "application/json",
               schema = @Schema(implementation = OperationOutcome.class)))
   Observation observationCreate(
-      @RequestBody(required = true, description = "The FHIR resource in JSON format.")
+      @RequestBody(
+              required = true,
+              description = "The FHIR resource in JSON format.",
+              content = @Content(mediaType = "application/fhir+json"))
           Observation body);
 
   @Operation(
@@ -58,14 +89,42 @@ public interface R4ObservationApi {
       description = "Bad request",
       content =
           @Content(
-              mediaType = "application/fhir+json",
+              mediaType = "application/json",
+              schema = @Schema(implementation = OperationOutcome.class)))
+  @ApiResponse(
+      responseCode = "401",
+      description = "Unauthorized",
+      content =
+          @Content(
+              mediaType = "application/json",
+              schema = @Schema(implementation = OperationOutcome.class)))
+  @ApiResponse(
+      responseCode = "403",
+      description = "Forbidden",
+      content =
+          @Content(
+              mediaType = "application/json",
               schema = @Schema(implementation = OperationOutcome.class)))
   @ApiResponse(
       responseCode = "404",
       description = "Not found",
       content =
           @Content(
-              mediaType = "application/fhir+json",
+              mediaType = "application/json",
+              schema = @Schema(implementation = OperationOutcome.class)))
+  @ApiResponse(
+      responseCode = "429",
+      description = "Too many requests",
+      content =
+          @Content(
+              mediaType = "application/json",
+              schema = @Schema(implementation = OperationOutcome.class)))
+  @ApiResponse(
+      responseCode = "500",
+      description = "Internal server error",
+      content =
+          @Content(
+              mediaType = "application/json",
               schema = @Schema(implementation = OperationOutcome.class)))
   Observation observationRead(
       @Parameter(
@@ -73,7 +132,8 @@ public interface R4ObservationApi {
               name = "id",
               required = true,
               description =
-                  "The logical ID of the resource. Once assigned, this value never changes.")
+                  "The logical ID of the resource. Once assigned, this value never changes.",
+              example = "0b9d2e37-f84d-4f9e-9ba3-995772f368d3")
           String id);
 
   @Operation(
@@ -94,31 +154,62 @@ public interface R4ObservationApi {
       description = "Bad request",
       content =
           @Content(
-              mediaType = "application/fhir+json",
+              mediaType = "application/json",
+              schema = @Schema(implementation = OperationOutcome.class)))
+  @ApiResponse(
+      responseCode = "401",
+      description = "Unauthorized",
+      content =
+          @Content(
+              mediaType = "application/json",
+              schema = @Schema(implementation = OperationOutcome.class)))
+  @ApiResponse(
+      responseCode = "403",
+      description = "Forbidden",
+      content =
+          @Content(
+              mediaType = "application/json",
               schema = @Schema(implementation = OperationOutcome.class)))
   @ApiResponse(
       responseCode = "404",
       description = "Not found",
       content =
           @Content(
-              mediaType = "application/fhir+json",
+              mediaType = "application/json",
+              schema = @Schema(implementation = OperationOutcome.class)))
+  @ApiResponse(
+      responseCode = "429",
+      description = "Too many requests",
+      content =
+          @Content(
+              mediaType = "application/json",
+              schema = @Schema(implementation = OperationOutcome.class)))
+  @ApiResponse(
+      responseCode = "500",
+      description = "Internal server error",
+      content =
+          @Content(
+              mediaType = "application/json",
               schema = @Schema(implementation = OperationOutcome.class)))
   Observation.Bundle observationSearch(
       @Parameter(
               in = ParameterIn.QUERY,
               name = "_id",
               description =
-                  "The logical ID of the resource. Once assigned, this value never changes.")
+                  "The logical ID of the resource. Once assigned, this value never changes.",
+              example = "0b9d2e37-f84d-4f9e-9ba3-995772f368d3")
           String id,
       @Parameter(
               in = ParameterIn.QUERY,
               name = "_lastUpdated",
-              description = "The date when the record was last updated.")
+              description = "The date when the record was last updated.",
+              example = "gt2021-01-01T00:00:00Z")
           String lastUpdated,
       @Parameter(
               in = ParameterIn.QUERY,
               name = "page",
-              description = "The page number of the search result.")
+              description = "The page number of the search result.",
+              example = "1")
           @DefaultValue("1")
           int page,
       @Parameter(
@@ -126,7 +217,8 @@ public interface R4ObservationApi {
               name = "_count",
               description =
                   "The number of resources that should be returned in a single page. "
-                      + "The maximum count size is 100.")
+                      + "The maximum count size is 100.",
+              example = "15")
           @DefaultValue("15")
           int count);
 
@@ -144,18 +236,39 @@ public interface R4ObservationApi {
               mediaType = "application/fhir+json",
               schema = @Schema(implementation = Observation.class)))
   @ApiResponse(
-      responseCode = "201",
-      description = "Record created",
-      content =
-          @Content(
-              mediaType = "application/fhir+json",
-              schema = @Schema(implementation = Observation.class)))
-  @ApiResponse(
       responseCode = "400",
       description = "Bad request",
       content =
           @Content(
-              mediaType = "application/fhir+json",
+              mediaType = "application/json",
+              schema = @Schema(implementation = OperationOutcome.class)))
+  @ApiResponse(
+      responseCode = "401",
+      description = "Unauthorized",
+      content =
+          @Content(
+              mediaType = "application/json",
+              schema = @Schema(implementation = OperationOutcome.class)))
+  @ApiResponse(
+      responseCode = "403",
+      description = "Forbidden",
+      content =
+          @Content(
+              mediaType = "application/json",
+              schema = @Schema(implementation = OperationOutcome.class)))
+  @ApiResponse(
+      responseCode = "429",
+      description = "Too many requests",
+      content =
+          @Content(
+              mediaType = "application/json",
+              schema = @Schema(implementation = OperationOutcome.class)))
+  @ApiResponse(
+      responseCode = "500",
+      description = "Internal server error",
+      content =
+          @Content(
+              mediaType = "application/json",
               schema = @Schema(implementation = OperationOutcome.class)))
   Observation observationUpdate(
       @Parameter(
@@ -163,8 +276,12 @@ public interface R4ObservationApi {
               name = "id",
               required = true,
               description =
-                  "The logical ID of the resource. Once assigned, this value never changes.")
+                  "The logical ID of the resource. Once assigned, this value never changes.",
+              example = "0b9d2e37-f84d-4f9e-9ba3-995772f368d3")
           String id,
-      @RequestBody(required = true, description = "The FHIR resource in JSON format.")
+      @RequestBody(
+              required = true,
+              description = "The FHIR resource in JSON format.",
+              content = @Content(mediaType = "application/fhir+json"))
           Observation body);
 }
