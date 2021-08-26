@@ -25,7 +25,6 @@ import gov.va.api.lighthouse.vulcan.mappings.Mappings;
 import java.net.URI;
 import java.time.Instant;
 import java.util.List;
-import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -116,9 +115,10 @@ public class ObservationController {
 
   @GetMapping(value = "/{id}")
   Observation read(@PathVariable("id") String id) {
-    Optional<ObservationEntity> maybeEntity = repository.findById(id);
-    ObservationEntity entity = maybeEntity.orElseThrow(() -> new Exceptions.NotFound(id));
-    return entity.deserializePayload();
+    return repository
+        .findById(id)
+        .map(e -> e.deserializePayload())
+        .orElseThrow(() -> new Exceptions.NotFound(id));
   }
 
   @GetMapping

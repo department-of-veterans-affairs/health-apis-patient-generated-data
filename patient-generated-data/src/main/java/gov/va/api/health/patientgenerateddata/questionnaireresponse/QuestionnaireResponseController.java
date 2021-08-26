@@ -11,6 +11,7 @@ import static gov.va.api.health.patientgenerateddata.Controllers.resourceId;
 import static gov.va.api.lighthouse.vulcan.Rules.atLeastOneParameterOf;
 import static gov.va.api.lighthouse.vulcan.Rules.ifParameter;
 import static gov.va.api.lighthouse.vulcan.Vulcan.returnNothing;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -20,8 +21,6 @@ import gov.va.api.health.patientgenerateddata.JacksonMapperConfig;
 import gov.va.api.health.patientgenerateddata.LinkProperties;
 import gov.va.api.health.patientgenerateddata.TokenListMapping;
 import gov.va.api.health.patientgenerateddata.VulcanizedBundler;
-import gov.va.api.health.patientgenerateddata.observation.ObservationEntity;
-import gov.va.api.health.r4.api.resources.Observation;
 import gov.va.api.health.r4.api.resources.QuestionnaireResponse;
 import gov.va.api.lighthouse.vulcan.Vulcan;
 import gov.va.api.lighthouse.vulcan.VulcanConfiguration;
@@ -29,7 +28,6 @@ import gov.va.api.lighthouse.vulcan.mappings.Mappings;
 import java.net.URI;
 import java.time.Instant;
 import java.util.List;
-import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -80,12 +78,12 @@ public class QuestionnaireResponseController {
     entity.lastUpdated(lastUpdatedFromMeta(questionnaireResponse.meta()).orElse(null));
   }
 
-  /** Transforms a Resource to an Entity. */
-  public static QuestionnaireResponseEntity toEntity(QuestionnaireResponse questionnaireResponse) {
-    checkState(questionnaireResponse.id() != null, "ID is required");
-    return populateEntity(
-        questionnaireResponse,
-        QuestionnaireResponseEntity.builder().id(questionnaireResponse.id()).build());
+  private static QuestionnaireResponseEntity toEntity(QuestionnaireResponse questionnaireResponse) {
+    checkState(!isBlank(questionnaireResponse.id()), "ID is required");
+    QuestionnaireResponseEntity entity =
+        QuestionnaireResponseEntity.builder().id(questionnaireResponse.id()).build();
+    populateEntity(entity, questionnaireResponse);
+    return entity;
   }
 
   private VulcanConfiguration<QuestionnaireResponseEntity> configuration() {
@@ -135,21 +133,23 @@ public class QuestionnaireResponseController {
   @PostMapping
   ResponseEntity<QuestionnaireResponse> create(
       @Valid @RequestBody QuestionnaireResponse questionnaireResponse) {
-    return create(generateRandomId(), nowMillis(), questionnaireResponse);
-  }
-
-  ResponseEntity<QuestionnaireResponse> create(
-      String id, Instant now, QuestionnaireResponse questionnaireResponse) {
     checkRequestState(
         isEmpty(questionnaireResponse.id()),
         "ID must be empty, found %s",
         questionnaireResponse.id());
-    questionnaireResponse.id(id);
+    questionnaireResponse.id(generateRandomId());
+    return create(questionnaireResponse, nowMillis());
+  }
+
+  /** Create resource. */
+  public ResponseEntity<QuestionnaireResponse> create(
+      QuestionnaireResponse questionnaireResponse, Instant now) {
     questionnaireResponse.meta(metaWithLastUpdated(questionnaireResponse.meta(), now));
     QuestionnaireResponseEntity entity = toEntity(questionnaireResponse);
     repository.save(entity);
     return ResponseEntity.created(
-            URI.create(linkProperties.r4Url() + "/QuestionnaireResponse/" + id))
+            URI.create(
+                linkProperties.r4Url() + "/QuestionnaireResponse/" + questionnaireResponse.id()))
         .body(questionnaireResponse);
   }
 
@@ -160,9 +160,10 @@ public class QuestionnaireResponseController {
 
   @GetMapping(value = "/{id}")
   QuestionnaireResponse read(@PathVariable("id") String id) {
-    Optional<QuestionnaireResponseEntity> maybeEntity = repository.findById(id);
-    QuestionnaireResponseEntity entity = maybeEntity.orElseThrow(() -> new Exceptions.NotFound(id));
-    return entity.deserializePayload();
+    return repository
+        .findById(id)
+        .map(e -> e.deserializePayload())
+        .orElseThrow(() -> new Exceptions.NotFound(id));
   }
 
   /** QuestionnaireResponse Search. */
@@ -194,21 +195,24 @@ public class QuestionnaireResponseController {
   @PutMapping(value = "/{id}")
   @Loggable(arguments = false)
   ResponseEntity<QuestionnaireResponse> update(
-      @PathVariable("id") String id,
+      @PathVariable("id") String pathId,
       @Valid @RequestBody QuestionnaireResponse questionnaireResponse) {
-    return update(id, nowMillis(), questionnaireResponse);
+    checkRequestState(
+        pathId.equals(questionnaireResponse.id()),
+        "Path ID (%s) and request body ID (%s) do not match",
+        pathId,
+        questionnaireResponse.id());
+    return update(questionnaireResponse, nowMillis());
   }
 
-  @SneakyThrows
   ResponseEntity<QuestionnaireResponse> update(
-      String id, Instant now, QuestionnaireResponse questionnaireResponse) {
-    checkState(id.equals(questionnaireResponse.id()), "%s != %s", id, questionnaireResponse.id());
+      QuestionnaireResponse questionnaireResponse, Instant now) {
     questionnaireResponse.meta(metaWithLastUpdated(questionnaireResponse.meta(), now));
-    Optional<QuestionnaireResponseEntity> maybeEntity =
-        repository.findById(questionnaireResponse.id());
     QuestionnaireResponseEntity entity =
-        maybeEntity.orElseThrow(() -> new Exceptions.NotFound(questionnaireResponse.id()));
-    entity = populateEntity(questionnaireResponse, entity);
+        repository
+            .findById(questionnaireResponse.id())
+            .orElseThrow(() -> new Exceptions.NotFound(questionnaireResponse.id()));
+    populateEntity(entity, questionnaireResponse);
     repository.save(entity);
     return ResponseEntity.ok(questionnaireResponse);
   }

@@ -44,9 +44,9 @@ public class QuestionnaireControllerTest {
         LinkProperties.builder().baseUrl("http://foo.com").r4BasePath("r4").build();
     QuestionnaireRepository repo = mock(QuestionnaireRepository.class);
     QuestionnaireController controller = new QuestionnaireController(pageLinks, repo);
-    var questionnaire = questionnaire().id(null);
+    var questionnaire = questionnaire().id("x");
     var persisted = MAPPER.writeValueAsString(questionnaire);
-    assertThat(controller.create("x", time, questionnaire))
+    assertThat(controller.create(questionnaire, time))
         .isEqualTo(
             ResponseEntity.created(URI.create("http://foo.com/r4/Questionnaire/x"))
                 .body(questionnaireWithLastUpdated(time)));
@@ -139,7 +139,7 @@ public class QuestionnaireControllerTest {
         .thenReturn(Optional.of(QuestionnaireEntity.builder().id("x").payload(payload).build()));
     assertThat(
             new QuestionnaireController(mock(LinkProperties.class), repo)
-                .update("x", now, questionnaire))
+                .update(questionnaire, now))
         .isEqualTo(ResponseEntity.ok(questionnaireWithLastUpdated(now)));
     verify(repo, times(1)).save(QuestionnaireEntity.builder().id("x").payload(payload).build());
   }

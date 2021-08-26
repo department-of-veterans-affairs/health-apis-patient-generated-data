@@ -14,7 +14,6 @@ import gov.va.api.health.r4.api.resources.Observation;
 import gov.va.api.health.r4.api.resources.Questionnaire;
 import gov.va.api.health.r4.api.resources.QuestionnaireResponse;
 import gov.va.api.health.r4.api.resources.Resource;
-import java.net.URI;
 import javax.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

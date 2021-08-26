@@ -59,7 +59,7 @@ public class QuestionnaireResponseControllerTest {
     Instant now = Instant.parse("2021-01-01T01:00:00.001Z");
     var expected = questionnaireResponseWithLastUpdated(now);
     QuestionnaireResponseRepository repo = mock(QuestionnaireResponseRepository.class);
-    assertThat(controller(repo).create("x", now, questionnaireResponse().id(null)))
+    assertThat(controller(repo).create(questionnaireResponse().id("x"), now))
         .isEqualTo(
             ResponseEntity.created(URI.create("http://foo.com/r4/QuestionnaireResponse/x"))
                 .body(expected));
@@ -127,8 +127,7 @@ public class QuestionnaireResponseControllerTest {
             Optional.of(QuestionnaireResponseEntity.builder().id("x").payload(payload).build()));
     QuestionnaireResponse expected = questionnaireResponseWithLastUpdated(now);
     assertThat(
-            new QuestionnaireResponseController(pageLinks, repo)
-                .update("x", now, questionnaireResponse))
+            new QuestionnaireResponseController(pageLinks, repo).update(questionnaireResponse, now))
         .isEqualTo(ResponseEntity.ok(expected));
     verify(repo, times(1))
         .save(QuestionnaireResponseEntity.builder().id("x").payload(payload).build());
