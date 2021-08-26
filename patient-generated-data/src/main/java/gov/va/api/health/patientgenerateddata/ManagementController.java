@@ -44,7 +44,7 @@ public class ManagementController {
 
   @PostMapping(value = "/Observation")
   ResponseEntity<Observation> create(@Valid @RequestBody Observation observation) {
-    verifyId(observation, observationRepository);
+    validateId(observation, observationRepository);
     observationRepository.save(ObservationController.toEntity(observation));
     return ResponseEntity.created(
             URI.create(linkProperties.r4Url() + "/Observation/" + observation.id()))
@@ -53,7 +53,7 @@ public class ManagementController {
 
   @PostMapping(value = "/Questionnaire")
   ResponseEntity<Questionnaire> create(@Valid @RequestBody Questionnaire questionnaire) {
-    verifyId(questionnaire, questionnaireRepository);
+    validateId(questionnaire, questionnaireRepository);
     questionnaireRepository.save(QuestionnaireController.toEntity(questionnaire));
     return ResponseEntity.created(
             URI.create(linkProperties.r4Url() + "/Questionnaire/" + questionnaire.id()))
@@ -63,7 +63,7 @@ public class ManagementController {
   @PostMapping(value = "/QuestionnaireResponse")
   ResponseEntity<QuestionnaireResponse> create(
       @Valid @RequestBody QuestionnaireResponse questionnaireResponse) {
-    verifyId(questionnaireResponse, questionnaireResponseRepository);
+    validateId(questionnaireResponse, questionnaireResponseRepository);
     questionnaireResponseRepository.save(
         QuestionnaireResponseController.toEntity(questionnaireResponse));
     return ResponseEntity.created(
@@ -72,7 +72,7 @@ public class ManagementController {
         .body(questionnaireResponse);
   }
 
-  <R extends Resource, T extends PayloadEntity<R>> void verifyId(
+  <R extends Resource, T extends PayloadEntity<R>> void validateId(
       R resource, CrudRepository<T, String> repository) {
     String id = resource.id();
     checkRequestState(!isBlank(id), "ID is required");
