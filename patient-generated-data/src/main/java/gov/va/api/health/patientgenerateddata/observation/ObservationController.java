@@ -66,7 +66,7 @@ public class ObservationController {
         entity.id(),
         observation.id());
     entity.payload(MAPPER.writeValueAsString(observation));
-    lastUpdatedFromMeta(observation.meta()).ifPresent(lu -> entity.lastUpdated(lu));
+    entity.lastUpdated(lastUpdatedFromMeta(observation.meta()).orElse(null));
   }
 
   private static ObservationEntity toEntity(Observation observation) {

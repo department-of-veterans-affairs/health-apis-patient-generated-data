@@ -70,20 +70,14 @@ public class QuestionnaireResponseController {
         "Entity ID (%s) and payload ID (%s) do not match",
         entity.id(),
         questionnaireResponse.id());
-    String authorId = resourceId(questionnaireResponse.author());
-    Instant authored = parseDateTime(questionnaireResponse.authored());
-    String questionnaire = resourceId(questionnaireResponse.questionnaire());
-    String subject = resourceId(questionnaireResponse.subject());
-    String metaTag = TokenListMapping.metadataTagJoin(questionnaireResponse);
-    String source = resourceId(questionnaireResponse.source());
     entity.payload(MAPPER.writeValueAsString(questionnaireResponse));
-    entity.author(authorId);
-    entity.authored(authored);
-    entity.questionnaire(questionnaire);
-    entity.subject(subject);
-    entity.metaTag(metaTag);
-    entity.source(source);
-    lastUpdatedFromMeta(questionnaireResponse.meta()).ifPresent(lu -> entity.lastUpdated(lu));
+    entity.author(resourceId(questionnaireResponse.author()));
+    entity.authored(parseDateTime(questionnaireResponse.authored()));
+    entity.questionnaire(resourceId(questionnaireResponse.questionnaire()));
+    entity.subject(resourceId(questionnaireResponse.subject()));
+    entity.metaTag(TokenListMapping.metadataTagJoin(questionnaireResponse));
+    entity.source(resourceId(questionnaireResponse.source()));
+    entity.lastUpdated(lastUpdatedFromMeta(questionnaireResponse.meta()).orElse(null));
   }
 
   /** Transforms a Resource to an Entity. */

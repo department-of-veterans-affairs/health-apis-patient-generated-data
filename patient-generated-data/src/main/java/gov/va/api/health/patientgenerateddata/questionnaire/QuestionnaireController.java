@@ -62,7 +62,6 @@ public class QuestionnaireController {
   @SneakyThrows
   private static void populateEntity(
       @NonNull QuestionnaireEntity entity, @NonNull Questionnaire questionnaire) {
-
     checkState(
         entity.id().equals(questionnaire.id()),
         "Entity ID (%s) and payload ID (%s) do not match",
@@ -70,7 +69,7 @@ public class QuestionnaireController {
         questionnaire.id());
     entity.payload(MAPPER.writeValueAsString(questionnaire));
     entity.contextTypeValue(CompositeMapping.useContextValueJoin(questionnaire));
-    lastUpdatedFromMeta(questionnaire.meta()).ifPresent(lu -> entity.lastUpdated(lu));
+    entity.lastUpdated(lastUpdatedFromMeta(questionnaire.meta()).orElse(null));
   }
 
   public static QuestionnaireEntity toEntity(Questionnaire questionnaire) {
