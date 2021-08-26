@@ -18,6 +18,8 @@ import gov.va.api.health.patientgenerateddata.Exceptions;
 import gov.va.api.health.patientgenerateddata.JacksonMapperConfig;
 import gov.va.api.health.patientgenerateddata.LinkProperties;
 import gov.va.api.health.patientgenerateddata.VulcanizedBundler;
+import gov.va.api.health.patientgenerateddata.observation.ObservationEntity;
+import gov.va.api.health.r4.api.resources.Observation;
 import gov.va.api.health.r4.api.resources.Questionnaire;
 import gov.va.api.lighthouse.vulcan.Vulcan;
 import gov.va.api.lighthouse.vulcan.VulcanConfiguration;
@@ -57,33 +59,24 @@ public class QuestionnaireController {
 
   private final QuestionnaireRepository repository;
 
-  /** Populates an entity with Resource data. */
   @SneakyThrows
-  private static QuestionnaireEntity populate(
-      Questionnaire questionnaire, QuestionnaireEntity entity) {
-    return populate(questionnaire, entity, MAPPER.writeValueAsString(questionnaire));
-  }
+  private static void populateEntity(
+      @NonNull QuestionnaireEntity entity, @NonNull Questionnaire questionnaire) {
 
-  private static QuestionnaireEntity populate(
-      @NonNull Questionnaire questionnaire, @NonNull QuestionnaireEntity entity, String payload) {
     checkState(
         entity.id().equals(questionnaire.id()),
-        "IDs don't match, %s != %s",
+        "Entity ID (%s) and payload ID (%s) do not match",
         entity.id(),
         questionnaire.id());
-    entity.payload(payload);
+    entity.payload(MAPPER.writeValueAsString(questionnaire));
     entity.contextTypeValue(CompositeMapping.useContextValueJoin(questionnaire));
-
-    Optional<Instant> maybeLastUpdated = lastUpdatedFromMeta(questionnaire.meta());
-    if (maybeLastUpdated.isPresent()) {
-      entity.lastUpdated(maybeLastUpdated.get());
-    }
-    return entity;
+    lastUpdatedFromMeta(questionnaire.meta()).ifPresent(lu -> entity.lastUpdated(lu));
   }
 
   public static QuestionnaireEntity toEntity(Questionnaire questionnaire) {
     checkState(questionnaire.id() != null, "ID is required");
-    return populate(questionnaire, QuestionnaireEntity.builder().id(questionnaire.id()).build());
+    return populateEntity(
+        questionnaire, QuestionnaireEntity.builder().id(questionnaire.id()).build());
   }
 
   private VulcanConfiguration<QuestionnaireEntity> configuration() {
@@ -166,7 +159,7 @@ public class QuestionnaireController {
     Optional<QuestionnaireEntity> maybeEntity = repository.findById(questionnaire.id());
     QuestionnaireEntity entity =
         maybeEntity.orElseThrow(() -> new Exceptions.NotFound(questionnaire.id()));
-    entity = populate(questionnaire, entity, payload);
+    entity = populateEntity(questionnaire, entity, payload);
     repository.save(entity);
     return ResponseEntity.ok(questionnaire);
   }

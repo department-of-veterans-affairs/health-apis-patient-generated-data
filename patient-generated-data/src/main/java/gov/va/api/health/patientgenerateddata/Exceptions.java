@@ -2,7 +2,6 @@ package gov.va.api.health.patientgenerateddata;
 
 import lombok.experimental.UtilityClass;
 
-/** Common runtime Exceptions. */
 @UtilityClass
 public final class Exceptions {
   /** The resource already exists. */

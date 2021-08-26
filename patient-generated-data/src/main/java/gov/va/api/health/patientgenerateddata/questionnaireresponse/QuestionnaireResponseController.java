@@ -20,6 +20,8 @@ import gov.va.api.health.patientgenerateddata.JacksonMapperConfig;
 import gov.va.api.health.patientgenerateddata.LinkProperties;
 import gov.va.api.health.patientgenerateddata.TokenListMapping;
 import gov.va.api.health.patientgenerateddata.VulcanizedBundler;
+import gov.va.api.health.patientgenerateddata.observation.ObservationEntity;
+import gov.va.api.health.r4.api.resources.Observation;
 import gov.va.api.health.r4.api.resources.QuestionnaireResponse;
 import gov.va.api.lighthouse.vulcan.Vulcan;
 import gov.va.api.lighthouse.vulcan.VulcanConfiguration;
@@ -60,19 +62,12 @@ public class QuestionnaireResponseController {
   private final QuestionnaireResponseRepository repository;
 
   @SneakyThrows
-  private static QuestionnaireResponseEntity populate(
-      QuestionnaireResponse questionnaireResponse, QuestionnaireResponseEntity entity) {
-    return populate(
-        questionnaireResponse, entity, MAPPER.writeValueAsString(questionnaireResponse));
-  }
-
-  private static QuestionnaireResponseEntity populate(
-      @NonNull QuestionnaireResponse questionnaireResponse,
+  private static void populateEntity(
       @NonNull QuestionnaireResponseEntity entity,
-      String payload) {
+      @NonNull QuestionnaireResponse questionnaireResponse) {
     checkState(
         entity.id().equals(questionnaireResponse.id()),
-        "IDs don't match, %s != %s",
+        "Entity ID (%s) and payload ID (%s) do not match",
         entity.id(),
         questionnaireResponse.id());
     String authorId = resourceId(questionnaireResponse.author());
@@ -81,24 +76,20 @@ public class QuestionnaireResponseController {
     String subject = resourceId(questionnaireResponse.subject());
     String metaTag = TokenListMapping.metadataTagJoin(questionnaireResponse);
     String source = resourceId(questionnaireResponse.source());
-    entity.payload(payload);
+    entity.payload(MAPPER.writeValueAsString(questionnaireResponse));
     entity.author(authorId);
     entity.authored(authored);
     entity.questionnaire(questionnaire);
     entity.subject(subject);
     entity.metaTag(metaTag);
     entity.source(source);
-    Optional<Instant> maybeLastUpdated = lastUpdatedFromMeta(questionnaireResponse.meta());
-    if (maybeLastUpdated.isPresent()) {
-      entity.lastUpdated(maybeLastUpdated.get());
-    }
-    return entity;
+    lastUpdatedFromMeta(questionnaireResponse.meta()).ifPresent(lu -> entity.lastUpdated(lu));
   }
 
   /** Transforms a Resource to an Entity. */
   public static QuestionnaireResponseEntity toEntity(QuestionnaireResponse questionnaireResponse) {
     checkState(questionnaireResponse.id() != null, "ID is required");
-    return populate(
+    return populateEntity(
         questionnaireResponse,
         QuestionnaireResponseEntity.builder().id(questionnaireResponse.id()).build());
   }
@@ -223,7 +214,7 @@ public class QuestionnaireResponseController {
         repository.findById(questionnaireResponse.id());
     QuestionnaireResponseEntity entity =
         maybeEntity.orElseThrow(() -> new Exceptions.NotFound(questionnaireResponse.id()));
-    entity = populate(questionnaireResponse, entity);
+    entity = populateEntity(questionnaireResponse, entity);
     repository.save(entity);
     return ResponseEntity.ok(questionnaireResponse);
   }
