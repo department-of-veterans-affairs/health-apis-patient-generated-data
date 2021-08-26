@@ -6,6 +6,8 @@ import static gov.va.api.health.patientgenerateddata.Controllers.generateRandomI
 import static gov.va.api.health.patientgenerateddata.Controllers.lastUpdatedFromMeta;
 import static gov.va.api.health.patientgenerateddata.Controllers.metaWithLastUpdated;
 import static gov.va.api.health.patientgenerateddata.Controllers.nowMillis;
+import static gov.va.api.health.patientgenerateddata.Controllers.parseDateTime;
+import static gov.va.api.health.patientgenerateddata.Controllers.resourceId;
 import static gov.va.api.lighthouse.vulcan.Rules.atLeastOneParameterOf;
 import static gov.va.api.lighthouse.vulcan.Rules.ifParameter;
 import static gov.va.api.lighthouse.vulcan.Vulcan.returnNothing;
@@ -16,8 +18,6 @@ import gov.va.api.health.autoconfig.logging.Loggable;
 import gov.va.api.health.patientgenerateddata.Exceptions;
 import gov.va.api.health.patientgenerateddata.JacksonMapperConfig;
 import gov.va.api.health.patientgenerateddata.LinkProperties;
-import gov.va.api.health.patientgenerateddata.ParseUtils;
-import gov.va.api.health.patientgenerateddata.ReferenceUtils;
 import gov.va.api.health.patientgenerateddata.TokenListMapping;
 import gov.va.api.health.patientgenerateddata.VulcanizedBundler;
 import gov.va.api.health.r4.api.resources.QuestionnaireResponse;
@@ -76,12 +76,12 @@ public class QuestionnaireResponseController {
         "IDs don't match, %s != %s",
         entity.id(),
         questionnaireResponse.id());
-    String authorId = ReferenceUtils.resourceId(questionnaireResponse.author());
-    Instant authored = ParseUtils.parseDateTime(questionnaireResponse.authored());
-    String questionnaire = ReferenceUtils.resourceId(questionnaireResponse.questionnaire());
-    String subject = ReferenceUtils.resourceId(questionnaireResponse.subject());
+    String authorId = resourceId(questionnaireResponse.author());
+    Instant authored = parseDateTime(questionnaireResponse.authored());
+    String questionnaire = resourceId(questionnaireResponse.questionnaire());
+    String subject = resourceId(questionnaireResponse.subject());
     String metaTag = TokenListMapping.metadataTagJoin(questionnaireResponse);
-    String source = ReferenceUtils.resourceId(questionnaireResponse.source());
+    String source = resourceId(questionnaireResponse.source());
     entity.payload(payload);
     entity.author(authorId);
     entity.authored(authored);
