@@ -18,7 +18,6 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.springframework.data.domain.Sort;
 
-/** Database entity representing a QuestionnaireResponse. */
 @Data
 @Entity
 @Builder

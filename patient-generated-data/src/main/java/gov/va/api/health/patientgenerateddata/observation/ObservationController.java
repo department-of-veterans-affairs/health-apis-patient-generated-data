@@ -62,7 +62,7 @@ public class ObservationController {
       @NonNull ObservationEntity entity, @NonNull Observation observation) {
     checkState(
         entity.id().equals(observation.id()),
-        "Payload ID (%s) and entity ID (%s) do not match",
+        "Entity ID (%s) and payload ID (%s) do not match",
         entity.id(),
         observation.id());
     entity.payload(MAPPER.writeValueAsString(observation));

@@ -53,22 +53,23 @@ public class ManagementController {
   @PostMapping(value = "/Questionnaire")
   ResponseEntity<Questionnaire> create(@Valid @RequestBody Questionnaire questionnaire) {
     validateId(questionnaire, questionnaireRepository);
-    questionnaireRepository.save(QuestionnaireController.toEntity(questionnaire));
-    return ResponseEntity.created(
-            URI.create(linkProperties.r4Url() + "/Questionnaire/" + questionnaire.id()))
-        .body(questionnaire);
+    return new QuestionnaireController(linkProperties, questionnaireRepository)
+        .create(questionnaire, nowMillis());
   }
 
   @PostMapping(value = "/QuestionnaireResponse")
   ResponseEntity<QuestionnaireResponse> create(
       @Valid @RequestBody QuestionnaireResponse questionnaireResponse) {
     validateId(questionnaireResponse, questionnaireResponseRepository);
-    questionnaireResponseRepository.save(
-        QuestionnaireResponseController.toEntity(questionnaireResponse));
-    return ResponseEntity.created(
-            URI.create(
-                linkProperties.r4Url() + "/QuestionnaireResponse/" + questionnaireResponse.id()))
-        .body(questionnaireResponse);
+    return new QuestionnaireResponseController(linkProperties, questionnaireResponseRepository)
+        .create(questionnaireResponse, nowMillis());
+    //    questionnaireResponseRepository.save(
+    //        QuestionnaireResponseController.toEntity(questionnaireResponse));
+    //    return ResponseEntity.created(
+    //            URI.create(
+    //                linkProperties.r4Url() + "/QuestionnaireResponse/" +
+    // questionnaireResponse.id()))
+    //        .body(questionnaireResponse);
   }
 
   <R extends Resource, T extends PayloadEntity<R>> void validateId(
