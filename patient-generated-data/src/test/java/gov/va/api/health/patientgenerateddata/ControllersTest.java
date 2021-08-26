@@ -1,5 +1,7 @@
 package gov.va.api.health.patientgenerateddata;
 
+import static gov.va.api.health.patientgenerateddata.Controllers.checkRequestState;
+import static gov.va.api.health.patientgenerateddata.Controllers.parseDateTime;
 import static gov.va.api.health.patientgenerateddata.Controllers.resourceId;
 import static gov.va.api.health.patientgenerateddata.Controllers.resourceType;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -17,22 +19,21 @@ public class ControllersTest {
   @Test
   void badRequest() {
     Throwable ex =
-        assertThrows(
-            Exceptions.BadRequest.class, () -> Controllers.checkRequestState(false, "message"));
+        assertThrows(Exceptions.BadRequest.class, () -> checkRequestState(false, "message"));
     assertThat(ex.getMessage()).isEqualTo("message");
     ex =
         assertThrows(
             Exceptions.BadRequest.class,
-            () -> Controllers.checkRequestState(false, "%s foo %s", "hello", "goodbye"));
+            () -> checkRequestState(false, "%s foo %s", "hello", "goodbye"));
     assertThat(ex.getMessage()).isEqualTo("hello foo goodbye");
   }
 
   @Test
   void emptyDates() {
     // null or empty
-    assertThat(Controllers.parseDateTime(null)).isNull();
-    assertThat(Controllers.parseDateTime("")).isNull();
-    assertThat(Controllers.parseDateTime(" ")).isNull();
+    assertThat(parseDateTime(null)).isNull();
+    assertThat(parseDateTime("")).isNull();
+    assertThat(parseDateTime(" ")).isNull();
   }
 
   @ParameterizedTest
@@ -48,7 +49,7 @@ public class ControllersTest {
   @SneakyThrows
   void invalidDates(String datetime) {
     assertThatExceptionOfType(DateTimeParseException.class)
-        .isThrownBy(() -> Controllers.parseDateTime(datetime));
+        .isThrownBy(() -> parseDateTime(datetime));
   }
 
   @Test
@@ -92,27 +93,25 @@ public class ControllersTest {
   @Test
   void validDates() {
     // Year
-    assertThat(Controllers.parseDateTime("2013").toString()).isEqualTo("2013-01-01T00:00:00Z");
+    assertThat(parseDateTime("2013").toString()).isEqualTo("2013-01-01T00:00:00Z");
     // Year month
-    assertThat(Controllers.parseDateTime("2013-02").toString()).isEqualTo("2013-02-01T00:00:00Z");
+    assertThat(parseDateTime("2013-02").toString()).isEqualTo("2013-02-01T00:00:00Z");
     // Year month day
-    assertThat(Controllers.parseDateTime("2013-03-04").toString())
-        .isEqualTo("2013-03-04T00:00:00Z");
+    assertThat(parseDateTime("2013-03-04").toString()).isEqualTo("2013-03-04T00:00:00Z");
     // UTC time
-    assertThat(Controllers.parseDateTime("2013-06-18T00:00:00Z").toString())
-        .isEqualTo("2013-06-18T00:00:00Z");
+    assertThat(parseDateTime("2013-06-18T00:00:00Z").toString()).isEqualTo("2013-06-18T00:00:00Z");
     // UTC with nanoseconds
-    assertThat(Controllers.parseDateTime("2013-06-18T00:00:00.599Z").toString())
+    assertThat(parseDateTime("2013-06-18T00:00:00.599Z").toString())
         .isEqualTo("2013-06-18T00:00:00.599Z");
     // Offsets
-    assertThat(Controllers.parseDateTime("2013-06-18T00:00:00+01:00").toString())
+    assertThat(parseDateTime("2013-06-18T00:00:00+01:00").toString())
         .isEqualTo("2013-06-17T23:00:00Z");
-    assertThat(Controllers.parseDateTime("2013-06-18T00:00:00+01").toString())
+    assertThat(parseDateTime("2013-06-18T00:00:00+01").toString())
         .isEqualTo("2013-06-17T23:00:00Z");
-    assertThat(Controllers.parseDateTime("2013-06-18T00:00:00-01:00").toString())
+    assertThat(parseDateTime("2013-06-18T00:00:00-01:00").toString())
         .isEqualTo("2013-06-18T01:00:00Z");
     // Spaces
-    assertThat(Controllers.parseDateTime("  2013-06-18T00:00:00-01:00 ").toString())
+    assertThat(parseDateTime("  2013-06-18T00:00:00-01:00 ").toString())
         .isEqualTo("2013-06-18T01:00:00Z");
   }
 }
