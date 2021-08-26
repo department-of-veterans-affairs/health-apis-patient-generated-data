@@ -7,22 +7,20 @@ import gov.va.api.health.r4.api.elements.Meta;
 import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
-import lombok.NonNull;
-import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 
 /** Utilities for R4 controllers. */
 @UtilityClass
 public class Controllers {
-  /** Wrapper for Preconditions.checkState which throws a BadRequest. */
-  @SneakyThrows
-  public static void checkRequestState(boolean condition, @NonNull String message) {
-    try {
-      checkState(condition, message);
-    } catch (IllegalStateException e) {
-      throw new Exceptions.BadRequest(e.getMessage(), e);
-    }
-  }
+  //  /** Wrapper for Preconditions.checkState which throws a BadRequest. */
+  //  @SneakyThrows
+  //  public static void checkRequestState(boolean condition, @NonNull String message) {
+  //    try {
+  //      checkState(condition, message);
+  //    } catch (IllegalStateException e) {
+  //      throw new Exceptions.BadRequest(e.getMessage(), e);
+  //    }
+  //  }
 
   /** Wrapper for Preconditions.checkState which throws a BadRequest. */
   public static void checkRequestState(

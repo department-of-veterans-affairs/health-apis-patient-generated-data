@@ -9,6 +9,7 @@ import static gov.va.api.health.patientgenerateddata.Controllers.nowMillis;
 import static gov.va.api.lighthouse.vulcan.Rules.atLeastOneParameterOf;
 import static gov.va.api.lighthouse.vulcan.Rules.ifParameter;
 import static gov.va.api.lighthouse.vulcan.Vulcan.returnNothing;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -58,31 +59,23 @@ public class ObservationController {
   private final ObservationRepository repository;
 
   @SneakyThrows
-  private static ObservationEntity populate(Observation observation, ObservationEntity entity) {
-    return populate(observation, entity, MAPPER.writeValueAsString(observation));
-  }
-
-  private static ObservationEntity populate(
-      @NonNull Observation observation, @NonNull ObservationEntity entity, String payload) {
+  private static void populateEntity(
+      @NonNull ObservationEntity entity, @NonNull Observation observation) {
     checkState(
         entity.id().equals(observation.id()),
-        "IDs don't match, %s != %s",
+        "Payload ID (%s) and entity ID (%s) do not match",
         entity.id(),
         observation.id());
-    entity.payload(payload);
-
-    Optional<Instant> maybeLastUpdated = lastUpdatedFromMeta(observation.meta());
-    if (maybeLastUpdated.isPresent()) {
-      entity.lastUpdated(maybeLastUpdated.get());
-    }
-
-    return entity;
+    entity.payload(MAPPER.writeValueAsString(observation));
+    lastUpdatedFromMeta(observation.meta()).ifPresent(lu -> entity.lastUpdated(lu));
   }
 
   /** Transforms a Resource to an Entity. */
   public static ObservationEntity toEntity(Observation observation) {
-    checkState(observation.id() != null, "ID is required");
-    return populate(observation, ObservationEntity.builder().id(observation.id()).build());
+    checkState(!isBlank(observation.id()), "ID is required");
+    ObservationEntity entity = ObservationEntity.builder().id(observation.id()).build();
+    populateEntity(entity, observation);
+    return entity;
   }
 
   private VulcanConfiguration<ObservationEntity> configuration() {
@@ -103,16 +96,17 @@ public class ObservationController {
 
   @PostMapping
   ResponseEntity<Observation> create(@Valid @RequestBody Observation observation) {
-    return create(generateRandomId(), nowMillis(), observation);
+    checkRequestState(isEmpty(observation.id()), "ID must be empty, found %s", observation.id());
+    observation.id(generateRandomId());
+    return create(observation, nowMillis());
   }
 
-  ResponseEntity<Observation> create(String id, Instant now, Observation observation) {
-    checkRequestState(isEmpty(observation.id()), "ID must be empty, found %s", observation.id());
-    observation.id(id);
+  ResponseEntity<Observation> create(Observation observation, Instant now) {
     observation.meta(metaWithLastUpdated(observation.meta(), now));
     ObservationEntity entity = toEntity(observation);
     repository.save(entity);
-    return ResponseEntity.created(URI.create(linkProperties.r4Url() + "/Observation/" + id))
+    return ResponseEntity.created(
+            URI.create(linkProperties.r4Url() + "/Observation/" + observation.id()))
         .body(observation);
   }
 
@@ -152,17 +146,22 @@ public class ObservationController {
   @PutMapping(value = "/{id}")
   @Loggable(arguments = false)
   ResponseEntity<Observation> update(
-      @PathVariable("id") String id, @Valid @RequestBody Observation observation) {
-    return update(id, nowMillis(), observation);
+      @PathVariable("id") String pathId, @Valid @RequestBody Observation observation) {
+    checkRequestState(
+        pathId.equals(observation.id()),
+        "Path ID (%s) and request body ID (%s) do not match",
+        pathId,
+        observation.id());
+    return update(observation, nowMillis());
   }
 
-  ResponseEntity<Observation> update(String id, Instant now, Observation observation) {
-    checkState(id.equals(observation.id()), "%s != %s", id, observation.id());
+  ResponseEntity<Observation> update(Observation observation, Instant now) {
     observation.meta(metaWithLastUpdated(observation.meta(), now));
-    Optional<ObservationEntity> maybeEntity = repository.findById(observation.id());
     ObservationEntity entity =
-        maybeEntity.orElseThrow(() -> new Exceptions.NotFound(observation.id()));
-    entity = populate(observation, entity);
+        repository
+            .findById(observation.id())
+            .orElseThrow(() -> new Exceptions.NotFound(observation.id()));
+    populateEntity(entity, observation);
     repository.save(entity);
     return ResponseEntity.ok(observation);
   }
