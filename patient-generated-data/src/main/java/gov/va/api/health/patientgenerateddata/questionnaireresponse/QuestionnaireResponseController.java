@@ -27,10 +27,8 @@ import gov.va.api.lighthouse.vulcan.mappings.Mappings;
 import java.net.URI;
 import java.time.Instant;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
@@ -45,7 +43,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -178,18 +175,10 @@ public class QuestionnaireResponseController {
   }
 
   @GetMapping(value = "/{id}")
-  QuestionnaireResponse read(
-      @PathVariable("id") String id,
-      @RequestHeader Map<String, String> headers,
-      HttpServletResponse response) {
-    headers.forEach((k, v) -> response.addHeader("req-" + k, v));
+  QuestionnaireResponse read(@PathVariable("id") String id) {
     Optional<QuestionnaireResponseEntity> maybeEntity = repository.findById(id);
     QuestionnaireResponseEntity entity = maybeEntity.orElseThrow(() -> new Exceptions.NotFound(id));
     return entity.deserializePayload();
-  }
-
-  QuestionnaireResponse read(String id) {
-    return read(id, Map.of(), null);
   }
 
   /** QuestionnaireResponse Search. */
