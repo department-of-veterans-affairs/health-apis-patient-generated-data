@@ -44,7 +44,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-/** R4 Observation Controller. */
 @Validated
 @RestController
 @RequestMapping(
@@ -70,8 +69,7 @@ public class ObservationController {
     lastUpdatedFromMeta(observation.meta()).ifPresent(lu -> entity.lastUpdated(lu));
   }
 
-  /** Transforms a Resource to an Entity. */
-  public static ObservationEntity toEntity(Observation observation) {
+  private static ObservationEntity toEntity(Observation observation) {
     checkState(!isBlank(observation.id()), "ID is required");
     ObservationEntity entity = ObservationEntity.builder().id(observation.id()).build();
     populateEntity(entity, observation);
@@ -101,7 +99,8 @@ public class ObservationController {
     return create(observation, nowMillis());
   }
 
-  ResponseEntity<Observation> create(Observation observation, Instant now) {
+  /** Create resource. */
+  public ResponseEntity<Observation> create(Observation observation, Instant now) {
     observation.meta(metaWithLastUpdated(observation.meta(), now));
     ObservationEntity entity = toEntity(observation);
     repository.save(entity);

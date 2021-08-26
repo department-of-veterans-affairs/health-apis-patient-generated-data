@@ -1,6 +1,7 @@
 package gov.va.api.health.patientgenerateddata;
 
 import static gov.va.api.health.patientgenerateddata.Controllers.checkRequestState;
+import static gov.va.api.health.patientgenerateddata.Controllers.nowMillis;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 import gov.va.api.health.patientgenerateddata.observation.ObservationController;
@@ -45,10 +46,8 @@ public class ManagementController {
   @PostMapping(value = "/Observation")
   ResponseEntity<Observation> create(@Valid @RequestBody Observation observation) {
     validateId(observation, observationRepository);
-    observationRepository.save(ObservationController.toEntity(observation));
-    return ResponseEntity.created(
-            URI.create(linkProperties.r4Url() + "/Observation/" + observation.id()))
-        .body(observation);
+    return new ObservationController(linkProperties, observationRepository)
+        .create(observation, nowMillis());
   }
 
   @PostMapping(value = "/Questionnaire")
