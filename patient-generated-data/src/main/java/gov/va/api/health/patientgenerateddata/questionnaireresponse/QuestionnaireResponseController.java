@@ -146,8 +146,7 @@ public class QuestionnaireResponseController {
   public ResponseEntity<QuestionnaireResponse> create(
       QuestionnaireResponse questionnaireResponse, Instant now) {
     questionnaireResponse.meta(metaWithLastUpdated(questionnaireResponse.meta(), now));
-    QuestionnaireResponseEntity entity = toEntity(questionnaireResponse);
-    repository.save(entity);
+    repository.save(toEntity(questionnaireResponse));
     return ResponseEntity.created(
             URI.create(
                 linkProperties.r4Url() + "/QuestionnaireResponse/" + questionnaireResponse.id()))

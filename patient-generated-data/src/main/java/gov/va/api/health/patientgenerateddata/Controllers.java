@@ -129,7 +129,7 @@ public class Controllers {
    * resource type followed by an ID, e.g. `foo/bar/Patient/1234567890V123456`.
    */
   public static String resourceId(String str) {
-    if (str == null || isBlank(str)) {
+    if (isBlank(str)) {
       return null;
     }
     List<String> splitReference = Splitter.on('/').splitToList(str);

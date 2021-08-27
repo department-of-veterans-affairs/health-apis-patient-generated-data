@@ -102,8 +102,7 @@ public class ObservationController {
   /** Create resource. */
   public ResponseEntity<Observation> create(Observation observation, Instant now) {
     observation.meta(metaWithLastUpdated(observation.meta(), now));
-    ObservationEntity entity = toEntity(observation);
-    repository.save(entity);
+    repository.save(toEntity(observation));
     return ResponseEntity.created(
             URI.create(linkProperties.r4Url() + "/Observation/" + observation.id()))
         .body(observation);
