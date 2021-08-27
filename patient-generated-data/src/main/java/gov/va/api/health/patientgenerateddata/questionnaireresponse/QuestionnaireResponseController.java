@@ -177,7 +177,7 @@ public class QuestionnaireResponseController {
         .map(toBundle());
   }
 
-  VulcanizedBundler<
+  private VulcanizedBundler<
           QuestionnaireResponseEntity,
           QuestionnaireResponse,
           QuestionnaireResponse.Entry,

@@ -131,7 +131,7 @@ public class ObservationController {
         .map(toBundle());
   }
 
-  VulcanizedBundler<ObservationEntity, Observation, Observation.Entry, Observation.Bundle>
+  private VulcanizedBundler<ObservationEntity, Observation, Observation.Entry, Observation.Bundle>
       toBundle() {
     return VulcanizedBundler.forBundling(
             ObservationEntity.class,

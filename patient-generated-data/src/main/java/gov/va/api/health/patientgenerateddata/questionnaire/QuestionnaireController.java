@@ -140,7 +140,8 @@ public class QuestionnaireController {
         .map(toBundle());
   }
 
-  VulcanizedBundler<QuestionnaireEntity, Questionnaire, Questionnaire.Entry, Questionnaire.Bundle>
+  private VulcanizedBundler<
+          QuestionnaireEntity, Questionnaire, Questionnaire.Entry, Questionnaire.Bundle>
       toBundle() {
     return VulcanizedBundler.forBundling(
             QuestionnaireEntity.class,
