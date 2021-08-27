@@ -100,6 +100,7 @@ public class QuestionnaireController {
   }
 
   @PostMapping
+  @Loggable(arguments = false)
   ResponseEntity<Questionnaire> create(@Valid @RequestBody Questionnaire questionnaire) {
     checkRequestState(
         isEmpty(questionnaire.id()), "ID must be empty, found %s", questionnaire.id());

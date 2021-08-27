@@ -92,6 +92,7 @@ public class ObservationController {
   }
 
   @PostMapping
+  @Loggable(arguments = false)
   ResponseEntity<Observation> create(@Valid @RequestBody Observation observation) {
     checkRequestState(isEmpty(observation.id()), "ID must be empty, found %s", observation.id());
     observation.id(generateRandomId());

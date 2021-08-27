@@ -131,6 +131,7 @@ public class QuestionnaireResponseController {
   }
 
   @PostMapping
+  @Loggable(arguments = false)
   ResponseEntity<QuestionnaireResponse> create(
       @Valid @RequestBody QuestionnaireResponse questionnaireResponse) {
     checkRequestState(
