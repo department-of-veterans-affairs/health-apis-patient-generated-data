@@ -44,7 +44,7 @@ public class ManagementControllerTest {
 
   @Test
   void create_questionnaire() {
-    var questionnaire = questionnaire("x");
+    var questionnaire = questionnaire();
     assertThat(controller().create(questionnaire))
         .isEqualTo(
             ResponseEntity.created(URI.create("http://foo.com/r4/Questionnaire/x"))
@@ -53,7 +53,7 @@ public class ManagementControllerTest {
 
   @Test
   void create_questionnaireResponse() {
-    var questionnaireResponse = questionnaireResponse("x");
+    var questionnaireResponse = questionnaireResponse();
     assertThat(controller().create(questionnaireResponse))
         .isEqualTo(
             ResponseEntity.created(URI.create("http://foo.com/r4/QuestionnaireResponse/x"))
@@ -62,7 +62,7 @@ public class ManagementControllerTest {
 
   @Test
   void create_questionnaire_duplicate() {
-    var questionnaire = questionnaire("x");
+    var questionnaire = questionnaire();
     ManagementController controller = controller();
     when(controller.questionnaireRepository().existsById("x")).thenReturn(true);
     assertThrows(Exceptions.AlreadyExists.class, () -> controller.create(questionnaire));

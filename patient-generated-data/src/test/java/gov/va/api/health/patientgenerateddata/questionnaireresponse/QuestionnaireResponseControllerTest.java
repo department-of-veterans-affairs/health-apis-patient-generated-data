@@ -99,12 +99,12 @@ public class QuestionnaireResponseControllerTest {
   @SneakyThrows
   void read() {
     QuestionnaireResponseRepository repo = mock(QuestionnaireResponseRepository.class);
-    String payload = MAPPER.writeValueAsString(questionnaireResponse("x"));
+    String payload = MAPPER.writeValueAsString(questionnaireResponse());
     when(repo.findById("x"))
         .thenReturn(
             Optional.of(QuestionnaireResponseEntity.builder().id("x").payload(payload).build()));
     assertThat(new QuestionnaireResponseController(pageLinks, repo).read("x"))
-        .isEqualTo(questionnaireResponse("x"));
+        .isEqualTo(questionnaireResponse());
   }
 
   @Test
@@ -136,7 +136,7 @@ public class QuestionnaireResponseControllerTest {
   @Test
   void update_not_existing() {
     QuestionnaireResponseRepository repo = mock(QuestionnaireResponseRepository.class);
-    QuestionnaireResponse questionnaireResponse = questionnaireResponse("x");
+    QuestionnaireResponse questionnaireResponse = questionnaireResponse();
     assertThrows(
         Exceptions.NotFound.class,
         () ->
