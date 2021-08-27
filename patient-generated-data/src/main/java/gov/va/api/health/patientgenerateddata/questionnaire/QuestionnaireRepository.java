@@ -6,7 +6,6 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
-/** Questionnaire Spring Repository. */
 @Loggable
 @Transactional(isolation = Isolation.READ_UNCOMMITTED)
 public interface QuestionnaireRepository

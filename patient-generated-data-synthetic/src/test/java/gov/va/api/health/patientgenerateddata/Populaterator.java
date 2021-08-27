@@ -169,12 +169,12 @@ public final class Populaterator {
         statement.setObject(1, response.id());
         statement.setObject(2, MAPPER.writeValueAsString(response));
         statement.setObject(3, 0);
-        statement.setTimestamp(4, timestamp(ParseUtils.parseDateTime(response.authored())));
-        statement.setObject(5, ReferenceUtils.resourceId(response.author()));
-        statement.setObject(6, ReferenceUtils.resourceId(response.subject()));
+        statement.setTimestamp(4, timestamp(Controllers.parseDateTime(response.authored())));
+        statement.setObject(5, Controllers.resourceId(response.author()));
+        statement.setObject(6, Controllers.resourceId(response.subject()));
         statement.setObject(7, TokenListMapping.metadataTagJoin(response));
-        statement.setObject(8, ReferenceUtils.resourceId(response.questionnaire()));
-        statement.setObject(9, ReferenceUtils.resourceId(response.source()));
+        statement.setObject(8, Controllers.resourceId(response.questionnaire()));
+        statement.setObject(9, Controllers.resourceId(response.source()));
         statement.setTimestamp(10, timestamp(Controllers.nowMillis()));
         statement.execute();
       }

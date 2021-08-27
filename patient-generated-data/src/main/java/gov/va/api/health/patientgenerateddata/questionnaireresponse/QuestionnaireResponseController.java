@@ -6,9 +6,12 @@ import static gov.va.api.health.patientgenerateddata.Controllers.generateRandomI
 import static gov.va.api.health.patientgenerateddata.Controllers.lastUpdatedFromMeta;
 import static gov.va.api.health.patientgenerateddata.Controllers.metaWithLastUpdated;
 import static gov.va.api.health.patientgenerateddata.Controllers.nowMillis;
+import static gov.va.api.health.patientgenerateddata.Controllers.parseDateTime;
+import static gov.va.api.health.patientgenerateddata.Controllers.resourceId;
 import static gov.va.api.lighthouse.vulcan.Rules.atLeastOneParameterOf;
 import static gov.va.api.lighthouse.vulcan.Rules.ifParameter;
 import static gov.va.api.lighthouse.vulcan.Vulcan.returnNothing;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -16,8 +19,6 @@ import gov.va.api.health.autoconfig.logging.Loggable;
 import gov.va.api.health.patientgenerateddata.Exceptions;
 import gov.va.api.health.patientgenerateddata.JacksonMapperConfig;
 import gov.va.api.health.patientgenerateddata.LinkProperties;
-import gov.va.api.health.patientgenerateddata.ParseUtils;
-import gov.va.api.health.patientgenerateddata.ReferenceUtils;
 import gov.va.api.health.patientgenerateddata.TokenListMapping;
 import gov.va.api.health.patientgenerateddata.VulcanizedBundler;
 import gov.va.api.health.r4.api.resources.QuestionnaireResponse;
@@ -27,7 +28,6 @@ import gov.va.api.lighthouse.vulcan.mappings.Mappings;
 import java.net.URI;
 import java.time.Instant;
 import java.util.List;
-import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -46,7 +46,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-/** R4 QuestionnaireResponse Controller. */
 @Validated
 @RestController
 @RequestMapping(
@@ -61,47 +60,30 @@ public class QuestionnaireResponseController {
   private final QuestionnaireResponseRepository repository;
 
   @SneakyThrows
-  private static QuestionnaireResponseEntity populate(
-      QuestionnaireResponse questionnaireResponse, QuestionnaireResponseEntity entity) {
-    return populate(
-        questionnaireResponse, entity, MAPPER.writeValueAsString(questionnaireResponse));
-  }
-
-  private static QuestionnaireResponseEntity populate(
-      @NonNull QuestionnaireResponse questionnaireResponse,
+  private static void populateEntity(
       @NonNull QuestionnaireResponseEntity entity,
-      String payload) {
+      @NonNull QuestionnaireResponse questionnaireResponse) {
     checkState(
         entity.id().equals(questionnaireResponse.id()),
-        "IDs don't match, %s != %s",
+        "Entity ID (%s) and payload ID (%s) do not match",
         entity.id(),
         questionnaireResponse.id());
-    String authorId = ReferenceUtils.resourceId(questionnaireResponse.author());
-    Instant authored = ParseUtils.parseDateTime(questionnaireResponse.authored());
-    String questionnaire = ReferenceUtils.resourceId(questionnaireResponse.questionnaire());
-    String subject = ReferenceUtils.resourceId(questionnaireResponse.subject());
-    String metaTag = TokenListMapping.metadataTagJoin(questionnaireResponse);
-    String source = ReferenceUtils.resourceId(questionnaireResponse.source());
-    entity.payload(payload);
-    entity.author(authorId);
-    entity.authored(authored);
-    entity.questionnaire(questionnaire);
-    entity.subject(subject);
-    entity.metaTag(metaTag);
-    entity.source(source);
-    Optional<Instant> maybeLastUpdated = lastUpdatedFromMeta(questionnaireResponse.meta());
-    if (maybeLastUpdated.isPresent()) {
-      entity.lastUpdated(maybeLastUpdated.get());
-    }
-    return entity;
+    entity.payload(MAPPER.writeValueAsString(questionnaireResponse));
+    entity.author(resourceId(questionnaireResponse.author()));
+    entity.authored(parseDateTime(questionnaireResponse.authored()));
+    entity.questionnaire(resourceId(questionnaireResponse.questionnaire()));
+    entity.subject(resourceId(questionnaireResponse.subject()));
+    entity.metaTag(TokenListMapping.metadataTagJoin(questionnaireResponse));
+    entity.source(resourceId(questionnaireResponse.source()));
+    entity.lastUpdated(lastUpdatedFromMeta(questionnaireResponse.meta()).orElse(null));
   }
 
-  /** Transforms a Resource to an Entity. */
-  public static QuestionnaireResponseEntity toEntity(QuestionnaireResponse questionnaireResponse) {
-    checkState(questionnaireResponse.id() != null, "ID is required");
-    return populate(
-        questionnaireResponse,
-        QuestionnaireResponseEntity.builder().id(questionnaireResponse.id()).build());
+  private static QuestionnaireResponseEntity toEntity(QuestionnaireResponse questionnaireResponse) {
+    checkState(!isBlank(questionnaireResponse.id()), "ID is required");
+    QuestionnaireResponseEntity entity =
+        QuestionnaireResponseEntity.builder().id(questionnaireResponse.id()).build();
+    populateEntity(entity, questionnaireResponse);
+    return entity;
   }
 
   private VulcanConfiguration<QuestionnaireResponseEntity> configuration() {
@@ -149,23 +131,25 @@ public class QuestionnaireResponseController {
   }
 
   @PostMapping
+  @Loggable(arguments = false)
   ResponseEntity<QuestionnaireResponse> create(
       @Valid @RequestBody QuestionnaireResponse questionnaireResponse) {
-    return create(generateRandomId(), nowMillis(), questionnaireResponse);
-  }
-
-  ResponseEntity<QuestionnaireResponse> create(
-      String id, Instant now, QuestionnaireResponse questionnaireResponse) {
     checkRequestState(
         isEmpty(questionnaireResponse.id()),
         "ID must be empty, found %s",
         questionnaireResponse.id());
-    questionnaireResponse.id(id);
+    questionnaireResponse.id(generateRandomId());
+    return create(questionnaireResponse, nowMillis());
+  }
+
+  /** Create resource. */
+  public ResponseEntity<QuestionnaireResponse> create(
+      QuestionnaireResponse questionnaireResponse, Instant now) {
     questionnaireResponse.meta(metaWithLastUpdated(questionnaireResponse.meta(), now));
-    QuestionnaireResponseEntity entity = toEntity(questionnaireResponse);
-    repository.save(entity);
+    repository.save(toEntity(questionnaireResponse));
     return ResponseEntity.created(
-            URI.create(linkProperties.r4Url() + "/QuestionnaireResponse/" + id))
+            URI.create(
+                linkProperties.r4Url() + "/QuestionnaireResponse/" + questionnaireResponse.id()))
         .body(questionnaireResponse);
   }
 
@@ -176,9 +160,10 @@ public class QuestionnaireResponseController {
 
   @GetMapping(value = "/{id}")
   QuestionnaireResponse read(@PathVariable("id") String id) {
-    Optional<QuestionnaireResponseEntity> maybeEntity = repository.findById(id);
-    QuestionnaireResponseEntity entity = maybeEntity.orElseThrow(() -> new Exceptions.NotFound(id));
-    return entity.deserializePayload();
+    return repository
+        .findById(id)
+        .map(e -> e.deserializePayload())
+        .orElseThrow(() -> new Exceptions.NotFound(id));
   }
 
   /** QuestionnaireResponse Search. */
@@ -191,7 +176,7 @@ public class QuestionnaireResponseController {
         .map(toBundle());
   }
 
-  VulcanizedBundler<
+  private VulcanizedBundler<
           QuestionnaireResponseEntity,
           QuestionnaireResponse,
           QuestionnaireResponse.Entry,
@@ -210,21 +195,24 @@ public class QuestionnaireResponseController {
   @PutMapping(value = "/{id}")
   @Loggable(arguments = false)
   ResponseEntity<QuestionnaireResponse> update(
-      @PathVariable("id") String id,
+      @PathVariable("id") String pathId,
       @Valid @RequestBody QuestionnaireResponse questionnaireResponse) {
-    return update(id, nowMillis(), questionnaireResponse);
+    checkRequestState(
+        pathId.equals(questionnaireResponse.id()),
+        "Path ID (%s) and request body ID (%s) do not match",
+        pathId,
+        questionnaireResponse.id());
+    return update(questionnaireResponse, nowMillis());
   }
 
-  @SneakyThrows
   ResponseEntity<QuestionnaireResponse> update(
-      String id, Instant now, QuestionnaireResponse questionnaireResponse) {
-    checkState(id.equals(questionnaireResponse.id()), "%s != %s", id, questionnaireResponse.id());
+      QuestionnaireResponse questionnaireResponse, Instant now) {
     questionnaireResponse.meta(metaWithLastUpdated(questionnaireResponse.meta(), now));
-    Optional<QuestionnaireResponseEntity> maybeEntity =
-        repository.findById(questionnaireResponse.id());
     QuestionnaireResponseEntity entity =
-        maybeEntity.orElseThrow(() -> new Exceptions.NotFound(questionnaireResponse.id()));
-    entity = populate(questionnaireResponse, entity);
+        repository
+            .findById(questionnaireResponse.id())
+            .orElseThrow(() -> new Exceptions.NotFound(questionnaireResponse.id()));
+    populateEntity(entity, questionnaireResponse);
     repository.save(entity);
     return ResponseEntity.ok(questionnaireResponse);
   }

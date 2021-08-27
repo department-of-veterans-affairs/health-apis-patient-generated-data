@@ -51,8 +51,8 @@ public final class IncludesIcnMajig<T, B> implements ResponseBodyAdvice<Object> 
 
   /** Extract patient ICN from the reference. */
   public static String icn(Reference reference) {
-    if ("patient".equalsIgnoreCase(ReferenceUtils.resourceType(reference))) {
-      return ReferenceUtils.resourceId(reference);
+    if ("patient".equalsIgnoreCase(Controllers.resourceType(reference))) {
+      return Controllers.resourceId(reference);
     }
     return null;
   }

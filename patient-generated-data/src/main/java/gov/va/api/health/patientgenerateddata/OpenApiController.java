@@ -10,7 +10,6 @@ import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-/** Serves serialized OpenAPI definition. */
 @Controller
 public class OpenApiController {
   private static final String OPEN_API = initOpenApi();

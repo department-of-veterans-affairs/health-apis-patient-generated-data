@@ -60,10 +60,10 @@ public class ObservationControllerTest {
         LinkProperties.builder().baseUrl("http://foo.com").r4BasePath("r4").build();
     ObservationRepository repo = mock(ObservationRepository.class);
     ObservationController controller = new ObservationController(pageLinks, repo);
-    var observation = observation(null);
+    var observation = observation();
     var persisted = MAPPER.writeValueAsString(observation);
     var expectedObservation = observationWithLastUpdated(time);
-    assertThat(controller.create("x", time, observation))
+    assertThat(controller.create(observation, time))
         .isEqualTo(
             ResponseEntity.created(URI.create("http://foo.com/r4/Observation/x"))
                 .body(expectedObservation));
