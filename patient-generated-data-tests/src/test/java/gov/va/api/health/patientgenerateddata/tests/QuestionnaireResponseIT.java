@@ -204,7 +204,7 @@ public class QuestionnaireResponseIT {
 
   @Test
   void search_tag_codeWithNoSystem() {
-    String code = systemDefinition().ids().questionnaireResponseMetas().applicationTag().code();
+    String code = systemDefinition().ids().questionnaireResponseMetas().repoTag().code();
     String query = String.format("QuestionnaireResponse?_tag=|%s", code);
     var response = doGet("application/json", query, 200);
     QuestionnaireResponse.Bundle bundle = response.expectValid(QuestionnaireResponse.Bundle.class);
@@ -214,8 +214,8 @@ public class QuestionnaireResponseIT {
   @Test
   void search_tag_csv() {
     String source = systemDefinition().ids().questionnaireResponseSource();
-    String system = systemDefinition().ids().questionnaireResponseMetas().applicationTag().system();
-    String code = systemDefinition().ids().questionnaireResponseMetas().applicationTag().code();
+    String system = systemDefinition().ids().questionnaireResponseMetas().repoTag().system();
+    String code = systemDefinition().ids().questionnaireResponseMetas().repoTag().code();
     String system2 = systemDefinition().ids().questionnaireResponseMetas().commonTag().system();
     String code2 = systemDefinition().ids().questionnaireResponseMetas().commonTag().code();
     String query =
@@ -230,7 +230,7 @@ public class QuestionnaireResponseIT {
   @Test
   void search_tag_systemWithAnyCode() {
     String source = systemDefinition().ids().questionnaireResponseSource();
-    String system = systemDefinition().ids().questionnaireResponseMetas().applicationTag().system();
+    String system = systemDefinition().ids().questionnaireResponseMetas().repoTag().system();
     String query = String.format("QuestionnaireResponse?source=%s&_tag=%s|", source, system);
     var response = doGet("application/json", query, 200);
     QuestionnaireResponse.Bundle bundle = response.expectValid(QuestionnaireResponse.Bundle.class);
@@ -240,8 +240,8 @@ public class QuestionnaireResponseIT {
   @Test
   void search_tag_systemWithCode() {
     String source = systemDefinition().ids().questionnaireResponseSource();
-    String system = systemDefinition().ids().questionnaireResponseMetas().applicationTag().system();
-    String code = systemDefinition().ids().questionnaireResponseMetas().applicationTag().code();
+    String system = systemDefinition().ids().questionnaireResponseMetas().repoTag().system();
+    String code = systemDefinition().ids().questionnaireResponseMetas().repoTag().code();
     String query =
         String.format("QuestionnaireResponse?source=%s&_tag=%s|%s", source, system, code);
     var response = doGet("application/json", query, 200);
