@@ -37,15 +37,15 @@ class SystemDefinitions {
             List.of("f003043a-9047-4c3a-b15b-a26c67f4e723", "e7c5799f-14fd-420d-8671-e24386773e7e"))
         .questionnaireResponseMetas(
             Ids.Metas.builder()
-                .applicationTag(
-                    Ids.MetaTag.builder()
-                        .system("https://api.va.gov/services/pgd")
-                        .code("66a5960c-68ee-4689-88ae-4c7cccf7ca79")
-                        .build())
                 .commonTag(
                     Ids.MetaTag.builder()
                         .system("http://terminology.hl7.org/CodeSystem/common-tags")
                         .code("actionable")
+                        .build())
+                .repoTag(
+                    Ids.MetaTag.builder()
+                        .system("https://github.com/department-of-veterans-affairs")
+                        .code("health-apis-patient-generated-data")
                         .build())
                 .build())
         .questionnaireResponseSource("1011537977V693883")
@@ -219,9 +219,9 @@ class SystemDefinitions {
     @Value
     @Builder
     static final class Metas {
-      @NonNull MetaTag applicationTag;
-
       @NonNull MetaTag commonTag;
+
+      @NonNull MetaTag repoTag;
     }
 
     @Value
