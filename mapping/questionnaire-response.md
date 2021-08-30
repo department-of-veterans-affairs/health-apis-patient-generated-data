@@ -32,23 +32,10 @@ Include FHIR Resource in request body in json format
 
 `GET [base]/QuestionnaireResponse?subject=I2-SLRRT64GFGJAJGX62Q55NSQV44VEE4ZBB7U7YZQVVGKJGQ4653IQ0000`
 
-**Search by meta tag:**
-
-`GET [base]/QuestionnaireResponse?_tag=https://api.va.gov/services/pgd|66a5960c-68ee-4689-88ae-4c7cccf7ca79`
-
 ```
 {
   "resourceType" : "QuestionnaireResponse",
   "id" : "e4601c4c-34bd-4ecc-ba2a-ce39502ed6b9",
-  "meta" : {
-    "tag" : [
-      {
-        "system" : "https://api.va.gov/services/pgd",
-        "code" : "66a5960c-68ee-4689-88ae-4c7cccf7ca79",
-        "display" : "VA GOV CLIPBOARD"
-      }
-    ]
-  },
   "text" : {
     "status" : "generated",
     "div" : "<div><h1>Pre-Visit Questionnaire</h1></div>"

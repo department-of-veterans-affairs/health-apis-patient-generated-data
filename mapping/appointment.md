@@ -159,15 +159,6 @@ Appointment has reference to a participant location (clinic), which in turn refe
 {
   "resourceType" : "QuestionnaireResponse",
   "id" : "e4601c4c-34bd-4ecc-ba2a-ce39502ed6b9",
-  "meta" : {
-    "tag" : [
-      {
-        "system" : "https://api.va.gov/services/pgd",
-        "code" : "66a5960c-68ee-4689-88ae-4c7cccf7ca79",
-        "display" : "VA GOV CLIPBOARD"
-      }
-    ]
-  },
   "text" : {
     "status" : "generated",
     "div" : "<div><h1>Pre-Visit Questionnaire</h1></div>"
