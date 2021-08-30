@@ -36,6 +36,10 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.client.HttpClientErrorException;
 
+/**
+ * Exceptions that escape the rest controllers will be processed by this handler. It will convert
+ * exception into different HTTP status codes and produce an error response payload.
+ */
 @Slf4j
 @RestControllerAdvice
 @RequestMapping(produces = "application/json")

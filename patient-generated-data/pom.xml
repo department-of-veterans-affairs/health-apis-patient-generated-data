@@ -4,16 +4,17 @@
   <parent>
     <groupId>gov.va.api.health</groupId>
     <artifactId>service-starter</artifactId>
-    <version>7.0.23</version>
+    <version>8.0.26</version>
     <relativePath/>
   </parent>
   <artifactId>patient-generated-data</artifactId>
-  <version>0.0.98-SNAPSHOT</version>
+  <version>1.0.14-SNAPSHOT</version>
   <packaging>jar</packaging>
   <properties>
-    <fhir-resources.version>6.0.9</fhir-resources.version>
+    <fhir-resources.version>7.0.7</fhir-resources.version>
+    <swagger-examples-maven-plugin.version>3.0.0</swagger-examples-maven-plugin.version>
     <swagger-maven-plugin.version>2.1.5</swagger-maven-plugin.version>
-    <vulcan.version>1.0.7</vulcan.version>
+    <vulcan.version>2.0.8</vulcan.version>
   </properties>
   <dependencies>
     <dependency>
@@ -39,6 +40,10 @@
       <artifactId>liquibase-core</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-data-jpa</artifactId>
     </dependency>
@@ -58,7 +63,7 @@
             </goals>
             <configuration>
               <resourceClasses>
-                <resourceClass>gov.va.api.health.patientgenerateddata.OpenApi</resourceClass>
+                <resourceClass>gov.va.api.health.patientgenerateddata.api.R4PatientGeneratedDataService</resourceClass>
               </resourceClasses>
               <outputFileName>openapi</outputFileName>
               <outputPath>${project.build.outputDirectory}</outputPath>
@@ -71,7 +76,7 @@
       <plugin>
         <groupId>gov.va.plugin.maven</groupId>
         <artifactId>swagger-examples-maven-plugin</artifactId>
-        <version>2.0.0</version>
+        <version>${swagger-examples-maven-plugin.version}</version>
         <dependencies>
           <dependency>
             <groupId>gov.va.api.health</groupId>

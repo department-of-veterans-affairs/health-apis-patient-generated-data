@@ -17,6 +17,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 
+/** Enforces client-key authentication for internal endpoints. */
 @Configuration
 public class InternalClientKeyFilterConfiguration {
   @Autowired

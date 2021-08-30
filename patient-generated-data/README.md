@@ -8,18 +8,21 @@ Main application.
 
 `../make-configs.sh`
 
-Use `less config/application-dev.properties` to verify application properties for local development.
+Use `less config/application-dev.properties` to verify application properties for local development
 
 ### Build
 
-To run full build:
+To resolve `error reading liquibase-core.jar; zip END header not found`,
+execute `../initialize-build.sh`
+
+Full build:
 
 `mvn clean install`
 
-To run build without additional formatting, code coverage enforcement, static code analysis, integration tests, etc., disable the `standard` profile:
+Build without additional formatting, code coverage enforcement, static code analysis, integration tests, etc:
 
 `mvn -P'!standard' package`
 
-Start Java app:
+Start application:
 
 `java -Dspring.profiles.active=dev -jar target/patient-generated-data-${VERSION}.jar`

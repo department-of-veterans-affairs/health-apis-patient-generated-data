@@ -1,5 +1,8 @@
 package gov.va.api.health.patientgenerateddata;
 
+import static gov.va.api.health.patientgenerateddata.observation.Samples.observation;
+import static gov.va.api.health.patientgenerateddata.questionnaire.Samples.questionnaire;
+import static gov.va.api.health.patientgenerateddata.questionnaireresponse.Samples.questionnaireResponse;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
@@ -8,9 +11,6 @@ import static org.mockito.Mockito.when;
 import gov.va.api.health.patientgenerateddata.observation.ObservationRepository;
 import gov.va.api.health.patientgenerateddata.questionnaire.QuestionnaireRepository;
 import gov.va.api.health.patientgenerateddata.questionnaireresponse.QuestionnaireResponseRepository;
-import gov.va.api.health.r4.api.resources.Observation;
-import gov.va.api.health.r4.api.resources.Questionnaire;
-import gov.va.api.health.r4.api.resources.QuestionnaireResponse;
 import java.net.URI;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
@@ -33,25 +33,9 @@ public class ManagementControllerTest {
     return Stream.of("", " ", null);
   }
 
-  private static Observation observation() {
-    return Observation.builder().status(Observation.ObservationStatus.unknown).build();
-  }
-
-  private static Questionnaire questionnaire(String id) {
-    return Questionnaire.builder()
-        .id(id)
-        .title("x")
-        .status(Questionnaire.PublicationStatus.active)
-        .build();
-  }
-
-  private static QuestionnaireResponse questionnaireResponse() {
-    return QuestionnaireResponse.builder().status(QuestionnaireResponse.Status.completed).build();
-  }
-
   @Test
   void create_observation() {
-    var observation = observation().id("x");
+    var observation = observation();
     assertThat(controller().create(observation))
         .isEqualTo(
             ResponseEntity.created(URI.create("http://foo.com/r4/Observation/x"))
@@ -60,7 +44,7 @@ public class ManagementControllerTest {
 
   @Test
   void create_questionnaire() {
-    var questionnaire = questionnaire("x");
+    var questionnaire = questionnaire();
     assertThat(controller().create(questionnaire))
         .isEqualTo(
             ResponseEntity.created(URI.create("http://foo.com/r4/Questionnaire/x"))
@@ -68,27 +52,26 @@ public class ManagementControllerTest {
   }
 
   @Test
-  void create_questionnaire_duplicate() {
-    var controller = controller();
-    var questionnaire = questionnaire("x");
-    when(controller.questionnaireRepository().existsById("x")).thenReturn(true);
-    assertThrows(Exceptions.AlreadyExists.class, () -> controller.create(questionnaire));
-  }
-
-  @Test
-  void create_questionnaire_response() {
-    var questionnaireResponse = questionnaireResponse().id("x");
+  void create_questionnaireResponse() {
+    var questionnaireResponse = questionnaireResponse();
     assertThat(controller().create(questionnaireResponse))
         .isEqualTo(
             ResponseEntity.created(URI.create("http://foo.com/r4/QuestionnaireResponse/x"))
                 .body(questionnaireResponse));
   }
 
+  @Test
+  void create_questionnaire_duplicate() {
+    var questionnaire = questionnaire();
+    ManagementController controller = controller();
+    when(controller.questionnaireRepository().existsById("x")).thenReturn(true);
+    assertThrows(Exceptions.AlreadyExists.class, () -> controller.create(questionnaire));
+  }
+
   @ParameterizedTest
   @MethodSource("invalid_formats_strings")
   void invalid_formats(String id) {
-    var controller = controller();
     var questionnaire = questionnaire(id);
-    assertThrows(Exceptions.BadRequest.class, () -> controller.create(questionnaire));
+    assertThrows(Exceptions.BadRequest.class, () -> controller().create(questionnaire));
   }
 }

@@ -16,6 +16,17 @@ import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
+/**
+ * This class contains the logic for implementing, on a per-resource basis, a ResponseBodyAdvice as
+ * an @ControllerAdvice.
+ *
+ * <p>The @ControllerAdvice's intercept all responses from Controller @RequestMappings. The advice
+ * then checks the return type of the @RequestMapping's payload. If it is "supported", (see the
+ * supports() method), then beforeBodyWrite() logic fires. It will search the payload using a
+ * supplied ICN extraction function. We then populate an internal header of X-VA-INCLUDES-ICN with
+ * the corresponding ICN(s) in the payload. This header will be used by Kong to do Authorization via
+ * Patient Matching.
+ */
 @Builder
 public final class IncludesIcnMajig<T, B> implements ResponseBodyAdvice<Object> {
   public static final String INCLUDES_ICN_HEADER = "X-VA-INCLUDES-ICN";
@@ -40,8 +51,8 @@ public final class IncludesIcnMajig<T, B> implements ResponseBodyAdvice<Object> 
 
   /** Extract patient ICN from the reference. */
   public static String icn(Reference reference) {
-    if ("patient".equalsIgnoreCase(ReferenceUtils.resourceType(reference))) {
-      return ReferenceUtils.resourceId(reference);
+    if ("patient".equalsIgnoreCase(Controllers.resourceType(reference))) {
+      return Controllers.resourceId(reference);
     }
     return null;
   }

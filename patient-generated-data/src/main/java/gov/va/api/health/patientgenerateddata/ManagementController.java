@@ -1,22 +1,19 @@
 package gov.va.api.health.patientgenerateddata;
 
 import static gov.va.api.health.patientgenerateddata.Controllers.checkRequestState;
+import static gov.va.api.health.patientgenerateddata.Controllers.nowMillis;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 import gov.va.api.health.patientgenerateddata.observation.ObservationController;
-import gov.va.api.health.patientgenerateddata.observation.ObservationEntity;
 import gov.va.api.health.patientgenerateddata.observation.ObservationRepository;
 import gov.va.api.health.patientgenerateddata.questionnaire.QuestionnaireController;
-import gov.va.api.health.patientgenerateddata.questionnaire.QuestionnaireEntity;
 import gov.va.api.health.patientgenerateddata.questionnaire.QuestionnaireRepository;
 import gov.va.api.health.patientgenerateddata.questionnaireresponse.QuestionnaireResponseController;
-import gov.va.api.health.patientgenerateddata.questionnaireresponse.QuestionnaireResponseEntity;
 import gov.va.api.health.patientgenerateddata.questionnaireresponse.QuestionnaireResponseRepository;
 import gov.va.api.health.r4.api.resources.Observation;
 import gov.va.api.health.r4.api.resources.Questionnaire;
 import gov.va.api.health.r4.api.resources.QuestionnaireResponse;
 import gov.va.api.health.r4.api.resources.Resource;
-import java.net.URI;
 import javax.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -46,41 +43,32 @@ public class ManagementController {
 
   @PostMapping(value = "/Observation")
   ResponseEntity<Observation> create(@Valid @RequestBody Observation observation) {
-    String id = verifyAndGetId(observation, observationRepository);
-    ObservationEntity entity = ObservationController.toEntity(observation);
-    observationRepository.save(entity);
-    return ResponseEntity.created(URI.create(linkProperties.r4Url() + "/Observation/" + id))
-        .body(observation);
+    validateId(observation, observationRepository);
+    return new ObservationController(linkProperties, observationRepository)
+        .create(observation, nowMillis());
   }
 
   @PostMapping(value = "/Questionnaire")
   ResponseEntity<Questionnaire> create(@Valid @RequestBody Questionnaire questionnaire) {
-    String id = verifyAndGetId(questionnaire, questionnaireRepository);
-    QuestionnaireEntity entity = QuestionnaireController.toEntity(questionnaire);
-    questionnaireRepository.save(entity);
-    return ResponseEntity.created(URI.create(linkProperties.r4Url() + "/Questionnaire/" + id))
-        .body(questionnaire);
+    validateId(questionnaire, questionnaireRepository);
+    return new QuestionnaireController(linkProperties, questionnaireRepository)
+        .create(questionnaire, nowMillis());
   }
 
   @PostMapping(value = "/QuestionnaireResponse")
   ResponseEntity<QuestionnaireResponse> create(
       @Valid @RequestBody QuestionnaireResponse questionnaireResponse) {
-    String id = verifyAndGetId(questionnaireResponse, questionnaireResponseRepository);
-    QuestionnaireResponseEntity entity =
-        QuestionnaireResponseController.toEntity(questionnaireResponse);
-    questionnaireResponseRepository.save(entity);
-    return ResponseEntity.created(
-            URI.create(linkProperties.r4Url() + "/QuestionnaireResponse/" + id))
-        .body(questionnaireResponse);
+    validateId(questionnaireResponse, questionnaireResponseRepository);
+    return new QuestionnaireResponseController(linkProperties, questionnaireResponseRepository)
+        .create(questionnaireResponse, nowMillis());
   }
 
-  <R extends Resource, T extends PayloadEntity<R>> String verifyAndGetId(
+  <R extends Resource, T extends PayloadEntity<R>> void validateId(
       R resource, CrudRepository<T, String> repository) {
     String id = resource.id();
     checkRequestState(!isBlank(id), "ID is required");
     if (repository.existsById(id)) {
-      throw new Exceptions.AlreadyExists(String.format("Already exists %s", id));
+      throw new Exceptions.AlreadyExists(String.format("ID %s already exists", id));
     }
-    return id;
   }
 }
