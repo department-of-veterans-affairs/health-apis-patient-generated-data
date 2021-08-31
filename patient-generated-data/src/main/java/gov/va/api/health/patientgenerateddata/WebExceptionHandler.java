@@ -150,8 +150,7 @@ public final class WebExceptionHandler {
               .build());
     }
     String cause =
-        causes(tr)
-            .stream()
+        causes(tr).stream()
             .map(t -> t.getClass().getSimpleName() + " " + sanitizedMessage(t))
             .collect(joining(", "));
     if (isNotBlank(cause)) {
@@ -222,8 +221,7 @@ public final class WebExceptionHandler {
   OperationOutcome handleValidationException(
       ConstraintViolationException e, HttpServletRequest request) {
     List<String> diagnostics =
-        e.getConstraintViolations()
-            .stream()
+        e.getConstraintViolations().stream()
             .map(v -> v.getPropertyPath() + " " + v.getMessage())
             .collect(toList());
     return responseFor("structure", e, request, diagnostics, true);

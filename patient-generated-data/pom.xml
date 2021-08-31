@@ -12,7 +12,7 @@
   <packaging>jar</packaging>
   <properties>
     <fhir-resources.version>7.0.7</fhir-resources.version>
-	<nimbus-jose-jwt.version>9.13</nimbus-jose-jwt.version>
+    <nimbus-jose-jwt.version>9.13</nimbus-jose-jwt.version>
     <swagger-examples-maven-plugin.version>3.0.0</swagger-examples-maven-plugin.version>
     <swagger-maven-plugin.version>2.1.5</swagger-maven-plugin.version>
     <vulcan.version>2.0.8</vulcan.version>

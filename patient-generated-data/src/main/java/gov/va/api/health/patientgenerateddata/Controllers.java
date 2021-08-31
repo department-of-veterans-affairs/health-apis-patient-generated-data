@@ -54,9 +54,7 @@ public class Controllers {
   }
 
   public static Meta metaWithSource(Meta meta, String source) {
-    return Optional.ofNullable(meta)
-        .orElse(Meta.builder().build())
-        .source(source);
+    return Optional.ofNullable(meta).orElse(Meta.builder().build()).source(source);
   }
 
   /** Current Instant truncated to milliseconds. */

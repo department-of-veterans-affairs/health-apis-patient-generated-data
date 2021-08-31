@@ -3,6 +3,8 @@ package gov.va.api.health.patientgenerateddata;
 import static com.google.common.base.Preconditions.checkState;
 import static gov.va.api.health.patientgenerateddata.Controllers.checkRequestState;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.nimbusds.jose.JWSObject;
 import java.text.ParseException;
 import java.util.Map;
 import lombok.Builder;
@@ -10,8 +12,6 @@ import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.nimbusds.jose.JWSObject;
 
 @Component
 public class Sourcerer {
