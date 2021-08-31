@@ -16,6 +16,7 @@ import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.api.health.autoconfig.logging.Loggable;
+import gov.va.api.health.patientgenerateddata.ClientIdMajig;
 import gov.va.api.health.patientgenerateddata.Exceptions;
 import gov.va.api.health.patientgenerateddata.JacksonMapperConfig;
 import gov.va.api.health.patientgenerateddata.LinkProperties;
@@ -58,6 +59,8 @@ public class QuestionnaireResponseController {
   private final LinkProperties linkProperties;
 
   private final QuestionnaireResponseRepository repository;
+
+  private final ClientIdMajig cim;
 
   @SneakyThrows
   private static void populateEntity(
@@ -146,6 +149,7 @@ public class QuestionnaireResponseController {
   public ResponseEntity<QuestionnaireResponse> create(
       QuestionnaireResponse questionnaireResponse, Instant now) {
     questionnaireResponse.meta(metaWithLastUpdated(questionnaireResponse.meta(), now));
+    cim.applySource();
     repository.save(toEntity(questionnaireResponse));
     return ResponseEntity.created(
             URI.create(
@@ -208,6 +212,7 @@ public class QuestionnaireResponseController {
   ResponseEntity<QuestionnaireResponse> update(
       QuestionnaireResponse questionnaireResponse, Instant now) {
     questionnaireResponse.meta(metaWithLastUpdated(questionnaireResponse.meta(), now));
+    cim.applySource();
     QuestionnaireResponseEntity entity =
         repository
             .findById(questionnaireResponse.id())

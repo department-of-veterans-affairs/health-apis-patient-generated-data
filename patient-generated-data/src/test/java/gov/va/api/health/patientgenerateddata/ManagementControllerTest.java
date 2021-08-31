@@ -26,7 +26,11 @@ public class ManagementControllerTest {
     var questionnaireRepo = mock(QuestionnaireRepository.class);
     var questionnaireResponseRepo = mock(QuestionnaireResponseRepository.class);
     return new ManagementController(
-        pageLinks, observationRepo, questionnaireRepo, questionnaireResponseRepo);
+        pageLinks,
+        new ClientIdMajig("{}"),
+        observationRepo,
+        questionnaireRepo,
+        questionnaireResponseRepo);
   }
 
   static Stream<String> invalid_formats_strings() {

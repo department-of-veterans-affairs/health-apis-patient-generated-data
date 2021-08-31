@@ -13,6 +13,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import gov.va.api.health.patientgenerateddata.ClientIdMajig;
 import gov.va.api.health.patientgenerateddata.Exceptions;
 import gov.va.api.health.patientgenerateddata.JacksonMapperConfig;
 import gov.va.api.health.patientgenerateddata.LinkProperties;
@@ -45,7 +46,7 @@ public class ObservationControllerTest {
           .build();
 
   private static ObservationController controller(ObservationRepository repo) {
-    return new ObservationController(pageLinks, repo);
+    return new ObservationController(pageLinks, repo, new ClientIdMajig("{}"));
   }
 
   private static ObservationController controller() {
@@ -59,7 +60,8 @@ public class ObservationControllerTest {
     LinkProperties pageLinks =
         LinkProperties.builder().baseUrl("http://foo.com").r4BasePath("r4").build();
     ObservationRepository repo = mock(ObservationRepository.class);
-    ObservationController controller = new ObservationController(pageLinks, repo);
+    ObservationController controller =
+        new ObservationController(pageLinks, repo, new ClientIdMajig("{}"));
     var observation = observation();
     var persisted = MAPPER.writeValueAsString(observation);
     var expectedObservation = observationWithLastUpdated(time);
@@ -75,13 +77,14 @@ public class ObservationControllerTest {
     var observation = observation().id("123");
     var repo = mock(ObservationRepository.class);
     var pageLinks = mock(LinkProperties.class);
-    var controller = new ObservationController(pageLinks, repo);
-    assertThrows(Exceptions.BadRequest.class, () -> controller.create(observation));
+    var controller = new ObservationController(pageLinks, repo, new ClientIdMajig("{}"));
+    assertThrows(Exceptions.BadRequest.class, () -> controller.create(observation, ""));
   }
 
   @Test
   void initDirectFieldAccess() {
-    new ObservationController(mock(LinkProperties.class), mock(ObservationRepository.class))
+    new ObservationController(
+            mock(LinkProperties.class), mock(ObservationRepository.class), new ClientIdMajig("{}"))
         .initDirectFieldAccess(mock(DataBinder.class));
   }
 
@@ -99,7 +102,9 @@ public class ObservationControllerTest {
     String payload = MAPPER.writeValueAsString(observation());
     when(repo.findById("x"))
         .thenReturn(Optional.of(ObservationEntity.builder().id("x").payload(payload).build()));
-    assertThat(new ObservationController(mock(LinkProperties.class), repo).read("x"))
+    assertThat(
+            new ObservationController(mock(LinkProperties.class), repo, new ClientIdMajig("{}"))
+                .read("x"))
         .isEqualTo(observation());
   }
 
@@ -108,7 +113,9 @@ public class ObservationControllerTest {
     ObservationRepository repo = mock(ObservationRepository.class);
     assertThrows(
         Exceptions.NotFound.class,
-        () -> new ObservationController(mock(LinkProperties.class), repo).read("notfound"));
+        () ->
+            new ObservationController(mock(LinkProperties.class), repo, new ClientIdMajig("{}"))
+                .read("notfound"));
   }
 
   @Test
@@ -121,7 +128,8 @@ public class ObservationControllerTest {
         .thenReturn(Optional.of(ObservationEntity.builder().id("x").payload(payload).build()));
     Observation hasLastUpdated = observationWithLastUpdated(time);
     assertThat(
-            new ObservationController(mock(LinkProperties.class), repo).update("x", hasLastUpdated))
+            new ObservationController(mock(LinkProperties.class), repo, new ClientIdMajig("{}"))
+                .update("x", hasLastUpdated))
         .isEqualTo(ResponseEntity.ok(hasLastUpdated));
     verify(repo, times(1)).save(ObservationEntity.builder().id("x").payload(payload).build());
   }
@@ -134,7 +142,9 @@ public class ObservationControllerTest {
     Observation observation = observation();
     assertThrows(
         Exceptions.NotFound.class,
-        () -> new ObservationController(pageLinks, repo).update("x", observation));
+        () ->
+            new ObservationController(pageLinks, repo, new ClientIdMajig("{}"))
+                .update("x", observation));
   }
 
   @ParameterizedTest

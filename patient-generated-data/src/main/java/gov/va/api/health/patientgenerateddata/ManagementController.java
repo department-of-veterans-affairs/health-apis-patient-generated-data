@@ -35,6 +35,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class ManagementController {
   private final LinkProperties linkProperties;
 
+  private final ClientIdMajig cim;
+
   @Getter private final ObservationRepository observationRepository;
 
   @Getter private final QuestionnaireRepository questionnaireRepository;
@@ -44,14 +46,14 @@ public class ManagementController {
   @PostMapping(value = "/Observation")
   ResponseEntity<Observation> create(@Valid @RequestBody Observation observation) {
     validateId(observation, observationRepository);
-    return new ObservationController(linkProperties, observationRepository)
+    return new ObservationController(linkProperties, observationRepository, cim)
         .create(observation, nowMillis());
   }
 
   @PostMapping(value = "/Questionnaire")
   ResponseEntity<Questionnaire> create(@Valid @RequestBody Questionnaire questionnaire) {
     validateId(questionnaire, questionnaireRepository);
-    return new QuestionnaireController(linkProperties, questionnaireRepository)
+    return new QuestionnaireController(linkProperties, questionnaireRepository, cim)
         .create(questionnaire, nowMillis());
   }
 
@@ -59,7 +61,7 @@ public class ManagementController {
   ResponseEntity<QuestionnaireResponse> create(
       @Valid @RequestBody QuestionnaireResponse questionnaireResponse) {
     validateId(questionnaireResponse, questionnaireResponseRepository);
-    return new QuestionnaireResponseController(linkProperties, questionnaireResponseRepository)
+    return new QuestionnaireResponseController(linkProperties, questionnaireResponseRepository, cim)
         .create(questionnaireResponse, nowMillis());
   }
 

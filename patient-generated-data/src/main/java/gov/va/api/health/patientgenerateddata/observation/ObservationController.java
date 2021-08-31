@@ -14,6 +14,7 @@ import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.api.health.autoconfig.logging.Loggable;
+import gov.va.api.health.patientgenerateddata.ClientIdMajig;
 import gov.va.api.health.patientgenerateddata.Exceptions;
 import gov.va.api.health.patientgenerateddata.JacksonMapperConfig;
 import gov.va.api.health.patientgenerateddata.LinkProperties;
@@ -40,6 +41,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -55,6 +57,8 @@ public class ObservationController {
   private final LinkProperties linkProperties;
 
   private final ObservationRepository repository;
+
+  private final ClientIdMajig cim;
 
   @SneakyThrows
   private static void populateEntity(
@@ -93,7 +97,9 @@ public class ObservationController {
 
   @PostMapping
   @Loggable(arguments = false)
-  ResponseEntity<Observation> create(@Valid @RequestBody Observation observation) {
+  ResponseEntity<Observation> create(
+      @Valid @RequestBody Observation observation,
+      @RequestHeader(name = "Authorization", required = true) String authorization) {
     checkRequestState(isEmpty(observation.id()), "ID must be empty, found %s", observation.id());
     observation.id(generateRandomId());
     return create(observation, nowMillis());
@@ -102,6 +108,7 @@ public class ObservationController {
   /** Create resource. */
   public ResponseEntity<Observation> create(Observation observation, Instant now) {
     observation.meta(metaWithLastUpdated(observation.meta(), now));
+    cim.applySource();
     repository.save(toEntity(observation));
     return ResponseEntity.created(
             URI.create(linkProperties.r4Url() + "/Observation/" + observation.id()))
@@ -156,6 +163,7 @@ public class ObservationController {
 
   ResponseEntity<Observation> update(Observation observation, Instant now) {
     observation.meta(metaWithLastUpdated(observation.meta(), now));
+    cim.applySource();
     ObservationEntity entity =
         repository
             .findById(observation.id())
