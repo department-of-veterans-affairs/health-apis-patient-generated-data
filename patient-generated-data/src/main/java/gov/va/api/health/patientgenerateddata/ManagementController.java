@@ -46,7 +46,7 @@ public class ManagementController {
   @PostMapping(value = "/Observation")
   ResponseEntity<Observation> create(
       @Valid @RequestBody Observation observation,
-      @RequestHeader(name = "Authorization", required = true) String authorization) {
+      @RequestHeader(name = "Authorization") String authorization) {
     validateId(observation, observationRepository);
     return new ObservationController(linkProperties, observationRepository, sourcerer)
         .create(observation, authorization, nowMillis());
