@@ -7,7 +7,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.nimbusds.jose.JWSObject;
 import java.text.ParseException;
 import java.util.Map;
-import lombok.Builder;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,7 +19,6 @@ public class Sourcerer {
   private final String staticAccessToken;
 
   /** Autowired constructor. */
-  @Builder
   @Autowired
   @SneakyThrows
   public Sourcerer(
@@ -34,8 +32,7 @@ public class Sourcerer {
     this.staticAccessToken = staticAccessToken;
   }
 
-  /** placeholder lol. */
-  @SneakyThrows
+  /** Determine source. */
   public String source(String authorization) {
     checkRequestState(
         authorization.startsWith("Bearer "), "Invalid authorization: %s", authorization);

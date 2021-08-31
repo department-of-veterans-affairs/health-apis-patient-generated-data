@@ -36,7 +36,7 @@ checkForUnsetValues() {
 
 makeConfig patient-generated-data $PROFILE
 configValue patient-generated-data $PROFILE authorization.client-ids '{"P73R4CUD4":"pteracuda"}'
-configValue patient-generated-data $PROFILE authorization.static-access-token 'sat'
+configValue patient-generated-data $PROFILE authorization.static-access-token 'pteracuda'
 configValue patient-generated-data $PROFILE metadata.endpoint-authorize 'http://fake.com/authorize'
 configValue patient-generated-data $PROFILE metadata.endpoint-management 'http://fake.com/manage'
 configValue patient-generated-data $PROFILE metadata.endpoint-revocation 'http://fake.com/revoke'
