@@ -14,7 +14,7 @@ import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.api.health.autoconfig.logging.Loggable;
-import gov.va.api.health.patientgenerateddata.ClientIdMajig;
+import gov.va.api.health.patientgenerateddata.Sourcerer;
 import gov.va.api.health.patientgenerateddata.CompositeMapping;
 import gov.va.api.health.patientgenerateddata.Exceptions;
 import gov.va.api.health.patientgenerateddata.JacksonMapperConfig;
@@ -58,7 +58,7 @@ public class QuestionnaireController {
 
   private final QuestionnaireRepository repository;
 
-  private final ClientIdMajig cim;
+  private final Sourcerer cim;
 
   @SneakyThrows
   private static void populateEntity(

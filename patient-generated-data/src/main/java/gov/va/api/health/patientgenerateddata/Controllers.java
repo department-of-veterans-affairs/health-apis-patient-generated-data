@@ -53,6 +53,12 @@ public class Controllers {
         .lastUpdated(lastUpdated.toString());
   }
 
+  public static Meta metaWithSource(Meta meta, String source) {
+    return Optional.ofNullable(meta)
+        .orElse(Meta.builder().build())
+        .source(source);
+  }
+
   /** Current Instant truncated to milliseconds. */
   public static Instant nowMillis() {
     return Instant.now().truncatedTo(MILLIS);

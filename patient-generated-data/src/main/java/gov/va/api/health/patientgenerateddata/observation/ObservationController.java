@@ -5,6 +5,7 @@ import static gov.va.api.health.patientgenerateddata.Controllers.checkRequestSta
 import static gov.va.api.health.patientgenerateddata.Controllers.generateRandomId;
 import static gov.va.api.health.patientgenerateddata.Controllers.lastUpdatedFromMeta;
 import static gov.va.api.health.patientgenerateddata.Controllers.metaWithLastUpdated;
+import static gov.va.api.health.patientgenerateddata.Controllers.metaWithSource;
 import static gov.va.api.health.patientgenerateddata.Controllers.nowMillis;
 import static gov.va.api.lighthouse.vulcan.Rules.atLeastOneParameterOf;
 import static gov.va.api.lighthouse.vulcan.Rules.ifParameter;
@@ -14,7 +15,7 @@ import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.api.health.autoconfig.logging.Loggable;
-import gov.va.api.health.patientgenerateddata.ClientIdMajig;
+import gov.va.api.health.patientgenerateddata.Sourcerer;
 import gov.va.api.health.patientgenerateddata.Exceptions;
 import gov.va.api.health.patientgenerateddata.JacksonMapperConfig;
 import gov.va.api.health.patientgenerateddata.LinkProperties;
@@ -58,7 +59,7 @@ public class ObservationController {
 
   private final ObservationRepository repository;
 
-  private final ClientIdMajig cim;
+  private final Sourcerer sourcerer;
 
   @SneakyThrows
   private static void populateEntity(
@@ -102,13 +103,14 @@ public class ObservationController {
       @RequestHeader(name = "Authorization", required = true) String authorization) {
     checkRequestState(isEmpty(observation.id()), "ID must be empty, found %s", observation.id());
     observation.id(generateRandomId());
-    return create(observation, nowMillis());
+    return create(observation, authorization, nowMillis());
   }
 
   /** Create resource. */
-  public ResponseEntity<Observation> create(Observation observation, Instant now) {
+  public ResponseEntity<Observation> create(
+      Observation observation, String authorization, Instant now) {
+    observation.meta(metaWithSource(observation.meta(), sourcerer.source(authorization)));
     observation.meta(metaWithLastUpdated(observation.meta(), now));
-    cim.applySource();
     repository.save(toEntity(observation));
     return ResponseEntity.created(
             URI.create(linkProperties.r4Url() + "/Observation/" + observation.id()))
@@ -163,7 +165,7 @@ public class ObservationController {
 
   ResponseEntity<Observation> update(Observation observation, Instant now) {
     observation.meta(metaWithLastUpdated(observation.meta(), now));
-    cim.applySource();
+    sourcerer.applySource();
     ObservationEntity entity =
         repository
             .findById(observation.id())

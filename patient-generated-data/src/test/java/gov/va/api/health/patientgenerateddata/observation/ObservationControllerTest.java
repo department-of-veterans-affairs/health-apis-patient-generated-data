@@ -13,7 +13,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import gov.va.api.health.patientgenerateddata.ClientIdMajig;
+import gov.va.api.health.patientgenerateddata.Sourcerer;
 import gov.va.api.health.patientgenerateddata.Exceptions;
 import gov.va.api.health.patientgenerateddata.JacksonMapperConfig;
 import gov.va.api.health.patientgenerateddata.LinkProperties;
@@ -46,7 +46,7 @@ public class ObservationControllerTest {
           .build();
 
   private static ObservationController controller(ObservationRepository repo) {
-    return new ObservationController(pageLinks, repo, new ClientIdMajig("{}"));
+    return new ObservationController(pageLinks, repo, new Sourcerer("{}", ""));
   }
 
   private static ObservationController controller() {
@@ -61,11 +61,11 @@ public class ObservationControllerTest {
         LinkProperties.builder().baseUrl("http://foo.com").r4BasePath("r4").build();
     ObservationRepository repo = mock(ObservationRepository.class);
     ObservationController controller =
-        new ObservationController(pageLinks, repo, new ClientIdMajig("{}"));
+        new ObservationController(pageLinks, repo, new Sourcerer("{}", ""));
     var observation = observation();
     var persisted = MAPPER.writeValueAsString(observation);
     var expectedObservation = observationWithLastUpdated(time);
-    assertThat(controller.create(observation, time))
+    assertThat(controller.create(observation, "", time))
         .isEqualTo(
             ResponseEntity.created(URI.create("http://foo.com/r4/Observation/x"))
                 .body(expectedObservation));
@@ -77,14 +77,14 @@ public class ObservationControllerTest {
     var observation = observation().id("123");
     var repo = mock(ObservationRepository.class);
     var pageLinks = mock(LinkProperties.class);
-    var controller = new ObservationController(pageLinks, repo, new ClientIdMajig("{}"));
+    var controller = new ObservationController(pageLinks, repo, new Sourcerer("{}", ""));
     assertThrows(Exceptions.BadRequest.class, () -> controller.create(observation, ""));
   }
 
   @Test
   void initDirectFieldAccess() {
     new ObservationController(
-            mock(LinkProperties.class), mock(ObservationRepository.class), new ClientIdMajig("{}"))
+            mock(LinkProperties.class), mock(ObservationRepository.class), new Sourcerer("{}", ""))
         .initDirectFieldAccess(mock(DataBinder.class));
   }
 
@@ -103,7 +103,7 @@ public class ObservationControllerTest {
     when(repo.findById("x"))
         .thenReturn(Optional.of(ObservationEntity.builder().id("x").payload(payload).build()));
     assertThat(
-            new ObservationController(mock(LinkProperties.class), repo, new ClientIdMajig("{}"))
+            new ObservationController(mock(LinkProperties.class), repo, new Sourcerer("{}", ""))
                 .read("x"))
         .isEqualTo(observation());
   }
@@ -114,7 +114,7 @@ public class ObservationControllerTest {
     assertThrows(
         Exceptions.NotFound.class,
         () ->
-            new ObservationController(mock(LinkProperties.class), repo, new ClientIdMajig("{}"))
+            new ObservationController(mock(LinkProperties.class), repo, new Sourcerer("{}", ""))
                 .read("notfound"));
   }
 
@@ -128,7 +128,7 @@ public class ObservationControllerTest {
         .thenReturn(Optional.of(ObservationEntity.builder().id("x").payload(payload).build()));
     Observation hasLastUpdated = observationWithLastUpdated(time);
     assertThat(
-            new ObservationController(mock(LinkProperties.class), repo, new ClientIdMajig("{}"))
+            new ObservationController(mock(LinkProperties.class), repo, new Sourcerer("{}", ""))
                 .update("x", hasLastUpdated))
         .isEqualTo(ResponseEntity.ok(hasLastUpdated));
     verify(repo, times(1)).save(ObservationEntity.builder().id("x").payload(payload).build());
@@ -143,7 +143,7 @@ public class ObservationControllerTest {
     assertThrows(
         Exceptions.NotFound.class,
         () ->
-            new ObservationController(pageLinks, repo, new ClientIdMajig("{}"))
+            new ObservationController(pageLinks, repo, new Sourcerer("{}", ""))
                 .update("x", observation));
   }
 

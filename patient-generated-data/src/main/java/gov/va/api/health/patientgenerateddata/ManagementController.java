@@ -23,6 +23,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -35,7 +36,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ManagementController {
   private final LinkProperties linkProperties;
 
-  private final ClientIdMajig cim;
+  private final Sourcerer cim;
 
   @Getter private final ObservationRepository observationRepository;
 
@@ -44,10 +45,12 @@ public class ManagementController {
   @Getter private final QuestionnaireResponseRepository questionnaireResponseRepository;
 
   @PostMapping(value = "/Observation")
-  ResponseEntity<Observation> create(@Valid @RequestBody Observation observation) {
+  ResponseEntity<Observation> create(
+      @Valid @RequestBody Observation observation,
+      @RequestHeader(name = "Authorization", required = true) String authorization) {
     validateId(observation, observationRepository);
     return new ObservationController(linkProperties, observationRepository, cim)
-        .create(observation, nowMillis());
+        .create(observation, authorization, nowMillis());
   }
 
   @PostMapping(value = "/Questionnaire")

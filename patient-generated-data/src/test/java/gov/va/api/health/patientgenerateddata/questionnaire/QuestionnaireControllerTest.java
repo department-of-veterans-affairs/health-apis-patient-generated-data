@@ -13,7 +13,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import gov.va.api.health.patientgenerateddata.ClientIdMajig;
+import gov.va.api.health.patientgenerateddata.Sourcerer;
 import gov.va.api.health.patientgenerateddata.Exceptions;
 import gov.va.api.health.patientgenerateddata.JacksonMapperConfig;
 import gov.va.api.health.patientgenerateddata.LinkProperties;
@@ -45,7 +45,7 @@ public class QuestionnaireControllerTest {
         LinkProperties.builder().baseUrl("http://foo.com").r4BasePath("r4").build();
     QuestionnaireRepository repo = mock(QuestionnaireRepository.class);
     QuestionnaireController controller =
-        new QuestionnaireController(pageLinks, repo, new ClientIdMajig("{}"));
+        new QuestionnaireController(pageLinks, repo, new Sourcerer("{}", ""));
     var questionnaire = questionnaire().id("x");
     var persisted = MAPPER.writeValueAsString(questionnaire);
     assertThat(controller.create(questionnaire, time))
@@ -60,7 +60,7 @@ public class QuestionnaireControllerTest {
     var questionnaire = questionnaire().id("123");
     var repo = mock(QuestionnaireRepository.class);
     var pageLinks = mock(LinkProperties.class);
-    var controller = new QuestionnaireController(pageLinks, repo, new ClientIdMajig("{}"));
+    var controller = new QuestionnaireController(pageLinks, repo, new Sourcerer("{}", ""));
     assertThrows(Exceptions.BadRequest.class, () -> controller.create(questionnaire));
   }
 
@@ -69,7 +69,7 @@ public class QuestionnaireControllerTest {
     new QuestionnaireController(
             mock(LinkProperties.class),
             mock(QuestionnaireRepository.class),
-            new ClientIdMajig("{}"))
+            new Sourcerer("{}", ""))
         .initDirectFieldAccess(mock(DataBinder.class));
   }
 
@@ -81,7 +81,7 @@ public class QuestionnaireControllerTest {
     when(repo.findById("x"))
         .thenReturn(Optional.of(QuestionnaireEntity.builder().id("x").payload(payload).build()));
     assertThat(
-            new QuestionnaireController(mock(LinkProperties.class), repo, new ClientIdMajig("{}"))
+            new QuestionnaireController(mock(LinkProperties.class), repo, new Sourcerer("{}", ""))
                 .read("x"))
         .isEqualTo(questionnaire());
   }
@@ -94,7 +94,7 @@ public class QuestionnaireControllerTest {
             new QuestionnaireController(
                     mock(LinkProperties.class),
                     mock(QuestionnaireRepository.class),
-                    new ClientIdMajig("{}"))
+                    new Sourcerer("{}", ""))
                 .read("notfound"));
   }
 
@@ -110,7 +110,7 @@ public class QuestionnaireControllerTest {
             .build();
     QuestionnaireController controller =
         new QuestionnaireController(
-            pageLinks, mock(QuestionnaireRepository.class), new ClientIdMajig("{}"));
+            pageLinks, mock(QuestionnaireRepository.class), new Sourcerer("{}", ""));
     var req = requestFromUri("http://fonzy.com/r4/Questionnaire" + query);
     assertThatExceptionOfType(InvalidRequest.class).isThrownBy(() -> controller.search(req));
   }
@@ -127,7 +127,7 @@ public class QuestionnaireControllerTest {
             .build();
     QuestionnaireRepository repo = mock(QuestionnaireRepository.class);
     QuestionnaireController controller =
-        new QuestionnaireController(pageLinks, repo, new ClientIdMajig("{}"));
+        new QuestionnaireController(pageLinks, repo, new Sourcerer("{}", ""));
     var anySpec = ArgumentMatchers.<Specification<QuestionnaireEntity>>any();
     when(repo.findAll(anySpec, any(Pageable.class)))
         .thenAnswer(
@@ -151,7 +151,7 @@ public class QuestionnaireControllerTest {
     when(repo.findById("x"))
         .thenReturn(Optional.of(QuestionnaireEntity.builder().id("x").payload(payload).build()));
     assertThat(
-            new QuestionnaireController(mock(LinkProperties.class), repo, new ClientIdMajig("{}"))
+            new QuestionnaireController(mock(LinkProperties.class), repo, new Sourcerer("{}", ""))
                 .update(questionnaire, now))
         .isEqualTo(ResponseEntity.ok(questionnaireWithLastUpdated(now)));
     verify(repo, times(1)).save(QuestionnaireEntity.builder().id("x").payload(payload).build());
@@ -166,7 +166,7 @@ public class QuestionnaireControllerTest {
     assertThrows(
         Exceptions.NotFound.class,
         () ->
-            new QuestionnaireController(pageLinks, repo, new ClientIdMajig("{}"))
+            new QuestionnaireController(pageLinks, repo, new Sourcerer("{}", ""))
                 .update("x", questionnaire));
   }
 }

@@ -27,8 +27,10 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
+import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.UnsatisfiedServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -148,7 +150,8 @@ public final class WebExceptionHandler {
               .build());
     }
     String cause =
-        causes(tr).stream()
+        causes(tr)
+            .stream()
             .map(t -> t.getClass().getSimpleName() + " " + sanitizedMessage(t))
             .collect(joining(", "));
     if (isNotBlank(cause)) {
@@ -164,6 +167,8 @@ public final class WebExceptionHandler {
     Exceptions.AlreadyExists.class,
     Exceptions.BadRequest.class,
     gov.va.api.lighthouse.vulcan.InvalidRequest.class,
+    HttpMessageNotReadableException.class,
+    MissingRequestHeaderException.class,
     UnsatisfiedServletRequestParameterException.class
   })
   @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -217,7 +222,8 @@ public final class WebExceptionHandler {
   OperationOutcome handleValidationException(
       ConstraintViolationException e, HttpServletRequest request) {
     List<String> diagnostics =
-        e.getConstraintViolations().stream()
+        e.getConstraintViolations()
+            .stream()
             .map(v -> v.getPropertyPath() + " " + v.getMessage())
             .collect(toList());
     return responseFor("structure", e, request, diagnostics, true);

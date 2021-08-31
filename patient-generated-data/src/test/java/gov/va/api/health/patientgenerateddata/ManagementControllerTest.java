@@ -27,7 +27,7 @@ public class ManagementControllerTest {
     var questionnaireResponseRepo = mock(QuestionnaireResponseRepository.class);
     return new ManagementController(
         pageLinks,
-        new ClientIdMajig("{}"),
+        new Sourcerer("{}", ""),
         observationRepo,
         questionnaireRepo,
         questionnaireResponseRepo);
@@ -40,7 +40,7 @@ public class ManagementControllerTest {
   @Test
   void create_observation() {
     var observation = observation();
-    assertThat(controller().create(observation))
+    assertThat(controller().create(observation, ""))
         .isEqualTo(
             ResponseEntity.created(URI.create("http://foo.com/r4/Observation/x"))
                 .body(observation));
