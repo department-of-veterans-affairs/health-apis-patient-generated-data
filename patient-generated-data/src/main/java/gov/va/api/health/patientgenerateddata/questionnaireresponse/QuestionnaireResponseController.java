@@ -19,6 +19,7 @@ import gov.va.api.health.autoconfig.logging.Loggable;
 import gov.va.api.health.patientgenerateddata.Exceptions;
 import gov.va.api.health.patientgenerateddata.JacksonMapperConfig;
 import gov.va.api.health.patientgenerateddata.LinkProperties;
+import gov.va.api.health.patientgenerateddata.Sourcerer;
 import gov.va.api.health.patientgenerateddata.TokenListMapping;
 import gov.va.api.health.patientgenerateddata.VulcanizedBundler;
 import gov.va.api.health.r4.api.resources.QuestionnaireResponse;
@@ -58,6 +59,9 @@ public class QuestionnaireResponseController {
   private final LinkProperties linkProperties;
 
   private final QuestionnaireResponseRepository repository;
+
+  @SuppressWarnings("unused")
+  private final Sourcerer sourcerer;
 
   @SneakyThrows
   private static void populateEntity(
@@ -145,6 +149,8 @@ public class QuestionnaireResponseController {
   /** Create resource. */
   public ResponseEntity<QuestionnaireResponse> create(
       QuestionnaireResponse questionnaireResponse, Instant now) {
+    // questionnaireResponse.meta(metaWithSource(questionnaireResponse.meta(),
+    // sourcerer.source(authorization)));
     questionnaireResponse.meta(metaWithLastUpdated(questionnaireResponse.meta(), now));
     repository.save(toEntity(questionnaireResponse));
     return ResponseEntity.created(
@@ -207,6 +213,8 @@ public class QuestionnaireResponseController {
 
   ResponseEntity<QuestionnaireResponse> update(
       QuestionnaireResponse questionnaireResponse, Instant now) {
+    // questionnaireResponse.meta(metaWithSource(questionnaireResponse.meta(),
+    // sourcerer.source(authorization)));
     questionnaireResponse.meta(metaWithLastUpdated(questionnaireResponse.meta(), now));
     QuestionnaireResponseEntity entity =
         repository

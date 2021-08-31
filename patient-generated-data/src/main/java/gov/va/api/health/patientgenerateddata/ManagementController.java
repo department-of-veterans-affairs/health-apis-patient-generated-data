@@ -16,13 +16,13 @@ import gov.va.api.health.r4.api.resources.QuestionnaireResponse;
 import gov.va.api.health.r4.api.resources.Resource;
 import javax.validation.Valid;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -35,23 +35,27 @@ import org.springframework.web.bind.annotation.RestController;
 public class ManagementController {
   private final LinkProperties linkProperties;
 
-  @Getter private final ObservationRepository observationRepository;
+  private final Sourcerer sourcerer;
 
-  @Getter private final QuestionnaireRepository questionnaireRepository;
+  private final ObservationRepository observationRepository;
 
-  @Getter private final QuestionnaireResponseRepository questionnaireResponseRepository;
+  private final QuestionnaireRepository questionnaireRepository;
+
+  private final QuestionnaireResponseRepository questionnaireResponseRepository;
 
   @PostMapping(value = "/Observation")
-  ResponseEntity<Observation> create(@Valid @RequestBody Observation observation) {
+  ResponseEntity<Observation> create(
+      @Valid @RequestBody Observation observation,
+      @RequestHeader(name = "Authorization") String authorization) {
     validateId(observation, observationRepository);
-    return new ObservationController(linkProperties, observationRepository)
-        .create(observation, nowMillis());
+    return new ObservationController(linkProperties, observationRepository, sourcerer)
+        .create(observation, authorization, nowMillis());
   }
 
   @PostMapping(value = "/Questionnaire")
   ResponseEntity<Questionnaire> create(@Valid @RequestBody Questionnaire questionnaire) {
     validateId(questionnaire, questionnaireRepository);
-    return new QuestionnaireController(linkProperties, questionnaireRepository)
+    return new QuestionnaireController(linkProperties, questionnaireRepository, sourcerer)
         .create(questionnaire, nowMillis());
   }
 
@@ -59,7 +63,8 @@ public class ManagementController {
   ResponseEntity<QuestionnaireResponse> create(
       @Valid @RequestBody QuestionnaireResponse questionnaireResponse) {
     validateId(questionnaireResponse, questionnaireResponseRepository);
-    return new QuestionnaireResponseController(linkProperties, questionnaireResponseRepository)
+    return new QuestionnaireResponseController(
+            linkProperties, questionnaireResponseRepository, sourcerer)
         .create(questionnaireResponse, nowMillis());
   }
 

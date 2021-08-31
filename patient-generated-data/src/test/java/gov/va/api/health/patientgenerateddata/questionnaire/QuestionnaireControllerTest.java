@@ -16,6 +16,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.api.health.patientgenerateddata.Exceptions;
 import gov.va.api.health.patientgenerateddata.JacksonMapperConfig;
 import gov.va.api.health.patientgenerateddata.LinkProperties;
+import gov.va.api.health.patientgenerateddata.Sourcerer;
 import gov.va.api.health.r4.api.resources.Questionnaire;
 import gov.va.api.lighthouse.vulcan.InvalidRequest;
 import java.net.URI;
@@ -43,7 +44,8 @@ public class QuestionnaireControllerTest {
     LinkProperties pageLinks =
         LinkProperties.builder().baseUrl("http://foo.com").r4BasePath("r4").build();
     QuestionnaireRepository repo = mock(QuestionnaireRepository.class);
-    QuestionnaireController controller = new QuestionnaireController(pageLinks, repo);
+    QuestionnaireController controller =
+        new QuestionnaireController(pageLinks, repo, new Sourcerer("{}", ""));
     var questionnaire = questionnaire().id("x");
     var persisted = MAPPER.writeValueAsString(questionnaire);
     assertThat(controller.create(questionnaire, time))
@@ -58,13 +60,16 @@ public class QuestionnaireControllerTest {
     var questionnaire = questionnaire().id("123");
     var repo = mock(QuestionnaireRepository.class);
     var pageLinks = mock(LinkProperties.class);
-    var controller = new QuestionnaireController(pageLinks, repo);
+    var controller = new QuestionnaireController(pageLinks, repo, new Sourcerer("{}", ""));
     assertThrows(Exceptions.BadRequest.class, () -> controller.create(questionnaire));
   }
 
   @Test
   void initDirectFieldAccess() {
-    new QuestionnaireController(mock(LinkProperties.class), mock(QuestionnaireRepository.class))
+    new QuestionnaireController(
+            mock(LinkProperties.class),
+            mock(QuestionnaireRepository.class),
+            new Sourcerer("{}", ""))
         .initDirectFieldAccess(mock(DataBinder.class));
   }
 
@@ -75,16 +80,22 @@ public class QuestionnaireControllerTest {
     String payload = MAPPER.writeValueAsString(questionnaire());
     when(repo.findById("x"))
         .thenReturn(Optional.of(QuestionnaireEntity.builder().id("x").payload(payload).build()));
-    assertThat(new QuestionnaireController(mock(LinkProperties.class), repo).read("x"))
+    assertThat(
+            new QuestionnaireController(mock(LinkProperties.class), repo, new Sourcerer("{}", ""))
+                .read("x"))
         .isEqualTo(questionnaire());
   }
 
   @Test
   void read_notFound() {
-    QuestionnaireRepository repo = mock(QuestionnaireRepository.class);
     assertThrows(
         Exceptions.NotFound.class,
-        () -> new QuestionnaireController(mock(LinkProperties.class), repo).read("notfound"));
+        () ->
+            new QuestionnaireController(
+                    mock(LinkProperties.class),
+                    mock(QuestionnaireRepository.class),
+                    new Sourcerer("{}", ""))
+                .read("notfound"));
   }
 
   @ParameterizedTest
@@ -98,7 +109,8 @@ public class QuestionnaireControllerTest {
             .r4BasePath("r4")
             .build();
     QuestionnaireController controller =
-        new QuestionnaireController(pageLinks, mock(QuestionnaireRepository.class));
+        new QuestionnaireController(
+            pageLinks, mock(QuestionnaireRepository.class), new Sourcerer("{}", ""));
     var req = requestFromUri("http://fonzy.com/r4/Questionnaire" + query);
     assertThatExceptionOfType(InvalidRequest.class).isThrownBy(() -> controller.search(req));
   }
@@ -114,7 +126,8 @@ public class QuestionnaireControllerTest {
             .r4BasePath("r4")
             .build();
     QuestionnaireRepository repo = mock(QuestionnaireRepository.class);
-    QuestionnaireController controller = new QuestionnaireController(pageLinks, repo);
+    QuestionnaireController controller =
+        new QuestionnaireController(pageLinks, repo, new Sourcerer("{}", ""));
     var anySpec = ArgumentMatchers.<Specification<QuestionnaireEntity>>any();
     when(repo.findAll(anySpec, any(Pageable.class)))
         .thenAnswer(
@@ -138,7 +151,7 @@ public class QuestionnaireControllerTest {
     when(repo.findById("x"))
         .thenReturn(Optional.of(QuestionnaireEntity.builder().id("x").payload(payload).build()));
     assertThat(
-            new QuestionnaireController(mock(LinkProperties.class), repo)
+            new QuestionnaireController(mock(LinkProperties.class), repo, new Sourcerer("{}", ""))
                 .update(questionnaire, now))
         .isEqualTo(ResponseEntity.ok(questionnaireWithLastUpdated(now)));
     verify(repo, times(1)).save(QuestionnaireEntity.builder().id("x").payload(payload).build());
@@ -152,6 +165,8 @@ public class QuestionnaireControllerTest {
     Questionnaire questionnaire = questionnaire("x");
     assertThrows(
         Exceptions.NotFound.class,
-        () -> new QuestionnaireController(pageLinks, repo).update("x", questionnaire));
+        () ->
+            new QuestionnaireController(pageLinks, repo, new Sourcerer("{}", ""))
+                .update("x", questionnaire));
   }
 }

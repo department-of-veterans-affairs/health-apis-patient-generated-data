@@ -5,6 +5,7 @@ import static gov.va.api.health.patientgenerateddata.Controllers.checkRequestSta
 import static gov.va.api.health.patientgenerateddata.Controllers.generateRandomId;
 import static gov.va.api.health.patientgenerateddata.Controllers.lastUpdatedFromMeta;
 import static gov.va.api.health.patientgenerateddata.Controllers.metaWithLastUpdated;
+import static gov.va.api.health.patientgenerateddata.Controllers.metaWithSource;
 import static gov.va.api.health.patientgenerateddata.Controllers.nowMillis;
 import static gov.va.api.lighthouse.vulcan.Rules.atLeastOneParameterOf;
 import static gov.va.api.lighthouse.vulcan.Rules.ifParameter;
@@ -17,6 +18,7 @@ import gov.va.api.health.autoconfig.logging.Loggable;
 import gov.va.api.health.patientgenerateddata.Exceptions;
 import gov.va.api.health.patientgenerateddata.JacksonMapperConfig;
 import gov.va.api.health.patientgenerateddata.LinkProperties;
+import gov.va.api.health.patientgenerateddata.Sourcerer;
 import gov.va.api.health.patientgenerateddata.VulcanizedBundler;
 import gov.va.api.health.r4.api.resources.Observation;
 import gov.va.api.lighthouse.vulcan.Vulcan;
@@ -40,6 +42,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -55,6 +58,8 @@ public class ObservationController {
   private final LinkProperties linkProperties;
 
   private final ObservationRepository repository;
+
+  private final Sourcerer sourcerer;
 
   @SneakyThrows
   private static void populateEntity(
@@ -93,14 +98,18 @@ public class ObservationController {
 
   @PostMapping
   @Loggable(arguments = false)
-  ResponseEntity<Observation> create(@Valid @RequestBody Observation observation) {
+  ResponseEntity<Observation> create(
+      @Valid @RequestBody Observation observation,
+      @RequestHeader(name = "Authorization") String authorization) {
     checkRequestState(isEmpty(observation.id()), "ID must be empty, found %s", observation.id());
     observation.id(generateRandomId());
-    return create(observation, nowMillis());
+    return create(observation, authorization, nowMillis());
   }
 
   /** Create resource. */
-  public ResponseEntity<Observation> create(Observation observation, Instant now) {
+  public ResponseEntity<Observation> create(
+      Observation observation, String authorization, Instant now) {
+    observation.meta(metaWithSource(observation.meta(), sourcerer.source(authorization)));
     observation.meta(metaWithLastUpdated(observation.meta(), now));
     repository.save(toEntity(observation));
     return ResponseEntity.created(
@@ -145,16 +154,19 @@ public class ObservationController {
   @PutMapping(value = "/{id}")
   @Loggable(arguments = false)
   ResponseEntity<Observation> update(
-      @PathVariable("id") String pathId, @Valid @RequestBody Observation observation) {
+      @PathVariable("id") String pathId,
+      @Valid @RequestBody Observation observation,
+      @RequestHeader(name = "Authorization") String authorization) {
     checkRequestState(
         pathId.equals(observation.id()),
         "Path ID (%s) and request body ID (%s) do not match",
         pathId,
         observation.id());
-    return update(observation, nowMillis());
+    return update(observation, authorization, nowMillis());
   }
 
-  ResponseEntity<Observation> update(Observation observation, Instant now) {
+  ResponseEntity<Observation> update(Observation observation, String authorization, Instant now) {
+    observation.meta(metaWithSource(observation.meta(), sourcerer.source(authorization)));
     observation.meta(metaWithLastUpdated(observation.meta(), now));
     ObservationEntity entity =
         repository

@@ -20,13 +20,12 @@ import org.springframework.http.ResponseEntity;
 
 public class ManagementControllerTest {
   private static ManagementController controller() {
-    LinkProperties pageLinks =
-        LinkProperties.builder().baseUrl("http://foo.com").r4BasePath("r4").build();
-    var observationRepo = mock(ObservationRepository.class);
-    var questionnaireRepo = mock(QuestionnaireRepository.class);
-    var questionnaireResponseRepo = mock(QuestionnaireResponseRepository.class);
     return new ManagementController(
-        pageLinks, observationRepo, questionnaireRepo, questionnaireResponseRepo);
+        LinkProperties.builder().baseUrl("http://foo.com").r4BasePath("r4").build(),
+        new Sourcerer("{}", "sat"),
+        mock(ObservationRepository.class),
+        mock(QuestionnaireRepository.class),
+        mock(QuestionnaireResponseRepository.class));
   }
 
   static Stream<String> invalid_formats_strings() {
@@ -36,7 +35,7 @@ public class ManagementControllerTest {
   @Test
   void create_observation() {
     var observation = observation();
-    assertThat(controller().create(observation))
+    assertThat(controller().create(observation, "Bearer sat"))
         .isEqualTo(
             ResponseEntity.created(URI.create("http://foo.com/r4/Observation/x"))
                 .body(observation));
@@ -62,10 +61,16 @@ public class ManagementControllerTest {
 
   @Test
   void create_questionnaire_duplicate() {
-    var questionnaire = questionnaire();
-    ManagementController controller = controller();
-    when(controller.questionnaireRepository().existsById("x")).thenReturn(true);
-    assertThrows(Exceptions.AlreadyExists.class, () -> controller.create(questionnaire));
+    QuestionnaireRepository qRepo = mock(QuestionnaireRepository.class);
+    when(qRepo.existsById("x")).thenReturn(true);
+    ManagementController controller =
+        new ManagementController(
+            LinkProperties.builder().baseUrl("http://foo.com").r4BasePath("r4").build(),
+            new Sourcerer("{}", "sat"),
+            mock(ObservationRepository.class),
+            qRepo,
+            mock(QuestionnaireResponseRepository.class));
+    assertThrows(Exceptions.AlreadyExists.class, () -> controller.create(questionnaire()));
   }
 
   @ParameterizedTest

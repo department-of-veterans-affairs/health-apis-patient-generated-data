@@ -88,6 +88,8 @@
                 <argument>-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5090</argument>
                 <argument>-cp</argument>
                 <argument>patient-generated-data.jar${path.separator}h2.jar${path.separator}patient-generated-data-synthetic-tests.jar</argument>
+                <argument>-Dauthorization.client-ids={}</argument>
+                <argument>-Dauthorization.static-access-token=pteracuda</argument>
                 <argument>-Dclient-key=pteracuda</argument>
                 <argument>-Dloader=gov.va.api.health.patientgenerateddata.Application</argument>
                 <argument>-Dlogging.level.root=INFO</argument>

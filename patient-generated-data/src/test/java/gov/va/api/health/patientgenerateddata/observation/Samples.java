@@ -15,7 +15,9 @@ public final class Samples {
     return Observation.builder().id(id).status(Observation.ObservationStatus.unknown).build();
   }
 
-  public static Observation observationWithLastUpdated(Instant lastUpdated) {
-    return observation().meta(Meta.builder().lastUpdated(lastUpdated.toString()).build());
+  public static Observation observationWithLastUpdatedAndSource(
+      Instant lastUpdated, String source) {
+    return observation()
+        .meta(Meta.builder().lastUpdated(lastUpdated.toString()).source(source).build());
   }
 }

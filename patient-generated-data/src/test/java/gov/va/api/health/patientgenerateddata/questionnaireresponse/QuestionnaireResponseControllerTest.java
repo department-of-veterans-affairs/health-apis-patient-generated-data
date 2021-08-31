@@ -16,6 +16,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.api.health.patientgenerateddata.Exceptions;
 import gov.va.api.health.patientgenerateddata.JacksonMapperConfig;
 import gov.va.api.health.patientgenerateddata.LinkProperties;
+import gov.va.api.health.patientgenerateddata.Sourcerer;
 import gov.va.api.health.r4.api.resources.QuestionnaireResponse;
 import gov.va.api.lighthouse.vulcan.InvalidRequest;
 import java.net.URI;
@@ -45,12 +46,11 @@ public class QuestionnaireResponseControllerTest {
           .build();
 
   private static QuestionnaireResponseController controller() {
-    QuestionnaireResponseRepository repo = mock(QuestionnaireResponseRepository.class);
-    return controller(repo);
+    return controller(mock(QuestionnaireResponseRepository.class));
   }
 
   private static QuestionnaireResponseController controller(QuestionnaireResponseRepository repo) {
-    return new QuestionnaireResponseController(pageLinks, repo);
+    return new QuestionnaireResponseController(pageLinks, repo, new Sourcerer("{}", ""));
   }
 
   @Test
@@ -76,14 +76,16 @@ public class QuestionnaireResponseControllerTest {
     var questionnaireResponse = questionnaireResponse().id("123");
     var repo = mock(QuestionnaireResponseRepository.class);
     var pageLinks = mock(LinkProperties.class);
-    var controller = new QuestionnaireResponseController(pageLinks, repo);
+    var controller = new QuestionnaireResponseController(pageLinks, repo, new Sourcerer("{}", ""));
     assertThrows(Exceptions.BadRequest.class, () -> controller.create(questionnaireResponse));
   }
 
   @Test
   void initDirectFieldAccess() {
     new QuestionnaireResponseController(
-            mock(LinkProperties.class), mock(QuestionnaireResponseRepository.class))
+            mock(LinkProperties.class),
+            mock(QuestionnaireResponseRepository.class),
+            new Sourcerer("{}", ""))
         .initDirectFieldAccess(mock(DataBinder.class));
   }
 
@@ -103,7 +105,8 @@ public class QuestionnaireResponseControllerTest {
     when(repo.findById("x"))
         .thenReturn(
             Optional.of(QuestionnaireResponseEntity.builder().id("x").payload(payload).build()));
-    assertThat(new QuestionnaireResponseController(pageLinks, repo).read("x"))
+    assertThat(
+            new QuestionnaireResponseController(pageLinks, repo, new Sourcerer("{}", "")).read("x"))
         .isEqualTo(questionnaireResponse());
   }
 
@@ -112,7 +115,9 @@ public class QuestionnaireResponseControllerTest {
     QuestionnaireResponseRepository repo = mock(QuestionnaireResponseRepository.class);
     assertThrows(
         Exceptions.NotFound.class,
-        () -> new QuestionnaireResponseController(pageLinks, repo).read("notfound"));
+        () ->
+            new QuestionnaireResponseController(pageLinks, repo, new Sourcerer("{}", ""))
+                .read("notfound"));
   }
 
   @Test
@@ -127,7 +132,8 @@ public class QuestionnaireResponseControllerTest {
             Optional.of(QuestionnaireResponseEntity.builder().id("x").payload(payload).build()));
     QuestionnaireResponse expected = questionnaireResponseWithLastUpdated(now);
     assertThat(
-            new QuestionnaireResponseController(pageLinks, repo).update(questionnaireResponse, now))
+            new QuestionnaireResponseController(pageLinks, repo, new Sourcerer("{}", ""))
+                .update(questionnaireResponse, now))
         .isEqualTo(ResponseEntity.ok(expected));
     verify(repo, times(1))
         .save(QuestionnaireResponseEntity.builder().id("x").payload(payload).build());
@@ -140,7 +146,7 @@ public class QuestionnaireResponseControllerTest {
     assertThrows(
         Exceptions.NotFound.class,
         () ->
-            new QuestionnaireResponseController(pageLinks, repo)
+            new QuestionnaireResponseController(pageLinks, repo, new Sourcerer("{}", ""))
                 .update("x", questionnaireResponse));
   }
 

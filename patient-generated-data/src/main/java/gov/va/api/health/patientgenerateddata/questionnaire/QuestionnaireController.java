@@ -18,6 +18,7 @@ import gov.va.api.health.patientgenerateddata.CompositeMapping;
 import gov.va.api.health.patientgenerateddata.Exceptions;
 import gov.va.api.health.patientgenerateddata.JacksonMapperConfig;
 import gov.va.api.health.patientgenerateddata.LinkProperties;
+import gov.va.api.health.patientgenerateddata.Sourcerer;
 import gov.va.api.health.patientgenerateddata.VulcanizedBundler;
 import gov.va.api.health.r4.api.resources.Questionnaire;
 import gov.va.api.lighthouse.vulcan.Vulcan;
@@ -56,6 +57,9 @@ public class QuestionnaireController {
   private final LinkProperties linkProperties;
 
   private final QuestionnaireRepository repository;
+
+  @SuppressWarnings("unused")
+  private final Sourcerer sourcerer;
 
   @SneakyThrows
   private static void populateEntity(
@@ -110,6 +114,7 @@ public class QuestionnaireController {
 
   /** Create resource. */
   public ResponseEntity<Questionnaire> create(Questionnaire questionnaire, Instant now) {
+    // questionnaire.meta(metaWithSource(questionnaire.meta(), sourcerer.source(authorization)));
     questionnaire.meta(metaWithLastUpdated(questionnaire.meta(), now));
     repository.save(toEntity(questionnaire));
     return ResponseEntity.created(
@@ -165,6 +170,7 @@ public class QuestionnaireController {
   }
 
   ResponseEntity<Questionnaire> update(Questionnaire questionnaire, Instant now) {
+    // questionnaire.meta(metaWithSource(questionnaire.meta(), sourcerer.source(authorization)));
     questionnaire.meta(metaWithLastUpdated(questionnaire.meta(), now));
     QuestionnaireEntity entity =
         repository
