@@ -114,7 +114,7 @@ public class QuestionnaireController {
 
   /** Create resource. */
   public ResponseEntity<Questionnaire> create(Questionnaire questionnaire, Instant now) {
-    // observation.meta(metaWithSource(observation.meta(), sourcerer.source(authorization)));
+    // questionnaire.meta(metaWithSource(questionnaire.meta(), sourcerer.source(authorization)));
     questionnaire.meta(metaWithLastUpdated(questionnaire.meta(), now));
     repository.save(toEntity(questionnaire));
     return ResponseEntity.created(
@@ -170,7 +170,7 @@ public class QuestionnaireController {
   }
 
   ResponseEntity<Questionnaire> update(Questionnaire questionnaire, Instant now) {
-    // observation.meta(metaWithSource(observation.meta(), sourcerer.source(authorization)));
+    // questionnaire.meta(metaWithSource(questionnaire.meta(), sourcerer.source(authorization)));
     questionnaire.meta(metaWithLastUpdated(questionnaire.meta(), now));
     QuestionnaireEntity entity =
         repository
