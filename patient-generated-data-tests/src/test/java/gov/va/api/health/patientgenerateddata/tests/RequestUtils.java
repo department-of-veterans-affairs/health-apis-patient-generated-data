@@ -20,7 +20,7 @@ public class RequestUtils {
 
   private static final String INTERNAL_R4_PATH = "management/r4/";
 
-  private static final String ACCESS_TOKEN = System.getProperty("access-token", "unset");
+  private static final String ACCESS_TOKEN = System.getProperty("access-token", "pteracuda");
 
   @SneakyThrows
   public static ExpectedResponse doDelete(

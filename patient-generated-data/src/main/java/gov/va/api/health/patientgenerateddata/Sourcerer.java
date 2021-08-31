@@ -35,15 +35,11 @@ public class Sourcerer {
   }
 
   /** placeholder lol. */
-  public void applySource() {}
-
-  /** placeholder lol. */
   @SneakyThrows
   public String source(String authorization) {
     checkRequestState(
         authorization.startsWith("Bearer "), "Invalid authorization: %s", authorization);
     String token = authorization.substring(7);
-    System.out.println(String.format("token is '%s'", token));
     if (token.equals(staticAccessToken)) {
       return "https://api.va.gov/services/pgd/static-access";
     }
@@ -51,10 +47,8 @@ public class Sourcerer {
       JWSObject jwsObject = JWSObject.parse(token);
       Object clientId = jwsObject.getPayload().toJSONObject().get("cid");
       checkRequestState(clientId != null, "Invalid authorization token: %s", token);
-      System.out.println("client ID is " + clientId);
       String name = clientIds.get(clientId);
       checkRequestState(name != null, "Invalid authorization client ID: %s", clientId);
-      System.out.println("name is " + name);
       return "https://api.va.gov/services/pgd/" + name;
     } catch (ParseException ex) {
       throw new Exceptions.BadRequest("Invalid authorization token: " + token, ex);

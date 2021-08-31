@@ -16,7 +16,6 @@ import gov.va.api.health.r4.api.resources.QuestionnaireResponse;
 import gov.va.api.health.r4.api.resources.Resource;
 import javax.validation.Valid;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.http.ResponseEntity;
@@ -38,11 +37,11 @@ public class ManagementController {
 
   private final Sourcerer cim;
 
-  @Getter private final ObservationRepository observationRepository;
+  private final ObservationRepository observationRepository;
 
-  @Getter private final QuestionnaireRepository questionnaireRepository;
+  private final QuestionnaireRepository questionnaireRepository;
 
-  @Getter private final QuestionnaireResponseRepository questionnaireResponseRepository;
+  private final QuestionnaireResponseRepository questionnaireResponseRepository;
 
   @PostMapping(value = "/Observation")
   ResponseEntity<Observation> create(

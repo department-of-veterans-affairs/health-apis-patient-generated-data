@@ -58,7 +58,8 @@ public class QuestionnaireController {
 
   private final QuestionnaireRepository repository;
 
-  private final Sourcerer cim;
+  @SuppressWarnings("unused")
+  private final Sourcerer sourcerer;
 
   @SneakyThrows
   private static void populateEntity(
@@ -113,8 +114,8 @@ public class QuestionnaireController {
 
   /** Create resource. */
   public ResponseEntity<Questionnaire> create(Questionnaire questionnaire, Instant now) {
+    // observation.meta(metaWithSource(observation.meta(), sourcerer.source(authorization)));
     questionnaire.meta(metaWithLastUpdated(questionnaire.meta(), now));
-    cim.applySource();
     repository.save(toEntity(questionnaire));
     return ResponseEntity.created(
             URI.create(linkProperties.r4Url() + "/Questionnaire/" + questionnaire.id()))
@@ -169,8 +170,8 @@ public class QuestionnaireController {
   }
 
   ResponseEntity<Questionnaire> update(Questionnaire questionnaire, Instant now) {
+    // observation.meta(metaWithSource(observation.meta(), sourcerer.source(authorization)));
     questionnaire.meta(metaWithLastUpdated(questionnaire.meta(), now));
-    cim.applySource();
     QuestionnaireEntity entity =
         repository
             .findById(questionnaire.id())

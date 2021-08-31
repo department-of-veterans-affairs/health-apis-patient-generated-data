@@ -154,18 +154,20 @@ public class ObservationController {
   @PutMapping(value = "/{id}")
   @Loggable(arguments = false)
   ResponseEntity<Observation> update(
-      @PathVariable("id") String pathId, @Valid @RequestBody Observation observation) {
+      @PathVariable("id") String pathId,
+      @Valid @RequestBody Observation observation,
+      @RequestHeader(name = "Authorization", required = true) String authorization) {
     checkRequestState(
         pathId.equals(observation.id()),
         "Path ID (%s) and request body ID (%s) do not match",
         pathId,
         observation.id());
-    return update(observation, nowMillis());
+    return update(observation, authorization, nowMillis());
   }
 
-  ResponseEntity<Observation> update(Observation observation, Instant now) {
+  ResponseEntity<Observation> update(Observation observation, String authorization, Instant now) {
+    observation.meta(metaWithSource(observation.meta(), sourcerer.source(authorization)));
     observation.meta(metaWithLastUpdated(observation.meta(), now));
-    sourcerer.applySource();
     ObservationEntity entity =
         repository
             .findById(observation.id())
