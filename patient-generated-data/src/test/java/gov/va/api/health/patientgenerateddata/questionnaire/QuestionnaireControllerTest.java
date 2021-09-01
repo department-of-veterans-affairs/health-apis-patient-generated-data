@@ -62,7 +62,7 @@ public class QuestionnaireControllerTest {
     var questionnaire = questionnaire().id("123");
     var repo = mock(QuestionnaireRepository.class);
     var pageLinks = mock(LinkProperties.class);
-    var controller = new QuestionnaireController(pageLinks, repo, new Sourcerer("{}", ""));
+    var controller = new QuestionnaireController(pageLinks, repo, new Sourcerer("{}", "sat"));
     assertThrows(Exceptions.BadRequest.class, () -> controller.create(questionnaire, ""));
   }
 
@@ -71,7 +71,7 @@ public class QuestionnaireControllerTest {
     new QuestionnaireController(
             mock(LinkProperties.class),
             mock(QuestionnaireRepository.class),
-            new Sourcerer("{}", ""))
+            new Sourcerer("{}", "sat"))
         .initDirectFieldAccess(mock(DataBinder.class));
   }
 
@@ -83,7 +83,8 @@ public class QuestionnaireControllerTest {
     when(repo.findById("x"))
         .thenReturn(Optional.of(QuestionnaireEntity.builder().id("x").payload(payload).build()));
     assertThat(
-            new QuestionnaireController(mock(LinkProperties.class), repo, new Sourcerer("{}", ""))
+            new QuestionnaireController(
+                    mock(LinkProperties.class), repo, new Sourcerer("{}", "sat"))
                 .read("x"))
         .isEqualTo(questionnaire());
   }
@@ -96,7 +97,7 @@ public class QuestionnaireControllerTest {
             new QuestionnaireController(
                     mock(LinkProperties.class),
                     mock(QuestionnaireRepository.class),
-                    new Sourcerer("{}", ""))
+                    new Sourcerer("{}", "sat"))
                 .read("notfound"));
   }
 
@@ -112,7 +113,7 @@ public class QuestionnaireControllerTest {
             .build();
     QuestionnaireController controller =
         new QuestionnaireController(
-            pageLinks, mock(QuestionnaireRepository.class), new Sourcerer("{}", ""));
+            pageLinks, mock(QuestionnaireRepository.class), new Sourcerer("{}", "sat"));
     var req = requestFromUri("http://fonzy.com/r4/Questionnaire" + query);
     assertThatExceptionOfType(InvalidRequest.class).isThrownBy(() -> controller.search(req));
   }
@@ -129,7 +130,7 @@ public class QuestionnaireControllerTest {
             .build();
     QuestionnaireRepository repo = mock(QuestionnaireRepository.class);
     QuestionnaireController controller =
-        new QuestionnaireController(pageLinks, repo, new Sourcerer("{}", ""));
+        new QuestionnaireController(pageLinks, repo, new Sourcerer("{}", "sat"));
     var anySpec = ArgumentMatchers.<Specification<QuestionnaireEntity>>any();
     when(repo.findAll(anySpec, any(Pageable.class)))
         .thenAnswer(

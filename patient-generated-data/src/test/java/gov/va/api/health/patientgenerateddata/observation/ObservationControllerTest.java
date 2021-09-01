@@ -46,7 +46,7 @@ public class ObservationControllerTest {
           .build();
 
   private static ObservationController controller(ObservationRepository repo) {
-    return new ObservationController(pageLinks, repo, new Sourcerer("{}", ""));
+    return new ObservationController(pageLinks, repo, new Sourcerer("{}", "sat"));
   }
 
   private static ObservationController controller() {
@@ -78,14 +78,16 @@ public class ObservationControllerTest {
     var observation = observation().id("123");
     var repo = mock(ObservationRepository.class);
     var pageLinks = mock(LinkProperties.class);
-    var controller = new ObservationController(pageLinks, repo, new Sourcerer("{}", ""));
+    var controller = new ObservationController(pageLinks, repo, new Sourcerer("{}", "sat"));
     assertThrows(Exceptions.BadRequest.class, () -> controller.create(observation, ""));
   }
 
   @Test
   void initDirectFieldAccess() {
     new ObservationController(
-            mock(LinkProperties.class), mock(ObservationRepository.class), new Sourcerer("{}", ""))
+            mock(LinkProperties.class),
+            mock(ObservationRepository.class),
+            new Sourcerer("{}", "sat"))
         .initDirectFieldAccess(mock(DataBinder.class));
   }
 
@@ -104,7 +106,7 @@ public class ObservationControllerTest {
     when(repo.findById("x"))
         .thenReturn(Optional.of(ObservationEntity.builder().id("x").payload(payload).build()));
     assertThat(
-            new ObservationController(mock(LinkProperties.class), repo, new Sourcerer("{}", ""))
+            new ObservationController(mock(LinkProperties.class), repo, new Sourcerer("{}", "sat"))
                 .read("x"))
         .isEqualTo(observation());
   }
@@ -115,7 +117,7 @@ public class ObservationControllerTest {
     assertThrows(
         Exceptions.NotFound.class,
         () ->
-            new ObservationController(mock(LinkProperties.class), repo, new Sourcerer("{}", ""))
+            new ObservationController(mock(LinkProperties.class), repo, new Sourcerer("{}", "sat"))
                 .read("notfound"));
   }
 

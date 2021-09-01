@@ -78,7 +78,8 @@ public class QuestionnaireResponseControllerTest {
     var questionnaireResponse = questionnaireResponse().id("123");
     var repo = mock(QuestionnaireResponseRepository.class);
     var pageLinks = mock(LinkProperties.class);
-    var controller = new QuestionnaireResponseController(pageLinks, repo, new Sourcerer("{}", ""));
+    var controller =
+        new QuestionnaireResponseController(pageLinks, repo, new Sourcerer("{}", "sat"));
     assertThrows(Exceptions.BadRequest.class, () -> controller.create(questionnaireResponse, ""));
   }
 
@@ -87,7 +88,7 @@ public class QuestionnaireResponseControllerTest {
     new QuestionnaireResponseController(
             mock(LinkProperties.class),
             mock(QuestionnaireResponseRepository.class),
-            new Sourcerer("{}", ""))
+            new Sourcerer("{}", "sat"))
         .initDirectFieldAccess(mock(DataBinder.class));
   }
 
@@ -108,7 +109,8 @@ public class QuestionnaireResponseControllerTest {
         .thenReturn(
             Optional.of(QuestionnaireResponseEntity.builder().id("x").payload(payload).build()));
     assertThat(
-            new QuestionnaireResponseController(pageLinks, repo, new Sourcerer("{}", "")).read("x"))
+            new QuestionnaireResponseController(pageLinks, repo, new Sourcerer("{}", "sat"))
+                .read("x"))
         .isEqualTo(questionnaireResponse());
   }
 
@@ -118,7 +120,7 @@ public class QuestionnaireResponseControllerTest {
     assertThrows(
         Exceptions.NotFound.class,
         () ->
-            new QuestionnaireResponseController(pageLinks, repo, new Sourcerer("{}", ""))
+            new QuestionnaireResponseController(pageLinks, repo, new Sourcerer("{}", "sat"))
                 .read("notfound"));
   }
 
