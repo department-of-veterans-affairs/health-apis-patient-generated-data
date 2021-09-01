@@ -36,9 +36,9 @@ public class ManagementController {
 
   private final QuestionnaireResponseController questionnaireResponseController;
 
-  private static void validateId(String id, Function<String, Optional<?>> f) {
+  private static void validateId(String id, Function<String, Optional<?>> finder) {
     checkRequestState(!isBlank(id), "ID is required");
-    if (f.apply(id).isPresent()) {
+    if (finder.apply(id).isPresent()) {
       throw new Exceptions.AlreadyExists(String.format("ID %s already exists", id));
     }
   }
