@@ -28,15 +28,26 @@ import org.springframework.http.ResponseEntity;
 public class ManagementControllerTest {
   private static final ObjectMapper MAPPER = JacksonMapperConfig.createMapper();
 
+  static LinkProperties linkProperties =
+      LinkProperties.builder().baseUrl("http://foo.com").r4BasePath("r4").build();
+
+  static Sourcerer sourcerer = new Sourcerer("{}", "sat");
+
   private static ManagementController controller() {
-    LinkProperties linkProperties =
-        LinkProperties.builder().baseUrl("http://foo.com").r4BasePath("r4").build();
-    Sourcerer sourcerer = new Sourcerer("{}", "sat");
+    return controller(
+        mock(ObservationRepository.class),
+        mock(QuestionnaireRepository.class),
+        mock(QuestionnaireResponseRepository.class));
+  }
+
+  private static ManagementController controller(
+      ObservationRepository oRepo,
+      QuestionnaireRepository qRepo,
+      QuestionnaireResponseRepository qrRepo) {
     return new ManagementController(
-        new ObservationController(linkProperties, mock(ObservationRepository.class), sourcerer),
-        new QuestionnaireController(linkProperties, mock(QuestionnaireRepository.class), sourcerer),
-        new QuestionnaireResponseController(
-            linkProperties, mock(QuestionnaireResponseRepository.class), sourcerer));
+        new ObservationController(linkProperties, oRepo, sourcerer),
+        new QuestionnaireController(linkProperties, qRepo, sourcerer),
+        new QuestionnaireResponseController(linkProperties, qrRepo, sourcerer));
   }
 
   static Stream<String> invalid_formats_strings() {
@@ -81,15 +92,9 @@ public class ManagementControllerTest {
                     .id("x")
                     .payload(MAPPER.writeValueAsString(questionnaire()))
                     .build()));
-    LinkProperties linkProperties =
-        LinkProperties.builder().baseUrl("http://foo.com").r4BasePath("r4").build();
-    Sourcerer sourcerer = new Sourcerer("{}", "sat");
     ManagementController controller =
-        new ManagementController(
-            new ObservationController(linkProperties, mock(ObservationRepository.class), sourcerer),
-            new QuestionnaireController(linkProperties, qRepo, sourcerer),
-            new QuestionnaireResponseController(
-                linkProperties, mock(QuestionnaireResponseRepository.class), sourcerer));
+        controller(
+            mock(ObservationRepository.class), qRepo, mock(QuestionnaireResponseRepository.class));
     assertThrows(Exceptions.AlreadyExists.class, () -> controller.create(questionnaire()));
   }
 
