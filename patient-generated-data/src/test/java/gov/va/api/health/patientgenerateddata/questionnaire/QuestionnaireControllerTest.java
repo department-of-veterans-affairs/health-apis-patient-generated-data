@@ -46,7 +46,7 @@ public class QuestionnaireControllerTest {
     QuestionnaireRepository repo = mock(QuestionnaireRepository.class);
     QuestionnaireController controller =
         new QuestionnaireController(pageLinks, repo, new Sourcerer("{}", "sat"));
-    var questionnaire = questionnaire().id("x");
+    var questionnaire = questionnaire();
     var persisted = MAPPER.writeValueAsString(questionnaire);
     assertThat(controller.create(questionnaire, "Bearer sat", time))
         .isEqualTo(

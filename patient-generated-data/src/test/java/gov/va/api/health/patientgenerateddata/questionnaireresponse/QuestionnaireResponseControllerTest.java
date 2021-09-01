@@ -61,7 +61,7 @@ public class QuestionnaireResponseControllerTest {
         questionnaireResponseWithLastUpdatedAndSource(
             now, "https://api.va.gov/services/pgd/static-access");
     QuestionnaireResponseRepository repo = mock(QuestionnaireResponseRepository.class);
-    assertThat(controller(repo).create(questionnaireResponse().id("x"), "Bearer sat", now))
+    assertThat(controller(repo).create(questionnaireResponse(), "Bearer sat", now))
         .isEqualTo(
             ResponseEntity.created(URI.create("http://foo.com/r4/QuestionnaireResponse/x"))
                 .body(expected));
