@@ -8,24 +8,35 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import gov.va.api.health.patientgenerateddata.observation.ObservationController;
 import gov.va.api.health.patientgenerateddata.observation.ObservationRepository;
+import gov.va.api.health.patientgenerateddata.questionnaire.QuestionnaireController;
+import gov.va.api.health.patientgenerateddata.questionnaire.QuestionnaireEntity;
 import gov.va.api.health.patientgenerateddata.questionnaire.QuestionnaireRepository;
+import gov.va.api.health.patientgenerateddata.questionnaireresponse.QuestionnaireResponseController;
 import gov.va.api.health.patientgenerateddata.questionnaireresponse.QuestionnaireResponseRepository;
 import java.net.URI;
+import java.util.Optional;
 import java.util.stream.Stream;
+import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.http.ResponseEntity;
 
 public class ManagementControllerTest {
+  private static final ObjectMapper MAPPER = JacksonMapperConfig.createMapper();
+
   private static ManagementController controller() {
+    LinkProperties linkProperties =
+        LinkProperties.builder().baseUrl("http://foo.com").r4BasePath("r4").build();
+    Sourcerer sourcerer = new Sourcerer("{}", "sat");
     return new ManagementController(
-        LinkProperties.builder().baseUrl("http://foo.com").r4BasePath("r4").build(),
-        new Sourcerer("{}", "sat"),
-        mock(ObservationRepository.class),
-        mock(QuestionnaireRepository.class),
-        mock(QuestionnaireResponseRepository.class));
+        new ObservationController(linkProperties, mock(ObservationRepository.class), sourcerer),
+        new QuestionnaireController(linkProperties, mock(QuestionnaireRepository.class), sourcerer),
+        new QuestionnaireResponseController(
+            linkProperties, mock(QuestionnaireResponseRepository.class), sourcerer));
   }
 
   static Stream<String> invalid_formats_strings() {
@@ -60,16 +71,25 @@ public class ManagementControllerTest {
   }
 
   @Test
+  @SneakyThrows
   void create_questionnaire_duplicate() {
     QuestionnaireRepository qRepo = mock(QuestionnaireRepository.class);
-    when(qRepo.existsById("x")).thenReturn(true);
+    when(qRepo.findById("x"))
+        .thenReturn(
+            Optional.of(
+                QuestionnaireEntity.builder()
+                    .id("x")
+                    .payload(MAPPER.writeValueAsString(questionnaire()))
+                    .build()));
+    LinkProperties linkProperties =
+        LinkProperties.builder().baseUrl("http://foo.com").r4BasePath("r4").build();
+    Sourcerer sourcerer = new Sourcerer("{}", "sat");
     ManagementController controller =
         new ManagementController(
-            LinkProperties.builder().baseUrl("http://foo.com").r4BasePath("r4").build(),
-            new Sourcerer("{}", "sat"),
-            mock(ObservationRepository.class),
-            qRepo,
-            mock(QuestionnaireResponseRepository.class));
+            new ObservationController(linkProperties, mock(ObservationRepository.class), sourcerer),
+            new QuestionnaireController(linkProperties, qRepo, sourcerer),
+            new QuestionnaireResponseController(
+                linkProperties, mock(QuestionnaireResponseRepository.class), sourcerer));
     assertThrows(Exceptions.AlreadyExists.class, () -> controller.create(questionnaire()));
   }
 

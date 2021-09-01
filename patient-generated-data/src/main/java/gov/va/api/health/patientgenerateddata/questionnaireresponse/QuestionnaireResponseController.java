@@ -29,6 +29,7 @@ import gov.va.api.lighthouse.vulcan.mappings.Mappings;
 import java.net.URI;
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -159,6 +160,10 @@ public class QuestionnaireResponseController {
         .body(questionnaireResponse);
   }
 
+  public Optional<QuestionnaireResponse> findById(String id) {
+    return repository.findById(id).map(e -> e.deserializePayload());
+  }
+
   @InitBinder
   void initDirectFieldAccess(DataBinder dataBinder) {
     dataBinder.initDirectFieldAccess();
@@ -166,10 +171,7 @@ public class QuestionnaireResponseController {
 
   @GetMapping(value = "/{id}")
   QuestionnaireResponse read(@PathVariable("id") String id) {
-    return repository
-        .findById(id)
-        .map(e -> e.deserializePayload())
-        .orElseThrow(() -> new Exceptions.NotFound(id));
+    return findById(id).orElseThrow(() -> new Exceptions.NotFound(id));
   }
 
   /** QuestionnaireResponse Search. */
