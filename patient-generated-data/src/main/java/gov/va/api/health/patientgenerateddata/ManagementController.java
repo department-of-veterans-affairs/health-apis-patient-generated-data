@@ -10,6 +10,7 @@ import gov.va.api.health.patientgenerateddata.questionnaireresponse.Questionnair
 import gov.va.api.health.r4.api.resources.Observation;
 import gov.va.api.health.r4.api.resources.Questionnaire;
 import gov.va.api.health.r4.api.resources.QuestionnaireResponse;
+import java.time.Instant;
 import java.util.Optional;
 import java.util.function.Function;
 import javax.validation.Valid;
@@ -48,7 +49,11 @@ public class ManagementController {
       @Valid @RequestBody Observation observation,
       @RequestHeader(name = "Authorization", required = true) String authorization) {
     validateId(observation.id(), id -> observationController.findById(id));
-    return observationController.create(observation, authorization, nowMillis());
+    return create(observation, authorization, nowMillis());
+  }
+
+  ResponseEntity<Observation> create(Observation observation, String authorization, Instant now) {
+    return observationController.create(observation, authorization, now);
   }
 
   @PostMapping(value = "/Questionnaire")
@@ -56,7 +61,12 @@ public class ManagementController {
       @Valid @RequestBody Questionnaire questionnaire,
       @RequestHeader(name = "Authorization", required = true) String authorization) {
     validateId(questionnaire.id(), id -> questionnaireController.findById(id));
-    return questionnaireController.create(questionnaire, authorization, nowMillis());
+    return create(questionnaire, authorization, nowMillis());
+  }
+
+  ResponseEntity<Questionnaire> create(
+      Questionnaire questionnaire, String authorization, Instant now) {
+    return questionnaireController.create(questionnaire, authorization, now);
   }
 
   @PostMapping(value = "/QuestionnaireResponse")
@@ -64,7 +74,11 @@ public class ManagementController {
       @Valid @RequestBody QuestionnaireResponse questionnaireResponse,
       @RequestHeader(name = "Authorization", required = true) String authorization) {
     validateId(questionnaireResponse.id(), id -> questionnaireResponseController.findById(id));
-    return questionnaireResponseController.create(
-        questionnaireResponse, authorization, nowMillis());
+    return create(questionnaireResponse, authorization, nowMillis());
+  }
+
+  ResponseEntity<QuestionnaireResponse> create(
+      QuestionnaireResponse questionnaireResponse, String authorization, Instant now) {
+    return questionnaireResponseController.create(questionnaireResponse, authorization, now);
   }
 }
