@@ -101,7 +101,7 @@ public class ObservationController {
   @Loggable(arguments = false)
   ResponseEntity<Observation> create(
       @Valid @RequestBody Observation observation,
-      @RequestHeader(name = "Authorization") String authorization) {
+      @RequestHeader(name = "Authorization", required = true) String authorization) {
     checkRequestState(isEmpty(observation.id()), "ID must be empty, found %s", observation.id());
     observation.id(generateRandomId());
     return create(observation, authorization, nowMillis());
@@ -158,7 +158,7 @@ public class ObservationController {
   ResponseEntity<Observation> update(
       @PathVariable("id") String pathId,
       @Valid @RequestBody Observation observation,
-      @RequestHeader(name = "Authorization") String authorization) {
+      @RequestHeader(name = "Authorization", required = true) String authorization) {
     checkRequestState(
         pathId.equals(observation.id()),
         "Path ID (%s) and request body ID (%s) do not match",

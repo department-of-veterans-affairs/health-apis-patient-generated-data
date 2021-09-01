@@ -5,6 +5,7 @@ import static gov.va.api.health.patientgenerateddata.Controllers.checkRequestSta
 import static gov.va.api.health.patientgenerateddata.Controllers.generateRandomId;
 import static gov.va.api.health.patientgenerateddata.Controllers.lastUpdatedFromMeta;
 import static gov.va.api.health.patientgenerateddata.Controllers.metaWithLastUpdated;
+import static gov.va.api.health.patientgenerateddata.Controllers.metaWithSource;
 import static gov.va.api.health.patientgenerateddata.Controllers.nowMillis;
 import static gov.va.api.health.patientgenerateddata.Controllers.parseDateTime;
 import static gov.va.api.health.patientgenerateddata.Controllers.resourceId;
@@ -45,6 +46,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -61,7 +63,6 @@ public class QuestionnaireResponseController {
 
   private final QuestionnaireResponseRepository repository;
 
-  @SuppressWarnings("unused")
   private final Sourcerer sourcerer;
 
   @SneakyThrows
@@ -138,20 +139,21 @@ public class QuestionnaireResponseController {
   @PostMapping
   @Loggable(arguments = false)
   ResponseEntity<QuestionnaireResponse> create(
-      @Valid @RequestBody QuestionnaireResponse questionnaireResponse) {
+      @Valid @RequestBody QuestionnaireResponse questionnaireResponse,
+      @RequestHeader(name = "Authorization", required = true) String authorization) {
     checkRequestState(
         isEmpty(questionnaireResponse.id()),
         "ID must be empty, found %s",
         questionnaireResponse.id());
     questionnaireResponse.id(generateRandomId());
-    return create(questionnaireResponse, nowMillis());
+    return create(questionnaireResponse, authorization, nowMillis());
   }
 
   /** Create resource. */
   public ResponseEntity<QuestionnaireResponse> create(
-      QuestionnaireResponse questionnaireResponse, Instant now) {
-    // questionnaireResponse.meta(metaWithSource(questionnaireResponse.meta(),
-    // sourcerer.source(authorization)));
+      QuestionnaireResponse questionnaireResponse, String authorization, Instant now) {
+    questionnaireResponse.meta(
+        metaWithSource(questionnaireResponse.meta(), sourcerer.source(authorization)));
     questionnaireResponse.meta(metaWithLastUpdated(questionnaireResponse.meta(), now));
     repository.save(toEntity(questionnaireResponse));
     return ResponseEntity.created(
@@ -174,7 +176,6 @@ public class QuestionnaireResponseController {
     return findById(id).orElseThrow(() -> new Exceptions.NotFound(id));
   }
 
-  /** QuestionnaireResponse Search. */
   @GetMapping
   QuestionnaireResponse.Bundle search(HttpServletRequest request) {
     return Vulcan.forRepo(repository)
@@ -204,19 +205,20 @@ public class QuestionnaireResponseController {
   @Loggable(arguments = false)
   ResponseEntity<QuestionnaireResponse> update(
       @PathVariable("id") String pathId,
-      @Valid @RequestBody QuestionnaireResponse questionnaireResponse) {
+      @Valid @RequestBody QuestionnaireResponse questionnaireResponse,
+      @RequestHeader(name = "Authorization", required = true) String authorization) {
     checkRequestState(
         pathId.equals(questionnaireResponse.id()),
         "Path ID (%s) and request body ID (%s) do not match",
         pathId,
         questionnaireResponse.id());
-    return update(questionnaireResponse, nowMillis());
+    return update(questionnaireResponse, authorization, nowMillis());
   }
 
   ResponseEntity<QuestionnaireResponse> update(
-      QuestionnaireResponse questionnaireResponse, Instant now) {
-    // questionnaireResponse.meta(metaWithSource(questionnaireResponse.meta(),
-    // sourcerer.source(authorization)));
+      QuestionnaireResponse questionnaireResponse, String authorization, Instant now) {
+    questionnaireResponse.meta(
+        metaWithSource(questionnaireResponse.meta(), sourcerer.source(authorization)));
     questionnaireResponse.meta(metaWithLastUpdated(questionnaireResponse.meta(), now));
     QuestionnaireResponseEntity entity =
         repository

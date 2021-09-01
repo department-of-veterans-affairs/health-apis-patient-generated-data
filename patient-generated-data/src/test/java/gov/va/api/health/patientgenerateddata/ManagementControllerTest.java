@@ -66,7 +66,7 @@ public class ManagementControllerTest {
   @Test
   void create_questionnaire() {
     var questionnaire = questionnaire();
-    assertThat(controller().create(questionnaire))
+    assertThat(controller().create(questionnaire, "Bearer sat"))
         .isEqualTo(
             ResponseEntity.created(URI.create("http://foo.com/r4/Questionnaire/x"))
                 .body(questionnaire));
@@ -75,7 +75,7 @@ public class ManagementControllerTest {
   @Test
   void create_questionnaireResponse() {
     var questionnaireResponse = questionnaireResponse();
-    assertThat(controller().create(questionnaireResponse))
+    assertThat(controller().create(questionnaireResponse, "Bearer sat"))
         .isEqualTo(
             ResponseEntity.created(URI.create("http://foo.com/r4/QuestionnaireResponse/x"))
                 .body(questionnaireResponse));
@@ -95,13 +95,14 @@ public class ManagementControllerTest {
     ManagementController controller =
         controller(
             mock(ObservationRepository.class), qRepo, mock(QuestionnaireResponseRepository.class));
-    assertThrows(Exceptions.AlreadyExists.class, () -> controller.create(questionnaire()));
+    assertThrows(
+        Exceptions.AlreadyExists.class, () -> controller.create(questionnaire(), "Bearer sat"));
   }
 
   @ParameterizedTest
   @MethodSource("invalid_formats_strings")
   void invalid_formats(String id) {
     var questionnaire = questionnaire(id);
-    assertThrows(Exceptions.BadRequest.class, () -> controller().create(questionnaire));
+    assertThrows(Exceptions.BadRequest.class, () -> controller().create(questionnaire, ""));
   }
 }

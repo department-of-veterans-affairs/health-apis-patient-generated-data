@@ -29,8 +29,10 @@ public class Samples {
     return questionnaireResponse().author(Reference.builder().reference(author).build());
   }
 
-  public static QuestionnaireResponse questionnaireResponseWithLastUpdated(Instant lastUpdated) {
-    return questionnaireResponse().meta(Meta.builder().lastUpdated(lastUpdated.toString()).build());
+  public static QuestionnaireResponse questionnaireResponseWithLastUpdatedAndSource(
+      Instant lastUpdated, String source) {
+    return questionnaireResponse()
+        .meta(Meta.builder().lastUpdated(lastUpdated.toString()).source(source).build());
   }
 
   public static QuestionnaireResponse questionnaireResponseWithTags(String... tagsArr) {

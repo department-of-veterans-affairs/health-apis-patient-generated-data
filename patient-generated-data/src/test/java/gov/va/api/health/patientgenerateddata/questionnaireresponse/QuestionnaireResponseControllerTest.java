@@ -2,7 +2,7 @@ package gov.va.api.health.patientgenerateddata.questionnaireresponse;
 
 import static gov.va.api.health.patientgenerateddata.MockRequests.requestFromUri;
 import static gov.va.api.health.patientgenerateddata.questionnaireresponse.Samples.questionnaireResponse;
-import static gov.va.api.health.patientgenerateddata.questionnaireresponse.Samples.questionnaireResponseWithLastUpdated;
+import static gov.va.api.health.patientgenerateddata.questionnaireresponse.Samples.questionnaireResponseWithLastUpdatedAndSource;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -50,16 +50,18 @@ public class QuestionnaireResponseControllerTest {
   }
 
   private static QuestionnaireResponseController controller(QuestionnaireResponseRepository repo) {
-    return new QuestionnaireResponseController(pageLinks, repo, new Sourcerer("{}", ""));
+    return new QuestionnaireResponseController(pageLinks, repo, new Sourcerer("{}", "sat"));
   }
 
   @Test
   @SneakyThrows
   void create() {
     Instant now = Instant.parse("2021-01-01T01:00:00.001Z");
-    var expected = questionnaireResponseWithLastUpdated(now);
+    var expected =
+        questionnaireResponseWithLastUpdatedAndSource(
+            now, "https://api.va.gov/services/pgd/static-access");
     QuestionnaireResponseRepository repo = mock(QuestionnaireResponseRepository.class);
-    assertThat(controller(repo).create(questionnaireResponse().id("x"), now))
+    assertThat(controller(repo).create(questionnaireResponse().id("x"), "Bearer sat", now))
         .isEqualTo(
             ResponseEntity.created(URI.create("http://foo.com/r4/QuestionnaireResponse/x"))
                 .body(expected));
@@ -77,7 +79,7 @@ public class QuestionnaireResponseControllerTest {
     var repo = mock(QuestionnaireResponseRepository.class);
     var pageLinks = mock(LinkProperties.class);
     var controller = new QuestionnaireResponseController(pageLinks, repo, new Sourcerer("{}", ""));
-    assertThrows(Exceptions.BadRequest.class, () -> controller.create(questionnaireResponse));
+    assertThrows(Exceptions.BadRequest.class, () -> controller.create(questionnaireResponse, ""));
   }
 
   @Test
@@ -130,10 +132,12 @@ public class QuestionnaireResponseControllerTest {
     when(repo.findById("x"))
         .thenReturn(
             Optional.of(QuestionnaireResponseEntity.builder().id("x").payload(payload).build()));
-    QuestionnaireResponse expected = questionnaireResponseWithLastUpdated(now);
+    QuestionnaireResponse expected =
+        questionnaireResponseWithLastUpdatedAndSource(
+            now, "https://api.va.gov/services/pgd/static-access");
     assertThat(
-            new QuestionnaireResponseController(pageLinks, repo, new Sourcerer("{}", ""))
-                .update(questionnaireResponse, now))
+            new QuestionnaireResponseController(pageLinks, repo, new Sourcerer("{}", "sat"))
+                .update(questionnaireResponse, "Bearer sat", now))
         .isEqualTo(ResponseEntity.ok(expected));
     verify(repo, times(1))
         .save(QuestionnaireResponseEntity.builder().id("x").payload(payload).build());
@@ -146,8 +150,8 @@ public class QuestionnaireResponseControllerTest {
     assertThrows(
         Exceptions.NotFound.class,
         () ->
-            new QuestionnaireResponseController(pageLinks, repo, new Sourcerer("{}", ""))
-                .update("x", questionnaireResponse));
+            new QuestionnaireResponseController(pageLinks, repo, new Sourcerer("{}", "sat"))
+                .update("x", questionnaireResponse, "Bearer sat"));
   }
 
   @ParameterizedTest

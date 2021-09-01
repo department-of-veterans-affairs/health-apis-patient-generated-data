@@ -46,21 +46,25 @@ public class ManagementController {
   @PostMapping(value = "/Observation")
   ResponseEntity<Observation> create(
       @Valid @RequestBody Observation observation,
-      @RequestHeader(name = "Authorization") String authorization) {
+      @RequestHeader(name = "Authorization", required = true) String authorization) {
     validateId(observation.id(), id -> observationController.findById(id));
     return observationController.create(observation, authorization, nowMillis());
   }
 
   @PostMapping(value = "/Questionnaire")
-  ResponseEntity<Questionnaire> create(@Valid @RequestBody Questionnaire questionnaire) {
+  ResponseEntity<Questionnaire> create(
+      @Valid @RequestBody Questionnaire questionnaire,
+      @RequestHeader(name = "Authorization", required = true) String authorization) {
     validateId(questionnaire.id(), id -> questionnaireController.findById(id));
-    return questionnaireController.create(questionnaire, nowMillis());
+    return questionnaireController.create(questionnaire, authorization, nowMillis());
   }
 
   @PostMapping(value = "/QuestionnaireResponse")
   ResponseEntity<QuestionnaireResponse> create(
-      @Valid @RequestBody QuestionnaireResponse questionnaireResponse) {
+      @Valid @RequestBody QuestionnaireResponse questionnaireResponse,
+      @RequestHeader(name = "Authorization", required = true) String authorization) {
     validateId(questionnaireResponse.id(), id -> questionnaireResponseController.findById(id));
-    return questionnaireResponseController.create(questionnaireResponse, nowMillis());
+    return questionnaireResponseController.create(
+        questionnaireResponse, authorization, nowMillis());
   }
 }
