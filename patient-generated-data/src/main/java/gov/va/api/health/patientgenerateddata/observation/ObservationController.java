@@ -26,6 +26,7 @@ import gov.va.api.lighthouse.vulcan.VulcanConfiguration;
 import gov.va.api.lighthouse.vulcan.mappings.Mappings;
 import java.net.URI;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
@@ -120,6 +121,13 @@ public class ObservationController {
 
   public Optional<Observation> findById(String id) {
     return repository.findById(id).map(e -> e.deserializePayload());
+  }
+
+  /** Get all IDs for Observation resource. */
+  public List<String> getAllIds() {
+    List<String> ids = new ArrayList<>();
+    repository.findAll().forEach(e -> ids.add(e.id()));
+    return ids;
   }
 
   @InitBinder

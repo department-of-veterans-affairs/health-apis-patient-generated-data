@@ -13,14 +13,17 @@ import static org.mockito.Mockito.when;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.api.health.patientgenerateddata.observation.ObservationController;
+import gov.va.api.health.patientgenerateddata.observation.ObservationEntity;
 import gov.va.api.health.patientgenerateddata.observation.ObservationRepository;
 import gov.va.api.health.patientgenerateddata.questionnaire.QuestionnaireController;
 import gov.va.api.health.patientgenerateddata.questionnaire.QuestionnaireEntity;
 import gov.va.api.health.patientgenerateddata.questionnaire.QuestionnaireRepository;
 import gov.va.api.health.patientgenerateddata.questionnaireresponse.QuestionnaireResponseController;
+import gov.va.api.health.patientgenerateddata.questionnaireresponse.QuestionnaireResponseEntity;
 import gov.va.api.health.patientgenerateddata.questionnaireresponse.QuestionnaireResponseRepository;
 import java.net.URI;
 import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 import lombok.SneakyThrows;
@@ -107,5 +110,68 @@ public class ManagementControllerTest {
   void invalid_formats(String id) {
     assertThrows(
         Exceptions.BadRequest.class, () -> _controller().create(questionnaire(id), "Bearer sat"));
+  }
+
+  @Test
+  @SneakyThrows
+  void observationIds() {
+    when(observationRepo.findAll())
+        .thenReturn(
+            List.of(
+                ObservationEntity.builder()
+                    .id("x1")
+                    .payload(MAPPER.writeValueAsString(observation()))
+                    .build(),
+                ObservationEntity.builder()
+                    .id("x2")
+                    .payload(MAPPER.writeValueAsString(observation()))
+                    .build(),
+                ObservationEntity.builder()
+                    .id("x3")
+                    .payload(MAPPER.writeValueAsString(observation()))
+                    .build()));
+    assertThat(_controller().observationIds()).isEqualTo(List.of("x1", "x2", "x3"));
+  }
+
+  @Test
+  @SneakyThrows
+  void questionnaireIds() {
+    when(questionnaireRepo.findAll())
+        .thenReturn(
+            List.of(
+                QuestionnaireEntity.builder()
+                    .id("x1")
+                    .payload(MAPPER.writeValueAsString(observation()))
+                    .build(),
+                QuestionnaireEntity.builder()
+                    .id("x2")
+                    .payload(MAPPER.writeValueAsString(observation()))
+                    .build(),
+                QuestionnaireEntity.builder()
+                    .id("x3")
+                    .payload(MAPPER.writeValueAsString(observation()))
+                    .build()));
+    assertThat(_controller().questionnaireIds()).isEqualTo(List.of("x1", "x2", "x3"));
+  }
+
+  @Test
+  @SneakyThrows
+  void questionnaireResponseIds() {
+    when(questionnaireResponseRepo.findAll())
+        .thenReturn(
+            List.of(
+                QuestionnaireResponseEntity.builder()
+                    .id("x1")
+                    .payload(MAPPER.writeValueAsString(observation()))
+                    .build(),
+                QuestionnaireResponseEntity.builder()
+                    .id("x2")
+                    .payload(MAPPER.writeValueAsString(observation()))
+                    .build(),
+                QuestionnaireResponseEntity.builder()
+                    .id("x3")
+                    .payload(MAPPER.writeValueAsString(observation()))
+                    .build()));
+    assertThat(_controller().questionnaireResponseIds()).isEqualTo(List.of("x1", "x2", "x3"));
   }
 }

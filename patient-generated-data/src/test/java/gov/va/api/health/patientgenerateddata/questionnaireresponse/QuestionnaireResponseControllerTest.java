@@ -1,6 +1,7 @@
 package gov.va.api.health.patientgenerateddata.questionnaireresponse;
 
 import static gov.va.api.health.patientgenerateddata.MockRequests.requestFromUri;
+import static gov.va.api.health.patientgenerateddata.observation.Samples.observation;
 import static gov.va.api.health.patientgenerateddata.questionnaireresponse.Samples.questionnaireResponse;
 import static gov.va.api.health.patientgenerateddata.questionnaireresponse.Samples.questionnaireResponseWithLastUpdatedAndSource;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -81,6 +82,32 @@ public class QuestionnaireResponseControllerTest {
     var controller =
         new QuestionnaireResponseController(pageLinks, repo, new Sourcerer("{}", "sat"));
     assertThrows(Exceptions.BadRequest.class, () -> controller.create(questionnaireResponse, ""));
+  }
+
+  @Test
+  @SneakyThrows
+  void getAllIds() {
+    QuestionnaireResponseRepository repo = mock(QuestionnaireResponseRepository.class);
+    LinkProperties pageLinks =
+        LinkProperties.builder().baseUrl("http://foo.com").r4BasePath("r4").build();
+    var controller =
+        new QuestionnaireResponseController(pageLinks, repo, new Sourcerer("{}", "sat"));
+    when(repo.findAll())
+        .thenReturn(
+            List.of(
+                QuestionnaireResponseEntity.builder()
+                    .id("x1")
+                    .payload(MAPPER.writeValueAsString(observation()))
+                    .build(),
+                QuestionnaireResponseEntity.builder()
+                    .id("x2")
+                    .payload(MAPPER.writeValueAsString(observation()))
+                    .build(),
+                QuestionnaireResponseEntity.builder()
+                    .id("x3")
+                    .payload(MAPPER.writeValueAsString(observation()))
+                    .build()));
+    assertThat(controller.getAllIds()).isEqualTo(List.of("x1", "x2", "x3"));
   }
 
   @Test
