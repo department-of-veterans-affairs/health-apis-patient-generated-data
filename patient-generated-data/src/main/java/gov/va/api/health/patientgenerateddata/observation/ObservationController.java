@@ -14,6 +14,7 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Streams;
 import gov.va.api.health.autoconfig.logging.Loggable;
 import gov.va.api.health.patientgenerateddata.Exceptions;
 import gov.va.api.health.patientgenerateddata.JacksonMapperConfig;
@@ -26,9 +27,9 @@ import gov.va.api.lighthouse.vulcan.VulcanConfiguration;
 import gov.va.api.lighthouse.vulcan.mappings.Mappings;
 import java.net.URI;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -125,9 +126,7 @@ public class ObservationController {
 
   /** Get all IDs for Observation resource. */
   public List<String> getAllIds() {
-    List<String> ids = new ArrayList<>();
-    repository.findAll().forEach(e -> ids.add(e.id()));
-    return ids;
+    return Streams.stream(repository.findAll()).map(e -> e.id()).collect(Collectors.toList());
   }
 
   @InitBinder
