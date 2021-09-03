@@ -141,15 +141,15 @@ public class ManagementControllerTest {
             List.of(
                 QuestionnaireEntity.builder()
                     .id("x1")
-                    .payload(MAPPER.writeValueAsString(observation()))
+                    .payload(MAPPER.writeValueAsString(questionnaire()))
                     .build(),
                 QuestionnaireEntity.builder()
                     .id("x2")
-                    .payload(MAPPER.writeValueAsString(observation()))
+                    .payload(MAPPER.writeValueAsString(questionnaire()))
                     .build(),
                 QuestionnaireEntity.builder()
                     .id("x3")
-                    .payload(MAPPER.writeValueAsString(observation()))
+                    .payload(MAPPER.writeValueAsString(questionnaire()))
                     .build()));
     assertThat(_controller().questionnaireIds()).isEqualTo(List.of("x1", "x2", "x3"));
   }
@@ -162,15 +162,15 @@ public class ManagementControllerTest {
             List.of(
                 QuestionnaireResponseEntity.builder()
                     .id("x1")
-                    .payload(MAPPER.writeValueAsString(observation()))
+                    .payload(MAPPER.writeValueAsString(questionnaireResponse()))
                     .build(),
                 QuestionnaireResponseEntity.builder()
                     .id("x2")
-                    .payload(MAPPER.writeValueAsString(observation()))
+                    .payload(MAPPER.writeValueAsString(questionnaireResponse()))
                     .build(),
                 QuestionnaireResponseEntity.builder()
                     .id("x3")
-                    .payload(MAPPER.writeValueAsString(observation()))
+                    .payload(MAPPER.writeValueAsString(questionnaireResponse()))
                     .build()));
     assertThat(_controller().questionnaireResponseIds()).isEqualTo(List.of("x1", "x2", "x3"));
   }

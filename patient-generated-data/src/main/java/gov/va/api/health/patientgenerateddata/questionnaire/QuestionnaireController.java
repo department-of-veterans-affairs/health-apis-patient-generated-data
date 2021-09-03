@@ -10,6 +10,7 @@ import static gov.va.api.health.patientgenerateddata.Controllers.nowMillis;
 import static gov.va.api.lighthouse.vulcan.Rules.atLeastOneParameterOf;
 import static gov.va.api.lighthouse.vulcan.Rules.ifParameter;
 import static gov.va.api.lighthouse.vulcan.Vulcan.returnNothing;
+import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 
@@ -30,7 +31,6 @@ import java.net.URI;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -135,7 +135,7 @@ public class QuestionnaireController {
 
   /** Get all IDs for Questionnaire resource. */
   public List<String> getAllIds() {
-    return Streams.stream(repository.findAll()).map(e -> e.id()).collect(Collectors.toList());
+    return Streams.stream(repository.findAll()).map(e -> e.id()).sorted().collect(toList());
   }
 
   @InitBinder
