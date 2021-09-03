@@ -35,7 +35,7 @@ public class QuestionnaireResponseIT {
     String query = String.format("QuestionnaireResponse?author=%s", author);
     var response = doGet("application/json", query, 200);
     QuestionnaireResponse.Bundle bundle = response.expectValid(QuestionnaireResponse.Bundle.class);
-    assertThat(bundle.entry()).hasSizeGreaterThan(0);
+    assertThat(bundle.entry()).isNotEmpty();
   }
 
   @Test
@@ -52,7 +52,7 @@ public class QuestionnaireResponseIT {
     String query = String.format("QuestionnaireResponse?authored=%s", "2013-02-19T19:15:00Z");
     var response = doGet("application/json", query, 200);
     QuestionnaireResponse.Bundle bundle = response.expectValid(QuestionnaireResponse.Bundle.class);
-    assertThat(bundle.entry()).hasSizeGreaterThan(0);
+    assertThat(bundle.entry()).isNotEmpty();
     assertThat(bundleIncludesEntryWithId(bundle, id)).isTrue();
   }
 
@@ -65,7 +65,7 @@ public class QuestionnaireResponseIT {
             "2013-02-19T00:00:00Z", "2013-02-19T23:59:00Z");
     var response = doGet("application/json", query, 200);
     QuestionnaireResponse.Bundle bundle = response.expectValid(QuestionnaireResponse.Bundle.class);
-    assertThat(bundle.entry()).hasSizeGreaterThan(0);
+    assertThat(bundle.entry()).isNotEmpty();
     assertThat(bundleIncludesEntryWithId(bundle, id)).isTrue();
   }
 
@@ -86,7 +86,7 @@ public class QuestionnaireResponseIT {
     String query = String.format("QuestionnaireResponse?authored=%s", "lt2014-01-01T00:00:00Z");
     var response = doGet("application/json", query, 200);
     QuestionnaireResponse.Bundle bundle = response.expectValid(QuestionnaireResponse.Bundle.class);
-    assertThat(bundle.entry()).hasSizeGreaterThan(0);
+    assertThat(bundle.entry()).isNotEmpty();
     assertThat(bundleIncludesEntryWithId(bundle, id)).isTrue();
   }
 
@@ -96,7 +96,7 @@ public class QuestionnaireResponseIT {
     String query = String.format("QuestionnaireResponse?authored=%s", "2013-02-19T14:15:00-05:00");
     var response = doGet("application/json", query, 200);
     QuestionnaireResponse.Bundle bundle = response.expectValid(QuestionnaireResponse.Bundle.class);
-    assertThat(bundle.entry()).hasSizeGreaterThan(0);
+    assertThat(bundle.entry()).isNotEmpty();
     assertThat(bundleIncludesEntryWithId(bundle, id)).isTrue();
   }
 
@@ -118,9 +118,11 @@ public class QuestionnaireResponseIT {
 
   @Test
   void search_lastUpdated() {
+    var source = systemDefinition().ids().questionnaireResponseSource();
     var lastUpdated = systemDefinition().ids().lastUpdated();
-    var response =
-        doGet("application/json", "QuestionnaireResponse?_lastUpdated=" + lastUpdated, 200);
+    String query =
+        String.format("QuestionnaireResponse?source=%s&_lastUpdated=%s", source, lastUpdated);
+    var response = doGet("application/json", query, 200);
     QuestionnaireResponse.Bundle bundle = response.expectValid(QuestionnaireResponse.Bundle.class);
     assertThat(bundle.entry()).isNotEmpty();
   }
@@ -133,7 +135,7 @@ public class QuestionnaireResponseIT {
         String.format("QuestionnaireResponse?source=%s&questionnaire=%s", source, questionnaire);
     var response = doGet("application/json", query, 200);
     QuestionnaireResponse.Bundle bundle = response.expectValid(QuestionnaireResponse.Bundle.class);
-    assertThat(bundle.entry()).hasSizeGreaterThan(0);
+    assertThat(bundle.entry()).isNotEmpty();
   }
 
   @Test
@@ -162,7 +164,7 @@ public class QuestionnaireResponseIT {
     String query = String.format("QuestionnaireResponse?source=%s", source);
     var response = doGet("application/json", query, 200);
     QuestionnaireResponse.Bundle bundle = response.expectValid(QuestionnaireResponse.Bundle.class);
-    assertThat(bundle.entry()).hasSizeGreaterThan(0);
+    assertThat(bundle.entry()).isNotEmpty();
   }
 
   @Test
@@ -171,7 +173,7 @@ public class QuestionnaireResponseIT {
     String query = String.format("QuestionnaireResponse?subject=%s", subject);
     var response = doGet("application/json", query, 200);
     QuestionnaireResponse.Bundle bundle = response.expectValid(QuestionnaireResponse.Bundle.class);
-    assertThat(bundle.entry()).hasSizeGreaterThan(0);
+    assertThat(bundle.entry()).isNotEmpty();
   }
 
   @Test
@@ -188,7 +190,7 @@ public class QuestionnaireResponseIT {
     String query = String.format("QuestionnaireResponse?_tag=%s", code);
     var response = doGet("application/json", query, 200);
     QuestionnaireResponse.Bundle bundle = response.expectValid(QuestionnaireResponse.Bundle.class);
-    assertThat(bundle.entry()).hasSizeGreaterThan(0);
+    assertThat(bundle.entry()).isNotEmpty();
   }
 
   @Test
@@ -223,7 +225,7 @@ public class QuestionnaireResponseIT {
     String query = String.format("QuestionnaireResponse?source=%s&_tag=%s|", source, system);
     var response = doGet("application/json", query, 200);
     QuestionnaireResponse.Bundle bundle = response.expectValid(QuestionnaireResponse.Bundle.class);
-    assertThat(bundle.entry()).hasSizeGreaterThan(0);
+    assertThat(bundle.entry()).isNotEmpty();
   }
 
   @Test
@@ -235,6 +237,6 @@ public class QuestionnaireResponseIT {
         String.format("QuestionnaireResponse?source=%s&_tag=%s|%s", source, system, code);
     var response = doGet("application/json", query, 200);
     QuestionnaireResponse.Bundle bundle = response.expectValid(QuestionnaireResponse.Bundle.class);
-    assertThat(bundle.entry()).hasSizeGreaterThan(0);
+    assertThat(bundle.entry()).isNotEmpty();
   }
 }

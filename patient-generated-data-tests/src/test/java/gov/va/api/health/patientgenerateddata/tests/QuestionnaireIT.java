@@ -30,7 +30,7 @@ public class QuestionnaireIT {
     var response =
         doGet("application/json", String.format("Questionnaire?context-type-value=%s", query), 200);
     Questionnaire.Bundle bundle = response.expectValid(Questionnaire.Bundle.class);
-    assertThat(bundle.entry()).hasSizeGreaterThan(0);
+    assertThat(bundle.entry()).isNotEmpty();
   }
 
   @Test
@@ -48,7 +48,7 @@ public class QuestionnaireIT {
     var response =
         doGet("application/json", String.format("Questionnaire?context-type-value=%s", query), 200);
     Questionnaire.Bundle bundle = response.expectValid(Questionnaire.Bundle.class);
-    assertThat(bundle.entry()).hasSizeGreaterThan(0);
+    assertThat(bundle.entry()).isNotEmpty();
   }
 
   @Test
@@ -57,7 +57,7 @@ public class QuestionnaireIT {
     var response =
         doGet("application/json", String.format("Questionnaire?context-type-value=%s", query), 200);
     Questionnaire.Bundle bundle = response.expectValid(Questionnaire.Bundle.class);
-    assertThat(bundle.entry()).hasSizeGreaterThan(0);
+    assertThat(bundle.entry()).isNotEmpty();
   }
 
   @Test
