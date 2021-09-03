@@ -51,13 +51,13 @@ public class SandboxDeleteIT {
 
   @Test
   void deleteDisallowed() {
-    assumeEnvironmentIn(Environment.STAGING, Environment.PROD);
+    assumeEnvironmentIn(Environment.PROD);
     doDelete("Observation/5555555", "delete disallowed", 404);
   }
 
   @Test
   void deleteObservation() {
-    assumeEnvironmentNotIn(Environment.STAGING, Environment.PROD);
+    assumeEnvironmentNotIn(Environment.PROD);
     Observation observation = observation();
     var response = doPost("Observation", observation, "create resource", 201);
     Observation observationWritten = response.expectValid(Observation.class);
@@ -69,7 +69,7 @@ public class SandboxDeleteIT {
 
   @Test
   void deleteQuestionnaire() {
-    assumeEnvironmentNotIn(Environment.STAGING, Environment.PROD);
+    assumeEnvironmentNotIn(Environment.PROD);
     Questionnaire questionnaire = questionnaire();
     var response = doPost("Questionnaire", questionnaire, "create resource", 201);
     Questionnaire questionnaireWritten = response.expectValid(Questionnaire.class);
@@ -81,7 +81,7 @@ public class SandboxDeleteIT {
 
   @Test
   void deleteQuestionnaireResponse() {
-    assumeEnvironmentNotIn(Environment.STAGING, Environment.PROD);
+    assumeEnvironmentNotIn(Environment.PROD);
     QuestionnaireResponse questionnaireResponse = questionnaireResponse();
     var response = doPost("QuestionnaireResponse", questionnaireResponse, "create resource", 201);
     QuestionnaireResponse questionnaireResponseWritten =
