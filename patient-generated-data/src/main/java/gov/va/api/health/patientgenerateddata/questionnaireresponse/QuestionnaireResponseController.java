@@ -179,7 +179,7 @@ public class QuestionnaireResponseController {
   }
 
   @GetMapping(value = "/{id}")
-  QuestionnaireResponse read(@PathVariable("id") String id) {
+  public QuestionnaireResponse read(@PathVariable("id") String id) {
     return findById(id).orElseThrow(() -> new Exceptions.NotFound(id));
   }
 
@@ -222,7 +222,8 @@ public class QuestionnaireResponseController {
     return update(questionnaireResponse, authorization, nowMillis());
   }
 
-  ResponseEntity<QuestionnaireResponse> update(
+  /** Update the given resource. */
+  public ResponseEntity<QuestionnaireResponse> update(
       QuestionnaireResponse questionnaireResponse, String authorization, Instant now) {
     questionnaireResponse.meta(
         metaWithSource(questionnaireResponse.meta(), sourcerer.source(authorization)));

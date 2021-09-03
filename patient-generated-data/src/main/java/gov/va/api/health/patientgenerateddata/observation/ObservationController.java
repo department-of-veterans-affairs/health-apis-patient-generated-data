@@ -135,7 +135,7 @@ public class ObservationController {
   }
 
   @GetMapping(value = "/{id}")
-  Observation read(@PathVariable("id") String id) {
+  public Observation read(@PathVariable("id") String id) {
     return findById(id).orElseThrow(() -> new Exceptions.NotFound(id));
   }
 
@@ -174,7 +174,9 @@ public class ObservationController {
     return update(observation, authorization, nowMillis());
   }
 
-  ResponseEntity<Observation> update(Observation observation, String authorization, Instant now) {
+  /** Update the given resource. */
+  public ResponseEntity<Observation> update(
+      Observation observation, String authorization, Instant now) {
     observation.meta(metaWithSource(observation.meta(), sourcerer.source(authorization)));
     observation.meta(metaWithLastUpdated(observation.meta(), now));
     ObservationEntity entity =

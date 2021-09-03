@@ -174,4 +174,37 @@ public class ManagementControllerTest {
                     .build()));
     assertThat(_controller().questionnaireResponseIds()).isEqualTo(List.of("x1", "x2", "x3"));
   }
+
+  @Test
+  @SneakyThrows
+  void updateAllProdPathSourceInfo() {
+
+    ObservationEntity observationEntity =
+        ObservationEntity.builder()
+            .id("x1")
+            .payload(MAPPER.writeValueAsString(observation("x1")))
+            .build();
+    QuestionnaireEntity questionnaireEntity =
+        QuestionnaireEntity.builder()
+            .id("x1")
+            .payload(MAPPER.writeValueAsString(questionnaire("x1")))
+            .build();
+    QuestionnaireResponseEntity questionnaireResponseEntity =
+        QuestionnaireResponseEntity.builder()
+            .id("x1")
+            .payload(MAPPER.writeValueAsString(questionnaireResponse("x1")))
+            .build();
+
+    when(observationRepo.findById("x1")).thenReturn(Optional.of(observationEntity));
+    when(observationRepo.findAll()).thenReturn(List.of(observationEntity));
+
+    when(questionnaireRepo.findById("x1")).thenReturn(Optional.of(questionnaireEntity));
+    when(questionnaireRepo.findAll()).thenReturn(List.of(questionnaireEntity));
+
+    when(questionnaireResponseRepo.findById("x1"))
+        .thenReturn(Optional.of(questionnaireResponseEntity));
+    when(questionnaireResponseRepo.findAll()).thenReturn(List.of(questionnaireResponseEntity));
+
+    _controller().updateAllProdPathSourceInfo("Bearer sat");
+  }
 }
