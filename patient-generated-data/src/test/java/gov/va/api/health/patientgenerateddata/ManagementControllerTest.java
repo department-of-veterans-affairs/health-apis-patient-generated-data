@@ -178,54 +178,33 @@ public class ManagementControllerTest {
   @Test
   @SneakyThrows
   void updateAllProdPathSourceInfo() {
-    _controller().create(observation("x1"), "Bearer sat");
-    _controller().create(questionnaire("x1"), "Bearer sat");
-    _controller().create(questionnaireResponse("x1"), "Bearer sat");
 
-    when(observationRepo.findById("x1"))
-        .thenReturn(
-            Optional.of(
-                ObservationEntity.builder()
-                    .id("x1")
-                    .payload(MAPPER.writeValueAsString(observation("x1")))
-                    .build()));
-    when(observationRepo.findAll())
-        .thenReturn(
-            List.of(
-                ObservationEntity.builder()
-                    .id("x1")
-                    .payload(MAPPER.writeValueAsString(observation("x1")))
-                    .build()));
+    ObservationEntity observationEntity =
+        ObservationEntity.builder()
+            .id("x1")
+            .payload(MAPPER.writeValueAsString(observation("x1")))
+            .build();
+    QuestionnaireEntity questionnaireEntity =
+        QuestionnaireEntity.builder()
+            .id("x1")
+            .payload(MAPPER.writeValueAsString(questionnaire("x1")))
+            .build();
+    QuestionnaireResponseEntity questionnaireResponseEntity =
+        QuestionnaireResponseEntity.builder()
+            .id("x1")
+            .payload(MAPPER.writeValueAsString(questionnaireResponse("x1")))
+            .build();
 
-    when(questionnaireRepo.findById("x1"))
-        .thenReturn(
-            Optional.of(
-                QuestionnaireEntity.builder()
-                    .id("x1")
-                    .payload(MAPPER.writeValueAsString(questionnaire("x1")))
-                    .build()));
-    when(questionnaireRepo.findAll())
-        .thenReturn(
-            List.of(
-                QuestionnaireEntity.builder()
-                    .id("x1")
-                    .payload(MAPPER.writeValueAsString(questionnaire("x1")))
-                    .build()));
+    when(observationRepo.findById("x1")).thenReturn(Optional.of(observationEntity));
+    when(observationRepo.findAll()).thenReturn(List.of(observationEntity));
+
+    when(questionnaireRepo.findById("x1")).thenReturn(Optional.of(questionnaireEntity));
+    when(questionnaireRepo.findAll()).thenReturn(List.of(questionnaireEntity));
 
     when(questionnaireResponseRepo.findById("x1"))
-        .thenReturn(
-            Optional.of(
-                QuestionnaireResponseEntity.builder()
-                    .id("x1")
-                    .payload(MAPPER.writeValueAsString(questionnaireResponse("x1")))
-                    .build()));
-    when(questionnaireResponseRepo.findAll())
-        .thenReturn(
-            List.of(
-                QuestionnaireResponseEntity.builder()
-                    .id("x1")
-                    .payload(MAPPER.writeValueAsString(questionnaireResponse("x1")))
-                    .build()));
+        .thenReturn(Optional.of(questionnaireResponseEntity));
+    when(questionnaireResponseRepo.findAll()).thenReturn(List.of(questionnaireResponseEntity));
+
     _controller().updateAllProdPathSourceInfo("Bearer sat");
   }
 }

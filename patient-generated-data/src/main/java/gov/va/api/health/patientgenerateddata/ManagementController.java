@@ -7,7 +7,6 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 import gov.va.api.health.patientgenerateddata.observation.ObservationController;
 import gov.va.api.health.patientgenerateddata.questionnaire.QuestionnaireController;
 import gov.va.api.health.patientgenerateddata.questionnaireresponse.QuestionnaireResponseController;
-import gov.va.api.health.r4.api.elements.Meta;
 import gov.va.api.health.r4.api.resources.Observation;
 import gov.va.api.health.r4.api.resources.Questionnaire;
 import gov.va.api.health.r4.api.resources.QuestionnaireResponse;
@@ -100,49 +99,21 @@ public class ManagementController {
     return questionnaireResponseController.getAllIds();
   }
 
-  @GetMapping(value = "/update-prod-sources")
+  @GetMapping(value = "/update-all")
   void updateAllProdPathSourceInfo(
       @RequestHeader(name = "Authorization", required = true) String authorization) {
-    final String SOURCE = "https://api.va.gov/services/pgd/va-dot-gov";
-    List<String> observationIds = observationIds();
-
-    List<String> questionnaireIds = questionnaireIds();
-
-    List<String> questionnaireResponseIds = questionnaireResponseIds();
-
-    for (String observationId : observationIds) {
+    for (String observationId : observationIds()) {
       Observation o = observationController.read(observationId);
-
-      if (o.meta() == null) {
-        o.meta(Meta.builder().source(SOURCE).build());
-      } else {
-        o.meta().source(SOURCE);
-      }
-
       observationController.update(o, authorization, nowMillis());
     }
 
-    for (String questionnaireId : questionnaireIds) {
+    for (String questionnaireId : questionnaireIds()) {
       Questionnaire q = questionnaireController.read(questionnaireId);
-
-      if (q.meta() == null) {
-        q.meta(Meta.builder().source(SOURCE).build());
-      } else {
-        q.meta().source(SOURCE);
-      }
-
       questionnaireController.update(q, authorization, nowMillis());
     }
 
-    for (String questionnaireResponseId : questionnaireResponseIds) {
+    for (String questionnaireResponseId : questionnaireResponseIds()) {
       QuestionnaireResponse qr = questionnaireResponseController.read(questionnaireResponseId);
-
-      if (qr.meta() == null) {
-        qr.meta(Meta.builder().source(SOURCE).build());
-      } else {
-        qr.meta().source(SOURCE);
-      }
-
       questionnaireResponseController.update(qr, authorization, nowMillis());
     }
   }
