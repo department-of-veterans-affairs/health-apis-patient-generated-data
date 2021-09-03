@@ -1,5 +1,6 @@
 package gov.va.api.health.patientgenerateddata.tests;
 
+import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.doDelete;
 import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.doGet;
 import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.doInternalPost;
 import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.doPut;
@@ -14,6 +15,7 @@ import gov.va.api.health.sentinel.Environment;
 import gov.va.api.health.sentinel.ExpectedResponse;
 import java.time.Instant;
 import java.time.temporal.ChronoField;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -37,6 +39,12 @@ public class QuestionnaireResponseUpdateIT {
       String clientKey = System.getProperty("client-key", CLIENT_KEY_DEFAULT);
       doInternalPost("QuestionnaireResponse", questionnaireResponse(id), "create", 201, clientKey);
     }
+  }
+
+  @AfterAll
+  static void tearDown() {
+    var id = systemDefinition().ids().questionnaireResponseUpdates();
+    doDelete("QuestionnaireResponse/" + id, "delete resource", 200);
   }
 
   @Test
