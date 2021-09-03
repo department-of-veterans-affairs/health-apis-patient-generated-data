@@ -4,6 +4,7 @@ import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.doGet;
 import static gov.va.api.health.patientgenerateddata.tests.SystemDefinitions.systemDefinition;
 import static gov.va.api.health.sentinel.EnvironmentAssumptions.assumeEnvironmentIn;
 import static org.assertj.core.api.Assertions.assertThat;
+
 import gov.va.api.health.r4.api.resources.Observation;
 import gov.va.api.health.sentinel.Environment;
 import org.junit.jupiter.api.Test;

@@ -194,7 +194,7 @@ class SystemDefinitions {
     @NonNull String observation;
 
     @NonNull List<String> observationList;
-    
+
     @NonNull String observationSubject;
 
     @NonNull String questionnaire;
