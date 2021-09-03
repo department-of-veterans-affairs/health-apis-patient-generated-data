@@ -69,6 +69,8 @@ public class ManagementControllerCreateIT {
 
   @AfterAll
   static void tearDown() {
+    assumeEnvironmentIn(
+        Environment.LOCAL, Environment.QA, Environment.STAGING, Environment.STAGING_LAB);
     doDelete("Observation/" + TEST_ID, "tear down", 200);
     doDelete("Questionnaire/" + TEST_ID, "tear down", 200);
     doDelete("QuestionnaireResponse/" + TEST_ID, "tear down", 200);

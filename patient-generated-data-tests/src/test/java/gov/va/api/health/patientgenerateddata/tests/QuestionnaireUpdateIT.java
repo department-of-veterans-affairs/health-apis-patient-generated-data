@@ -39,6 +39,8 @@ public class QuestionnaireUpdateIT {
 
   @AfterAll
   static void tearDown() {
+    assumeEnvironmentIn(
+        Environment.LOCAL, Environment.QA, Environment.STAGING, Environment.STAGING_LAB);
     var id = systemDefinition().ids().questionnaireUpdates();
     doDelete("Questionnaire/" + id, "tear down", 200);
   }
