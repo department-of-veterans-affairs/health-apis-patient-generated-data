@@ -1,7 +1,6 @@
 package gov.va.api.health.patientgenerateddata.questionnaire;
 
 import static gov.va.api.health.patientgenerateddata.MockRequests.requestFromUri;
-import static gov.va.api.health.patientgenerateddata.observation.Samples.observation;
 import static gov.va.api.health.patientgenerateddata.questionnaire.Samples.questionnaire;
 import static gov.va.api.health.patientgenerateddata.questionnaire.Samples.questionnaireWithLastUpdatedAndSource;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -80,15 +79,15 @@ public class QuestionnaireControllerTest {
             List.of(
                 QuestionnaireEntity.builder()
                     .id("x1")
-                    .payload(MAPPER.writeValueAsString(observation()))
+                    .payload(MAPPER.writeValueAsString(questionnaire("x1")))
                     .build(),
                 QuestionnaireEntity.builder()
                     .id("x2")
-                    .payload(MAPPER.writeValueAsString(observation()))
+                    .payload(MAPPER.writeValueAsString(questionnaire("x2")))
                     .build(),
                 QuestionnaireEntity.builder()
                     .id("x3")
-                    .payload(MAPPER.writeValueAsString(observation()))
+                    .payload(MAPPER.writeValueAsString(questionnaire("x3")))
                     .build()));
     assertThat(controller.getAllIds()).isEqualTo(List.of("x1", "x2", "x3"));
   }

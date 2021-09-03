@@ -84,15 +84,15 @@ public class ObservationControllerTest {
             List.of(
                 ObservationEntity.builder()
                     .id("x1")
-                    .payload(MAPPER.writeValueAsString(observation()))
+                    .payload(MAPPER.writeValueAsString(observation("x1")))
                     .build(),
                 ObservationEntity.builder()
                     .id("x2")
-                    .payload(MAPPER.writeValueAsString(observation()))
+                    .payload(MAPPER.writeValueAsString(observation("x2")))
                     .build(),
                 ObservationEntity.builder()
                     .id("x3")
-                    .payload(MAPPER.writeValueAsString(observation()))
+                    .payload(MAPPER.writeValueAsString(observation("x3")))
                     .build()));
     assertThat(_controller().getAllIds()).isEqualTo(List.of("x1", "x2", "x3"));
   }
