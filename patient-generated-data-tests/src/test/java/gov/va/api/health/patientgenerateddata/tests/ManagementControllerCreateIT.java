@@ -22,14 +22,6 @@ public class ManagementControllerCreateIT {
 
   private static final String TEST_ID = "it" + System.currentTimeMillis();
 
-  @BeforeAll
-  static void assumeEnvironment() {
-    // These tests invent new data and then remove it
-    // Do not run in SLA'd environments
-    assumeEnvironmentIn(
-        Environment.LOCAL, Environment.QA, Environment.STAGING, Environment.STAGING_LAB);
-  }
-
   static Observation observation() {
     return Observation.builder()
         .id(TEST_ID)
@@ -65,6 +57,14 @@ public class ManagementControllerCreateIT {
         .id(TEST_ID)
         .status(QuestionnaireResponse.Status.completed)
         .build();
+  }
+
+  @BeforeAll
+  static void setUp() {
+    // These tests invent new data and then remove it
+    // Do not run in SLA'd environments
+    assumeEnvironmentIn(
+        Environment.LOCAL, Environment.QA, Environment.STAGING, Environment.STAGING_LAB);
   }
 
   @AfterAll

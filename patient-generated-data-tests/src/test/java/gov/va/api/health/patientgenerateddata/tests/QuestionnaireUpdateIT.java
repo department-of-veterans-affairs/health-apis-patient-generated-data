@@ -25,7 +25,7 @@ public class QuestionnaireUpdateIT {
   }
 
   @BeforeAll
-  static void setup() {
+  static void setUp() {
     // These tests alter data, but do not infinitely create more
     // Do not run in SLA'd environments
     assumeEnvironmentIn(
