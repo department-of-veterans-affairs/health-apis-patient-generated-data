@@ -74,6 +74,35 @@ public class RequestUtils {
     return response;
   }
 
+  public static ExpectedResponse doInternalGet(
+      String acceptHeader, String request, Integer expectedStatus, String clientKey) {
+    SystemDefinitions.Service svc = systemDefinition().internal();
+    RequestSpecification spec =
+        RestAssured.given()
+            .baseUri(svc.url())
+            .port(svc.port())
+            .relaxedHTTPSValidation()
+            .header("Authorization", "Bearer " + ACCESS_TOKEN)
+            .header("client-key", clientKey);
+    log.info(
+        "Expect {} with accept header ({}) is status code ({})",
+        svc.urlWithApiPath() + INTERNAL_R4_PATH + request,
+        acceptHeader,
+        expectedStatus);
+    if (acceptHeader != null) {
+      spec = spec.accept(acceptHeader);
+    }
+    ExpectedResponse response =
+        ExpectedResponse.of(
+                spec.request(Method.GET, svc.urlWithApiPath() + INTERNAL_R4_PATH + request))
+            .logAction(logAllWithTruncatedBody(2000))
+            .mapper(MAPPER);
+    if (expectedStatus != null) {
+      response.expect(expectedStatus);
+    }
+    return response;
+  }
+
   @SneakyThrows
   public static ExpectedResponse doInternalPost(
       String request,

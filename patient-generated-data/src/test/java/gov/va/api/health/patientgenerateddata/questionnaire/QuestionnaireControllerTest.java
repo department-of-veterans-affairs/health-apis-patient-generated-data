@@ -67,6 +67,32 @@ public class QuestionnaireControllerTest {
   }
 
   @Test
+  @SneakyThrows
+  void getAllIds() {
+    QuestionnaireRepository repo = mock(QuestionnaireRepository.class);
+    LinkProperties pageLinks =
+        LinkProperties.builder().baseUrl("http://foo.com").r4BasePath("r4").build();
+    QuestionnaireController controller =
+        new QuestionnaireController(pageLinks, repo, new Sourcerer("{}", "sat"));
+    when(repo.findAll())
+        .thenReturn(
+            List.of(
+                QuestionnaireEntity.builder()
+                    .id("x1")
+                    .payload(MAPPER.writeValueAsString(questionnaire("x1")))
+                    .build(),
+                QuestionnaireEntity.builder()
+                    .id("x2")
+                    .payload(MAPPER.writeValueAsString(questionnaire("x2")))
+                    .build(),
+                QuestionnaireEntity.builder()
+                    .id("x3")
+                    .payload(MAPPER.writeValueAsString(questionnaire("x3")))
+                    .build()));
+    assertThat(controller.getAllIds()).isEqualTo(List.of("x1", "x2", "x3"));
+  }
+
+  @Test
   void initDirectFieldAccess() {
     new QuestionnaireController(
             mock(LinkProperties.class),

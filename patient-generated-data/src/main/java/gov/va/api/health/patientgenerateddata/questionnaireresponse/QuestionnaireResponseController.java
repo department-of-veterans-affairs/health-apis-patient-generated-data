@@ -12,10 +12,12 @@ import static gov.va.api.health.patientgenerateddata.Controllers.resourceId;
 import static gov.va.api.lighthouse.vulcan.Rules.atLeastOneParameterOf;
 import static gov.va.api.lighthouse.vulcan.Rules.ifParameter;
 import static gov.va.api.lighthouse.vulcan.Vulcan.returnNothing;
+import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Streams;
 import gov.va.api.health.autoconfig.logging.Loggable;
 import gov.va.api.health.patientgenerateddata.Exceptions;
 import gov.va.api.health.patientgenerateddata.JacksonMapperConfig;
@@ -164,6 +166,11 @@ public class QuestionnaireResponseController {
 
   public Optional<QuestionnaireResponse> findById(String id) {
     return repository.findById(id).map(e -> e.deserializePayload());
+  }
+
+  /** Get all IDs for QuestionnaireResponse resource. */
+  public List<String> getAllIds() {
+    return Streams.stream(repository.findAll()).map(e -> e.id()).sorted().collect(toList());
   }
 
   @InitBinder
