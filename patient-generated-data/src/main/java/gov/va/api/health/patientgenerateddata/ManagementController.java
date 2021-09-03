@@ -7,6 +7,7 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 import gov.va.api.health.patientgenerateddata.observation.ObservationController;
 import gov.va.api.health.patientgenerateddata.questionnaire.QuestionnaireController;
 import gov.va.api.health.patientgenerateddata.questionnaireresponse.QuestionnaireResponseController;
+import gov.va.api.health.r4.api.elements.Meta;
 import gov.va.api.health.r4.api.resources.Observation;
 import gov.va.api.health.r4.api.resources.Questionnaire;
 import gov.va.api.health.r4.api.resources.QuestionnaireResponse;
@@ -97,5 +98,51 @@ public class ManagementController {
   @GetMapping(value = "/QuestionnaireResponse/ids")
   List<String> questionnaireResponseIds() {
     return questionnaireResponseController.getAllIds();
+  }
+
+  @GetMapping(value = "/update-prod-sources")
+  void updateAllProdPathSourceInfo(
+      @RequestHeader(name = "Authorization", required = true) String authorization) {
+    List<String> observationIds = observationIds();
+
+    List<String> questionnaireIds = questionnaireIds();
+
+    List<String> questionnaireResponseIds = questionnaireResponseIds();
+
+    for (String observationId : observationIds) {
+      Observation o = observationController.read(observationId);
+
+      if (o.meta() == null) {
+        o.meta(Meta.builder().source("https://api.va.gov/services/pgd/va-dot-gov").build());
+      } else {
+        o.meta().source("https://api.va.gov/services/pgd/va-dot-gov");
+      }
+
+      observationController.update(o, authorization, nowMillis());
+    }
+
+    for (String questionnaireId : questionnaireIds) {
+      Questionnaire q = questionnaireController.read(questionnaireId);
+
+      if (q.meta() == null) {
+        q.meta(Meta.builder().source("https://api.va.gov/services/pgd/va-dot-gov").build());
+      } else {
+        q.meta().source("https://api.va.gov/services/pgd/va-dot-gov");
+      }
+
+      questionnaireController.update(q, authorization, nowMillis());
+    }
+
+    for (String questionnaireResponseId : questionnaireResponseIds) {
+      QuestionnaireResponse qr = questionnaireResponseController.read(questionnaireResponseId);
+
+      if (qr.meta() == null) {
+        qr.meta(Meta.builder().source("https://api.va.gov/services/pgd/va-dot-gov").build());
+      } else {
+        qr.meta().source("https://api.va.gov/services/pgd/va-dot-gov");
+      }
+
+      questionnaireResponseController.update(qr, authorization, nowMillis());
+    }
   }
 }

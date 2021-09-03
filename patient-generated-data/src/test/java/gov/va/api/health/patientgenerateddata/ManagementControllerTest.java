@@ -174,4 +174,60 @@ public class ManagementControllerTest {
                     .build()));
     assertThat(_controller().questionnaireResponseIds()).isEqualTo(List.of("x1", "x2", "x3"));
   }
+
+  @Test
+  @SneakyThrows
+  void updateAllProdPathSourceInfo() {
+    _controller().create(observation("x1"), "Bearer sat");
+    _controller().create(questionnaire("x1"), "Bearer sat");
+    _controller().create(questionnaireResponse("x1"), "Bearer sat");
+
+    when(observationRepo.findById("x1"))
+        .thenReturn(
+            Optional.of(
+                ObservationEntity.builder()
+                    .id("x1")
+                    .payload(MAPPER.writeValueAsString(observation("x1")))
+                    .build()));
+    when(observationRepo.findAll())
+        .thenReturn(
+            List.of(
+                ObservationEntity.builder()
+                    .id("x1")
+                    .payload(MAPPER.writeValueAsString(observation("x1")))
+                    .build()));
+
+    when(questionnaireRepo.findById("x1"))
+        .thenReturn(
+            Optional.of(
+                QuestionnaireEntity.builder()
+                    .id("x1")
+                    .payload(MAPPER.writeValueAsString(questionnaire("x1")))
+                    .build()));
+    when(questionnaireRepo.findAll())
+        .thenReturn(
+            List.of(
+                QuestionnaireEntity.builder()
+                    .id("x1")
+                    .payload(MAPPER.writeValueAsString(questionnaire("x1")))
+                    .build()));
+
+    when(questionnaireResponseRepo.findById("x1"))
+        .thenReturn(
+            Optional.of(
+                QuestionnaireResponseEntity.builder()
+                    .id("x1")
+                    .payload(MAPPER.writeValueAsString(questionnaireResponse("x1")))
+                    .build()));
+    when(questionnaireResponseRepo.findAll())
+        .thenReturn(
+            List.of(
+                QuestionnaireResponseEntity.builder()
+                    .id("x1")
+                    .payload(MAPPER.writeValueAsString(questionnaireResponse("x1")))
+                    .build()));
+
+    // check source before and after
+    _controller().updateAllProdPathSourceInfo("Bearer sat");
+  }
 }

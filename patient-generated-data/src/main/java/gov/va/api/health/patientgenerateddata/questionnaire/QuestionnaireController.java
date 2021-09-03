@@ -144,7 +144,7 @@ public class QuestionnaireController {
   }
 
   @GetMapping(value = "/{id}")
-  Questionnaire read(@PathVariable("id") String id) {
+  public Questionnaire read(@PathVariable("id") String id) {
     return findById(id).orElseThrow(() -> new Exceptions.NotFound(id));
   }
 
@@ -184,7 +184,8 @@ public class QuestionnaireController {
     return update(questionnaire, authorization, nowMillis());
   }
 
-  ResponseEntity<Questionnaire> update(
+  /** Update the given resource. */
+  public ResponseEntity<Questionnaire> update(
       Questionnaire questionnaire, String authorization, Instant now) {
     questionnaire.meta(metaWithSource(questionnaire.meta(), sourcerer.source(authorization)));
     questionnaire.meta(metaWithLastUpdated(questionnaire.meta(), now));
