@@ -11,16 +11,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 public class ObservationIT {
-  @BeforeAll
-  static void assumeEnvironment() {
-    assumeEnvironmentIn(
-        Environment.LOCAL,
-        Environment.QA,
-        Environment.STAGING,
-        Environment.STAGING_LAB,
-        Environment.LAB);
-  }
-
   @Test
   void read() {
     String id = systemDefinition().ids().observation();
@@ -45,7 +35,6 @@ public class ObservationIT {
 
   @Test
   void search_lastUpdated() {
-    assumeEnvironmentIn(Environment.LOCAL);
     var lastUpdated = systemDefinition().ids().lastUpdated();
     var response = doGet("application/json", "Observation?_lastUpdated=" + lastUpdated, 200);
     Observation.Bundle bundle = response.expectValid(Observation.Bundle.class);

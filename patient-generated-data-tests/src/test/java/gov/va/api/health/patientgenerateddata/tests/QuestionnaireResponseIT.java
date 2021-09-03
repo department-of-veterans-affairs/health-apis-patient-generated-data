@@ -11,16 +11,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 public class QuestionnaireResponseIT {
-  @BeforeAll
-  static void assumeEnvironment() {
-    assumeEnvironmentIn(
-        Environment.LOCAL,
-        Environment.QA,
-        Environment.STAGING,
-        Environment.STAGING_LAB,
-        Environment.LAB);
-  }
-
   private static boolean bundleIncludesEntryWithId(QuestionnaireResponse.Bundle bundle, String id) {
     var count = bundle.entry().stream().filter((e) -> e.resource().id().equals(id)).count();
     return count > 0;
@@ -128,7 +118,6 @@ public class QuestionnaireResponseIT {
 
   @Test
   void search_lastUpdated() {
-    assumeEnvironmentIn(Environment.LOCAL);
     var lastUpdated = systemDefinition().ids().lastUpdated();
     var response =
         doGet("application/json", "QuestionnaireResponse?_lastUpdated=" + lastUpdated, 200);
