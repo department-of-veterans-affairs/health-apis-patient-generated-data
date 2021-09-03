@@ -7,20 +7,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import gov.va.api.health.r4.api.resources.Observation;
 import gov.va.api.health.sentinel.Environment;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 public class ObservationIT {
-  @BeforeAll
-  static void assumeEnvironment() {
-    assumeEnvironmentIn(
-        Environment.LOCAL,
-        Environment.QA,
-        Environment.STAGING,
-        Environment.STAGING_LAB,
-        Environment.LAB);
-  }
-
   @Test
   void read() {
     String id = systemDefinition().ids().observation();
@@ -40,11 +29,12 @@ public class ObservationIT {
     String query = String.format("?_id=%s", id);
     var response = doGet("application/json", "Observation" + query, 200);
     Observation.Bundle bundle = response.expectValid(Observation.Bundle.class);
-    assertThat(bundle.entry()).hasSize(2);
+    assertThat(bundle.entry()).isNotEmpty();
   }
 
   @Test
   void search_lastUpdated() {
+    // LOCAL only since we cannot restrict the search to the static token patient
     assumeEnvironmentIn(Environment.LOCAL);
     var lastUpdated = systemDefinition().ids().lastUpdated();
     var response = doGet("application/json", "Observation?_lastUpdated=" + lastUpdated, 200);
