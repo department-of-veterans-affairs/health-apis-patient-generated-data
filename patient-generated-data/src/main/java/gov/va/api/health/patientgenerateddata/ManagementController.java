@@ -84,23 +84,17 @@ public class ManagementController {
     return questionnaireResponseController.create(questionnaireResponse, authorization, now);
   }
 
-  @GetMapping(
-      value = "/Observation/ids",
-      produces = {"application/json"})
+  @GetMapping(value = "/Observation/ids")
   List<String> observationIds() {
     return observationController.getAllIds();
   }
 
-  @GetMapping(
-      value = "/Questionnaire/ids",
-      produces = {"application/json"})
+  @GetMapping(value = "/Questionnaire/ids")
   List<String> questionnaireIds() {
     return questionnaireController.getAllIds();
   }
 
-  @GetMapping(
-      value = "/QuestionnaireResponse/ids",
-      produces = {"application/json"})
+  @GetMapping(value = "/QuestionnaireResponse/ids")
   List<String> questionnaireResponseIds() {
     return questionnaireResponseController.getAllIds();
   }
