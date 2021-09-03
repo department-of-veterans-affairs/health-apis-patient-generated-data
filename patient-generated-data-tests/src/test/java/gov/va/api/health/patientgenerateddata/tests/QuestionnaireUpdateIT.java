@@ -19,6 +19,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 public class QuestionnaireUpdateIT {
+  private static final String CLIENT_KEY = System.getProperty("client-key", CLIENT_KEY_DEFAULT);
+
   static Questionnaire questionnaire(String id) {
     return Questionnaire.builder().id(id).status(Questionnaire.PublicationStatus.active).build();
   }
@@ -32,15 +34,14 @@ public class QuestionnaireUpdateIT {
     var id = systemDefinition().ids().questionnaireUpdates();
     ExpectedResponse response = doGet("application/json", "Questionnaire/" + id, null);
     if (response.response().statusCode() == 404) {
-      String clientKey = System.getProperty("client-key", CLIENT_KEY_DEFAULT);
-      doInternalPost("Questionnaire", questionnaire(id), "create", 201, clientKey);
+      doInternalPost("Questionnaire", questionnaire(id), "create", 201, CLIENT_KEY);
     }
   }
 
   @AfterAll
   void tearDown() {
     var id = systemDefinition().ids().questionnaireUpdates();
-    doDelete("Questionnaire/" + id, "delete resource", 200);
+    doDelete("Questionnaire/" + id, "tear down", 200);
   }
 
   @Test
