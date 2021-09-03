@@ -226,8 +226,6 @@ public class ManagementControllerTest {
                     .id("x1")
                     .payload(MAPPER.writeValueAsString(questionnaireResponse("x1")))
                     .build()));
-
-    // check source before and after
     _controller().updateAllProdPathSourceInfo("Bearer sat");
   }
 }
