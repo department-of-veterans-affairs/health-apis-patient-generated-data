@@ -3,8 +3,8 @@ package gov.va.api.health.patientgenerateddata.tests;
 import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.doDelete;
 import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.doInternalPost;
 import static gov.va.api.health.patientgenerateddata.tests.SystemDefinitions.CLIENT_KEY_DEFAULT;
-import static gov.va.api.health.patientgenerateddata.tests.SystemDefinitions.systemDefinition;
 import static gov.va.api.health.sentinel.EnvironmentAssumptions.assumeEnvironmentIn;
+
 import gov.va.api.health.r4.api.datatypes.CodeableConcept;
 import gov.va.api.health.r4.api.datatypes.Coding;
 import gov.va.api.health.r4.api.elements.Reference;
@@ -28,13 +28,6 @@ public class ManagementControllerCreateIT {
     // Do not run in SLA'd environments
     assumeEnvironmentIn(
         Environment.LOCAL, Environment.QA, Environment.STAGING, Environment.STAGING_LAB);
-  }
-
-  @AfterAll
-  static void tearDown() {
-    doDelete("Observation/" + TEST_ID, "tear down", 200);
-    doDelete("Questionnaire/" + TEST_ID, "tear down", 200);
-    doDelete("QuestionnaireResponse/" + TEST_ID, "tear down", 200);
   }
 
   static Observation observation() {
@@ -74,19 +67,31 @@ public class ManagementControllerCreateIT {
         .build();
   }
 
+  @AfterAll
+  static void tearDown() {
+    doDelete("Observation/" + TEST_ID, "tear down", 200);
+    doDelete("Questionnaire/" + TEST_ID, "tear down", 200);
+    doDelete("QuestionnaireResponse/" + TEST_ID, "tear down", 200);
+  }
+
   @Test
   void create_observation_knownId() {
     doInternalPost("Observation", observation(), "create resource with known ID", 201, CLIENT_KEY);
   }
 
   @Test
-  void create_questionnaire_knownId() {
-    doInternalPost("Questionnaire", questionnaire(), "create resource with known ID", 201, CLIENT_KEY);
+  void create_questionnaireResponse_knownId() {
+    doInternalPost(
+        "QuestionnaireResponse",
+        questionnaireResponse(),
+        "create resource with known ID",
+        201,
+        CLIENT_KEY);
   }
 
   @Test
-  void create_questionnaireResponse_knownId() {
+  void create_questionnaire_knownId() {
     doInternalPost(
-        "QuestionnaireResponse", questionnaireResponse(), "create resource with known ID", 201, CLIENT_KEY);
+        "Questionnaire", questionnaire(), "create resource with known ID", 201, CLIENT_KEY);
   }
 }

@@ -13,7 +13,6 @@ import gov.va.api.health.r4.api.resources.Questionnaire;
 import gov.va.api.health.sentinel.Environment;
 import gov.va.api.health.sentinel.ExpectedResponse;
 import java.time.Instant;
-
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -39,7 +38,7 @@ public class QuestionnaireUpdateIT {
   }
 
   @AfterAll
-  void tearDown() {
+  static void tearDown() {
     var id = systemDefinition().ids().questionnaireUpdates();
     doDelete("Questionnaire/" + id, "tear down", 200);
   }
