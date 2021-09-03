@@ -18,6 +18,7 @@ java-tests \
   --regression-test-pattern ".*IT\$" \
   --smoke-test-pattern ".*OpenApiIT\$" \
   -Daccess-token="$MAGIC_ACCESS_TOKEN" \
+  -Dclient-key="$CLIENT_KEY" \
   -Dsentinel="$SENTINEL_ENV" \
   -Dsentinel.internal.url="${SENTINEL_URL}" \
   -Dsentinel.r4.url="${SENTINEL_URL}" \
