@@ -1,5 +1,6 @@
 package gov.va.api.health.patientgenerateddata.tests;
 
+import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.doDelete;
 import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.doGet;
 import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.doInternalPost;
 import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.doPut;
@@ -12,16 +13,19 @@ import gov.va.api.health.r4.api.resources.Questionnaire;
 import gov.va.api.health.sentinel.Environment;
 import gov.va.api.health.sentinel.ExpectedResponse;
 import java.time.Instant;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 public class QuestionnaireUpdateIT {
+  private static final String CLIENT_KEY = System.getProperty("client-key", CLIENT_KEY_DEFAULT);
+
   static Questionnaire questionnaire(String id) {
     return Questionnaire.builder().id(id).status(Questionnaire.PublicationStatus.active).build();
   }
 
   @BeforeAll
-  static void setup() {
+  static void setUp() {
     // These tests alter data, but do not infinitely create more
     // Do not run in SLA'd environments
     assumeEnvironmentIn(
@@ -29,9 +33,14 @@ public class QuestionnaireUpdateIT {
     var id = systemDefinition().ids().questionnaireUpdates();
     ExpectedResponse response = doGet("application/json", "Questionnaire/" + id, null);
     if (response.response().statusCode() == 404) {
-      String clientKey = System.getProperty("client-key", CLIENT_KEY_DEFAULT);
-      doInternalPost("Questionnaire", questionnaire(id), "create", 201, clientKey);
+      doInternalPost("Questionnaire", questionnaire(id), "create", 201, CLIENT_KEY);
     }
+  }
+
+  @AfterAll
+  static void tearDown() {
+    var id = systemDefinition().ids().questionnaireUpdates();
+    doDelete("Questionnaire/" + id, "tear down", 200);
   }
 
   @Test
