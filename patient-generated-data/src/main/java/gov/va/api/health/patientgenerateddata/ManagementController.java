@@ -103,6 +103,7 @@ public class ManagementController {
   @GetMapping(value = "/update-prod-sources")
   void updateAllProdPathSourceInfo(
       @RequestHeader(name = "Authorization", required = true) String authorization) {
+    final String SOURCE = "https://api.va.gov/services/pgd/va-dot-gov";
     List<String> observationIds = observationIds();
 
     List<String> questionnaireIds = questionnaireIds();
@@ -113,9 +114,9 @@ public class ManagementController {
       Observation o = observationController.read(observationId);
 
       if (o.meta() == null) {
-        o.meta(Meta.builder().source("https://api.va.gov/services/pgd/va-dot-gov").build());
+        o.meta(Meta.builder().source(SOURCE).build());
       } else {
-        o.meta().source("https://api.va.gov/services/pgd/va-dot-gov");
+        o.meta().source(SOURCE);
       }
 
       observationController.update(o, authorization, nowMillis());
@@ -125,9 +126,9 @@ public class ManagementController {
       Questionnaire q = questionnaireController.read(questionnaireId);
 
       if (q.meta() == null) {
-        q.meta(Meta.builder().source("https://api.va.gov/services/pgd/va-dot-gov").build());
+        q.meta(Meta.builder().source(SOURCE).build());
       } else {
-        q.meta().source("https://api.va.gov/services/pgd/va-dot-gov");
+        q.meta().source(SOURCE);
       }
 
       questionnaireController.update(q, authorization, nowMillis());
@@ -137,9 +138,9 @@ public class ManagementController {
       QuestionnaireResponse qr = questionnaireResponseController.read(questionnaireResponseId);
 
       if (qr.meta() == null) {
-        qr.meta(Meta.builder().source("https://api.va.gov/services/pgd/va-dot-gov").build());
+        qr.meta(Meta.builder().source(SOURCE).build());
       } else {
-        qr.meta().source("https://api.va.gov/services/pgd/va-dot-gov");
+        qr.meta().source(SOURCE);
       }
 
       questionnaireResponseController.update(qr, authorization, nowMillis());
