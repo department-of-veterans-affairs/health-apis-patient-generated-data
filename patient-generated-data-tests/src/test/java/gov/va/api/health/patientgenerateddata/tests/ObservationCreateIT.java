@@ -2,6 +2,7 @@ package gov.va.api.health.patientgenerateddata.tests;
 
 import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.doDelete;
 import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.doPost;
+import static gov.va.api.health.patientgenerateddata.tests.SystemDefinitions.systemDefinition;
 import static gov.va.api.health.sentinel.EnvironmentAssumptions.assumeEnvironmentIn;
 
 import gov.va.api.health.r4.api.datatypes.CodeableConcept;
@@ -39,7 +40,10 @@ public class ObservationCreateIT {
                     .text("laboratory")
                     .build()))
         .code(CodeableConcept.builder().text("code").build())
-        .subject(Reference.builder().reference("Patient/1").build())
+        .subject(
+            Reference.builder()
+                .reference("Patient/" + systemDefinition().ids().observationSubject())
+                .build())
         .build();
   }
 
