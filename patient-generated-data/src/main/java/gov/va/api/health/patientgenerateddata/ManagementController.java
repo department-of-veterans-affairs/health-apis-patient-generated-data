@@ -98,23 +98,4 @@ public class ManagementController {
   List<String> questionnaireResponseIds() {
     return questionnaireResponseController.getAllIds();
   }
-
-  @GetMapping(value = "/update-all")
-  void updateAllProdPathSourceInfo(
-      @RequestHeader(name = "Authorization", required = true) String authorization) {
-    for (String observationId : observationIds()) {
-      Observation o = observationController.read(observationId);
-      observationController.update(o, authorization, nowMillis());
-    }
-
-    for (String questionnaireId : questionnaireIds()) {
-      Questionnaire q = questionnaireController.read(questionnaireId);
-      questionnaireController.update(q, authorization, nowMillis());
-    }
-
-    for (String questionnaireResponseId : questionnaireResponseIds()) {
-      QuestionnaireResponse qr = questionnaireResponseController.read(questionnaireResponseId);
-      questionnaireResponseController.update(qr, authorization, nowMillis());
-    }
-  }
 }
