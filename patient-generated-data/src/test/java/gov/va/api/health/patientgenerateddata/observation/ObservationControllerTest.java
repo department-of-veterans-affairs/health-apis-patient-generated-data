@@ -171,6 +171,44 @@ public class ObservationControllerTest {
         Exceptions.NotFound.class, () -> _controller().update("x", observation(), "Bearer sat"));
   }
 
+  @Test
+  @SneakyThrows
+  void update_payloadSource() {
+    Instant oldTime = Instant.parse("2021-01-01T01:00:00.001Z");
+    Instant newTime = Instant.parse("2022-02-02T02:00:00.002Z");
+
+    when(repo.findById("x"))
+        .thenReturn(
+            Optional.of(
+                ObservationEntity.builder()
+                    .id("x")
+                    .payload(
+                        MAPPER.writeValueAsString(
+                            observationWithLastUpdatedAndSource(
+                                oldTime, "https://api.va.gov/services/pgd/static-access")))
+                    .build()));
+    assertThat(
+            _controller()
+                .update(
+                    observationWithLastUpdatedAndSource(
+                        newTime, "https://api.va.gov/services/pgd/zombie-bob-nelson"),
+                    "Bearer sat",
+                    newTime))
+        .isEqualTo(
+            ResponseEntity.ok(
+                observationWithLastUpdatedAndSource(
+                    newTime, "https://api.va.gov/services/pgd/static-access")));
+    verify(repo, times(1))
+        .save(
+            ObservationEntity.builder()
+                .id("x")
+                .payload(
+                    MAPPER.writeValueAsString(
+                        observationWithLastUpdatedAndSource(
+                            newTime, "https://api.va.gov/services/pgd/static-access")))
+                .build());
+  }
+
   @ParameterizedTest
   @ValueSource(strings = {"?_id=1", "?_lastUpdated=gt2020"})
   void validSearch(String query) {

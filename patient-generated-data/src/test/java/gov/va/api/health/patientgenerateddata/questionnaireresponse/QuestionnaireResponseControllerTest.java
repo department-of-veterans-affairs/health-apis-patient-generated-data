@@ -184,6 +184,32 @@ public class QuestionnaireResponseControllerTest {
                 .update("x", questionnaireResponse, "Bearer sat"));
   }
 
+  @Test
+  @SneakyThrows
+  void update_payloadSource() {
+    Instant now = Instant.parse("2021-01-01T01:00:00.001Z");
+    QuestionnaireResponse questionnaireResponse =
+        questionnaireResponseWithLastUpdatedAndSource(
+            now, "https://api.va.gov/services/pgd/zombie-bob-nelson");
+    QuestionnaireResponse staticQuestionnaireResponseSource =
+        questionnaireResponseWithLastUpdatedAndSource(
+            now, "https://api.va.gov/services/pgd/static-access");
+    String payload = MAPPER.writeValueAsString(staticQuestionnaireResponseSource);
+    QuestionnaireResponseRepository repo = mock(QuestionnaireResponseRepository.class);
+    when(repo.findById("x"))
+        .thenReturn(
+            Optional.of(QuestionnaireResponseEntity.builder().id("x").payload(payload).build()));
+    QuestionnaireResponse expected =
+        questionnaireResponseWithLastUpdatedAndSource(
+            now, "https://api.va.gov/services/pgd/static-access");
+    assertThat(
+            new QuestionnaireResponseController(pageLinks, repo, new Sourcerer("{}", "sat"))
+                .update(questionnaireResponse, "Bearer sat", now))
+        .isEqualTo(ResponseEntity.ok(expected));
+    verify(repo, times(1))
+        .save(QuestionnaireResponseEntity.builder().id("x").payload(payload).build());
+  }
+
   @ParameterizedTest
   @ValueSource(
       strings = {
