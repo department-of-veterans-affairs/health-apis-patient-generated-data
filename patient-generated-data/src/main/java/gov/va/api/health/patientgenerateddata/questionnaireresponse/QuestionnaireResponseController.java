@@ -5,8 +5,7 @@ import static gov.va.api.health.patientgenerateddata.Controllers.checkRequestSta
 import static gov.va.api.health.patientgenerateddata.Controllers.checkSources;
 import static gov.va.api.health.patientgenerateddata.Controllers.generateRandomId;
 import static gov.va.api.health.patientgenerateddata.Controllers.lastUpdatedFromMeta;
-import static gov.va.api.health.patientgenerateddata.Controllers.metaWithLastUpdated;
-import static gov.va.api.health.patientgenerateddata.Controllers.metaWithSource;
+import static gov.va.api.health.patientgenerateddata.Controllers.metaWithLastUpdatedAndSource;
 import static gov.va.api.health.patientgenerateddata.Controllers.nowMillis;
 import static gov.va.api.health.patientgenerateddata.Controllers.parseDateTime;
 import static gov.va.api.health.patientgenerateddata.Controllers.resourceId;
@@ -156,8 +155,8 @@ public class QuestionnaireResponseController {
   public ResponseEntity<QuestionnaireResponse> create(
       QuestionnaireResponse questionnaireResponse, String authorization, Instant now) {
     questionnaireResponse.meta(
-        metaWithSource(questionnaireResponse.meta(), sourcerer.source(authorization)));
-    questionnaireResponse.meta(metaWithLastUpdated(questionnaireResponse.meta(), now));
+        metaWithLastUpdatedAndSource(
+            questionnaireResponse.meta(), now, sourcerer.source(authorization)));
     repository.save(toEntity(questionnaireResponse));
     return ResponseEntity.created(
             URI.create(
@@ -232,11 +231,12 @@ public class QuestionnaireResponseController {
             .findById(questionnaireResponse.id())
             .orElseThrow(() -> new Exceptions.NotFound(questionnaireResponse.id()));
 
-    checkSources(entity.deserializePayload().meta().source(), sourcerer.source(authorization));
+    String authorizationSource = sourcerer.source(authorization);
+
+    checkSources(entity.deserializePayload().meta().source(), authorizationSource);
 
     questionnaireResponse.meta(
-        metaWithSource(questionnaireResponse.meta(), sourcerer.source(authorization)));
-    questionnaireResponse.meta(metaWithLastUpdated(questionnaireResponse.meta(), now));
+        metaWithLastUpdatedAndSource(questionnaireResponse.meta(), now, authorizationSource));
 
     populateEntity(entity, questionnaireResponse);
     repository.save(entity);
