@@ -1,9 +1,6 @@
 package gov.va.api.health.patientgenerateddata;
 
-import static gov.va.api.health.patientgenerateddata.Controllers.checkRequestState;
-import static gov.va.api.health.patientgenerateddata.Controllers.parseDateTime;
-import static gov.va.api.health.patientgenerateddata.Controllers.resourceId;
-import static gov.va.api.health.patientgenerateddata.Controllers.resourceType;
+import static gov.va.api.health.patientgenerateddata.Controllers.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -88,6 +85,13 @@ public class ControllersTest {
         .isEqualTo("patient");
     assertThat(resourceType(Reference.builder().reference("patient/123V456").build()))
         .isEqualTo("patient");
+  }
+
+  @Test
+  void sourceMismatch() {
+    Throwable ex =
+        assertThrows(Exceptions.SourceMismatchException.class, () -> checkSources("foo", "bar"));
+    assertThat(ex.getMessage()).isEqualTo("Update sources must match! foo does not equal bar");
   }
 
   @Test

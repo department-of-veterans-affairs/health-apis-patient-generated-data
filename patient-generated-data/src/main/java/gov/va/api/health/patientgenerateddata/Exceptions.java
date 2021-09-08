@@ -42,4 +42,11 @@ public final class Exceptions {
       super(message);
     }
   }
+
+  /** Update attempt with mismatched source information. */
+  public static final class SourceMismatchException extends RuntimeException {
+    public SourceMismatchException(String message) {
+      super(message);
+    }
+  }
 }

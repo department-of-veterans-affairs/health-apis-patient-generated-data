@@ -36,6 +36,14 @@ public class Controllers {
     }
   }
 
+  /** Throw SourceMismatchException if sources don't match. */
+  public static void checkSources(String currentSource, String requesterSource) {
+    if (!currentSource.equals(requesterSource)) {
+      throw new Exceptions.SourceMismatchException(
+          "Update sources must match! " + currentSource + " does not equal " + requesterSource);
+    }
+  }
+
   /** Generate random ID. */
   public static String generateRandomId() {
     return UUID.randomUUID().toString();

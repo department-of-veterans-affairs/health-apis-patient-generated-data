@@ -54,6 +54,32 @@ public class WebExceptionHandlerTest {
   }
 
   @Test
+  void forbidden() {
+    OperationOutcome outcome =
+        new WebExceptionHandler("")
+            .handleForbidden(
+                new Exceptions.SourceMismatchException("Sources Mismatch"),
+                mock(HttpServletRequest.class));
+
+    assertThat(outcome.id(null).extension(null))
+        .isEqualTo(
+            OperationOutcome.builder()
+                .resourceType("OperationOutcome")
+                .text(
+                    Narrative.builder()
+                        .status(Narrative.NarrativeStatus.additional)
+                        .div("<div>Failure: null</div>")
+                        .build())
+                .issue(
+                    List.of(
+                        OperationOutcome.Issue.builder()
+                            .severity(OperationOutcome.Issue.IssueSeverity.fatal)
+                            .code("forbidden")
+                            .build()))
+                .build());
+  }
+
+  @Test
   void notAllowed() {
     OperationOutcome outcome =
         new WebExceptionHandler("")

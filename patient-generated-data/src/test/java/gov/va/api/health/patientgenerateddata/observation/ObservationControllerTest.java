@@ -141,7 +141,7 @@ public class ObservationControllerTest {
                     .payload(
                         MAPPER.writeValueAsString(
                             observationWithLastUpdatedAndSource(
-                                oldTime, "https://api.va.gov/services/pgd/bob-nelson")))
+                                oldTime, "https://api.va.gov/services/pgd/static-access")))
                     .build()));
     assertThat(
             _controller()

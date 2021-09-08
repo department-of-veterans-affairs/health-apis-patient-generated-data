@@ -154,7 +154,9 @@ public class QuestionnaireResponseControllerTest {
   @SneakyThrows
   void update_existing() {
     Instant now = Instant.parse("2021-01-01T01:00:00.001Z");
-    QuestionnaireResponse questionnaireResponse = questionnaireResponse();
+    QuestionnaireResponse questionnaireResponse =
+        questionnaireResponseWithLastUpdatedAndSource(
+            now, "https://api.va.gov/services/pgd/static-access");
     String payload = MAPPER.writeValueAsString(questionnaireResponse);
     QuestionnaireResponseRepository repo = mock(QuestionnaireResponseRepository.class);
     when(repo.findById("x"))

@@ -177,6 +177,12 @@ public final class WebExceptionHandler {
     return responseFor("structure", e, request, emptyList(), true);
   }
 
+  @ExceptionHandler({Exceptions.SourceMismatchException.class})
+  @ResponseStatus(HttpStatus.FORBIDDEN)
+  OperationOutcome handleForbidden(Exception e, HttpServletRequest request) {
+    return responseFor("forbidden", e, request, emptyList(), true);
+  }
+
   @ExceptionHandler({HttpRequestMethodNotSupportedException.class})
   @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
   OperationOutcome handleNotAllowed(Exception e, HttpServletRequest request) {
