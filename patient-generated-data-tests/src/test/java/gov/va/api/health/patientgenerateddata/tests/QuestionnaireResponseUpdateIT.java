@@ -79,6 +79,7 @@ public class QuestionnaireResponseUpdateIT {
 
   @Test
   void update_source_mismatch() {
+    assumeEnvironmentIn(Environment.LOCAL);
     Instant now = Instant.now();
     Reference ref = Reference.builder().reference("Resource/" + now.toString()).build();
     var id = systemDefinition().ids().questionnaireResponseUpdates();
