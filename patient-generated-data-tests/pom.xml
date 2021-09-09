@@ -11,6 +11,8 @@
   <version>1.0.23-SNAPSHOT</version>
   <packaging>jar</packaging>
   <properties>
+    <authorization.client-ids.escape>{\"P73R4CUD4\":\"pteracuda\"}</authorization.client-ids.escape>
+    <authorization.client-ids>{"P73R4CUD4":"pteracuda"}</authorization.client-ids>
     <fhir-resources.version>7.0.7</fhir-resources.version>
     <sentinel.skipLaunch>false</sentinel.skipLaunch>
   </properties>
@@ -88,7 +90,7 @@
                 <argument>-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5090</argument>
                 <argument>-cp</argument>
                 <argument>patient-generated-data.jar${path.separator}h2.jar${path.separator}patient-generated-data-synthetic-tests.jar</argument>
-                <argument>-Dauthorization.client-ids={"P73R4CUD4":"pteracuda"}</argument>
+                <argument>-Dauthorization.client-ids=${authorization.client-ids}</argument>
                 <argument>-Dauthorization.static-access-token=pteracuda</argument>
                 <argument>-Dclient-key=pteracuda</argument>
                 <argument>-Dloader=gov.va.api.health.patientgenerateddata.Application</argument>
@@ -139,6 +141,17 @@
           </plugin>
         </plugins>
       </build>
+    </profile>
+    <profile>
+      <id>platform-windows</id>
+      <activation>
+        <os>
+          <family>windows</family>
+        </os>
+      </activation>
+      <properties>
+        <authorization.client-ids>${authorization.client-ids.escape}</authorization.client-ids>
+      </properties>
     </profile>
     <profile>
       <id>synthetic-refresh</id>
