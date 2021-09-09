@@ -36,16 +36,6 @@ public class Controllers {
     }
   }
 
-  /** Throw Exceptions.Forbidden if sources don't match. */
-  public static void validateSource(String id, String authorizationSource, String originalSource) {
-    if (!originalSource.equals(authorizationSource)) {
-      throw new Exceptions.Forbidden(
-          String.format(
-              "For resource %s, request source %s is not authorized to update original source %s",
-              id, authorizationSource, originalSource));
-    }
-  }
-
   /** Generate random ID. */
   public static String generateRandomId() {
     return UUID.randomUUID().toString();
@@ -177,5 +167,15 @@ public class Controllers {
       return null;
     }
     return resourceType;
+  }
+
+  /** Throw Exceptions.Forbidden if sources don't match. */
+  public static void validateSource(String id, String authorizationSource, String originalSource) {
+    if (!originalSource.equals(authorizationSource)) {
+      throw new Exceptions.Forbidden(
+          String.format(
+              "For resource %s, request source %s is not authorized to update original source %s",
+              id, authorizationSource, originalSource));
+    }
   }
 }
