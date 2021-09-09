@@ -1,16 +1,19 @@
 package gov.va.api.health.patientgenerateddata.tests;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static gov.va.api.health.patientgenerateddata.tests.SystemDefinitions.systemDefinition;
 import static gov.va.api.health.sentinel.ExpectedResponse.logAllWithTruncatedBody;
+import static java.util.stream.Collectors.toMap;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.api.health.autoconfig.configuration.JacksonConfig;
 import gov.va.api.health.r4.api.resources.Resource;
 import gov.va.api.health.sentinel.ExpectedResponse;
 import io.restassured.RestAssured;
-import io.restassured.http.ContentType;
 import io.restassured.http.Method;
 import io.restassured.specification.RequestSpecification;
+import java.util.Map;
+import lombok.NonNull;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
@@ -19,187 +22,149 @@ public class RequestUtils {
   public static final ObjectMapper MAPPER =
       JacksonConfig.createMapper().registerModule(new Resource.ResourceModule());
 
-  private static final String ACCESS_TOKEN = System.getProperty("access-token", "pterastatic");
+  public static final String CLIENT_KEY = System.getProperty("client-key", "unset");
 
   static final String CLIENT_KEY_DEFAULT = "pteracuda";
-
-  public static final String CLIENT_KEY = System.getProperty("client-key", "unset");
 
   static final Resource NO_PAYLOAD = null;
 
   static final String NO_CLIENT_KEY = null;
+
+  static final String NO_DESCRIPTION = null;
 
   // {"cid":"P73R4CUD4"}
   static final String LOCAL_JWT =
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjaWQiOiJQNzNSNENVRDQifQ"
           + ".Agj_xLqXasOzEet6Ja6hONNJ3z4D4xMvpQw0skXBaZI";
 
+  private static final String ACCESS_TOKEN = System.getProperty("access-token", "pterastatic");
+
   @SneakyThrows
   public static ExpectedResponse doDelete(
-      String request, String description, Integer expectedStatus) {
+      String description, String request, Integer expectedStatus) {
     return doRequest(
+        description,
         systemDefinition().sandboxDataR4(),
         Method.DELETE,
-        "application/json",
         request,
         NO_PAYLOAD,
-        description,
-        ACCESS_TOKEN,
-        NO_CLIENT_KEY,
+        Map.of("Authorization", "Bearer " + ACCESS_TOKEN),
         expectedStatus);
   }
 
   public static ExpectedResponse doGet(
-      String acceptHeader, String request, String description, Integer expectedStatus) {
+      String acceptHeader, String request, Integer expectedStatus) {
     return doRequest(
+        NO_DESCRIPTION,
         systemDefinition().r4(),
         Method.GET,
-        "application/json",
         request,
         NO_PAYLOAD,
-        description,
-        ACCESS_TOKEN,
-        NO_CLIENT_KEY,
+        acceptHeader == null
+            ? Map.of("Authorization", "Bearer " + ACCESS_TOKEN)
+            : Map.of("Accept", acceptHeader, "Authorization", "Bearer " + ACCESS_TOKEN),
         expectedStatus);
   }
 
   public static ExpectedResponse doInternalGet(
-      String acceptHeader,
-      String request,
-      String description,
-      String clientKey,
-      Integer expectedStatus) {
+      String request, String clientKey, Integer expectedStatus) {
     return doRequest(
+        NO_DESCRIPTION,
         systemDefinition().internalR4(),
         Method.GET,
-        acceptHeader,
         request,
         NO_PAYLOAD,
-        description,
-        ACCESS_TOKEN,
-        clientKey,
+        Map.of("client-key", clientKey),
         expectedStatus);
-  }
-
-  public static ExpectedResponse doPut(
-      String request,
-      Resource payload,
-      String description,
-      String accessToken,
-      Integer expectedStatus) {
-    return doRequest(
-        systemDefinition().r4(),
-        Method.PUT,
-        "application/json",
-        request,
-        payload,
-        description,
-        accessToken,
-        NO_CLIENT_KEY,
-        expectedStatus);
-  }
-
-  public static ExpectedResponse doPut(
-      String request, Resource payload, String description, Integer expectedStatus) {
-    return doPut(request, payload, description, ACCESS_TOKEN, expectedStatus);
-  }
-
-  @SneakyThrows
-  private static ExpectedResponse doRequest(
-      SystemDefinitions.Service svc,
-      Method method,
-      String acceptHeader,
-      String request,
-      Resource payload,
-      String description,
-      String accessToken,
-      String clientKey,
-      Integer expectedStatus) {
-    RequestSpecification spec =
-        RestAssured.given()
-            .baseUri(svc.url())
-            .port(svc.port())
-            .relaxedHTTPSValidation()
-            .header("Authorization", "Bearer " + accessToken)
-            .header("Content-Type", "application/json");
-    if (clientKey != null) {
-      spec = spec.header("client-key", clientKey);
-    }
-    if (payload != null) {
-      spec = spec.body(MAPPER.writeValueAsString(payload));
-    }
-    log.info(
-        "Expect {} {}, accept header {}, {}, is status code '{}'",
-        svc.urlWithApiPath() + request,
-        method,
-        acceptHeader,
-        description,
-        expectedStatus);
-    if (acceptHeader != null) {
-      spec = spec.accept(acceptHeader);
-    }
-    ExpectedResponse response =
-        ExpectedResponse.of(spec.request(method, svc.urlWithApiPath() + request))
-            .logAction(logAllWithTruncatedBody(2000))
-            .mapper(MAPPER);
-    if (expectedStatus != null) {
-      response.expect(expectedStatus);
-    }
-    return response;
   }
 
   @SneakyThrows
   public static ExpectedResponse doInternalPost(
-      String request,
-      Object payload,
       String description,
-      Integer expectedStatus,
-      String clientKey) {
-    Method method = Method.POST;
-    SystemDefinitions.Service svc = systemDefinition().internalR4();
-    RequestSpecification spec =
-        RestAssured.given()
-            .baseUri(svc.url())
-            .port(svc.port())
-            .relaxedHTTPSValidation()
-            .header("Authorization", "Bearer " + ACCESS_TOKEN)
-            .header("client-key", clientKey)
-            .header("Content-Type", "application/json")
-            .body(MAPPER.writeValueAsString(payload));
-    log.info(
-        "Expect {} POST '{}' is status code ({})",
-        svc.urlWithApiPath() + request,
+      String request,
+      Resource payload,
+      String clientKey,
+      Integer expectedStatus) {
+    return doRequest(
         description,
+        systemDefinition().internalR4(),
+        Method.POST,
+        request,
+        payload,
+        Map.of(
+            "Authorization",
+            "Bearer " + ACCESS_TOKEN,
+            "client-key",
+            clientKey,
+            "Content-Type",
+            "application/json"),
         expectedStatus);
-    ExpectedResponse response =
-        ExpectedResponse.of(spec.request(method, svc.urlWithApiPath() + request))
-            .logAction(logAllWithTruncatedBody(2000))
-            .mapper(MAPPER);
-    if (expectedStatus != null) {
-      response.expect(expectedStatus);
-    }
-    return response;
+  }
+
+  public static ExpectedResponse doPost(
+      String description, String request, Resource payload, Integer expectedStatus) {
+    return doRequest(
+        description,
+        systemDefinition().r4(),
+        Method.POST,
+        request,
+        payload,
+        Map.of("Authorization", "Bearer " + ACCESS_TOKEN, "Content-Type", "application/json"),
+        expectedStatus);
+  }
+
+  public static ExpectedResponse doPut(
+      String description,
+      String request,
+      Resource payload,
+      String accessToken,
+      Integer expectedStatus) {
+    return doRequest(
+        description,
+        systemDefinition().r4(),
+        Method.PUT,
+        request,
+        payload,
+        Map.of("Authorization", "Bearer " + accessToken, "Content-Type", "application/json"),
+        expectedStatus);
+  }
+
+  public static ExpectedResponse doPut(
+      String description, String request, Resource payload, Integer expectedStatus) {
+    return doPut(description, request, payload, ACCESS_TOKEN, expectedStatus);
   }
 
   @SneakyThrows
-  public static ExpectedResponse doPost(
-      String request, Object payload, String description, Integer expectedStatus) {
-    Method method = Method.POST;
-    SystemDefinitions.Service svc = systemDefinition().r4();
+  private static ExpectedResponse doRequest(
+      String description,
+      @NonNull SystemDefinitions.Service svc,
+      @NonNull Method method,
+      @NonNull String request,
+      Resource payload,
+      @NonNull Map<String, String> headers,
+      Integer expectedStatus) {
+    checkArgument(!headers.isEmpty());
+    Map<String, String> filteredHeaders =
+        headers.entrySet().stream()
+            .filter(e -> !e.getKey().equals("Authorization"))
+            .filter(e -> !e.getKey().equals("client-key"))
+            .collect(toMap(e -> e.getKey(), e -> e.getValue()));
+    log.info(
+        "{} {}{}{}{}",
+        method,
+        svc.urlWithApiPath() + request,
+        description == null ? "" : String.format(", '%s'", description),
+        !filteredHeaders.isEmpty() ? "" : ", " + filteredHeaders,
+        expectedStatus == null ? "" : String.format(", expect status code '%s'", expectedStatus));
     RequestSpecification spec =
         RestAssured.given()
             .baseUri(svc.url())
             .port(svc.port())
             .relaxedHTTPSValidation()
-            .header("Authorization", "Bearer " + ACCESS_TOKEN)
-            .header("Content-Type", "application/json")
-            .body(MAPPER.writeValueAsString(payload));
-    log.info(
-        "Expect {} POST '{}' is status code ({})",
-        svc.urlWithApiPath() + request,
-        description,
-        expectedStatus);
-
+            .headers(headers);
+    if (payload != null) {
+      spec = spec.body(MAPPER.writeValueAsString(payload));
+    }
     ExpectedResponse response =
         ExpectedResponse.of(spec.request(method, svc.urlWithApiPath() + request))
             .logAction(logAllWithTruncatedBody(2000))

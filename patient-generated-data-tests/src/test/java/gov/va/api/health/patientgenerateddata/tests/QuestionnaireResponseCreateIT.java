@@ -25,16 +25,16 @@ public class QuestionnaireResponseCreateIT {
   @Test
   void create_invalid() {
     doPost(
+        "create invalid resource (existing ID)",
         "QuestionnaireResponse",
         questionnaireResponse().id("123"),
-        "create invalid resource (existing ID)",
         400);
   }
 
   @Test
   void create_valid() {
-    var response = doPost("QuestionnaireResponse", questionnaireResponse(), "create resource", 201);
+    var response = doPost("create resource", "QuestionnaireResponse", questionnaireResponse(), 201);
     String id = response.expectValid(QuestionnaireResponse.class).id();
-    doDelete("QuestionnaireResponse/" + id, "tear down", 200);
+    doDelete("tear down", "QuestionnaireResponse/" + id, 200);
   }
 }

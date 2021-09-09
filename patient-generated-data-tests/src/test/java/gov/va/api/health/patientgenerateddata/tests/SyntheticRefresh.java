@@ -1,7 +1,7 @@
 package gov.va.api.health.patientgenerateddata.tests;
 
-import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.MAPPER;
 import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.CLIENT_KEY;
+import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.MAPPER;
 import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.doInternalPost;
 import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.doPut;
 
@@ -29,11 +29,11 @@ public class SyntheticRefresh {
         new File(BASE_DIR + "/../patient-generated-data-synthetic/src/test/resources/" + folder)
             .listFiles()) {
       T obj = MAPPER.readValue(f, clazz);
-      var response = doPut(clazz.getSimpleName() + "/" + obj.id(), obj, "refresh", null);
+      var response = doPut("refresh", clazz.getSimpleName() + "/" + obj.id(), obj, null);
       if (response.response().statusCode() == 404) {
         log.info("Creating {}", clazz.getSimpleName() + "/" + obj.id());
-        doInternalPost(clazz.getSimpleName(), obj, "create", 201, CLIENT_KEY);
-        doPut(clazz.getSimpleName() + "/" + obj.id(), obj, "refresh", 200);
+        doInternalPost("create", clazz.getSimpleName(), obj, CLIENT_KEY, 201);
+        doPut("refresh", clazz.getSimpleName() + "/" + obj.id(), obj, 200);
       }
     }
   }

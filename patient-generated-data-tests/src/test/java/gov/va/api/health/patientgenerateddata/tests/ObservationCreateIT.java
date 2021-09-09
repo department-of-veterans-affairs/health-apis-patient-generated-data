@@ -49,13 +49,13 @@ public class ObservationCreateIT {
 
   @Test
   void create_invalid() {
-    doPost("Observation", observation().id("123"), "create invalid resource (existing ID)", 400);
+    doPost("create invalid resource (existing ID)", "Observation", observation().id("123"), 400);
   }
 
   @Test
   void create_valid() {
-    var response = doPost("Observation", observation(), "create resource", 201);
+    var response = doPost("create resource", "Observation", observation(), 201);
     String id = response.expectValid(Observation.class).id();
-    doDelete("Observation/" + id, "tear down", 200);
+    doDelete("tear down", "Observation/" + id, 200);
   }
 }

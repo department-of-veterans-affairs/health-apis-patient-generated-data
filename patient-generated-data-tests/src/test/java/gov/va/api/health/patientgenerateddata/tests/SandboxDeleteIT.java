@@ -52,18 +52,18 @@ public class SandboxDeleteIT {
   @Test
   void deleteDisallowed() {
     assumeEnvironmentIn(Environment.PROD);
-    doDelete("Observation/5555555", "delete disallowed", 404);
+    doDelete("delete disallowed", "Observation/5555555", 404);
   }
 
   @Test
   void deleteObservation() {
     assumeEnvironmentNotIn(Environment.PROD);
     Observation observation = observation();
-    var response = doPost("Observation", observation, "create resource", 201);
+    var response = doPost("create resource", "Observation", observation, 201);
     Observation observationWritten = response.expectValid(Observation.class);
     String id = observationWritten.id();
     doGet("application/json", "Observation/" + id, 200);
-    doDelete("Observation/" + id, "delete resource", 200);
+    doDelete("delete resource", "Observation/" + id, 200);
     doGet("application/json", "Observation/" + id, 404);
   }
 
@@ -71,11 +71,11 @@ public class SandboxDeleteIT {
   void deleteQuestionnaire() {
     assumeEnvironmentNotIn(Environment.PROD);
     Questionnaire questionnaire = questionnaire();
-    var response = doPost("Questionnaire", questionnaire, "create resource", 201);
+    var response = doPost("create resource", "Questionnaire", questionnaire, 201);
     Questionnaire questionnaireWritten = response.expectValid(Questionnaire.class);
     String id = questionnaireWritten.id();
     doGet("application/json", "Questionnaire/" + id, 200);
-    doDelete("Questionnaire/" + id, "delete resource", 200);
+    doDelete("delete resource", "Questionnaire/" + id, 200);
     doGet("application/json", "Questionnaire/" + id, 404);
   }
 
@@ -83,12 +83,12 @@ public class SandboxDeleteIT {
   void deleteQuestionnaireResponse() {
     assumeEnvironmentNotIn(Environment.PROD);
     QuestionnaireResponse questionnaireResponse = questionnaireResponse();
-    var response = doPost("QuestionnaireResponse", questionnaireResponse, "create resource", 201);
+    var response = doPost("create resource", "QuestionnaireResponse", questionnaireResponse, 201);
     QuestionnaireResponse questionnaireResponseWritten =
         response.expectValid(QuestionnaireResponse.class);
     String id = questionnaireResponseWritten.id();
     doGet("application/json", "QuestionnaireResponse/" + id, 200);
-    doDelete("QuestionnaireResponse/" + id, "delete resource", 200);
+    doDelete("delete resource", "QuestionnaireResponse/" + id, 200);
     doGet("application/json", "QuestionnaireResponse/" + id, 404);
   }
 }

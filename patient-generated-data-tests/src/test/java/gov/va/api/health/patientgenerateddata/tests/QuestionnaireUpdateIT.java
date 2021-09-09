@@ -1,11 +1,11 @@
 package gov.va.api.health.patientgenerateddata.tests;
 
+import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.CLIENT_KEY_DEFAULT;
+import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.LOCAL_JWT;
 import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.doDelete;
 import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.doGet;
 import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.doInternalPost;
 import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.doPut;
-import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.CLIENT_KEY_DEFAULT;
-import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.LOCAL_JWT;
 import static gov.va.api.health.patientgenerateddata.tests.SystemDefinitions.systemDefinition;
 import static gov.va.api.health.sentinel.EnvironmentAssumptions.assumeEnvironmentIn;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -34,7 +34,7 @@ public class QuestionnaireUpdateIT {
     var id = systemDefinition().ids().questionnaireUpdates();
     ExpectedResponse response = doGet("application/json", "Questionnaire/" + id, null);
     if (response.response().statusCode() == 404) {
-      doInternalPost("Questionnaire", questionnaire(id), "create", 201, CLIENT_KEY);
+      doInternalPost("create", "Questionnaire", questionnaire(id), CLIENT_KEY, 201);
     }
   }
 
@@ -43,7 +43,7 @@ public class QuestionnaireUpdateIT {
     assumeEnvironmentIn(
         Environment.LOCAL, Environment.QA, Environment.STAGING, Environment.STAGING_LAB);
     var id = systemDefinition().ids().questionnaireUpdates();
-    doDelete("Questionnaire/" + id, "tear down", 200);
+    doDelete("tear down", "Questionnaire/" + id, 200);
   }
 
   @Test
@@ -51,7 +51,7 @@ public class QuestionnaireUpdateIT {
     Instant now = Instant.now();
     var id = systemDefinition().ids().questionnaireUpdates();
     Questionnaire questionnaire = questionnaire(id).description(now.toString());
-    doPut("Questionnaire/" + id, questionnaire, "update description", 200);
+    doPut("update description", "Questionnaire/" + id, questionnaire, 200);
     ExpectedResponse persistedResponse = doGet("application/json", "Questionnaire/" + id, 200);
     Questionnaire persisted = persistedResponse.response().as(Questionnaire.class);
     assertThat(persisted.description()).isEqualTo(now.toString());
@@ -61,6 +61,6 @@ public class QuestionnaireUpdateIT {
   void update_forbidden() {
     assumeEnvironmentIn(Environment.LOCAL);
     var id = systemDefinition().ids().questionnaireUpdates();
-    doPut("Questionnaire/" + id, questionnaire(id), "update description", LOCAL_JWT, 403);
+    doPut("update description", "Questionnaire/" + id, questionnaire(id), LOCAL_JWT, 403);
   }
 }
