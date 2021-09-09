@@ -141,7 +141,7 @@ public class Requests {
         method,
         svc.urlWithApiPath() + request,
         description == null ? "" : String.format(", '%s'", description),
-        !filteredHeaders.isEmpty() ? "" : ", " + filteredHeaders,
+        filteredHeaders.isEmpty() ? "" : ", " + filteredHeaders,
         expectedStatus == null ? "" : String.format(", expect status code '%s'", expectedStatus));
     RequestSpecification spec =
         RestAssured.given()
