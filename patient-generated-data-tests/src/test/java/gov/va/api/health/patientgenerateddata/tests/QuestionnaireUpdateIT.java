@@ -1,7 +1,7 @@
 package gov.va.api.health.patientgenerateddata.tests;
 
-import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.CLIENT_KEY;
 import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.ACCESS_TOKEN;
+import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.CLIENT_KEY;
 import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.LOCAL_JWT;
 import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.doDelete;
 import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.doGet;

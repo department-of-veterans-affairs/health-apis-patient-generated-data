@@ -1,5 +1,6 @@
 package gov.va.api.health.patientgenerateddata.tests;
 
+import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.ACCESS_TOKEN;
 import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.CLIENT_KEY;
 import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.LOCAL_JWT;
 import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.doDelete;
@@ -9,7 +10,7 @@ import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.doPut;
 import static gov.va.api.health.patientgenerateddata.tests.SystemDefinitions.systemDefinition;
 import static gov.va.api.health.sentinel.EnvironmentAssumptions.assumeEnvironmentIn;
 import static org.assertj.core.api.Assertions.assertThat;
-import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.ACCESS_TOKEN;
+
 import gov.va.api.health.r4.api.elements.Reference;
 import gov.va.api.health.r4.api.resources.QuestionnaireResponse;
 import gov.va.api.health.sentinel.Environment;

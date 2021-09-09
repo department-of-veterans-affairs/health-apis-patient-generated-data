@@ -132,9 +132,7 @@ public class RequestUtils {
       Integer expectedStatus) {
     checkArgument(!headers.isEmpty());
     Map<String, String> filteredHeaders =
-        headers
-            .entrySet()
-            .stream()
+        headers.entrySet().stream()
             .filter(e -> !e.getKey().equals("Authorization"))
             .filter(e -> !e.getKey().equals("client-key"))
             .collect(toMap(e -> e.getKey(), e -> e.getValue()));
