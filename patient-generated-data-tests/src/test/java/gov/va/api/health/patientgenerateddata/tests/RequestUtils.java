@@ -25,6 +25,7 @@ public class RequestUtils {
   @SneakyThrows
   public static ExpectedResponse doDelete(
       String request, String description, Integer expectedStatus) {
+    Method method = Method.DELETE;
     SystemDefinitions.Service svc = systemDefinition().sandboxDataR4();
     RequestSpecification spec =
         RestAssured.given()
@@ -38,7 +39,7 @@ public class RequestUtils {
         description,
         expectedStatus);
     ExpectedResponse response =
-        ExpectedResponse.of(spec.request(Method.DELETE, svc.urlWithApiPath() + request))
+        ExpectedResponse.of(spec.request(method, svc.urlWithApiPath() + request))
             .logAction(logAllWithTruncatedBody(2000))
             .mapper(MAPPER);
     if (expectedStatus != null) {
@@ -49,6 +50,7 @@ public class RequestUtils {
 
   public static ExpectedResponse doGet(
       String acceptHeader, String request, Integer expectedStatus) {
+    Method method = Method.GET;
     SystemDefinitions.Service svc = systemDefinition().r4();
     RequestSpecification spec =
         RestAssured.given()
@@ -65,7 +67,7 @@ public class RequestUtils {
       spec = spec.accept(acceptHeader);
     }
     ExpectedResponse response =
-        ExpectedResponse.of(spec.request(Method.GET, svc.urlWithApiPath() + request))
+        ExpectedResponse.of(spec.request(method, svc.urlWithApiPath() + request))
             .logAction(logAllWithTruncatedBody(2000))
             .mapper(MAPPER);
     if (expectedStatus != null) {
@@ -76,6 +78,7 @@ public class RequestUtils {
 
   public static ExpectedResponse doInternalGet(
       String acceptHeader, String request, Integer expectedStatus, String clientKey) {
+    Method method = Method.GET;
     SystemDefinitions.Service svc = systemDefinition().internal();
     RequestSpecification spec =
         RestAssured.given()
@@ -92,9 +95,9 @@ public class RequestUtils {
     if (acceptHeader != null) {
       spec = spec.accept(acceptHeader);
     }
+
     ExpectedResponse response =
-        ExpectedResponse.of(
-                spec.request(Method.GET, svc.urlWithApiPath() + INTERNAL_R4_PATH + request))
+        ExpectedResponse.of(spec.request(method, svc.urlWithApiPath() + INTERNAL_R4_PATH + request))
             .logAction(logAllWithTruncatedBody(2000))
             .mapper(MAPPER);
     if (expectedStatus != null) {
@@ -110,6 +113,7 @@ public class RequestUtils {
       String description,
       Integer expectedStatus,
       String clientKey) {
+    Method method = Method.POST;
     SystemDefinitions.Service svc = systemDefinition().internal();
     RequestSpecification spec =
         RestAssured.given()
@@ -126,8 +130,7 @@ public class RequestUtils {
         description,
         expectedStatus);
     ExpectedResponse response =
-        ExpectedResponse.of(
-                spec.request(Method.POST, svc.urlWithApiPath() + INTERNAL_R4_PATH + request))
+        ExpectedResponse.of(spec.request(method, svc.urlWithApiPath() + INTERNAL_R4_PATH + request))
             .logAction(logAllWithTruncatedBody(2000))
             .mapper(MAPPER);
     if (expectedStatus != null) {
@@ -139,6 +142,7 @@ public class RequestUtils {
   @SneakyThrows
   public static ExpectedResponse doPost(
       String request, Object payload, String description, Integer expectedStatus) {
+    Method method = Method.POST;
     SystemDefinitions.Service svc = systemDefinition().r4();
     RequestSpecification spec =
         RestAssured.given()
@@ -153,8 +157,9 @@ public class RequestUtils {
         svc.urlWithApiPath() + request,
         description,
         expectedStatus);
+
     ExpectedResponse response =
-        ExpectedResponse.of(spec.request(Method.POST, svc.urlWithApiPath() + request))
+        ExpectedResponse.of(spec.request(method, svc.urlWithApiPath() + request))
             .logAction(logAllWithTruncatedBody(2000))
             .mapper(MAPPER);
     if (expectedStatus != null) {
@@ -176,6 +181,7 @@ public class RequestUtils {
       String description,
       String accessToken,
       Integer expectedStatus) {
+    Method method = Method.PUT;
     SystemDefinitions.Service svc = systemDefinition().r4();
     RequestSpecification spec =
         RestAssured.given()
@@ -191,7 +197,7 @@ public class RequestUtils {
         description,
         expectedStatus);
     ExpectedResponse response =
-        ExpectedResponse.of(spec.request(Method.PUT, svc.urlWithApiPath() + request))
+        ExpectedResponse.of(spec.request(method, svc.urlWithApiPath() + request))
             .logAction(logAllWithTruncatedBody(2000))
             .mapper(MAPPER);
     if (expectedStatus != null) {
