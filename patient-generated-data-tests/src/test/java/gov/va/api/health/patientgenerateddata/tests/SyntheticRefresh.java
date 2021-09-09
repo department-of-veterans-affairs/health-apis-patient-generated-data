@@ -1,10 +1,10 @@
 package gov.va.api.health.patientgenerateddata.tests;
 
-import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.ACCESS_TOKEN;
-import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.CLIENT_KEY;
-import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.MAPPER;
-import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.doInternalPost;
-import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.doPut;
+import static gov.va.api.health.patientgenerateddata.tests.Requests.ACCESS_TOKEN;
+import static gov.va.api.health.patientgenerateddata.tests.Requests.CLIENT_KEY;
+import static gov.va.api.health.patientgenerateddata.tests.Requests.MAPPER;
+import static gov.va.api.health.patientgenerateddata.tests.Requests.doInternalPost;
+import static gov.va.api.health.patientgenerateddata.tests.Requests.doPut;
 
 import gov.va.api.health.r4.api.resources.Observation;
 import gov.va.api.health.r4.api.resources.Questionnaire;

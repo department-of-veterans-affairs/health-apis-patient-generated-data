@@ -1,7 +1,7 @@
 package gov.va.api.health.patientgenerateddata.tests;
 
-import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.CLIENT_KEY;
-import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.doInternalGet;
+import static gov.va.api.health.patientgenerateddata.tests.Requests.CLIENT_KEY;
+import static gov.va.api.health.patientgenerateddata.tests.Requests.doInternalGet;
 
 import org.junit.jupiter.api.Test;
 

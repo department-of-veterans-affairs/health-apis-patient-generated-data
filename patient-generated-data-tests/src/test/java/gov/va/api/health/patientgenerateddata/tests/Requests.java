@@ -18,7 +18,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class RequestUtils {
+public class Requests {
   static final ObjectMapper MAPPER =
       JacksonConfig.createMapper().registerModule(new Resource.ResourceModule());
 
