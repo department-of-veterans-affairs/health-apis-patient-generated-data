@@ -93,8 +93,7 @@ public class ControllersTest {
 
   @Test
   void sourceMismatch() {
-    Throwable ex =
-        assertThrows(Exceptions.SourceMismatchException.class, () -> checkSources("foo", "bar"));
+    Throwable ex = assertThrows(Exceptions.Forbidden.class, () -> checkSources("foo", "bar"));
     assertThat(ex.getMessage()).isEqualTo("Update sources must match! foo does not equal bar");
   }
 

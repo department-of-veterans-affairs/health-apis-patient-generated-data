@@ -177,7 +177,7 @@ public final class WebExceptionHandler {
     return responseFor("structure", e, request, emptyList(), true);
   }
 
-  @ExceptionHandler({Exceptions.SourceMismatchException.class})
+  @ExceptionHandler({Exceptions.Forbidden.class})
   @ResponseStatus(HttpStatus.FORBIDDEN)
   OperationOutcome handleForbidden(Exception e, HttpServletRequest request) {
     return responseFor("forbidden", e, request, emptyList(), true);

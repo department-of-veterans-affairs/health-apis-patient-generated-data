@@ -36,10 +36,10 @@ public class Controllers {
     }
   }
 
-  /** Throw SourceMismatchException if sources don't match. */
+  /** Throw Exceptions.Forbidden if sources don't match. */
   public static void checkSources(String currentSource, String authorizationSource) {
     if (!currentSource.equals(authorizationSource)) {
-      throw new Exceptions.SourceMismatchException(
+      throw new Exceptions.Forbidden(
           "Update sources must match! " + currentSource + " does not equal " + authorizationSource);
     }
   }

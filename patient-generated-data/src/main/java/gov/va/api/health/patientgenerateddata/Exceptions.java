@@ -11,6 +11,24 @@ public final class Exceptions {
     }
   }
 
+  /** Consumer sent an invalid request. */
+  public static final class BadRequest extends RuntimeException {
+    public BadRequest(String message) {
+      super(message);
+    }
+
+    public BadRequest(String message, Throwable cause) {
+      super(message, cause);
+    }
+  }
+
+  /** Consumer is authenticated, but not authorized. */
+  public static final class Forbidden extends RuntimeException {
+    public Forbidden(String message) {
+      super(message);
+    }
+  }
+
   /** Payload failed to deserialize. */
   public static final class InvalidPayload extends RuntimeException {
     public InvalidPayload(String id, Throwable cause) {
@@ -25,27 +43,9 @@ public final class Exceptions {
     }
   }
 
-  /** Consumer sent an invalid request. */
-  public static final class BadRequest extends RuntimeException {
-    public BadRequest(String message) {
-      super(message);
-    }
-
-    public BadRequest(String message, Throwable cause) {
-      super(message, cause);
-    }
-  }
-
-  /** Get out of here. */
+  /** Missing or bad authentication. */
   public static final class Unauthorized extends RuntimeException {
     public Unauthorized(String message) {
-      super(message);
-    }
-  }
-
-  /** Update attempt with mismatched source information. */
-  public static final class SourceMismatchException extends RuntimeException {
-    public SourceMismatchException(String message) {
       super(message);
     }
   }

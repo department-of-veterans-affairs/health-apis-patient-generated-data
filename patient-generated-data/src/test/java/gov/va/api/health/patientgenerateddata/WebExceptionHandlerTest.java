@@ -58,9 +58,7 @@ public class WebExceptionHandlerTest {
     OperationOutcome outcome =
         new WebExceptionHandler("")
             .handleForbidden(
-                new Exceptions.SourceMismatchException("Sources Mismatch"),
-                mock(HttpServletRequest.class));
-
+                new Exceptions.Forbidden("Sources Mismatch"), mock(HttpServletRequest.class));
     assertThat(outcome.id(null).extension(null))
         .isEqualTo(
             OperationOutcome.builder()
