@@ -1,12 +1,12 @@
 package gov.va.api.health.patientgenerateddata.tests;
 
-import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.doDelete;
-import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.doGet;
-import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.doInternalPost;
-import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.doPut;
-import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.doPutWithAccessToken;
-import static gov.va.api.health.patientgenerateddata.tests.SystemDefinitions.CLIENT_KEY_DEFAULT;
-import static gov.va.api.health.patientgenerateddata.tests.SystemDefinitions.LOCAL_ACCESS_TOKEN;
+import static gov.va.api.health.patientgenerateddata.tests.Requests.ACCESS_TOKEN;
+import static gov.va.api.health.patientgenerateddata.tests.Requests.CLIENT_KEY;
+import static gov.va.api.health.patientgenerateddata.tests.Requests.LOCAL_JWT;
+import static gov.va.api.health.patientgenerateddata.tests.Requests.doDelete;
+import static gov.va.api.health.patientgenerateddata.tests.Requests.doGet;
+import static gov.va.api.health.patientgenerateddata.tests.Requests.doInternalPost;
+import static gov.va.api.health.patientgenerateddata.tests.Requests.doPut;
 import static gov.va.api.health.patientgenerateddata.tests.SystemDefinitions.systemDefinition;
 import static gov.va.api.health.sentinel.EnvironmentAssumptions.assumeEnvironmentIn;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -20,8 +20,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 public class QuestionnaireUpdateIT {
-  private static final String CLIENT_KEY = System.getProperty("client-key", CLIENT_KEY_DEFAULT);
-
   static Questionnaire questionnaire(String id) {
     return Questionnaire.builder().id(id).status(Questionnaire.PublicationStatus.active).build();
   }
@@ -35,7 +33,7 @@ public class QuestionnaireUpdateIT {
     var id = systemDefinition().ids().questionnaireUpdates();
     ExpectedResponse response = doGet("application/json", "Questionnaire/" + id, null);
     if (response.response().statusCode() == 404) {
-      doInternalPost("Questionnaire", questionnaire(id), "create", 201, CLIENT_KEY);
+      doInternalPost("create", "Questionnaire", questionnaire(id), CLIENT_KEY, 201);
     }
   }
 
@@ -44,7 +42,7 @@ public class QuestionnaireUpdateIT {
     assumeEnvironmentIn(
         Environment.LOCAL, Environment.QA, Environment.STAGING, Environment.STAGING_LAB);
     var id = systemDefinition().ids().questionnaireUpdates();
-    doDelete("Questionnaire/" + id, "tear down", 200);
+    doDelete("tear down", "Questionnaire/" + id, 200);
   }
 
   @Test
@@ -52,20 +50,16 @@ public class QuestionnaireUpdateIT {
     Instant now = Instant.now();
     var id = systemDefinition().ids().questionnaireUpdates();
     Questionnaire questionnaire = questionnaire(id).description(now.toString());
-    doPut("Questionnaire/" + id, questionnaire, "update description", 200);
+    doPut("update description", "Questionnaire/" + id, questionnaire, ACCESS_TOKEN, 200);
     ExpectedResponse persistedResponse = doGet("application/json", "Questionnaire/" + id, 200);
     Questionnaire persisted = persistedResponse.response().as(Questionnaire.class);
     assertThat(persisted.description()).isEqualTo(now.toString());
   }
 
   @Test
-  void update_source_mismatch() {
+  void update_forbidden() {
     assumeEnvironmentIn(Environment.LOCAL);
-
-    Instant now = Instant.now();
     var id = systemDefinition().ids().questionnaireUpdates();
-    Questionnaire questionnaire = questionnaire(id).description(now.toString());
-    doPutWithAccessToken(
-        "Questionnaire/" + id, questionnaire, "update description", LOCAL_ACCESS_TOKEN, 403);
+    doPut("update description", "Questionnaire/" + id, questionnaire(id), LOCAL_JWT, 403);
   }
 }

@@ -2,11 +2,11 @@ package gov.va.api.health.patientgenerateddata.questionnaire;
 
 import static com.google.common.base.Preconditions.checkState;
 import static gov.va.api.health.patientgenerateddata.Controllers.checkRequestState;
-import static gov.va.api.health.patientgenerateddata.Controllers.checkSources;
 import static gov.va.api.health.patientgenerateddata.Controllers.generateRandomId;
 import static gov.va.api.health.patientgenerateddata.Controllers.lastUpdatedFromMeta;
 import static gov.va.api.health.patientgenerateddata.Controllers.metaWithLastUpdatedAndSource;
 import static gov.va.api.health.patientgenerateddata.Controllers.nowMillis;
+import static gov.va.api.health.patientgenerateddata.Controllers.validateSource;
 import static gov.va.api.lighthouse.vulcan.Rules.atLeastOneParameterOf;
 import static gov.va.api.lighthouse.vulcan.Rules.ifParameter;
 import static gov.va.api.lighthouse.vulcan.Vulcan.returnNothing;
@@ -187,19 +187,15 @@ public class QuestionnaireController {
   /** Update the given resource. */
   public ResponseEntity<Questionnaire> update(
       Questionnaire questionnaire, String authorization, Instant now) {
-
+    String authorizationSource = sourcerer.source(authorization);
     QuestionnaireEntity entity =
         repository
             .findById(questionnaire.id())
             .orElseThrow(() -> new Exceptions.NotFound(questionnaire.id()));
-
-    String authorizationSource = sourcerer.source(authorization);
-
-    checkSources(entity.deserializePayload().meta().source(), authorizationSource);
-
+    validateSource(
+        questionnaire.id(), authorizationSource, entity.deserializePayload().meta().source());
     questionnaire.meta(
         metaWithLastUpdatedAndSource(questionnaire.meta(), now, authorizationSource));
-
     populateEntity(entity, questionnaire);
     repository.save(entity);
     return ResponseEntity.ok(questionnaire);

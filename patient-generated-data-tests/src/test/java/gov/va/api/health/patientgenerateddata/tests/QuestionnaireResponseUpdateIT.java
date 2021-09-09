@@ -1,12 +1,12 @@
 package gov.va.api.health.patientgenerateddata.tests;
 
-import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.doDelete;
-import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.doGet;
-import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.doInternalPost;
-import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.doPut;
-import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.doPutWithAccessToken;
-import static gov.va.api.health.patientgenerateddata.tests.SystemDefinitions.CLIENT_KEY_DEFAULT;
-import static gov.va.api.health.patientgenerateddata.tests.SystemDefinitions.LOCAL_ACCESS_TOKEN;
+import static gov.va.api.health.patientgenerateddata.tests.Requests.ACCESS_TOKEN;
+import static gov.va.api.health.patientgenerateddata.tests.Requests.CLIENT_KEY;
+import static gov.va.api.health.patientgenerateddata.tests.Requests.LOCAL_JWT;
+import static gov.va.api.health.patientgenerateddata.tests.Requests.doDelete;
+import static gov.va.api.health.patientgenerateddata.tests.Requests.doGet;
+import static gov.va.api.health.patientgenerateddata.tests.Requests.doInternalPost;
+import static gov.va.api.health.patientgenerateddata.tests.Requests.doPut;
 import static gov.va.api.health.patientgenerateddata.tests.SystemDefinitions.systemDefinition;
 import static gov.va.api.health.sentinel.EnvironmentAssumptions.assumeEnvironmentIn;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -22,8 +22,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 public class QuestionnaireResponseUpdateIT {
-  private static final String CLIENT_KEY = System.getProperty("client-key", CLIENT_KEY_DEFAULT);
-
   static QuestionnaireResponse questionnaireResponse(String id) {
     return QuestionnaireResponse.builder()
         .id(id)
@@ -40,7 +38,7 @@ public class QuestionnaireResponseUpdateIT {
     var id = systemDefinition().ids().questionnaireResponseUpdates();
     ExpectedResponse response = doGet("application/json", "QuestionnaireResponse/" + id, null);
     if (response.response().statusCode() == 404) {
-      doInternalPost("QuestionnaireResponse", questionnaireResponse(id), "create", 201, CLIENT_KEY);
+      doInternalPost("create", "QuestionnaireResponse", questionnaireResponse(id), CLIENT_KEY, 201);
     }
   }
 
@@ -49,7 +47,7 @@ public class QuestionnaireResponseUpdateIT {
     assumeEnvironmentIn(
         Environment.LOCAL, Environment.QA, Environment.STAGING, Environment.STAGING_LAB);
     var id = systemDefinition().ids().questionnaireResponseUpdates();
-    doDelete("QuestionnaireResponse/" + id, "tear down", 200);
+    doDelete("tear down", "QuestionnaireResponse/" + id, 200);
   }
 
   @Test
@@ -58,7 +56,7 @@ public class QuestionnaireResponseUpdateIT {
     Reference ref = Reference.builder().reference("Resource/" + now.toString()).build();
     var id = systemDefinition().ids().questionnaireResponseUpdates();
     QuestionnaireResponse qr = questionnaireResponse(id).author(ref);
-    doPut("QuestionnaireResponse/" + id, qr, "update author", 200);
+    doPut("update author", "QuestionnaireResponse/" + id, qr, ACCESS_TOKEN, 200);
     ExpectedResponse persistedResponse =
         doGet("application/json", "QuestionnaireResponse/" + id, 200);
     QuestionnaireResponse persisted = persistedResponse.response().as(QuestionnaireResponse.class);
@@ -70,7 +68,7 @@ public class QuestionnaireResponseUpdateIT {
     var id = systemDefinition().ids().questionnaireResponseUpdates();
     Instant now = Instant.now().with(ChronoField.NANO_OF_SECOND, 0);
     QuestionnaireResponse qr = questionnaireResponse(id).authored(now.toString());
-    doPut("QuestionnaireResponse/" + id, qr, "update authored date", 200);
+    doPut("update authored date", "QuestionnaireResponse/" + id, qr, ACCESS_TOKEN, 200);
     ExpectedResponse persistedResponse =
         doGet("application/json", "QuestionnaireResponse/" + id, 200);
     QuestionnaireResponse persisted = persistedResponse.response().as(QuestionnaireResponse.class);
@@ -78,14 +76,11 @@ public class QuestionnaireResponseUpdateIT {
   }
 
   @Test
-  void update_source_mismatch() {
+  void update_forbidden() {
     assumeEnvironmentIn(Environment.LOCAL);
-    Instant now = Instant.now();
-    Reference ref = Reference.builder().reference("Resource/" + now.toString()).build();
     var id = systemDefinition().ids().questionnaireResponseUpdates();
-    QuestionnaireResponse qr = questionnaireResponse(id).subject(ref);
-    doPutWithAccessToken(
-        "QuestionnaireResponse/" + id, qr, "update subject", LOCAL_ACCESS_TOKEN, 403);
+    doPut(
+        "update subject", "QuestionnaireResponse/" + id, questionnaireResponse(id), LOCAL_JWT, 403);
   }
 
   @Test
@@ -94,7 +89,7 @@ public class QuestionnaireResponseUpdateIT {
     Reference ref = Reference.builder().reference("Resource/" + now.toString()).build();
     var id = systemDefinition().ids().questionnaireResponseUpdates();
     QuestionnaireResponse qr = questionnaireResponse(id).subject(ref);
-    doPut("QuestionnaireResponse/" + id, qr, "update subject", 200);
+    doPut("update subject", "QuestionnaireResponse/" + id, qr, ACCESS_TOKEN, 200);
     ExpectedResponse persistedResponse =
         doGet("application/json", "QuestionnaireResponse/" + id, 200);
     QuestionnaireResponse persisted = persistedResponse.response().as(QuestionnaireResponse.class);

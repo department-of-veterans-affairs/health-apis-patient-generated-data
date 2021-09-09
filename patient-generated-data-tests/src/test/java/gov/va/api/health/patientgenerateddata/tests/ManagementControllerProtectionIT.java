@@ -1,6 +1,7 @@
 package gov.va.api.health.patientgenerateddata.tests;
 
-import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.doInternalPost;
+import static gov.va.api.health.patientgenerateddata.tests.Requests.doInternalGet;
+import static gov.va.api.health.patientgenerateddata.tests.Requests.doInternalPost;
 import static gov.va.api.health.sentinel.EnvironmentAssumptions.assumeEnvironmentIn;
 
 import gov.va.api.health.r4.api.resources.Observation;
@@ -21,18 +22,33 @@ public class ManagementControllerProtectionIT {
   @Test
   void create_observation_invalidKey() {
     var obs = Observation.builder().id("it-bad").build();
-    doInternalPost("Observation", obs, "create resource (invalid key)", 401, "NOPE");
+    doInternalPost("create resource (invalid key)", "Observation", obs, "NOPE", 401);
   }
 
   @Test
   void create_questionnaireResponse_invalidKey() {
     var qr = QuestionnaireResponse.builder().id("it-bad").build();
-    doInternalPost("QuestionnaireResponse", qr, "create resource (invalid key)", 401, "NOPE");
+    doInternalPost("create resource (invalid key)", "QuestionnaireResponse", qr, "NOPE", 401);
   }
 
   @Test
   void create_questionnaire_invalidKey() {
     var questionnaire = Questionnaire.builder().id("it-bad").build();
-    doInternalPost("Questionnaire", questionnaire, "create resource (invalid key)", 401, "NOPE");
+    doInternalPost("create resource (invalid key)", "Questionnaire", questionnaire, "NOPE", 401);
+  }
+
+  @Test
+  void ids_observation_invalidKey() {
+    doInternalGet("Observation/ids", "NOPE", 401);
+  }
+
+  @Test
+  void ids_questionnaireResponse_invalidKey() {
+    doInternalGet("QuestionnaireResponse/ids", "NOPE", 401);
+  }
+
+  @Test
+  void ids_questionnaire_invalidKey() {
+    doInternalGet("Questionnaire/ids", "NOPE", 401);
   }
 }

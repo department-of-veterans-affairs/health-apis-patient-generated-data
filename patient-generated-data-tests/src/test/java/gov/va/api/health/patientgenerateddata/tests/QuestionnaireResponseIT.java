@@ -1,6 +1,6 @@
 package gov.va.api.health.patientgenerateddata.tests;
 
-import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.doGet;
+import static gov.va.api.health.patientgenerateddata.tests.Requests.doGet;
 import static gov.va.api.health.patientgenerateddata.tests.SystemDefinitions.systemDefinition;
 import static org.assertj.core.api.Assertions.assertThat;
 
