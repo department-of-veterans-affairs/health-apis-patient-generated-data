@@ -40,7 +40,7 @@ import lombok.Value;
 public final class Populaterator {
   private static final ObjectMapper MAPPER = JacksonMapperConfig.createMapper();
 
-  private static final String SOURCE = new Sourcerer("{}", "sat").source("sat");
+  private static final String SOURCE = new Sourcerer("{}", "sat").source("Bearer sat");
 
   private static String baseDir() {
     return System.getProperty("basedir", ".");
