@@ -20,7 +20,7 @@ public class RequestUtils {
 
   private static final String INTERNAL_R4_PATH = "management/r4/";
 
-  private static final String ACCESS_TOKEN = System.getProperty("access-token", "pteracuda");
+  private static final String ACCESS_TOKEN = System.getProperty("access-token", "pterastatic");
 
   @SneakyThrows
   public static ExpectedResponse doDelete(
@@ -166,32 +166,11 @@ public class RequestUtils {
   @SneakyThrows
   public static ExpectedResponse doPut(
       String request, Object payload, String description, Integer expectedStatus) {
-    SystemDefinitions.Service svc = systemDefinition().r4();
-    RequestSpecification spec =
-        RestAssured.given()
-            .baseUri(svc.url())
-            .port(svc.port())
-            .relaxedHTTPSValidation()
-            .header("Authorization", "Bearer " + ACCESS_TOKEN)
-            .header("Content-Type", "application/json")
-            .body(MAPPER.writeValueAsString(payload));
-    log.info(
-        "Expect {} PUT '{}' is status code ({})",
-        svc.urlWithApiPath() + request,
-        description,
-        expectedStatus);
-    ExpectedResponse response =
-        ExpectedResponse.of(spec.request(Method.PUT, svc.urlWithApiPath() + request))
-            .logAction(logAllWithTruncatedBody(2000))
-            .mapper(MAPPER);
-    if (expectedStatus != null) {
-      response.expect(expectedStatus);
-    }
-    return response;
+    return doPut(request, payload, description, ACCESS_TOKEN, expectedStatus);
   }
 
   @SneakyThrows
-  public static ExpectedResponse doPutWithAccessToken(
+  public static ExpectedResponse doPut(
       String request,
       Object payload,
       String description,

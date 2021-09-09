@@ -4,9 +4,8 @@ import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.doDelete
 import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.doGet;
 import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.doInternalPost;
 import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.doPut;
-import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.doPutWithAccessToken;
 import static gov.va.api.health.patientgenerateddata.tests.SystemDefinitions.CLIENT_KEY_DEFAULT;
-import static gov.va.api.health.patientgenerateddata.tests.SystemDefinitions.LOCAL_ACCESS_TOKEN;
+import static gov.va.api.health.patientgenerateddata.tests.SystemDefinitions.LOCAL_JWT;
 import static gov.va.api.health.patientgenerateddata.tests.SystemDefinitions.systemDefinition;
 import static gov.va.api.health.sentinel.EnvironmentAssumptions.assumeEnvironmentIn;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -59,13 +58,9 @@ public class QuestionnaireUpdateIT {
   }
 
   @Test
-  void update_source_mismatch() {
+  void update_forbidden() {
     assumeEnvironmentIn(Environment.LOCAL);
-
-    Instant now = Instant.now();
     var id = systemDefinition().ids().questionnaireUpdates();
-    Questionnaire questionnaire = questionnaire(id).description(now.toString());
-    doPutWithAccessToken(
-        "Questionnaire/" + id, questionnaire, "update description", LOCAL_ACCESS_TOKEN, 403);
+    doPut("Questionnaire/" + id, questionnaire(id), "update description", LOCAL_JWT, 403);
   }
 }

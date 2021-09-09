@@ -2,7 +2,7 @@ package gov.va.api.health.patientgenerateddata.questionnaireresponse;
 
 import static com.google.common.base.Preconditions.checkState;
 import static gov.va.api.health.patientgenerateddata.Controllers.checkRequestState;
-import static gov.va.api.health.patientgenerateddata.Controllers.checkSources;
+import static gov.va.api.health.patientgenerateddata.Controllers.validateSource;
 import static gov.va.api.health.patientgenerateddata.Controllers.generateRandomId;
 import static gov.va.api.health.patientgenerateddata.Controllers.lastUpdatedFromMeta;
 import static gov.va.api.health.patientgenerateddata.Controllers.metaWithLastUpdatedAndSource;
@@ -225,19 +225,17 @@ public class QuestionnaireResponseController {
   /** Update the given resource. */
   public ResponseEntity<QuestionnaireResponse> update(
       QuestionnaireResponse questionnaireResponse, String authorization, Instant now) {
-
+    String authorizationSource = sourcerer.source(authorization);
     QuestionnaireResponseEntity entity =
         repository
             .findById(questionnaireResponse.id())
             .orElseThrow(() -> new Exceptions.NotFound(questionnaireResponse.id()));
-
-    String authorizationSource = sourcerer.source(authorization);
-
-    checkSources(entity.deserializePayload().meta().source(), authorizationSource);
-
+    validateSource(
+        questionnaireResponse.id(),
+        authorizationSource,
+        entity.deserializePayload().meta().source());
     questionnaireResponse.meta(
         metaWithLastUpdatedAndSource(questionnaireResponse.meta(), now, authorizationSource));
-
     populateEntity(entity, questionnaireResponse);
     repository.save(entity);
     return ResponseEntity.ok(questionnaireResponse);

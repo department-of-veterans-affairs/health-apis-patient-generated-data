@@ -1,7 +1,7 @@
 package gov.va.api.health.patientgenerateddata;
 
 import static gov.va.api.health.patientgenerateddata.Controllers.checkRequestState;
-import static gov.va.api.health.patientgenerateddata.Controllers.checkSources;
+import static gov.va.api.health.patientgenerateddata.Controllers.validateSource;
 import static gov.va.api.health.patientgenerateddata.Controllers.parseDateTime;
 import static gov.va.api.health.patientgenerateddata.Controllers.resourceId;
 import static gov.va.api.health.patientgenerateddata.Controllers.resourceType;
@@ -93,7 +93,8 @@ public class ControllersTest {
 
   @Test
   void sourceMismatch() {
-    Throwable ex = assertThrows(Exceptions.Forbidden.class, () -> checkSources("foo", "bar"));
+    Throwable ex =
+        assertThrows(Exceptions.Forbidden.class, () -> validateSource("x", "foo", "bar"));
     assertThat(ex.getMessage()).isEqualTo("Update sources must match! foo does not equal bar");
   }
 

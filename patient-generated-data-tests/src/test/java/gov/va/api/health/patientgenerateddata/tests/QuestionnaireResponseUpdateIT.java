@@ -4,9 +4,8 @@ import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.doDelete
 import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.doGet;
 import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.doInternalPost;
 import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.doPut;
-import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.doPutWithAccessToken;
 import static gov.va.api.health.patientgenerateddata.tests.SystemDefinitions.CLIENT_KEY_DEFAULT;
-import static gov.va.api.health.patientgenerateddata.tests.SystemDefinitions.LOCAL_ACCESS_TOKEN;
+import static gov.va.api.health.patientgenerateddata.tests.SystemDefinitions.LOCAL_JWT;
 import static gov.va.api.health.patientgenerateddata.tests.SystemDefinitions.systemDefinition;
 import static gov.va.api.health.sentinel.EnvironmentAssumptions.assumeEnvironmentIn;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -78,13 +77,10 @@ public class QuestionnaireResponseUpdateIT {
   }
 
   @Test
-  void update_source_mismatch() {
-    Instant now = Instant.now();
-    Reference ref = Reference.builder().reference("Resource/" + now.toString()).build();
+  void update_forbidden() {
     var id = systemDefinition().ids().questionnaireResponseUpdates();
-    QuestionnaireResponse qr = questionnaireResponse(id).subject(ref);
-    doPutWithAccessToken(
-        "QuestionnaireResponse/" + id, qr, "update subject", LOCAL_ACCESS_TOKEN, 403);
+    doPut(
+        "QuestionnaireResponse/" + id, questionnaireResponse(id), "update subject", LOCAL_JWT, 403);
   }
 
   @Test

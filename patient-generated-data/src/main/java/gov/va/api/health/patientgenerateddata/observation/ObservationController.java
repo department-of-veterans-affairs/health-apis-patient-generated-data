@@ -2,7 +2,7 @@ package gov.va.api.health.patientgenerateddata.observation;
 
 import static com.google.common.base.Preconditions.checkState;
 import static gov.va.api.health.patientgenerateddata.Controllers.checkRequestState;
-import static gov.va.api.health.patientgenerateddata.Controllers.checkSources;
+import static gov.va.api.health.patientgenerateddata.Controllers.validateSource;
 import static gov.va.api.health.patientgenerateddata.Controllers.generateRandomId;
 import static gov.va.api.health.patientgenerateddata.Controllers.lastUpdatedFromMeta;
 import static gov.va.api.health.patientgenerateddata.Controllers.metaWithLastUpdatedAndSource;
@@ -177,18 +177,13 @@ public class ObservationController {
   /** Update the given resource. */
   public ResponseEntity<Observation> update(
       Observation observation, String authorization, Instant now) {
-
+    String authorizationSource = sourcerer.source(authorization);
     ObservationEntity entity =
         repository
             .findById(observation.id())
             .orElseThrow(() -> new Exceptions.NotFound(observation.id()));
-
-    String authorizationSource = sourcerer.source(authorization);
-
-    checkSources(entity.deserializePayload().meta().source(), authorizationSource);
-
+    validateSource(observation.id(), authorizationSource, entity.deserializePayload().meta().source());
     observation.meta(metaWithLastUpdatedAndSource(observation.meta(), now, authorizationSource));
-
     populateEntity(entity, observation);
     repository.save(entity);
     return ResponseEntity.ok(observation);
