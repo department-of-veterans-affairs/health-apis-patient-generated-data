@@ -57,40 +57,28 @@ public class RequestUtils {
 
   public static ExpectedResponse doGet(
       String acceptHeader, String request, Integer expectedStatus) {
-    Method method = Method.GET;
-    SystemDefinitions.Service svc = systemDefinition().r4();
-    String clientKey = null;
-    RequestSpecification spec =
-        RestAssured.given()
-            .baseUri(svc.url())
-            .port(svc.port())
-            .relaxedHTTPSValidation()
-            .header("Authorization", "Bearer " + ACCESS_TOKEN);
-    if (clientKey != null) {
-      spec = spec.header("client-key", clientKey);
-    }
-    log.info(
-        "Expect {} with accept header ({}) is status code ({})",
-        svc.urlWithApiPath() + request,
-        acceptHeader,
-        expectedStatus);
-    if (acceptHeader != null) {
-      spec = spec.accept(acceptHeader);
-    }
-    ExpectedResponse response =
-        ExpectedResponse.of(spec.request(method, svc.urlWithApiPath() + request))
-            .logAction(logAllWithTruncatedBody(2000))
-            .mapper(MAPPER);
-    if (expectedStatus != null) {
-      response.expect(expectedStatus);
-    }
-    return response;
+    return doRequest(
+        systemDefinition().r4(), Method.GET, acceptHeader, request, null, expectedStatus);
   }
 
   public static ExpectedResponse doInternalGet(
-      String acceptHeader, String request, Integer expectedStatus, String clientKey) {
-    Method method = Method.GET;
-    SystemDefinitions.Service svc = systemDefinition().internalR4();
+      String acceptHeader, String request, String clientKey, Integer expectedStatus) {
+    return doRequest(
+        systemDefinition().internalR4(),
+        Method.GET,
+        acceptHeader,
+        request,
+        clientKey,
+        expectedStatus);
+  }
+
+  private static ExpectedResponse doRequest(
+      SystemDefinitions.Service svc,
+      Method method,
+      String acceptHeader,
+      String request,
+      String clientKey,
+      Integer expectedStatus) {
     RequestSpecification spec =
         RestAssured.given()
             .baseUri(svc.url())

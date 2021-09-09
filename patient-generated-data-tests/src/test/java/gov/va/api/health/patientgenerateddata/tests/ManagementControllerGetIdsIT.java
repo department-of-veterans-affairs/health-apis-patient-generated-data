@@ -10,16 +10,16 @@ public class ManagementControllerGetIdsIT {
 
   @Test
   void getObservationIds() {
-    doInternalGet("application/json", "Observation/ids", 200, CLIENT_KEY);
+    doInternalGet("application/json", "Observation/ids", CLIENT_KEY,200 );
   }
 
   @Test
   void getQuestionnaireIds() {
-    doInternalGet("application/json", "Questionnaire/ids", 200, CLIENT_KEY);
+    doInternalGet("application/json", "Questionnaire/ids",CLIENT_KEY, 200 );
   }
 
   @Test
   void getQuestionnaireResponseIds() {
-    doInternalGet("application/json", "QuestionnaireResponse/ids", 200, CLIENT_KEY);
+    doInternalGet("application/json", "QuestionnaireResponse/ids", CLIENT_KEY,200 );
   }
 }
