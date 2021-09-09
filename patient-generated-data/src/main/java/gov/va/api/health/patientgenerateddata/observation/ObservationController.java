@@ -2,10 +2,10 @@ package gov.va.api.health.patientgenerateddata.observation;
 
 import static com.google.common.base.Preconditions.checkState;
 import static gov.va.api.health.patientgenerateddata.Controllers.checkRequestState;
+import static gov.va.api.health.patientgenerateddata.Controllers.checkSources;
 import static gov.va.api.health.patientgenerateddata.Controllers.generateRandomId;
 import static gov.va.api.health.patientgenerateddata.Controllers.lastUpdatedFromMeta;
-import static gov.va.api.health.patientgenerateddata.Controllers.metaWithLastUpdated;
-import static gov.va.api.health.patientgenerateddata.Controllers.metaWithSource;
+import static gov.va.api.health.patientgenerateddata.Controllers.metaWithLastUpdatedAndSource;
 import static gov.va.api.health.patientgenerateddata.Controllers.nowMillis;
 import static gov.va.api.lighthouse.vulcan.Rules.atLeastOneParameterOf;
 import static gov.va.api.lighthouse.vulcan.Rules.ifParameter;
@@ -112,8 +112,8 @@ public class ObservationController {
   /** Create resource. */
   public ResponseEntity<Observation> create(
       Observation observation, String authorization, Instant now) {
-    observation.meta(metaWithSource(observation.meta(), sourcerer.source(authorization)));
-    observation.meta(metaWithLastUpdated(observation.meta(), now));
+    observation.meta(
+        metaWithLastUpdatedAndSource(observation.meta(), now, sourcerer.source(authorization)));
     repository.save(toEntity(observation));
     return ResponseEntity.created(
             URI.create(linkProperties.r4Url() + "/Observation/" + observation.id()))
@@ -177,12 +177,18 @@ public class ObservationController {
   /** Update the given resource. */
   public ResponseEntity<Observation> update(
       Observation observation, String authorization, Instant now) {
-    observation.meta(metaWithSource(observation.meta(), sourcerer.source(authorization)));
-    observation.meta(metaWithLastUpdated(observation.meta(), now));
+
     ObservationEntity entity =
         repository
             .findById(observation.id())
             .orElseThrow(() -> new Exceptions.NotFound(observation.id()));
+
+    String authorizationSource = sourcerer.source(authorization);
+
+    checkSources(entity.deserializePayload().meta().source(), authorizationSource);
+
+    observation.meta(metaWithLastUpdatedAndSource(observation.meta(), now, authorizationSource));
+
     populateEntity(entity, observation);
     repository.save(entity);
     return ResponseEntity.ok(observation);

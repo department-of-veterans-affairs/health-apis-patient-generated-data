@@ -2,10 +2,10 @@ package gov.va.api.health.patientgenerateddata.questionnaire;
 
 import static com.google.common.base.Preconditions.checkState;
 import static gov.va.api.health.patientgenerateddata.Controllers.checkRequestState;
+import static gov.va.api.health.patientgenerateddata.Controllers.checkSources;
 import static gov.va.api.health.patientgenerateddata.Controllers.generateRandomId;
 import static gov.va.api.health.patientgenerateddata.Controllers.lastUpdatedFromMeta;
-import static gov.va.api.health.patientgenerateddata.Controllers.metaWithLastUpdated;
-import static gov.va.api.health.patientgenerateddata.Controllers.metaWithSource;
+import static gov.va.api.health.patientgenerateddata.Controllers.metaWithLastUpdatedAndSource;
 import static gov.va.api.health.patientgenerateddata.Controllers.nowMillis;
 import static gov.va.api.lighthouse.vulcan.Rules.atLeastOneParameterOf;
 import static gov.va.api.lighthouse.vulcan.Rules.ifParameter;
@@ -121,8 +121,8 @@ public class QuestionnaireController {
   /** Create resource. */
   public ResponseEntity<Questionnaire> create(
       Questionnaire questionnaire, String authorization, Instant now) {
-    questionnaire.meta(metaWithSource(questionnaire.meta(), sourcerer.source(authorization)));
-    questionnaire.meta(metaWithLastUpdated(questionnaire.meta(), now));
+    questionnaire.meta(
+        metaWithLastUpdatedAndSource(questionnaire.meta(), now, sourcerer.source(authorization)));
     repository.save(toEntity(questionnaire));
     return ResponseEntity.created(
             URI.create(linkProperties.r4Url() + "/Questionnaire/" + questionnaire.id()))
@@ -187,12 +187,19 @@ public class QuestionnaireController {
   /** Update the given resource. */
   public ResponseEntity<Questionnaire> update(
       Questionnaire questionnaire, String authorization, Instant now) {
-    questionnaire.meta(metaWithSource(questionnaire.meta(), sourcerer.source(authorization)));
-    questionnaire.meta(metaWithLastUpdated(questionnaire.meta(), now));
+
     QuestionnaireEntity entity =
         repository
             .findById(questionnaire.id())
             .orElseThrow(() -> new Exceptions.NotFound(questionnaire.id()));
+
+    String authorizationSource = sourcerer.source(authorization);
+
+    checkSources(entity.deserializePayload().meta().source(), authorizationSource);
+
+    questionnaire.meta(
+        metaWithLastUpdatedAndSource(questionnaire.meta(), now, authorizationSource));
+
     populateEntity(entity, questionnaire);
     repository.save(entity);
     return ResponseEntity.ok(questionnaire);

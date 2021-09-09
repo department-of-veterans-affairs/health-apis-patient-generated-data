@@ -189,4 +189,35 @@ public class RequestUtils {
     }
     return response;
   }
+
+  @SneakyThrows
+  public static ExpectedResponse doPutWithAccessToken(
+      String request,
+      Object payload,
+      String description,
+      String accessToken,
+      Integer expectedStatus) {
+    SystemDefinitions.Service svc = systemDefinition().r4();
+    RequestSpecification spec =
+        RestAssured.given()
+            .baseUri(svc.url())
+            .port(svc.port())
+            .relaxedHTTPSValidation()
+            .header("Authorization", "Bearer " + accessToken)
+            .header("Content-Type", "application/json")
+            .body(MAPPER.writeValueAsString(payload));
+    log.info(
+        "Expect {} PUT '{}' is status code ({})",
+        svc.urlWithApiPath() + request,
+        description,
+        expectedStatus);
+    ExpectedResponse response =
+        ExpectedResponse.of(spec.request(Method.PUT, svc.urlWithApiPath() + request))
+            .logAction(logAllWithTruncatedBody(2000))
+            .mapper(MAPPER);
+    if (expectedStatus != null) {
+      response.expect(expectedStatus);
+    }
+    return response;
+  }
 }

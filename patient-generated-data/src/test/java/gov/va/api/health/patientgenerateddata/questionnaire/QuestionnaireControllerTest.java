@@ -174,7 +174,8 @@ public class QuestionnaireControllerTest {
   @SneakyThrows
   void update_existing() {
     Instant now = Instant.parse("2021-01-01T01:00:00.001Z");
-    Questionnaire questionnaire = questionnaire();
+    Questionnaire questionnaire =
+        questionnaireWithLastUpdatedAndSource(now, "https://api.va.gov/services/pgd/static-access");
     String payload = MAPPER.writeValueAsString(questionnaire);
     QuestionnaireRepository repo = mock(QuestionnaireRepository.class);
     when(repo.findById("x"))
@@ -200,5 +201,29 @@ public class QuestionnaireControllerTest {
             new QuestionnaireController(
                     pageLinks, mock(QuestionnaireRepository.class), new Sourcerer("{}", "sat"))
                 .update("x", questionnaire(), "Bearer sat"));
+  }
+
+  @Test
+  @SneakyThrows
+  void update_payloadSource() {
+    Instant now = Instant.parse("2021-01-01T01:00:00.001Z");
+    Questionnaire questionnaire =
+        questionnaireWithLastUpdatedAndSource(
+            now, "https://api.va.gov/services/pgd/zombie-bob-nelson");
+    Questionnaire staticQuestionnaireSource =
+        questionnaireWithLastUpdatedAndSource(now, "https://api.va.gov/services/pgd/static-access");
+    String payload = MAPPER.writeValueAsString(staticQuestionnaireSource);
+    QuestionnaireRepository repo = mock(QuestionnaireRepository.class);
+    when(repo.findById("x"))
+        .thenReturn(Optional.of(QuestionnaireEntity.builder().id("x").payload(payload).build()));
+    assertThat(
+            new QuestionnaireController(
+                    mock(LinkProperties.class), repo, new Sourcerer("{}", "sat"))
+                .update(questionnaire, "Bearer sat", now))
+        .isEqualTo(
+            ResponseEntity.ok(
+                questionnaireWithLastUpdatedAndSource(
+                    now, "https://api.va.gov/services/pgd/static-access")));
+    verify(repo, times(1)).save(QuestionnaireEntity.builder().id("x").payload(payload).build());
   }
 }

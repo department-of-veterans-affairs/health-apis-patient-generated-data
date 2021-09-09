@@ -12,6 +12,11 @@ import lombok.experimental.UtilityClass;
 class SystemDefinitions {
   static final String CLIENT_KEY_DEFAULT = "pteracuda";
 
+  // {"cid":"P73R4CUD4"}
+  static final String LOCAL_ACCESS_TOKEN =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjaWQiOiJQNzNSNENVRDQifQ"
+          + ".Agj_xLqXasOzEet6Ja6hONNJ3z4D4xMvpQw0skXBaZI";
+
   private static Ids ids() {
     return Ids.builder()
         .lastUpdated("gt2021-01-01T00:00:00Z")

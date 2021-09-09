@@ -36,6 +36,14 @@ public class Controllers {
     }
   }
 
+  /** Throw Exceptions.Forbidden if sources don't match. */
+  public static void checkSources(String currentSource, String authorizationSource) {
+    if (!currentSource.equals(authorizationSource)) {
+      throw new Exceptions.Forbidden(
+          "Update sources must match! " + currentSource + " does not equal " + authorizationSource);
+    }
+  }
+
   /** Generate random ID. */
   public static String generateRandomId() {
     return UUID.randomUUID().toString();
@@ -46,15 +54,12 @@ public class Controllers {
     return Optional.ofNullable(meta).map(m -> parseDateTime(m.lastUpdated()));
   }
 
-  /** Publishes lastUpdated in Meta. */
-  public static Meta metaWithLastUpdated(Meta meta, Instant lastUpdated) {
+  /** Publishes lastUpdated and source in Meta. */
+  public static Meta metaWithLastUpdatedAndSource(Meta meta, Instant lastUpdated, String source) {
     return Optional.ofNullable(meta)
         .orElse(Meta.builder().build())
-        .lastUpdated(lastUpdated.toString());
-  }
-
-  public static Meta metaWithSource(Meta meta, String source) {
-    return Optional.ofNullable(meta).orElse(Meta.builder().build()).source(source);
+        .lastUpdated(lastUpdated.toString())
+        .source(source);
   }
 
   /** Current Instant truncated to milliseconds. */
