@@ -1,6 +1,6 @@
 package gov.va.api.health.patientgenerateddata.tests;
 
-import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.CLIENT_KEY_DEFAULT;
+import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.CLIENT_KEY;
 import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.LOCAL_JWT;
 import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.doDelete;
 import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.doGet;
@@ -9,7 +9,7 @@ import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.doPut;
 import static gov.va.api.health.patientgenerateddata.tests.SystemDefinitions.systemDefinition;
 import static gov.va.api.health.sentinel.EnvironmentAssumptions.assumeEnvironmentIn;
 import static org.assertj.core.api.Assertions.assertThat;
-
+import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.ACCESS_TOKEN;
 import gov.va.api.health.r4.api.elements.Reference;
 import gov.va.api.health.r4.api.resources.QuestionnaireResponse;
 import gov.va.api.health.sentinel.Environment;
@@ -21,8 +21,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 public class QuestionnaireResponseUpdateIT {
-  private static final String CLIENT_KEY = System.getProperty("client-key", CLIENT_KEY_DEFAULT);
-
   static QuestionnaireResponse questionnaireResponse(String id) {
     return QuestionnaireResponse.builder()
         .id(id)
@@ -57,7 +55,7 @@ public class QuestionnaireResponseUpdateIT {
     Reference ref = Reference.builder().reference("Resource/" + now.toString()).build();
     var id = systemDefinition().ids().questionnaireResponseUpdates();
     QuestionnaireResponse qr = questionnaireResponse(id).author(ref);
-    doPut("update author", "QuestionnaireResponse/" + id, qr, 200);
+    doPut("update author", "QuestionnaireResponse/" + id, qr, ACCESS_TOKEN, 200);
     ExpectedResponse persistedResponse =
         doGet("application/json", "QuestionnaireResponse/" + id, 200);
     QuestionnaireResponse persisted = persistedResponse.response().as(QuestionnaireResponse.class);
@@ -69,7 +67,7 @@ public class QuestionnaireResponseUpdateIT {
     var id = systemDefinition().ids().questionnaireResponseUpdates();
     Instant now = Instant.now().with(ChronoField.NANO_OF_SECOND, 0);
     QuestionnaireResponse qr = questionnaireResponse(id).authored(now.toString());
-    doPut("update authored date", "QuestionnaireResponse/" + id, qr, 200);
+    doPut("update authored date", "QuestionnaireResponse/" + id, qr, ACCESS_TOKEN, 200);
     ExpectedResponse persistedResponse =
         doGet("application/json", "QuestionnaireResponse/" + id, 200);
     QuestionnaireResponse persisted = persistedResponse.response().as(QuestionnaireResponse.class);
@@ -90,7 +88,7 @@ public class QuestionnaireResponseUpdateIT {
     Reference ref = Reference.builder().reference("Resource/" + now.toString()).build();
     var id = systemDefinition().ids().questionnaireResponseUpdates();
     QuestionnaireResponse qr = questionnaireResponse(id).subject(ref);
-    doPut("update subject", "QuestionnaireResponse/" + id, qr, 200);
+    doPut("update subject", "QuestionnaireResponse/" + id, qr, ACCESS_TOKEN, 200);
     ExpectedResponse persistedResponse =
         doGet("application/json", "QuestionnaireResponse/" + id, 200);
     QuestionnaireResponse persisted = persistedResponse.response().as(QuestionnaireResponse.class);

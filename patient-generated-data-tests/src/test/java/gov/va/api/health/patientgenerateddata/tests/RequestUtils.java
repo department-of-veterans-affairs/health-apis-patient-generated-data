@@ -19,25 +19,17 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class RequestUtils {
-  public static final ObjectMapper MAPPER =
+  static final ObjectMapper MAPPER =
       JacksonConfig.createMapper().registerModule(new Resource.ResourceModule());
 
-  public static final String CLIENT_KEY = System.getProperty("client-key", "unset");
+  static final String ACCESS_TOKEN = System.getProperty("access-token", "pterastatic");
 
-  static final String CLIENT_KEY_DEFAULT = "pteracuda";
-
-  static final Resource NO_PAYLOAD = null;
-
-  static final String NO_CLIENT_KEY = null;
-
-  static final String NO_DESCRIPTION = null;
+  static final String CLIENT_KEY = System.getProperty("client-key", "pteracuda");
 
   // {"cid":"P73R4CUD4"}
   static final String LOCAL_JWT =
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjaWQiOiJQNzNSNENVRDQifQ"
           + ".Agj_xLqXasOzEet6Ja6hONNJ3z4D4xMvpQw0skXBaZI";
-
-  private static final String ACCESS_TOKEN = System.getProperty("access-token", "pterastatic");
 
   @SneakyThrows
   public static ExpectedResponse doDelete(
@@ -47,7 +39,7 @@ public class RequestUtils {
         systemDefinition().sandboxDataR4(),
         Method.DELETE,
         request,
-        NO_PAYLOAD,
+        null,
         Map.of("Authorization", "Bearer " + ACCESS_TOKEN),
         expectedStatus);
   }
@@ -55,11 +47,11 @@ public class RequestUtils {
   public static ExpectedResponse doGet(
       String acceptHeader, String request, Integer expectedStatus) {
     return doRequest(
-        NO_DESCRIPTION,
+        null,
         systemDefinition().r4(),
         Method.GET,
         request,
-        NO_PAYLOAD,
+        null,
         acceptHeader == null
             ? Map.of("Authorization", "Bearer " + ACCESS_TOKEN)
             : Map.of("Accept", acceptHeader, "Authorization", "Bearer " + ACCESS_TOKEN),
@@ -69,11 +61,11 @@ public class RequestUtils {
   public static ExpectedResponse doInternalGet(
       String request, String clientKey, Integer expectedStatus) {
     return doRequest(
-        NO_DESCRIPTION,
+        null,
         systemDefinition().internalR4(),
         Method.GET,
         request,
-        NO_PAYLOAD,
+        null,
         Map.of("client-key", clientKey),
         expectedStatus);
   }
@@ -129,11 +121,6 @@ public class RequestUtils {
         expectedStatus);
   }
 
-  public static ExpectedResponse doPut(
-      String description, String request, Resource payload, Integer expectedStatus) {
-    return doPut(description, request, payload, ACCESS_TOKEN, expectedStatus);
-  }
-
   @SneakyThrows
   private static ExpectedResponse doRequest(
       String description,
@@ -145,7 +132,9 @@ public class RequestUtils {
       Integer expectedStatus) {
     checkArgument(!headers.isEmpty());
     Map<String, String> filteredHeaders =
-        headers.entrySet().stream()
+        headers
+            .entrySet()
+            .stream()
             .filter(e -> !e.getKey().equals("Authorization"))
             .filter(e -> !e.getKey().equals("client-key"))
             .collect(toMap(e -> e.getKey(), e -> e.getValue()));

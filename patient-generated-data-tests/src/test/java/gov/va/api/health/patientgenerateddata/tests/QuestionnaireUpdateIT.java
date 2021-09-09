@@ -1,6 +1,7 @@
 package gov.va.api.health.patientgenerateddata.tests;
 
-import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.CLIENT_KEY_DEFAULT;
+import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.CLIENT_KEY;
+import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.ACCESS_TOKEN;
 import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.LOCAL_JWT;
 import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.doDelete;
 import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.doGet;
@@ -19,8 +20,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 public class QuestionnaireUpdateIT {
-  private static final String CLIENT_KEY = System.getProperty("client-key", CLIENT_KEY_DEFAULT);
-
   static Questionnaire questionnaire(String id) {
     return Questionnaire.builder().id(id).status(Questionnaire.PublicationStatus.active).build();
   }
@@ -51,7 +50,7 @@ public class QuestionnaireUpdateIT {
     Instant now = Instant.now();
     var id = systemDefinition().ids().questionnaireUpdates();
     Questionnaire questionnaire = questionnaire(id).description(now.toString());
-    doPut("update description", "Questionnaire/" + id, questionnaire, 200);
+    doPut("update description", "Questionnaire/" + id, questionnaire, ACCESS_TOKEN, 200);
     ExpectedResponse persistedResponse = doGet("application/json", "Questionnaire/" + id, 200);
     Questionnaire persisted = persistedResponse.response().as(Questionnaire.class);
     assertThat(persisted.description()).isEqualTo(now.toString());

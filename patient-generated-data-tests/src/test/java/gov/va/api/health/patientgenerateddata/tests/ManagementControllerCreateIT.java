@@ -1,6 +1,6 @@
 package gov.va.api.health.patientgenerateddata.tests;
 
-import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.CLIENT_KEY_DEFAULT;
+import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.CLIENT_KEY;
 import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.doDelete;
 import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.doInternalPost;
 import static gov.va.api.health.sentinel.EnvironmentAssumptions.assumeEnvironmentIn;
@@ -18,9 +18,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 public class ManagementControllerCreateIT {
-  private static final String CLIENT_KEY = System.getProperty("client-key", CLIENT_KEY_DEFAULT);
-
-  private static final String TEST_ID = "it" + System.currentTimeMillis();
+  static final String TEST_ID = "it" + System.currentTimeMillis();
 
   static Observation observation() {
     return Observation.builder()
