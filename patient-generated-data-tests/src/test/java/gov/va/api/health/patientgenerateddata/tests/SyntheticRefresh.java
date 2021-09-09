@@ -1,6 +1,7 @@
 package gov.va.api.health.patientgenerateddata.tests;
 
 import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.MAPPER;
+import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.CLIENT_KEY;
 import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.doInternalPost;
 import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.doPut;
 
@@ -15,8 +16,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class SyntheticRefresh {
   private static final String BASE_DIR = System.getProperty("basedir", ".");
-
-  private static final String CLIENT_KEY = System.getProperty("client-key", "unset");
 
   public static void main(String[] args) {
     refresh("observation", Observation.class);

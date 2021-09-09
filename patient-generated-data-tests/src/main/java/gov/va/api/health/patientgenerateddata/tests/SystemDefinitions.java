@@ -10,13 +10,6 @@ import lombok.experimental.UtilityClass;
 
 @UtilityClass
 class SystemDefinitions {
-  static final String CLIENT_KEY_DEFAULT = "pteracuda";
-
-  // {"cid":"P73R4CUD4"}
-  static final String LOCAL_JWT =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjaWQiOiJQNzNSNENVRDQifQ"
-          + ".Agj_xLqXasOzEet6Ja6hONNJ3z4D4xMvpQw0skXBaZI";
-
   private static Ids ids() {
     return Ids.builder()
         .lastUpdated("gt2021-01-01T00:00:00Z")
@@ -62,9 +55,12 @@ class SystemDefinitions {
 
   private static SystemDefinition lab() {
     return SystemDefinition.builder()
-        .internal(
+        .internalR4(
             serviceDefinition(
-                "internal", "https://blue.lab.lighthouse.va.gov", 443, "/patient-generated-data/"))
+                "internal-r4",
+                "https://blue.lab.lighthouse.va.gov",
+                443,
+                "/patient-generated-data/management/r4/"))
         .r4(serviceDefinition("r4", "https://blue.lab.lighthouse.va.gov", 443, "/pgd/v0/r4/"))
         .sandboxDataR4(
             serviceDefinition(
@@ -78,7 +74,7 @@ class SystemDefinitions {
 
   private static SystemDefinition local() {
     return SystemDefinition.builder()
-        .internal(serviceDefinition("internal", "http://localhost", 8095, "/"))
+        .internalR4(serviceDefinition("internal-r4", "http://localhost", 8095, "/management/r4/"))
         .r4(serviceDefinition("r4", "http://localhost", 8095, "/r4/"))
         .sandboxDataR4(
             serviceDefinition("sandbox-data-r4", "http://localhost", 8095, "/sandbox-data/r4/"))
@@ -88,12 +84,12 @@ class SystemDefinitions {
 
   private static SystemDefinition production() {
     return SystemDefinition.builder()
-        .internal(
+        .internalR4(
             serviceDefinition(
-                "internal",
+                "internal-r4",
                 "https://blue.production.lighthouse.va.gov",
                 443,
-                "/patient-generated-data/"))
+                "/patient-generated-data/management/r4/"))
         .r4(
             serviceDefinition(
                 "r4", "https://blue.production.lighthouse.va.gov", 443, "/pgd/v0/r4/"))
@@ -109,9 +105,12 @@ class SystemDefinitions {
 
   private static SystemDefinition qa() {
     return SystemDefinition.builder()
-        .internal(
+        .internalR4(
             serviceDefinition(
-                "internal", "https://blue.qa.lighthouse.va.gov", 443, "/patient-generated-data/"))
+                "internal-r4",
+                "https://blue.qa.lighthouse.va.gov",
+                443,
+                "/patient-generated-data/management/r4/"))
         .r4(serviceDefinition("r4", "https://blue.qa.lighthouse.va.gov", 443, "/pgd/v0/r4/"))
         .sandboxDataR4(
             serviceDefinition(
@@ -133,12 +132,12 @@ class SystemDefinitions {
 
   private static SystemDefinition staging() {
     return SystemDefinition.builder()
-        .internal(
+        .internalR4(
             serviceDefinition(
-                "internal",
+                "internal-r4",
                 "https://blue.staging.lighthouse.va.gov",
                 443,
-                "/patient-generated-data/"))
+                "/patient-generated-data/management/r4/"))
         .r4(serviceDefinition("r4", "https://blue.staging.lighthouse.va.gov", 443, "/pgd/v0/r4/"))
         .sandboxDataR4(
             serviceDefinition(
@@ -152,12 +151,12 @@ class SystemDefinitions {
 
   private static SystemDefinition stagingLab() {
     return SystemDefinition.builder()
-        .internal(
+        .internalR4(
             serviceDefinition(
-                "internal",
+                "internal-r4",
                 "https://blue.staging-lab.lighthouse.va.gov",
                 443,
-                "/patient-generated-data/"))
+                "/patient-generated-data/management/r4/"))
         .r4(
             serviceDefinition(
                 "r4", "https://blue.staging-lab.lighthouse.va.gov", 443, "/pgd/v0/r4/"))
@@ -280,7 +279,7 @@ class SystemDefinitions {
   @Value
   @Builder
   static final class SystemDefinition {
-    @NonNull Service internal;
+    @NonNull Service internalR4;
 
     @NonNull Service r4;
 

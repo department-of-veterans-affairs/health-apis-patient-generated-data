@@ -18,9 +18,16 @@ public class RequestUtils {
   public static final ObjectMapper MAPPER =
       JacksonConfig.createMapper().registerModule(new Resource.ResourceModule());
 
-  private static final String INTERNAL_R4_PATH = "management/r4/";
-
   private static final String ACCESS_TOKEN = System.getProperty("access-token", "pterastatic");
+
+  static final String CLIENT_KEY_DEFAULT = "pteracuda";
+
+  public static final String CLIENT_KEY = System.getProperty("client-key", "unset");
+
+  // {"cid":"P73R4CUD4"}
+  static final String LOCAL_JWT =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjaWQiOiJQNzNSNENVRDQifQ"
+          + ".Agj_xLqXasOzEet6Ja6hONNJ3z4D4xMvpQw0skXBaZI";
 
   @SneakyThrows
   public static ExpectedResponse doDelete(
@@ -52,12 +59,16 @@ public class RequestUtils {
       String acceptHeader, String request, Integer expectedStatus) {
     Method method = Method.GET;
     SystemDefinitions.Service svc = systemDefinition().r4();
+    String clientKey = null;
     RequestSpecification spec =
         RestAssured.given()
             .baseUri(svc.url())
             .port(svc.port())
             .relaxedHTTPSValidation()
             .header("Authorization", "Bearer " + ACCESS_TOKEN);
+    if (clientKey != null) {
+      spec = spec.header("client-key", clientKey);
+    }
     log.info(
         "Expect {} with accept header ({}) is status code ({})",
         svc.urlWithApiPath() + request,
@@ -79,25 +90,26 @@ public class RequestUtils {
   public static ExpectedResponse doInternalGet(
       String acceptHeader, String request, Integer expectedStatus, String clientKey) {
     Method method = Method.GET;
-    SystemDefinitions.Service svc = systemDefinition().internal();
+    SystemDefinitions.Service svc = systemDefinition().internalR4();
     RequestSpecification spec =
         RestAssured.given()
             .baseUri(svc.url())
             .port(svc.port())
             .relaxedHTTPSValidation()
-            .header("Authorization", "Bearer " + ACCESS_TOKEN)
-            .header("client-key", clientKey);
+            .header("Authorization", "Bearer " + ACCESS_TOKEN);
+    if (clientKey != null) {
+      spec = spec.header("client-key", clientKey);
+    }
     log.info(
         "Expect {} with accept header ({}) is status code ({})",
-        svc.urlWithApiPath() + INTERNAL_R4_PATH + request,
+        svc.urlWithApiPath() + request,
         acceptHeader,
         expectedStatus);
     if (acceptHeader != null) {
       spec = spec.accept(acceptHeader);
     }
-
     ExpectedResponse response =
-        ExpectedResponse.of(spec.request(method, svc.urlWithApiPath() + INTERNAL_R4_PATH + request))
+        ExpectedResponse.of(spec.request(method, svc.urlWithApiPath() + request))
             .logAction(logAllWithTruncatedBody(2000))
             .mapper(MAPPER);
     if (expectedStatus != null) {
@@ -114,7 +126,7 @@ public class RequestUtils {
       Integer expectedStatus,
       String clientKey) {
     Method method = Method.POST;
-    SystemDefinitions.Service svc = systemDefinition().internal();
+    SystemDefinitions.Service svc = systemDefinition().internalR4();
     RequestSpecification spec =
         RestAssured.given()
             .baseUri(svc.url())
@@ -126,11 +138,11 @@ public class RequestUtils {
             .body(MAPPER.writeValueAsString(payload));
     log.info(
         "Expect {} POST '{}' is status code ({})",
-        svc.urlWithApiPath() + INTERNAL_R4_PATH + request,
+        svc.urlWithApiPath() + request,
         description,
         expectedStatus);
     ExpectedResponse response =
-        ExpectedResponse.of(spec.request(method, svc.urlWithApiPath() + INTERNAL_R4_PATH + request))
+        ExpectedResponse.of(spec.request(method, svc.urlWithApiPath() + request))
             .logAction(logAllWithTruncatedBody(2000))
             .mapper(MAPPER);
     if (expectedStatus != null) {
