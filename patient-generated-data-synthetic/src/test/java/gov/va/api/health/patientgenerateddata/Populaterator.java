@@ -1,6 +1,8 @@
 package gov.va.api.health.patientgenerateddata;
 
 import static com.google.common.base.Preconditions.checkState;
+import static gov.va.api.health.patientgenerateddata.Controllers.metaWithLastUpdatedAndSource;
+import static gov.va.api.health.patientgenerateddata.Controllers.nowMillis;
 import static java.util.stream.Collectors.joining;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -101,6 +103,11 @@ public final class Populaterator {
   private static void observation(@NonNull Connection connection) {
     for (File f : new File(baseDir() + "/src/test/resources/observation").listFiles()) {
       Observation observation = readFile(Observation.class, f);
+
+      observation.meta(
+          metaWithLastUpdatedAndSource(
+              observation.meta(), nowMillis(), "https://api.va.gov/services/pgd/static-access"));
+
       String sqlInsert =
           sqlInsert("app.Observation", List.of("id", "payload", "version", "lastUpdated"));
       try (PreparedStatement statement = connection.prepareStatement(sqlInsert)) {
@@ -132,6 +139,9 @@ public final class Populaterator {
   private static void questionnaire(@NonNull Connection connection) {
     for (File f : new File(baseDir() + "/src/test/resources/questionnaire").listFiles()) {
       Questionnaire questionnaire = readFile(Questionnaire.class, f);
+      questionnaire.meta(
+          metaWithLastUpdatedAndSource(
+              questionnaire.meta(), nowMillis(), "https://api.va.gov/services/pgd/static-access"));
       String sqlInsert =
           sqlInsert(
               "app.Questionnaire",
@@ -151,6 +161,9 @@ public final class Populaterator {
   private static void questionnaireResponse(@NonNull Connection connection) {
     for (File f : new File(baseDir() + "/src/test/resources/questionnaire-response").listFiles()) {
       QuestionnaireResponse response = readFile(QuestionnaireResponse.class, f);
+      response.meta(
+          metaWithLastUpdatedAndSource(
+              response.meta(), nowMillis(), "https://api.va.gov/services/pgd/static-access"));
       String sqlInsert =
           sqlInsert(
               "app.QuestionnaireResponse",
