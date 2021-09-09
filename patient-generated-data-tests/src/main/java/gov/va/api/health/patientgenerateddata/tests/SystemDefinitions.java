@@ -10,11 +10,12 @@ import lombok.experimental.UtilityClass;
 
 @UtilityClass
 class SystemDefinitions {
+  static final String CLIENT_KEY_DEFAULT = "pteracuda";
+
+  // {"cid":"P73R4CUD4"}
   static final String LOCAL_ACCESS_TOKEN =
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjaWQiOiJQNzNSNENVRDQifQ"
           + ".Agj_xLqXasOzEet6Ja6hONNJ3z4D4xMvpQw0skXBaZI";
-
-  static final String CLIENT_KEY_DEFAULT = "pteracuda";
 
   private static Ids ids() {
     return Ids.builder()
