@@ -56,7 +56,7 @@ public class ObservationControllerTest {
   @SneakyThrows
   void create() {
     Instant time = Instant.parse("2021-01-01T01:00:00.001Z");
-    assertThat(_controller().create(observation(), "Bearer sat", time))
+    assertThat(_controller().create(observation(), "Bearer sat", null, time))
         .isEqualTo(
             ResponseEntity.created(URI.create("http://foo.com/r4/Observation/x"))
                 .body(
@@ -73,7 +73,7 @@ public class ObservationControllerTest {
   @Test
   void create_invalidExistingId() {
     assertThrows(
-        Exceptions.BadRequest.class, () -> _controller().create(observation(), "Bearer sat"));
+        Exceptions.BadRequest.class, () -> _controller().create(observation(), "Bearer sat", null));
   }
 
   @Test
@@ -149,6 +149,7 @@ public class ObservationControllerTest {
                     observationWithLastUpdatedAndSource(
                         newTime, "https://api.va.gov/services/pgd/static-access"),
                     "Bearer sat",
+                    null,
                     newTime))
         .isEqualTo(
             ResponseEntity.ok(
@@ -168,7 +169,8 @@ public class ObservationControllerTest {
   @Test
   void update_not_existing() {
     assertThrows(
-        Exceptions.NotFound.class, () -> _controller().update("x", observation(), "Bearer sat"));
+        Exceptions.NotFound.class,
+        () -> _controller().update("x", observation(), "Bearer sat", null));
   }
 
   @Test
@@ -193,6 +195,7 @@ public class ObservationControllerTest {
                     observationWithLastUpdatedAndSource(
                         newTime, "https://api.va.gov/services/pgd/zombie-bob-nelson"),
                     "Bearer sat",
+                    null,
                     newTime))
         .isEqualTo(
             ResponseEntity.ok(

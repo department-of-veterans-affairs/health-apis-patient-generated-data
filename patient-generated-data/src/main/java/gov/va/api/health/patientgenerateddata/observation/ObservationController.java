@@ -4,6 +4,7 @@ import static com.google.common.base.Preconditions.checkState;
 import static gov.va.api.health.patientgenerateddata.Controllers.checkRequestState;
 import static gov.va.api.health.patientgenerateddata.Controllers.generateRandomId;
 import static gov.va.api.health.patientgenerateddata.Controllers.lastUpdatedFromMeta;
+import static gov.va.api.health.patientgenerateddata.Controllers.matchIcn;
 import static gov.va.api.health.patientgenerateddata.Controllers.metaWithLastUpdatedAndSource;
 import static gov.va.api.health.patientgenerateddata.Controllers.nowMillis;
 import static gov.va.api.health.patientgenerateddata.Controllers.validateSource;
@@ -103,15 +104,17 @@ public class ObservationController {
   @Loggable(arguments = false)
   ResponseEntity<Observation> create(
       @Valid @RequestBody Observation observation,
-      @RequestHeader(name = "Authorization", required = true) String authorization) {
+      @RequestHeader(name = "Authorization", required = true) String authorization,
+      @RequestHeader(name = "x-va-icn", required = false) String icn) {
     checkRequestState(isEmpty(observation.id()), "ID must be empty, found %s", observation.id());
     observation.id(generateRandomId());
-    return create(observation, authorization, nowMillis());
+    return create(observation, authorization, icn, nowMillis());
   }
 
   /** Create resource. */
   public ResponseEntity<Observation> create(
-      Observation observation, String authorization, Instant now) {
+      Observation observation, String authorization, String icn, Instant now) {
+    matchIcn(icn, observation, ObservationIncludesIcnMajig::icns);
     observation.meta(
         metaWithLastUpdatedAndSource(observation.meta(), now, sourcerer.source(authorization)));
     repository.save(toEntity(observation));
@@ -165,18 +168,20 @@ public class ObservationController {
   ResponseEntity<Observation> update(
       @PathVariable("id") String pathId,
       @Valid @RequestBody Observation observation,
-      @RequestHeader(name = "Authorization", required = true) String authorization) {
+      @RequestHeader(name = "Authorization", required = true) String authorization,
+      @RequestHeader(name = "x-va-icn", required = false) String icn) {
     checkRequestState(
         pathId.equals(observation.id()),
         "Path ID (%s) and request body ID (%s) do not match",
         pathId,
         observation.id());
-    return update(observation, authorization, nowMillis());
+    return update(observation, authorization, icn, nowMillis());
   }
 
   /** Update the given resource. */
   public ResponseEntity<Observation> update(
-      Observation observation, String authorization, Instant now) {
+      Observation observation, String authorization, String icn, Instant now) {
+    matchIcn(icn, observation, ObservationIncludesIcnMajig::icns);
     String authorizationSource = sourcerer.source(authorization);
     ObservationEntity entity =
         repository

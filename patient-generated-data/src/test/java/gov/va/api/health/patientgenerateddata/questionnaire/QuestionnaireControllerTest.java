@@ -48,7 +48,7 @@ public class QuestionnaireControllerTest {
         new QuestionnaireController(pageLinks, repo, new Sourcerer("{}", "sat"));
     var questionnaire = questionnaire();
     var persisted = MAPPER.writeValueAsString(questionnaire);
-    assertThat(controller.create(questionnaire, "Bearer sat", time))
+    assertThat(controller.create(questionnaire, "Bearer sat", null, time))
         .isEqualTo(
             ResponseEntity.created(URI.create("http://foo.com/r4/Questionnaire/x"))
                 .body(
@@ -63,7 +63,7 @@ public class QuestionnaireControllerTest {
     var repo = mock(QuestionnaireRepository.class);
     var pageLinks = mock(LinkProperties.class);
     var controller = new QuestionnaireController(pageLinks, repo, new Sourcerer("{}", "sat"));
-    assertThrows(Exceptions.BadRequest.class, () -> controller.create(questionnaire, ""));
+    assertThrows(Exceptions.BadRequest.class, () -> controller.create(questionnaire, "", null));
   }
 
   @Test
@@ -183,7 +183,7 @@ public class QuestionnaireControllerTest {
     assertThat(
             new QuestionnaireController(
                     mock(LinkProperties.class), repo, new Sourcerer("{}", "sat"))
-                .update(questionnaire, "Bearer sat", now))
+                .update(questionnaire, "Bearer sat", null, now))
         .isEqualTo(
             ResponseEntity.ok(
                 questionnaireWithLastUpdatedAndSource(
@@ -200,7 +200,7 @@ public class QuestionnaireControllerTest {
         () ->
             new QuestionnaireController(
                     pageLinks, mock(QuestionnaireRepository.class), new Sourcerer("{}", "sat"))
-                .update("x", questionnaire(), "Bearer sat"));
+                .update("x", questionnaire(), "Bearer sat", null));
   }
 
   @Test
@@ -219,7 +219,7 @@ public class QuestionnaireControllerTest {
     assertThat(
             new QuestionnaireController(
                     mock(LinkProperties.class), repo, new Sourcerer("{}", "sat"))
-                .update(questionnaire, "Bearer sat", now))
+                .update(questionnaire, "Bearer sat", null, now))
         .isEqualTo(
             ResponseEntity.ok(
                 questionnaireWithLastUpdatedAndSource(
