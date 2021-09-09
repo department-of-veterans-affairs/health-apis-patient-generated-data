@@ -80,7 +80,8 @@ public class QuestionnaireResponseUpdateIT {
   void update_forbidden() {
     assumeEnvironmentIn(Environment.LOCAL);
     var id = systemDefinition().ids().questionnaireResponseUpdates();
-    doPut("QuestionnaireResponse/" + id, questionnaireResponse(id), "update subject", LOCAL_JWT, 403);
+    doPut(
+        "QuestionnaireResponse/" + id, questionnaireResponse(id), "update subject", LOCAL_JWT, 403);
   }
 
   @Test
