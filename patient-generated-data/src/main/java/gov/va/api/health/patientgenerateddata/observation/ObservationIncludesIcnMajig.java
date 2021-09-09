@@ -21,6 +21,10 @@ public class ObservationIncludesIcnMajig implements ResponseBodyAdvice<Object> {
           .type(Observation.class)
           .bundleType(Observation.Bundle.class)
           .extractResources(bundle -> bundle.entry().stream().map(AbstractEntry::resource))
-          .extractIcns(body -> Stream.ofNullable(IncludesIcnMajig.icn(body.subject())))
+          .extractIcns(body -> icns(body))
           .build();
+
+  static Stream<String> icns(Observation observation) {
+    return Stream.ofNullable(IncludesIcnMajig.icn(observation.subject()));
+  }
 }

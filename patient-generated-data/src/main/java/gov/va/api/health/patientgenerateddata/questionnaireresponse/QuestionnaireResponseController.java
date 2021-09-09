@@ -4,6 +4,7 @@ import static com.google.common.base.Preconditions.checkState;
 import static gov.va.api.health.patientgenerateddata.Controllers.checkRequestState;
 import static gov.va.api.health.patientgenerateddata.Controllers.generateRandomId;
 import static gov.va.api.health.patientgenerateddata.Controllers.lastUpdatedFromMeta;
+import static gov.va.api.health.patientgenerateddata.Controllers.matchIcn;
 import static gov.va.api.health.patientgenerateddata.Controllers.metaWithLastUpdatedAndSource;
 import static gov.va.api.health.patientgenerateddata.Controllers.nowMillis;
 import static gov.va.api.health.patientgenerateddata.Controllers.parseDateTime;
@@ -142,18 +143,20 @@ public class QuestionnaireResponseController {
   @Loggable(arguments = false)
   ResponseEntity<QuestionnaireResponse> create(
       @Valid @RequestBody QuestionnaireResponse questionnaireResponse,
-      @RequestHeader(name = "Authorization", required = true) String authorization) {
+      @RequestHeader(name = "Authorization", required = true) String authorization,
+      @RequestHeader(name = "x-va-icn", required = false) String icn) {
     checkRequestState(
         isEmpty(questionnaireResponse.id()),
         "ID must be empty, found %s",
         questionnaireResponse.id());
     questionnaireResponse.id(generateRandomId());
-    return create(questionnaireResponse, authorization, nowMillis());
+    return create(questionnaireResponse, authorization, icn, nowMillis());
   }
 
   /** Create resource. */
   public ResponseEntity<QuestionnaireResponse> create(
-      QuestionnaireResponse questionnaireResponse, String authorization, Instant now) {
+      QuestionnaireResponse questionnaireResponse, String authorization, String icn, Instant now) {
+    matchIcn(icn, questionnaireResponse, QuestionnaireResponseIncludesIcnMajig::icns);
     questionnaireResponse.meta(
         metaWithLastUpdatedAndSource(
             questionnaireResponse.meta(), now, sourcerer.source(authorization)));
@@ -213,18 +216,20 @@ public class QuestionnaireResponseController {
   ResponseEntity<QuestionnaireResponse> update(
       @PathVariable("id") String pathId,
       @Valid @RequestBody QuestionnaireResponse questionnaireResponse,
-      @RequestHeader(name = "Authorization", required = true) String authorization) {
+      @RequestHeader(name = "Authorization", required = true) String authorization,
+      @RequestHeader(name = "x-va-icn", required = false) String icn) {
     checkRequestState(
         pathId.equals(questionnaireResponse.id()),
         "Path ID (%s) and request body ID (%s) do not match",
         pathId,
         questionnaireResponse.id());
-    return update(questionnaireResponse, authorization, nowMillis());
+    return update(questionnaireResponse, authorization, icn, nowMillis());
   }
 
   /** Update the given resource. */
   public ResponseEntity<QuestionnaireResponse> update(
-      QuestionnaireResponse questionnaireResponse, String authorization, Instant now) {
+      QuestionnaireResponse questionnaireResponse, String authorization, String icn, Instant now) {
+    matchIcn(icn, questionnaireResponse, QuestionnaireResponseIncludesIcnMajig::icns);
     String authorizationSource = sourcerer.source(authorization);
     QuestionnaireResponseEntity entity =
         repository

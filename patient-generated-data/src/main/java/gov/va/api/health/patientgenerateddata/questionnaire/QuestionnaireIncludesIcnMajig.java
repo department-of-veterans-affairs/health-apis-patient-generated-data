@@ -21,6 +21,10 @@ public class QuestionnaireIncludesIcnMajig implements ResponseBodyAdvice<Object>
           .type(Questionnaire.class)
           .bundleType(Questionnaire.Bundle.class)
           .extractResources(bundle -> bundle.entry().stream().map(AbstractEntry::resource))
-          .extractIcns(body -> Stream.empty())
+          .extractIcns(body -> icns(body))
           .build();
+
+  static Stream<String> icns(Questionnaire questionnaire) {
+    return Stream.empty();
+  }
 }

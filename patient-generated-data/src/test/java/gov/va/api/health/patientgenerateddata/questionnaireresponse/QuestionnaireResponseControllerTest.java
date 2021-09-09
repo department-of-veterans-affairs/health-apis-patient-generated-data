@@ -61,7 +61,7 @@ public class QuestionnaireResponseControllerTest {
         questionnaireResponseWithLastUpdatedAndSource(
             now, "https://api.va.gov/services/pgd/static-access");
     QuestionnaireResponseRepository repo = mock(QuestionnaireResponseRepository.class);
-    assertThat(controller(repo).create(questionnaireResponse(), "Bearer sat", now))
+    assertThat(controller(repo).create(questionnaireResponse(), "Bearer sat", null, now))
         .isEqualTo(
             ResponseEntity.created(URI.create("http://foo.com/r4/QuestionnaireResponse/x"))
                 .body(expected));
@@ -80,7 +80,8 @@ public class QuestionnaireResponseControllerTest {
     var pageLinks = mock(LinkProperties.class);
     var controller =
         new QuestionnaireResponseController(pageLinks, repo, new Sourcerer("{}", "sat"));
-    assertThrows(Exceptions.BadRequest.class, () -> controller.create(questionnaireResponse, ""));
+    assertThrows(
+        Exceptions.BadRequest.class, () -> controller.create(questionnaireResponse, "", null));
   }
 
   @Test
@@ -167,7 +168,7 @@ public class QuestionnaireResponseControllerTest {
             now, "https://api.va.gov/services/pgd/static-access");
     assertThat(
             new QuestionnaireResponseController(pageLinks, repo, new Sourcerer("{}", "sat"))
-                .update(questionnaireResponse, "Bearer sat", now))
+                .update(questionnaireResponse, "Bearer sat", null, now))
         .isEqualTo(ResponseEntity.ok(expected));
     verify(repo, times(1))
         .save(QuestionnaireResponseEntity.builder().id("x").payload(payload).build());
@@ -181,7 +182,7 @@ public class QuestionnaireResponseControllerTest {
         Exceptions.NotFound.class,
         () ->
             new QuestionnaireResponseController(pageLinks, repo, new Sourcerer("{}", "sat"))
-                .update("x", questionnaireResponse, "Bearer sat"));
+                .update("x", questionnaireResponse, "Bearer sat", null));
   }
 
   @Test
@@ -204,7 +205,7 @@ public class QuestionnaireResponseControllerTest {
             now, "https://api.va.gov/services/pgd/static-access");
     assertThat(
             new QuestionnaireResponseController(pageLinks, repo, new Sourcerer("{}", "sat"))
-                .update(questionnaireResponse, "Bearer sat", now))
+                .update(questionnaireResponse, "Bearer sat", null, now))
         .isEqualTo(ResponseEntity.ok(expected));
     verify(repo, times(1))
         .save(QuestionnaireResponseEntity.builder().id("x").payload(payload).build());

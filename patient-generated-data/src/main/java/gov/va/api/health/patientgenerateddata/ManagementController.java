@@ -55,7 +55,7 @@ public class ManagementController {
   }
 
   ResponseEntity<Observation> create(Observation observation, String authorization, Instant now) {
-    return observationController.create(observation, authorization, now);
+    return observationController.create(observation, authorization, null, now);
   }
 
   @PostMapping(value = "/Questionnaire")
@@ -68,7 +68,7 @@ public class ManagementController {
 
   ResponseEntity<Questionnaire> create(
       Questionnaire questionnaire, String authorization, Instant now) {
-    return questionnaireController.create(questionnaire, authorization, now);
+    return questionnaireController.create(questionnaire, authorization, null, now);
   }
 
   @PostMapping(value = "/QuestionnaireResponse")
@@ -81,7 +81,7 @@ public class ManagementController {
 
   ResponseEntity<QuestionnaireResponse> create(
       QuestionnaireResponse questionnaireResponse, String authorization, Instant now) {
-    return questionnaireResponseController.create(questionnaireResponse, authorization, now);
+    return questionnaireResponseController.create(questionnaireResponse, authorization, null, now);
   }
 
   @GetMapping(value = "/Observation/ids")
