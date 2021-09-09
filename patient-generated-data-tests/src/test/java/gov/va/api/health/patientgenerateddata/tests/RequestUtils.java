@@ -32,27 +32,13 @@ public class RequestUtils {
   @SneakyThrows
   public static ExpectedResponse doDelete(
       String request, String description, Integer expectedStatus) {
-    Method method = Method.DELETE;
-    SystemDefinitions.Service svc = systemDefinition().sandboxDataR4();
-    RequestSpecification spec =
-        RestAssured.given()
-            .baseUri(svc.url())
-            .port(svc.port())
-            .relaxedHTTPSValidation()
-            .header("Content-Type", "application/json");
-    log.info(
-        "Expect {} DELETE '{}' is status code ({})",
-        svc.urlWithApiPath() + request,
-        description,
+    return doRequest(
+        systemDefinition().sandboxDataR4(),
+        Method.DELETE,
+        null,
+        request,
+        null,
         expectedStatus);
-    ExpectedResponse response =
-        ExpectedResponse.of(spec.request(method, svc.urlWithApiPath() + request))
-            .logAction(logAllWithTruncatedBody(2000))
-            .mapper(MAPPER);
-    if (expectedStatus != null) {
-      response.expect(expectedStatus);
-    }
-    return response;
   }
 
   public static ExpectedResponse doGet(
@@ -89,8 +75,9 @@ public class RequestUtils {
       spec = spec.header("client-key", clientKey);
     }
     log.info(
-        "Expect {} with accept header ({}) is status code ({})",
+        "Expect {} {} with accept header ({}) is status code ({})",
         svc.urlWithApiPath() + request,
+        method,
         acceptHeader,
         expectedStatus);
     if (acceptHeader != null) {
