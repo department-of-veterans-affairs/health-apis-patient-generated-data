@@ -31,7 +31,6 @@ public class Requests {
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjaWQiOiJQNzNSNENVRDQifQ"
           + ".Agj_xLqXasOzEet6Ja6hONNJ3z4D4xMvpQw0skXBaZI";
 
-  @SneakyThrows
   public static ExpectedResponse doDelete(
       String description, String request, Integer expectedStatus) {
     return doRequest(
@@ -70,7 +69,6 @@ public class Requests {
         expectedStatus);
   }
 
-  @SneakyThrows
   public static ExpectedResponse doInternalPost(
       String description,
       String request,
