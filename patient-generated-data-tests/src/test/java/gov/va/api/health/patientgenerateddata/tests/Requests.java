@@ -3,7 +3,7 @@ package gov.va.api.health.patientgenerateddata.tests;
 import static gov.va.api.health.patientgenerateddata.tests.SystemDefinitions.systemDefinition;
 import static gov.va.api.health.sentinel.ExpectedResponse.logAllWithTruncatedBody;
 import static java.util.stream.Collectors.toMap;
-import java.util.HashMap;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.api.health.autoconfig.configuration.JacksonConfig;
 import gov.va.api.health.patientgenerateddata.tests.SystemDefinitions.Service;
@@ -12,6 +12,7 @@ import gov.va.api.health.sentinel.ExpectedResponse;
 import io.restassured.RestAssured;
 import io.restassured.http.Method;
 import io.restassured.specification.RequestSpecification;
+import java.util.HashMap;
 import java.util.Map;
 import lombok.NonNull;
 import lombok.SneakyThrows;
@@ -72,9 +73,18 @@ public class Requests {
 
   static ExpectedResponse doPost(
       String description, String request, Resource payload, Integer expectedStatus) {
+    return doPost(description, request, payload, null, expectedStatus);
+  }
+
+  static ExpectedResponse doPost(
+      String description, String request, Resource payload, String icn, Integer expectedStatus) {
     Service svc = systemDefinition().r4();
-    Map<String, String> headers =
-        Map.of("Authorization", "Bearer " + ACCESS_TOKEN, "Content-Type", "application/json");
+    var headers = new HashMap<String, String>();
+    headers.put("Authorization", "Bearer " + ACCESS_TOKEN);
+    headers.put("Content-Type", "application/json");
+    if (icn != null) {
+      headers.put("x-va-icn", icn);
+    }
     return doRequest(Method.POST, svc, description, request, payload, headers, expectedStatus);
   }
 
@@ -99,10 +109,8 @@ public class Requests {
       Resource payload,
       @NonNull Map<String, String> headers,
       Integer expectedStatus) {
-    Map<String, String> filteredHeaders =
-        headers
-            .entrySet()
-            .stream()
+    Map<String, String> publicHeaders =
+        headers.entrySet().stream()
             .filter(e -> !e.getKey().equalsIgnoreCase("Authorization"))
             .filter(e -> !e.getKey().equalsIgnoreCase("client-key"))
             .collect(toMap(e -> e.getKey(), e -> e.getValue()));
@@ -111,7 +119,7 @@ public class Requests {
         method,
         svc.urlWithApiPath() + request,
         description == null ? "" : String.format(", '%s'", description),
-        filteredHeaders.isEmpty() ? "" : ", " + filteredHeaders,
+        publicHeaders.isEmpty() ? "" : ", " + publicHeaders,
         expectedStatus == null ? "" : String.format(", expect status code '%s'", expectedStatus));
     RequestSpecification spec =
         RestAssured.given()
