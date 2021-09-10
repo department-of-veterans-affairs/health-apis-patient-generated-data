@@ -1,17 +1,18 @@
 package gov.va.api.health.patientgenerateddata.tests;
 
-import static com.google.common.base.Preconditions.checkArgument;
 import static gov.va.api.health.patientgenerateddata.tests.SystemDefinitions.systemDefinition;
 import static gov.va.api.health.sentinel.ExpectedResponse.logAllWithTruncatedBody;
 import static java.util.stream.Collectors.toMap;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.api.health.autoconfig.configuration.JacksonConfig;
+import gov.va.api.health.patientgenerateddata.tests.SystemDefinitions.Service;
 import gov.va.api.health.r4.api.resources.Resource;
 import gov.va.api.health.sentinel.ExpectedResponse;
 import io.restassured.RestAssured;
 import io.restassured.http.Method;
 import io.restassured.specification.RequestSpecification;
+import java.util.HashMap;
 import java.util.Map;
 import lombok.NonNull;
 import lombok.SneakyThrows;
@@ -31,117 +32,94 @@ public class Requests {
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjaWQiOiJQNzNSNENVRDQifQ"
           + ".Agj_xLqXasOzEet6Ja6hONNJ3z4D4xMvpQw0skXBaZI";
 
-  @SneakyThrows
-  public static ExpectedResponse doDelete(
-      String description, String request, Integer expectedStatus) {
-    return doRequest(
-        description,
-        systemDefinition().sandboxDataR4(),
-        Method.DELETE,
-        request,
-        null,
-        Map.of("Authorization", "Bearer " + ACCESS_TOKEN),
-        expectedStatus);
+  static ExpectedResponse doDelete(String description, String request, Integer expectedStatus) {
+    SystemDefinitions.Service svc = systemDefinition().sandboxDataR4();
+    return doRequest(Method.DELETE, svc, description, request, null, Map.of(), expectedStatus);
   }
 
-  public static ExpectedResponse doGet(
-      String acceptHeader, String request, Integer expectedStatus) {
-    return doRequest(
-        null,
-        systemDefinition().r4(),
-        Method.GET,
-        request,
-        null,
-        acceptHeader == null
-            ? Map.of("Authorization", "Bearer " + ACCESS_TOKEN)
-            : Map.of("Accept", acceptHeader, "Authorization", "Bearer " + ACCESS_TOKEN),
-        expectedStatus);
+  static ExpectedResponse doGet(String acceptHeader, String request, Integer expectedStatus) {
+    Service svc = systemDefinition().r4();
+    var headers = new HashMap<String, String>();
+    if (acceptHeader != null) {
+      headers.put("Accept", acceptHeader);
+    }
+    headers.put("Authorization", "Bearer " + ACCESS_TOKEN);
+    return doRequest(Method.GET, svc, null, request, null, headers, expectedStatus);
   }
 
-  public static ExpectedResponse doInternalGet(
-      String request, String clientKey, Integer expectedStatus) {
+  static ExpectedResponse doInternalGet(String request, String clientKey, Integer expectedStatus) {
+    Service svc = systemDefinition().internalR4();
     return doRequest(
-        null,
-        systemDefinition().internalR4(),
-        Method.GET,
-        request,
-        null,
-        Map.of("client-key", clientKey),
-        expectedStatus);
+        Method.GET, svc, null, request, null, Map.of("client-key", clientKey), expectedStatus);
   }
 
-  @SneakyThrows
-  public static ExpectedResponse doInternalPost(
+  static ExpectedResponse doInternalPost(
       String description,
       String request,
       Resource payload,
       String clientKey,
       Integer expectedStatus) {
-    return doRequest(
-        description,
-        systemDefinition().internalR4(),
-        Method.POST,
-        request,
-        payload,
+    Service svc = systemDefinition().internalR4();
+    Map<String, String> headers =
         Map.of(
             "Authorization",
             "Bearer " + ACCESS_TOKEN,
             "client-key",
             clientKey,
             "Content-Type",
-            "application/json"),
-        expectedStatus);
+            "application/json");
+    return doRequest(Method.POST, svc, description, request, payload, headers, expectedStatus);
   }
 
-  public static ExpectedResponse doPost(
+  static ExpectedResponse doPost(
       String description, String request, Resource payload, Integer expectedStatus) {
-    return doRequest(
-        description,
-        systemDefinition().r4(),
-        Method.POST,
-        request,
-        payload,
-        Map.of("Authorization", "Bearer " + ACCESS_TOKEN, "Content-Type", "application/json"),
-        expectedStatus);
+    return doPost(description, request, payload, null, expectedStatus);
   }
 
-  public static ExpectedResponse doPut(
+  static ExpectedResponse doPost(
+      String description, String request, Resource payload, String icn, Integer expectedStatus) {
+    Service svc = systemDefinition().r4();
+    var headers = new HashMap<String, String>();
+    headers.put("Authorization", "Bearer " + ACCESS_TOKEN);
+    headers.put("Content-Type", "application/json");
+    if (icn != null) {
+      headers.put("x-va-icn", icn);
+    }
+    return doRequest(Method.POST, svc, description, request, payload, headers, expectedStatus);
+  }
+
+  static ExpectedResponse doPut(
       String description,
       String request,
       Resource payload,
       String accessToken,
       Integer expectedStatus) {
-    return doRequest(
-        description,
-        systemDefinition().r4(),
-        Method.PUT,
-        request,
-        payload,
-        Map.of("Authorization", "Bearer " + accessToken, "Content-Type", "application/json"),
-        expectedStatus);
+    Service svc = systemDefinition().r4();
+    Map<String, String> headers =
+        Map.of("Authorization", "Bearer " + accessToken, "Content-Type", "application/json");
+    return doRequest(Method.PUT, svc, description, request, payload, headers, expectedStatus);
   }
 
   @SneakyThrows
   private static ExpectedResponse doRequest(
-      String description,
-      @NonNull SystemDefinitions.Service svc,
       @NonNull Method method,
+      @NonNull SystemDefinitions.Service svc,
+      String description,
       @NonNull String request,
       Resource payload,
       @NonNull Map<String, String> headers,
       Integer expectedStatus) {
-    checkArgument(!headers.isEmpty());
-    Map<String, String> filteredHeaders =
+    Map<String, String> publicHeaders =
         headers.entrySet().stream()
-            .filter(e -> !e.getKey().equals("Authorization"))
-            .filter(e -> !e.getKey().equals("client-key"))
+            .filter(e -> !e.getKey().equalsIgnoreCase("Authorization"))
+            .filter(e -> !e.getKey().equalsIgnoreCase("client-key"))
             .collect(toMap(e -> e.getKey(), e -> e.getValue()));
     log.info(
         "{} {}{}{}{}",
         method,
         svc.urlWithApiPath() + request,
         description == null ? "" : String.format(", '%s'", description),
-        filteredHeaders.isEmpty() ? "" : ", " + filteredHeaders,
+        publicHeaders.isEmpty() ? "" : ", " + publicHeaders,
         expectedStatus == null ? "" : String.format(", expect status code '%s'", expectedStatus));
     RequestSpecification spec =
         RestAssured.given()

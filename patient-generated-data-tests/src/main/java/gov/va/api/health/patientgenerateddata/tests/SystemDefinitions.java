@@ -50,6 +50,7 @@ class SystemDefinitions {
         .questionnaireResponseSource("1011537977V693883")
         .questionnaireResponseSubject("1011537977V693883")
         .questionnaireResponseUpdates("00000000-0000-0000-0000-000000000000")
+        .staticTokenIcn("1011537977V693883")
         .build();
   }
 
@@ -222,6 +223,8 @@ class SystemDefinitions {
     @NonNull String questionnaireResponseSubject;
 
     @NonNull String questionnaireResponseUpdates;
+
+    @NonNull String staticTokenIcn;
 
     @Value
     @Builder

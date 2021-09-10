@@ -53,6 +53,16 @@ public class ObservationCreateIT {
   }
 
   @Test
+  void create_notMe() {
+    doPost(
+        "create not-me",
+        "Observation",
+        observation().subject(Reference.builder().reference("Patient/5555555").build()),
+        systemDefinition().ids().staticTokenIcn(),
+        403);
+  }
+
+  @Test
   void create_valid() {
     var response = doPost("create resource", "Observation", observation(), 201);
     String id = response.expectValid(Observation.class).id();
