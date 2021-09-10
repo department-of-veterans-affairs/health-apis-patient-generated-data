@@ -131,8 +131,8 @@ public class Requests {
     checkArgument(!headers.isEmpty());
     Map<String, String> filteredHeaders =
         headers.entrySet().stream()
-            .filter(e -> !e.getKey().equals("Authorization"))
-            .filter(e -> !e.getKey().equals("client-key"))
+            .filter(e -> !e.getKey().equalsIgnoreCase("Authorization"))
+            .filter(e -> !e.getKey().equalsIgnoreCase("client-key"))
             .collect(toMap(e -> e.getKey(), e -> e.getValue()));
     log.info(
         "{} {}{}{}{}",
