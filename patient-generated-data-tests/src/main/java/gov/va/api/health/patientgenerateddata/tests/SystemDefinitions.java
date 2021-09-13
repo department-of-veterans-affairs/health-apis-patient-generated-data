@@ -15,7 +15,10 @@ class SystemDefinitions {
         .lastUpdated("gt2021-01-01T00:00:00Z")
         .observation("fc691a7f-a0f3-47b4-9d00-2786d055e8ba")
         .observationList(
-            List.of("fc691a7f-a0f3-47b4-9d00-2786d055e8ba", "0b9d2e37-f84d-4f9e-9ba3-995772f368d3"))
+            List.of(
+                "fc691a7f-a0f3-47b4-9d00-2786d055e8ba",
+                "8cdc73e7-56e1-4823-b1ad-9b107c33d9a2",
+                "0b9d2e37-f84d-4f9e-9ba3-995772f368d3"))
         .observationSubject("1011537977V693883")
         .questionnaire("37953b72-961b-41ee-bd05-86c62bacc46b")
         .questionnaireContextTypeValue(
