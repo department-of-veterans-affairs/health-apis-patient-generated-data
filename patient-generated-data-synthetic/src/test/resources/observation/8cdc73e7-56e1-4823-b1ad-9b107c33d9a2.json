@@ -32,7 +32,7 @@
   "issued" : "2009-10-15T02:00:30Z",
   "performer" : [
     {
-      "reference" : "https://api.va.gov/services/fhir/v0/r4/Observation/I2-72SYNKNS2L3HPXGWGHQ7NUPPLM000000",
+      "reference" : "https://api.va.gov/services/fhir/v0/r4/Organization/I2-72SYNKNS2L3HPXGWGHQ7NUPPLM000000",
       "display" : "WEST LA VAMC"
     }
   ],
