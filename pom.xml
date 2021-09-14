@@ -7,7 +7,7 @@
     <version>8.0.26</version>
   </parent>
   <artifactId>patient-generated-data-parent</artifactId>
-  <version>1.0.29</version>
+  <version>1.0.30-SNAPSHOT</version>
   <packaging>pom</packaging>
   <modules>
     <module>patient-generated-data</module>
