@@ -4,11 +4,11 @@
   <parent>
     <groupId>gov.va.api.health</groupId>
     <artifactId>test-starter</artifactId>
-    <version>8.0.26</version>
+    <version>8.0.27</version>
     <relativePath/>
   </parent>
   <artifactId>patient-generated-data-tests</artifactId>
-  <version>1.0.30-SNAPSHOT</version>
+  <version>1.0.30</version>
   <packaging>jar</packaging>
   <properties>
     <authorization.client-ids.escape>{\"P73R4CUD4\":\"pteracuda\"}</authorization.client-ids.escape>
