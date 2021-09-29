@@ -3,10 +3,10 @@ package gov.va.api.health.patientgenerateddata.tests;
 import static gov.va.api.health.patientgenerateddata.tests.Requests.ACCESS_TOKEN;
 import static gov.va.api.health.patientgenerateddata.tests.Requests.CLIENT_KEY;
 import static gov.va.api.health.patientgenerateddata.tests.Requests.LOCAL_JWT;
-import static gov.va.api.health.patientgenerateddata.tests.Requests.doDelete;
 import static gov.va.api.health.patientgenerateddata.tests.Requests.doGet;
 import static gov.va.api.health.patientgenerateddata.tests.Requests.doInternalPost;
 import static gov.va.api.health.patientgenerateddata.tests.Requests.doPut;
+import static gov.va.api.health.patientgenerateddata.tests.Requests.doSandboxDelete;
 import static gov.va.api.health.patientgenerateddata.tests.SystemDefinitions.systemDefinition;
 import static gov.va.api.health.sentinel.EnvironmentAssumptions.assumeEnvironmentIn;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -47,7 +47,7 @@ public class QuestionnaireResponseUpdateIT {
     assumeEnvironmentIn(
         Environment.LOCAL, Environment.QA, Environment.STAGING, Environment.STAGING_LAB);
     var id = systemDefinition().ids().questionnaireResponseUpdates();
-    doDelete("tear down", "QuestionnaireResponse/" + id, 200);
+    doSandboxDelete("tear down", "QuestionnaireResponse/" + id, 200);
   }
 
   @Test

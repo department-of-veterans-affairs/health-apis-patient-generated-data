@@ -43,6 +43,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.DataBinder;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -63,6 +64,8 @@ public class QuestionnaireResponseController {
   private static final ObjectMapper MAPPER = JacksonMapperConfig.createMapper();
 
   private final LinkProperties linkProperties;
+
+  private final ArchivedQuestionnaireResponseRepository archivedRepository;
 
   private final QuestionnaireResponseRepository repository;
 
@@ -93,6 +96,24 @@ public class QuestionnaireResponseController {
         QuestionnaireResponseEntity.builder().id(questionnaireResponse.id()).build();
     populateEntity(entity, questionnaireResponse);
     return entity;
+  }
+
+  /** Archive the QuestionnaireResponse if it exists and then delete it from the main table. */
+  @DeleteMapping(value = "/{id}")
+  public void archivedDelete(@PathVariable("id") String id) {
+    var questionnaireResponse =
+        repository.findById(id).orElseThrow(() -> new Exceptions.NotFound(id));
+
+    ArchivedQuestionnaireResponseEntity archivedEntity =
+        ArchivedQuestionnaireResponseEntity.builder()
+            .id(questionnaireResponse.id())
+            .payload(questionnaireResponse.payload())
+            .deletionTimestamp(nowMillis())
+            .build();
+
+    archivedRepository.save(archivedEntity);
+
+    repository.delete(questionnaireResponse);
   }
 
   private VulcanConfiguration<QuestionnaireResponseEntity> configuration() {

@@ -18,6 +18,7 @@ import gov.va.api.health.patientgenerateddata.observation.ObservationRepository;
 import gov.va.api.health.patientgenerateddata.questionnaire.QuestionnaireController;
 import gov.va.api.health.patientgenerateddata.questionnaire.QuestionnaireEntity;
 import gov.va.api.health.patientgenerateddata.questionnaire.QuestionnaireRepository;
+import gov.va.api.health.patientgenerateddata.questionnaireresponse.ArchivedQuestionnaireResponseRepository;
 import gov.va.api.health.patientgenerateddata.questionnaireresponse.QuestionnaireResponseController;
 import gov.va.api.health.patientgenerateddata.questionnaireresponse.QuestionnaireResponseEntity;
 import gov.va.api.health.patientgenerateddata.questionnaireresponse.QuestionnaireResponseRepository;
@@ -44,6 +45,9 @@ public class ManagementControllerTest {
 
   QuestionnaireRepository questionnaireRepo = mock(QuestionnaireRepository.class);
 
+  ArchivedQuestionnaireResponseRepository archivedQuestionnaireResponseRepository =
+      mock(ArchivedQuestionnaireResponseRepository.class);
+
   QuestionnaireResponseRepository questionnaireResponseRepo =
       mock(QuestionnaireResponseRepository.class);
 
@@ -55,7 +59,11 @@ public class ManagementControllerTest {
     return new ManagementController(
         new ObservationController(linkProperties, observationRepo, sourcerer),
         new QuestionnaireController(linkProperties, questionnaireRepo, sourcerer),
-        new QuestionnaireResponseController(linkProperties, questionnaireResponseRepo, sourcerer));
+        new QuestionnaireResponseController(
+            linkProperties,
+            archivedQuestionnaireResponseRepository,
+            questionnaireResponseRepo,
+            sourcerer));
   }
 
   @Test

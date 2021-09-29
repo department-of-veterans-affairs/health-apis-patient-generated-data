@@ -1,8 +1,8 @@
 package gov.va.api.health.patientgenerateddata.tests;
 
 import static gov.va.api.health.patientgenerateddata.tests.Requests.CLIENT_KEY;
-import static gov.va.api.health.patientgenerateddata.tests.Requests.doDelete;
 import static gov.va.api.health.patientgenerateddata.tests.Requests.doInternalPost;
+import static gov.va.api.health.patientgenerateddata.tests.Requests.doSandboxDelete;
 import static gov.va.api.health.sentinel.EnvironmentAssumptions.assumeEnvironmentIn;
 
 import gov.va.api.health.r4.api.datatypes.CodeableConcept;
@@ -69,9 +69,9 @@ public class ManagementControllerCreateIT {
   static void tearDown() {
     assumeEnvironmentIn(
         Environment.LOCAL, Environment.QA, Environment.STAGING, Environment.STAGING_LAB);
-    doDelete("tear down", "Observation/" + TEST_ID, 200);
-    doDelete("tear down", "Questionnaire/" + TEST_ID, 200);
-    doDelete("tear down", "QuestionnaireResponse/" + TEST_ID, 200);
+    doSandboxDelete("tear down", "Observation/" + TEST_ID, 200);
+    doSandboxDelete("tear down", "Questionnaire/" + TEST_ID, 200);
+    doSandboxDelete("tear down", "QuestionnaireResponse/" + TEST_ID, 200);
   }
 
   @Test

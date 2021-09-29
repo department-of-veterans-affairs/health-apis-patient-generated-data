@@ -329,3 +329,27 @@ databaseChangeLog:
                   type: datetime2
                   constraints:
                     - nullable: true
+  - changeSet:
+      id: 16
+      author: pteracuda
+      changes:
+        - createTable:
+            tableName: ArchivedQuestionnaireResponse
+            schemaName: app
+            columns:
+              - column:
+                  name: id
+                  type: varchar(36)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: payload
+                  type: clob
+                  constraints:
+                    nullable: false
+              - column:
+                  name: deletionTimestamp
+                  type: datetime2
+                  constraints:
+                    nullable: false
