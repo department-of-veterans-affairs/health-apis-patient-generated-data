@@ -31,6 +31,7 @@ import org.mockito.ArgumentMatchers;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.DataBinder;
 
@@ -69,7 +70,8 @@ public class QuestionnaireResponseControllerTest {
         .thenReturn(
             Optional.of(QuestionnaireResponseEntity.builder().id("x").payload(payload).build()));
 
-    _controller(archivedRepo, repo).archivedDelete("x");
+    assertThat(_controller(archivedRepo, repo).archivedDelete("x"))
+        .isEqualTo(ResponseEntity.status(HttpStatus.OK).body(null));
 
     verify(archivedRepo, times(1))
         .save(ArchivedQuestionnaireResponseEntity.builder().id("x").payload(payload).build());
@@ -85,8 +87,8 @@ public class QuestionnaireResponseControllerTest {
         mock(ArchivedQuestionnaireResponseRepository.class);
     QuestionnaireResponseRepository repo = mock(QuestionnaireResponseRepository.class);
 
-    assertThrows(
-        Exceptions.NotFound.class, () -> _controller(archivedRepo, repo).archivedDelete("x"));
+    assertThat(_controller(archivedRepo, repo).archivedDelete("x"))
+        .isEqualTo(ResponseEntity.status(HttpStatus.NO_CONTENT).body(null));
   }
 
   @Test

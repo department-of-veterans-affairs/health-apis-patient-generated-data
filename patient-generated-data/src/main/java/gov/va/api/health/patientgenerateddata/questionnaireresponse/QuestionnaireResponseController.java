@@ -40,6 +40,7 @@ import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.DataBinder;
 import org.springframework.validation.annotation.Validated;
@@ -100,20 +101,21 @@ public class QuestionnaireResponseController {
 
   /** Archive the QuestionnaireResponse if it exists and then delete it from the main table. */
   @DeleteMapping(value = "/{id}")
-  public void archivedDelete(@PathVariable("id") String id) {
-    var questionnaireResponse =
-        repository.findById(id).orElseThrow(() -> new Exceptions.NotFound(id));
-
+  public ResponseEntity<Void> archivedDelete(@PathVariable("id") String id) {
+    var optionalQuestionnaireResponse = repository.findById(id);
+    if (optionalQuestionnaireResponse.isEmpty()) {
+      return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+    }
+    var questionnaireResponse = optionalQuestionnaireResponse.get();
     ArchivedQuestionnaireResponseEntity archivedEntity =
         ArchivedQuestionnaireResponseEntity.builder()
             .id(questionnaireResponse.id())
             .payload(questionnaireResponse.payload())
             .deletionTimestamp(nowMillis())
             .build();
-
     archivedRepository.save(archivedEntity);
-
     repository.delete(questionnaireResponse);
+    return ResponseEntity.status(HttpStatus.OK).body(null);
   }
 
   private VulcanConfiguration<QuestionnaireResponseEntity> configuration() {
@@ -186,6 +188,10 @@ public class QuestionnaireResponseController {
             URI.create(
                 linkProperties.r4Url() + "/QuestionnaireResponse/" + questionnaireResponse.id()))
         .body(questionnaireResponse);
+  }
+
+  public Optional<QuestionnaireResponse> findArchivedById(String id) {
+    return archivedRepository.findById(id).map(e -> e.deserializePayload());
   }
 
   public Optional<QuestionnaireResponse> findById(String id) {

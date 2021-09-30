@@ -30,11 +30,9 @@ public class Requests {
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjaWQiOiJQNzNSNENVRDQifQ"
           + ".Agj_xLqXasOzEet6Ja6hONNJ3z4D4xMvpQw0skXBaZI";
 
-  static ExpectedResponse doDelete(
-      String description, String request, String accessToken, Integer expectedStatus) {
+  static ExpectedResponse doDelete(String description, String request, Integer expectedStatus) {
     var svc = systemDefinition().r4();
-    var headers =
-        Map.of("Authorization", "Bearer " + accessToken, "Content-Type", "application/json");
+    var headers = Map.of("Authorization", "Bearer " + ACCESS_TOKEN);
     return doRequest(Method.DELETE, svc, description, request, null, headers, expectedStatus);
   }
 

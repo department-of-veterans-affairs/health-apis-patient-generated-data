@@ -18,6 +18,7 @@ import gov.va.api.health.patientgenerateddata.observation.ObservationRepository;
 import gov.va.api.health.patientgenerateddata.questionnaire.QuestionnaireController;
 import gov.va.api.health.patientgenerateddata.questionnaire.QuestionnaireEntity;
 import gov.va.api.health.patientgenerateddata.questionnaire.QuestionnaireRepository;
+import gov.va.api.health.patientgenerateddata.questionnaireresponse.ArchivedQuestionnaireResponseEntity;
 import gov.va.api.health.patientgenerateddata.questionnaireresponse.ArchivedQuestionnaireResponseRepository;
 import gov.va.api.health.patientgenerateddata.questionnaireresponse.QuestionnaireResponseController;
 import gov.va.api.health.patientgenerateddata.questionnaireresponse.QuestionnaireResponseEntity;
@@ -64,6 +65,20 @@ public class ManagementControllerTest {
             archivedQuestionnaireResponseRepository,
             questionnaireResponseRepo,
             sourcerer));
+  }
+
+  @Test
+  @SneakyThrows
+  void archivedQuestionnaireResponse() {
+    when(archivedQuestionnaireResponseRepository.findById("x1"))
+        .thenReturn(
+            Optional.of(
+                ArchivedQuestionnaireResponseEntity.builder()
+                    .id("x1")
+                    .payload(MAPPER.writeValueAsString(questionnaireResponse("x1")))
+                    .build()));
+    assertThat(_controller().archivedQuestionnaireResponse("x1"))
+        .isEqualTo(questionnaireResponse("x1"));
   }
 
   @Test
