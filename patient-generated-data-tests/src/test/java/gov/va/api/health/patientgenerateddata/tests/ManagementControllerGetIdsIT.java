@@ -8,16 +8,16 @@ import org.junit.jupiter.api.Test;
 public class ManagementControllerGetIdsIT {
   @Test
   void observationIds() {
-    doInternalGet("Observation/ids", CLIENT_KEY, 200);
+    doInternalGet("r4/Observation/ids", CLIENT_KEY, 200);
   }
 
   @Test
   void questionnaireIds() {
-    doInternalGet("Questionnaire/ids", CLIENT_KEY, 200);
+    doInternalGet("r4/Questionnaire/ids", CLIENT_KEY, 200);
   }
 
   @Test
   void questionnaireResponseIds() {
-    doInternalGet("QuestionnaireResponse/ids", CLIENT_KEY, 200);
+    doInternalGet("r4/QuestionnaireResponse/ids", CLIENT_KEY, 200);
   }
 }

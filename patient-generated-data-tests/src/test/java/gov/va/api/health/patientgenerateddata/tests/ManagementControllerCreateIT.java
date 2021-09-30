@@ -76,14 +76,15 @@ public class ManagementControllerCreateIT {
 
   @Test
   void create_observation_knownId() {
-    doInternalPost("create resource with known ID", "Observation", observation(), CLIENT_KEY, 201);
+    doInternalPost(
+        "create resource with known ID", "r4/Observation", observation(), CLIENT_KEY, 201);
   }
 
   @Test
   void create_questionnaireResponse_knownId() {
     doInternalPost(
         "create resource with known ID",
-        "QuestionnaireResponse",
+        "r4/QuestionnaireResponse",
         questionnaireResponse(),
         CLIENT_KEY,
         201);
@@ -92,6 +93,6 @@ public class ManagementControllerCreateIT {
   @Test
   void create_questionnaire_knownId() {
     doInternalPost(
-        "create resource with known ID", "Questionnaire", questionnaire(), CLIENT_KEY, 201);
+        "create resource with known ID", "r4/Questionnaire", questionnaire(), CLIENT_KEY, 201);
   }
 }

@@ -71,7 +71,7 @@ public class QuestionnaireResponseControllerTest {
             Optional.of(QuestionnaireResponseEntity.builder().id("x").payload(payload).build()));
 
     assertThat(_controller(archivedRepo, repo).archivedDelete("x"))
-        .isEqualTo(ResponseEntity.status(HttpStatus.OK).body(null));
+        .isEqualTo(ResponseEntity.status(HttpStatus.NO_CONTENT).body(null));
 
     verify(archivedRepo, times(1))
         .save(ArchivedQuestionnaireResponseEntity.builder().id("x").payload(payload).build());

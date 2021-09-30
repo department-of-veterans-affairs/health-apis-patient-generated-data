@@ -33,7 +33,7 @@ public class QuestionnaireUpdateIT {
     var id = systemDefinition().ids().questionnaireUpdates();
     ExpectedResponse response = doGet("application/json", "Questionnaire/" + id, null);
     if (response.response().statusCode() == 404) {
-      doInternalPost("create", "Questionnaire", questionnaire(id), CLIENT_KEY, 201);
+      doInternalPost("create", "r4/Questionnaire", questionnaire(id), CLIENT_KEY, 201);
     }
   }
 

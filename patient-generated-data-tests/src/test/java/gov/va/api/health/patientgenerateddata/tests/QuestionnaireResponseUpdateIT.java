@@ -38,7 +38,8 @@ public class QuestionnaireResponseUpdateIT {
     var id = systemDefinition().ids().questionnaireResponseUpdates();
     ExpectedResponse response = doGet("application/json", "QuestionnaireResponse/" + id, null);
     if (response.response().statusCode() == 404) {
-      doInternalPost("create", "QuestionnaireResponse", questionnaireResponse(id), CLIENT_KEY, 201);
+      doInternalPost(
+          "create", "r4/QuestionnaireResponse", questionnaireResponse(id), CLIENT_KEY, 201);
     }
   }
 

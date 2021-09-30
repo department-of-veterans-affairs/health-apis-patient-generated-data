@@ -77,7 +77,7 @@ class SystemDefinitions {
 
   private static SystemDefinition local() {
     return SystemDefinition.builder()
-        .internalR4(serviceDefinition("internal-r4", "http://localhost", 8095, "/management/r4/"))
+        .internalR4(serviceDefinition("internal-r4", "http://localhost", 8095, "/management/"))
         .r4(serviceDefinition("r4", "http://localhost", 8095, "/r4/"))
         .sandboxDataR4(
             serviceDefinition("sandbox-data-r4", "http://localhost", 8095, "/sandbox-data/r4/"))

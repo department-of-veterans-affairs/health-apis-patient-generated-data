@@ -39,7 +39,7 @@ public class QuestionnaireResponseDeleteIT {
         doPost("create resource", "QuestionnaireResponse", questionnaireResponse(null), 201);
     String id = response.expectValid(QuestionnaireResponse.class).id();
 
-    doDelete("archive the resource", "QuestionnaireResponse/" + id, 200);
+    doDelete("archive the resource", "QuestionnaireResponse/" + id, 204);
     doGet("application/json", "QuestionnaireResponse/" + id, 404);
   }
 
@@ -49,15 +49,15 @@ public class QuestionnaireResponseDeleteIT {
 
     doInternalPost(
         "create resource with known ID",
-        "QuestionnaireResponse",
+        "r4/QuestionnaireResponse",
         questionnaireResponse,
         CLIENT_KEY,
         201);
 
-    doDelete("archive the resource", "QuestionnaireResponse/" + TEST_ID, 200);
+    doDelete("archive the resource", "QuestionnaireResponse/" + TEST_ID, 204);
 
     var archivedResponse =
-        doInternalGet("ArchivedQuestionnaireResponse/" + TEST_ID, CLIENT_KEY, 200)
+        doInternalGet("archive/r4/ArchivedQuestionnaireResponse/" + TEST_ID, CLIENT_KEY, 200)
             .expectValid(QuestionnaireResponse.class);
 
     assertThat(archivedResponse.status()).isEqualTo(QuestionnaireResponse.Status.completed);
@@ -66,15 +66,15 @@ public class QuestionnaireResponseDeleteIT {
 
     doInternalPost(
         "create resource with known ID",
-        "QuestionnaireResponse",
+        "r4/QuestionnaireResponse",
         questionnaireResponse,
         CLIENT_KEY,
         201);
 
-    doDelete("archive the resource", "QuestionnaireResponse/" + TEST_ID, 200);
+    doDelete("archive the resource", "QuestionnaireResponse/" + TEST_ID, 204);
 
     archivedResponse =
-        doInternalGet("ArchivedQuestionnaireResponse/" + TEST_ID, CLIENT_KEY, 200)
+        doInternalGet("archive/r4/ArchivedQuestionnaireResponse/" + TEST_ID, CLIENT_KEY, 200)
             .expectValid(QuestionnaireResponse.class);
 
     assertThat(archivedResponse.status()).isEqualTo(QuestionnaireResponse.Status.in_progress);
