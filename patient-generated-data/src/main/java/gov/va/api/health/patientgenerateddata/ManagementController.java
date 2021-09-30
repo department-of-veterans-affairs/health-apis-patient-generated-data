@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Validated
 @RestController
 @RequestMapping(
-    value = "/management/r4",
+    value = "/management",
     produces = {"application/json", "application/fhir+json"})
 @AllArgsConstructor(onConstructor_ = @Autowired)
 public class ManagementController {
@@ -46,7 +46,7 @@ public class ManagementController {
     }
   }
 
-  @PostMapping(value = "/Observation")
+  @PostMapping(value = "/r4/Observation")
   ResponseEntity<Observation> create(
       @Valid @RequestBody Observation observation,
       @RequestHeader(name = "Authorization", required = true) String authorization) {
@@ -58,7 +58,7 @@ public class ManagementController {
     return observationController.create(observation, authorization, null, now);
   }
 
-  @PostMapping(value = "/Questionnaire")
+  @PostMapping(value = "/r4/Questionnaire")
   ResponseEntity<Questionnaire> create(
       @Valid @RequestBody Questionnaire questionnaire,
       @RequestHeader(name = "Authorization", required = true) String authorization) {
@@ -71,7 +71,7 @@ public class ManagementController {
     return questionnaireController.create(questionnaire, authorization, null, now);
   }
 
-  @PostMapping(value = "/QuestionnaireResponse")
+  @PostMapping(value = "/r4/QuestionnaireResponse")
   ResponseEntity<QuestionnaireResponse> create(
       @Valid @RequestBody QuestionnaireResponse questionnaireResponse,
       @RequestHeader(name = "Authorization", required = true) String authorization) {
@@ -84,17 +84,17 @@ public class ManagementController {
     return questionnaireResponseController.create(questionnaireResponse, authorization, null, now);
   }
 
-  @GetMapping(value = "/Observation/ids")
+  @GetMapping(value = "/r4/Observation/ids")
   List<String> observationIds() {
     return observationController.getAllIds();
   }
 
-  @GetMapping(value = "/Questionnaire/ids")
+  @GetMapping(value = "/r4/Questionnaire/ids")
   List<String> questionnaireIds() {
     return questionnaireController.getAllIds();
   }
 
-  @GetMapping(value = "/QuestionnaireResponse/ids")
+  @GetMapping(value = "/r4/QuestionnaireResponse/ids")
   List<String> questionnaireResponseIds() {
     return questionnaireResponseController.getAllIds();
   }

@@ -22,33 +22,33 @@ public class ManagementControllerProtectionIT {
   @Test
   void create_observation_invalidKey() {
     var obs = Observation.builder().id("it-bad").build();
-    doInternalPost("create resource (invalid key)", "Observation", obs, "NOPE", 401);
+    doInternalPost("create resource (invalid key)", "r4/Observation", obs, "NOPE", 401);
   }
 
   @Test
   void create_questionnaireResponse_invalidKey() {
     var qr = QuestionnaireResponse.builder().id("it-bad").build();
-    doInternalPost("create resource (invalid key)", "QuestionnaireResponse", qr, "NOPE", 401);
+    doInternalPost("create resource (invalid key)", "r4/QuestionnaireResponse", qr, "NOPE", 401);
   }
 
   @Test
   void create_questionnaire_invalidKey() {
     var questionnaire = Questionnaire.builder().id("it-bad").build();
-    doInternalPost("create resource (invalid key)", "Questionnaire", questionnaire, "NOPE", 401);
+    doInternalPost("create resource (invalid key)", "r4/Questionnaire", questionnaire, "NOPE", 401);
   }
 
   @Test
   void ids_observation_invalidKey() {
-    doInternalGet("Observation/ids", "NOPE", 401);
+    doInternalGet("r4/Observation/ids", "NOPE", 401);
   }
 
   @Test
   void ids_questionnaireResponse_invalidKey() {
-    doInternalGet("QuestionnaireResponse/ids", "NOPE", 401);
+    doInternalGet("r4/QuestionnaireResponse/ids", "NOPE", 401);
   }
 
   @Test
   void ids_questionnaire_invalidKey() {
-    doInternalGet("Questionnaire/ids", "NOPE", 401);
+    doInternalGet("r4/Questionnaire/ids", "NOPE", 401);
   }
 }
