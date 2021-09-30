@@ -63,7 +63,7 @@ class SystemDefinitions {
                 "management",
                 "https://blue.lab.lighthouse.va.gov",
                 443,
-                "/patient-generated-data/management/r4/"))
+                "/patient-generated-data/management/"))
         .r4(serviceDefinition("r4", "https://blue.lab.lighthouse.va.gov", 443, "/pgd/v0/r4/"))
         .sandboxDataR4(
             serviceDefinition(
@@ -92,7 +92,7 @@ class SystemDefinitions {
                 "management",
                 "https://blue.production.lighthouse.va.gov",
                 443,
-                "/patient-generated-data/management/r4/"))
+                "/patient-generated-data/management/"))
         .r4(
             serviceDefinition(
                 "r4", "https://blue.production.lighthouse.va.gov", 443, "/pgd/v0/r4/"))
@@ -113,7 +113,7 @@ class SystemDefinitions {
                 "management",
                 "https://blue.qa.lighthouse.va.gov",
                 443,
-                "/patient-generated-data/management/r4/"))
+                "/patient-generated-data/management/"))
         .r4(serviceDefinition("r4", "https://blue.qa.lighthouse.va.gov", 443, "/pgd/v0/r4/"))
         .sandboxDataR4(
             serviceDefinition(
@@ -140,7 +140,7 @@ class SystemDefinitions {
                 "management",
                 "https://blue.staging.lighthouse.va.gov",
                 443,
-                "/patient-generated-data/management/r4/"))
+                "/patient-generated-data/management/"))
         .r4(serviceDefinition("r4", "https://blue.staging.lighthouse.va.gov", 443, "/pgd/v0/r4/"))
         .sandboxDataR4(
             serviceDefinition(
@@ -159,7 +159,7 @@ class SystemDefinitions {
                 "management",
                 "https://blue.staging-lab.lighthouse.va.gov",
                 443,
-                "/patient-generated-data/management/r4/"))
+                "/patient-generated-data/management/"))
         .r4(
             serviceDefinition(
                 "r4", "https://blue.staging-lab.lighthouse.va.gov", 443, "/pgd/v0/r4/"))
