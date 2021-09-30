@@ -1,8 +1,8 @@
 package gov.va.api.health.patientgenerateddata.tests;
 
-import static gov.va.api.health.patientgenerateddata.tests.Requests.doDelete;
 import static gov.va.api.health.patientgenerateddata.tests.Requests.doGet;
 import static gov.va.api.health.patientgenerateddata.tests.Requests.doPost;
+import static gov.va.api.health.patientgenerateddata.tests.Requests.doSandboxDelete;
 import static gov.va.api.health.sentinel.EnvironmentAssumptions.assumeEnvironmentIn;
 import static gov.va.api.health.sentinel.EnvironmentAssumptions.assumeEnvironmentNotIn;
 
@@ -52,7 +52,7 @@ public class SandboxDeleteIT {
   @Test
   void deleteDisallowed() {
     assumeEnvironmentIn(Environment.PROD);
-    doDelete("delete disallowed", "Observation/5555555", 404);
+    doSandboxDelete("delete disallowed", "Observation/5555555", 404);
   }
 
   @Test
@@ -63,7 +63,7 @@ public class SandboxDeleteIT {
     Observation observationWritten = response.expectValid(Observation.class);
     String id = observationWritten.id();
     doGet("application/json", "Observation/" + id, 200);
-    doDelete("delete resource", "Observation/" + id, 200);
+    doSandboxDelete("delete resource", "Observation/" + id, 200);
     doGet("application/json", "Observation/" + id, 404);
   }
 
@@ -75,7 +75,7 @@ public class SandboxDeleteIT {
     Questionnaire questionnaireWritten = response.expectValid(Questionnaire.class);
     String id = questionnaireWritten.id();
     doGet("application/json", "Questionnaire/" + id, 200);
-    doDelete("delete resource", "Questionnaire/" + id, 200);
+    doSandboxDelete("delete resource", "Questionnaire/" + id, 200);
     doGet("application/json", "Questionnaire/" + id, 404);
   }
 
@@ -88,7 +88,7 @@ public class SandboxDeleteIT {
         response.expectValid(QuestionnaireResponse.class);
     String id = questionnaireResponseWritten.id();
     doGet("application/json", "QuestionnaireResponse/" + id, 200);
-    doDelete("delete resource", "QuestionnaireResponse/" + id, 200);
+    doSandboxDelete("delete resource", "QuestionnaireResponse/" + id, 200);
     doGet("application/json", "QuestionnaireResponse/" + id, 404);
   }
 }

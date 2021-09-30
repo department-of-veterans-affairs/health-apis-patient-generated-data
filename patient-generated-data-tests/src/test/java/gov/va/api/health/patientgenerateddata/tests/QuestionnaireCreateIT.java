@@ -1,7 +1,7 @@
 package gov.va.api.health.patientgenerateddata.tests;
 
-import static gov.va.api.health.patientgenerateddata.tests.Requests.doDelete;
 import static gov.va.api.health.patientgenerateddata.tests.Requests.doPost;
+import static gov.va.api.health.patientgenerateddata.tests.Requests.doSandboxDelete;
 import static gov.va.api.health.sentinel.EnvironmentAssumptions.assumeEnvironmentIn;
 
 import gov.va.api.health.r4.api.resources.Questionnaire;
@@ -35,6 +35,6 @@ public class QuestionnaireCreateIT {
   void create_valid() {
     var response = doPost("create resource", "Questionnaire", questionnaire(), 201);
     String id = response.expectValid(Questionnaire.class).id();
-    doDelete("tear down", "Questionnaire/" + id, 200);
+    doSandboxDelete("tear down", "Questionnaire/" + id, 200);
   }
 }
