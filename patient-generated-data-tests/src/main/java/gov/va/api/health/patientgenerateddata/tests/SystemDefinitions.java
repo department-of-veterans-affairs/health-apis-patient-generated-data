@@ -58,9 +58,9 @@ class SystemDefinitions {
 
   private static SystemDefinition lab() {
     return SystemDefinition.builder()
-        .internalR4(
+        .management(
             serviceDefinition(
-                "internal-r4",
+                "management",
                 "https://blue.lab.lighthouse.va.gov",
                 443,
                 "/patient-generated-data/management/r4/"))
@@ -77,7 +77,7 @@ class SystemDefinitions {
 
   private static SystemDefinition local() {
     return SystemDefinition.builder()
-        .internalR4(serviceDefinition("internal-r4", "http://localhost", 8095, "/management/"))
+        .management(serviceDefinition("management", "http://localhost", 8095, "/management/"))
         .r4(serviceDefinition("r4", "http://localhost", 8095, "/r4/"))
         .sandboxDataR4(
             serviceDefinition("sandbox-data-r4", "http://localhost", 8095, "/sandbox-data/r4/"))
@@ -87,9 +87,9 @@ class SystemDefinitions {
 
   private static SystemDefinition production() {
     return SystemDefinition.builder()
-        .internalR4(
+        .management(
             serviceDefinition(
-                "internal-r4",
+                "management",
                 "https://blue.production.lighthouse.va.gov",
                 443,
                 "/patient-generated-data/management/r4/"))
@@ -108,9 +108,9 @@ class SystemDefinitions {
 
   private static SystemDefinition qa() {
     return SystemDefinition.builder()
-        .internalR4(
+        .management(
             serviceDefinition(
-                "internal-r4",
+                "management",
                 "https://blue.qa.lighthouse.va.gov",
                 443,
                 "/patient-generated-data/management/r4/"))
@@ -135,9 +135,9 @@ class SystemDefinitions {
 
   private static SystemDefinition staging() {
     return SystemDefinition.builder()
-        .internalR4(
+        .management(
             serviceDefinition(
-                "internal-r4",
+                "management",
                 "https://blue.staging.lighthouse.va.gov",
                 443,
                 "/patient-generated-data/management/r4/"))
@@ -154,9 +154,9 @@ class SystemDefinitions {
 
   private static SystemDefinition stagingLab() {
     return SystemDefinition.builder()
-        .internalR4(
+        .management(
             serviceDefinition(
-                "internal-r4",
+                "management",
                 "https://blue.staging-lab.lighthouse.va.gov",
                 443,
                 "/patient-generated-data/management/r4/"))
@@ -282,7 +282,7 @@ class SystemDefinitions {
   @Value
   @Builder
   static final class SystemDefinition {
-    @NonNull Service internalR4;
+    @NonNull Service management;
 
     @NonNull Service r4;
 

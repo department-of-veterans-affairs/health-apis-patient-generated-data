@@ -20,7 +20,7 @@ java-tests \
   -Daccess-token="$MAGIC_ACCESS_TOKEN" \
   -Dclient-key="$CLIENT_KEY" \
   -Dsentinel="$SENTINEL_ENV" \
-  -Dsentinel.internal-r4.url="${SENTINEL_URL}" \
+  -Dsentinel.management.url="${SENTINEL_URL}" \
   -Dsentinel.r4.url="${SENTINEL_URL}" \
   -Dsentinel.sandbox-data-r4.url="${SENTINEL_URL}" \
   $@

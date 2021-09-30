@@ -47,12 +47,12 @@ public class ManagementController {
     }
   }
 
-  @GetMapping(value = "archive/r4/ArchivedQuestionnaireResponse/{id}")
+  @GetMapping(value = "/archive/r4/QuestionnaireResponse/{id}")
   QuestionnaireResponse archivedQuestionnaireResponse(@PathVariable("id") String id) {
     return questionnaireResponseController.findArchivedById(id).orElse(null);
   }
 
-  @PostMapping(value = "r4/Observation")
+  @PostMapping(value = "/r4/Observation")
   ResponseEntity<Observation> create(
       @Valid @RequestBody Observation observation,
       @RequestHeader(name = "Authorization", required = true) String authorization) {
@@ -64,7 +64,7 @@ public class ManagementController {
     return observationController.create(observation, authorization, null, now);
   }
 
-  @PostMapping(value = "r4/Questionnaire")
+  @PostMapping(value = "/r4/Questionnaire")
   ResponseEntity<Questionnaire> create(
       @Valid @RequestBody Questionnaire questionnaire,
       @RequestHeader(name = "Authorization", required = true) String authorization) {
@@ -77,7 +77,7 @@ public class ManagementController {
     return questionnaireController.create(questionnaire, authorization, null, now);
   }
 
-  @PostMapping(value = "r4/QuestionnaireResponse")
+  @PostMapping(value = "/r4/QuestionnaireResponse")
   ResponseEntity<QuestionnaireResponse> create(
       @Valid @RequestBody QuestionnaireResponse questionnaireResponse,
       @RequestHeader(name = "Authorization", required = true) String authorization) {
@@ -90,17 +90,17 @@ public class ManagementController {
     return questionnaireResponseController.create(questionnaireResponse, authorization, null, now);
   }
 
-  @GetMapping(value = "r4/Observation/ids")
+  @GetMapping(value = "/r4/Observation/ids")
   List<String> observationIds() {
     return observationController.getAllIds();
   }
 
-  @GetMapping(value = "r4/Questionnaire/ids")
+  @GetMapping(value = "/r4/Questionnaire/ids")
   List<String> questionnaireIds() {
     return questionnaireController.getAllIds();
   }
 
-  @GetMapping(value = "r4/QuestionnaireResponse/ids")
+  @GetMapping(value = "/r4/QuestionnaireResponse/ids")
   List<String> questionnaireResponseIds() {
     return questionnaireResponseController.getAllIds();
   }

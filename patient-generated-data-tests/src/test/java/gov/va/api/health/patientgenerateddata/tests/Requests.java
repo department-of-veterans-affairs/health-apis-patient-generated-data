@@ -47,7 +47,7 @@ public class Requests {
   }
 
   static ExpectedResponse doInternalGet(String request, String clientKey, Integer expectedStatus) {
-    var svc = systemDefinition().internalR4();
+    var svc = systemDefinition().management();
     return doRequest(
         Method.GET, svc, null, request, null, Map.of("client-key", clientKey), expectedStatus);
   }
@@ -58,7 +58,7 @@ public class Requests {
       Resource payload,
       String clientKey,
       Integer expectedStatus) {
-    var svc = systemDefinition().internalR4();
+    var svc = systemDefinition().management();
     var headers =
         Map.of(
             "Authorization",

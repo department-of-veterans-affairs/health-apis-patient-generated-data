@@ -57,7 +57,7 @@ public class QuestionnaireResponseDeleteIT {
     doDelete("archive the resource", "QuestionnaireResponse/" + TEST_ID, 204);
 
     var archivedResponse =
-        doInternalGet("archive/r4/ArchivedQuestionnaireResponse/" + TEST_ID, CLIENT_KEY, 200)
+        doInternalGet("archive/r4/QuestionnaireResponse/" + TEST_ID, CLIENT_KEY, 200)
             .expectValid(QuestionnaireResponse.class);
 
     assertThat(archivedResponse.status()).isEqualTo(QuestionnaireResponse.Status.completed);
@@ -74,7 +74,7 @@ public class QuestionnaireResponseDeleteIT {
     doDelete("archive the resource", "QuestionnaireResponse/" + TEST_ID, 204);
 
     archivedResponse =
-        doInternalGet("archive/r4/ArchivedQuestionnaireResponse/" + TEST_ID, CLIENT_KEY, 200)
+        doInternalGet("archive/r4/QuestionnaireResponse/" + TEST_ID, CLIENT_KEY, 200)
             .expectValid(QuestionnaireResponse.class);
 
     assertThat(archivedResponse.status()).isEqualTo(QuestionnaireResponse.Status.in_progress);
