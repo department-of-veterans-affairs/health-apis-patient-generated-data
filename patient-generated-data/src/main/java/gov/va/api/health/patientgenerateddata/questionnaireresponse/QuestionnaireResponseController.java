@@ -109,20 +109,23 @@ public class QuestionnaireResponseController {
         ResponseEntity.status(HttpStatus.NO_CONTENT)
             .header(IncludesIcnMajig.INCLUDES_ICN_HEADER, isBlank(icn) ? "NONE" : icn)
             .body(null);
-    var optEntity = repository.findById(id);
-    if (optEntity.isEmpty()) {
+    var optionalQuestionnaireResponse = repository.findById(id);
+    if (optionalQuestionnaireResponse.isEmpty()) {
       return response;
     }
-    var entity = optEntity.get();
-    matchIcn(icn, entity.deserializePayload(), QuestionnaireResponseIncludesIcnMajig::icns);
+    var questionnaireResponse = optionalQuestionnaireResponse.get();
+    matchIcn(
+        icn,
+        questionnaireResponse.deserializePayload(),
+        QuestionnaireResponseIncludesIcnMajig::icns);
     ArchivedQuestionnaireResponseEntity archiveEntity =
         ArchivedQuestionnaireResponseEntity.builder()
-            .id(entity.id())
-            .payload(entity.payload())
+            .id(questionnaireResponse.id())
+            .payload(questionnaireResponse.payload())
             .deletionTimestamp(nowMillis())
             .build();
     archivedRepository.save(archiveEntity);
-    repository.delete(entity);
+    repository.delete(questionnaireResponse);
     return response;
   }
 
