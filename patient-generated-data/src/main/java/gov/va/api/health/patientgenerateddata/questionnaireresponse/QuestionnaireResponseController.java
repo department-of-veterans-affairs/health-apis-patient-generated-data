@@ -118,13 +118,13 @@ public class QuestionnaireResponseController {
         icn,
         questionnaireResponse.deserializePayload(),
         QuestionnaireResponseIncludesIcnMajig::icns);
-    ArchivedQuestionnaireResponseEntity archiveEntity =
+    ArchivedQuestionnaireResponseEntity archivedEntity =
         ArchivedQuestionnaireResponseEntity.builder()
             .id(questionnaireResponse.id())
             .payload(questionnaireResponse.payload())
             .deletionTimestamp(nowMillis())
             .build();
-    archivedRepository.save(archiveEntity);
+    archivedRepository.save(archivedEntity);
     repository.delete(questionnaireResponse);
     return response;
   }
