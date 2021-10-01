@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -44,6 +45,11 @@ public class ManagementController {
     if (finder.apply(id).isPresent()) {
       throw new Exceptions.AlreadyExists(String.format("ID %s already exists", id));
     }
+  }
+
+  @GetMapping(value = "/archive/r4/QuestionnaireResponse/{id}")
+  QuestionnaireResponse archivedQuestionnaireResponse(@PathVariable("id") String id) {
+    return questionnaireResponseController.findArchivedById(id).orElse(null);
   }
 
   @PostMapping(value = "/r4/Observation")

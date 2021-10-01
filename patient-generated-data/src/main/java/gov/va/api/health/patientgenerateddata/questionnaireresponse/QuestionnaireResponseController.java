@@ -40,9 +40,11 @@ import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.DataBinder;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -63,6 +65,8 @@ public class QuestionnaireResponseController {
   private static final ObjectMapper MAPPER = JacksonMapperConfig.createMapper();
 
   private final LinkProperties linkProperties;
+
+  private final ArchivedQuestionnaireResponseRepository archivedRepository;
 
   private final QuestionnaireResponseRepository repository;
 
@@ -93,6 +97,25 @@ public class QuestionnaireResponseController {
         QuestionnaireResponseEntity.builder().id(questionnaireResponse.id()).build();
     populateEntity(entity, questionnaireResponse);
     return entity;
+  }
+
+  /** Archive the QuestionnaireResponse if it exists and then delete it from the main table. */
+  @DeleteMapping(value = "/{id}")
+  public ResponseEntity<Void> archivedDelete(@PathVariable("id") String id) {
+    var optionalQuestionnaireResponse = repository.findById(id);
+    if (optionalQuestionnaireResponse.isEmpty()) {
+      return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+    }
+    var questionnaireResponse = optionalQuestionnaireResponse.get();
+    ArchivedQuestionnaireResponseEntity archivedEntity =
+        ArchivedQuestionnaireResponseEntity.builder()
+            .id(questionnaireResponse.id())
+            .payload(questionnaireResponse.payload())
+            .deletionTimestamp(nowMillis())
+            .build();
+    archivedRepository.save(archivedEntity);
+    repository.delete(questionnaireResponse);
+    return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
   }
 
   private VulcanConfiguration<QuestionnaireResponseEntity> configuration() {
@@ -165,6 +188,10 @@ public class QuestionnaireResponseController {
             URI.create(
                 linkProperties.r4Url() + "/QuestionnaireResponse/" + questionnaireResponse.id()))
         .body(questionnaireResponse);
+  }
+
+  public Optional<QuestionnaireResponse> findArchivedById(String id) {
+    return archivedRepository.findById(id).map(e -> e.deserializePayload());
   }
 
   public Optional<QuestionnaireResponse> findById(String id) {
