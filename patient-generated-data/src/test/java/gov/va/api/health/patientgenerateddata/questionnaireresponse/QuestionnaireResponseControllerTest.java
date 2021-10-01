@@ -70,8 +70,11 @@ public class QuestionnaireResponseControllerTest {
         .thenReturn(
             Optional.of(QuestionnaireResponseEntity.builder().id("x").payload(payload).build()));
 
-    assertThat(_controller(archivedRepo, repo).archivedDelete("x"))
-        .isEqualTo(ResponseEntity.status(HttpStatus.NO_CONTENT).body(null));
+    assertThat(_controller(archivedRepo, repo).archivedDelete("x", null))
+        .isEqualTo(
+            ResponseEntity.status(HttpStatus.NO_CONTENT)
+                .header("X-VA-INCLUDES-ICN", "NONE")
+                .body(null));
 
     verify(archivedRepo, times(1))
         .save(ArchivedQuestionnaireResponseEntity.builder().id("x").payload(payload).build());
@@ -87,8 +90,11 @@ public class QuestionnaireResponseControllerTest {
         mock(ArchivedQuestionnaireResponseRepository.class);
     QuestionnaireResponseRepository repo = mock(QuestionnaireResponseRepository.class);
 
-    assertThat(_controller(archivedRepo, repo).archivedDelete("x"))
-        .isEqualTo(ResponseEntity.status(HttpStatus.NO_CONTENT).body(null));
+    assertThat(_controller(archivedRepo, repo).archivedDelete("x", null))
+        .isEqualTo(
+            ResponseEntity.status(HttpStatus.NO_CONTENT)
+                .header("X-VA-INCLUDES-ICN", "NONE")
+                .body(null));
   }
 
   @Test

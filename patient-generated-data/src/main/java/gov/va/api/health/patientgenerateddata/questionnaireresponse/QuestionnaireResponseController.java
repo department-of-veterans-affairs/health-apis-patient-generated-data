@@ -21,6 +21,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Streams;
 import gov.va.api.health.autoconfig.logging.Loggable;
 import gov.va.api.health.patientgenerateddata.Exceptions;
+import gov.va.api.health.patientgenerateddata.IncludesIcnMajig;
 import gov.va.api.health.patientgenerateddata.JacksonMapperConfig;
 import gov.va.api.health.patientgenerateddata.LinkProperties;
 import gov.va.api.health.patientgenerateddata.Sourcerer;
@@ -101,21 +102,28 @@ public class QuestionnaireResponseController {
 
   /** Archive the QuestionnaireResponse if it exists and then delete it from the main table. */
   @DeleteMapping(value = "/{id}")
-  public ResponseEntity<Void> archivedDelete(@PathVariable("id") String id) {
-    var optionalQuestionnaireResponse = repository.findById(id);
-    if (optionalQuestionnaireResponse.isEmpty()) {
-      return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+  ResponseEntity<Void> archivedDelete(
+      @PathVariable("id") String id,
+      @RequestHeader(name = "x-va-icn", required = false) String icn) {
+    ResponseEntity<Void> response =
+        ResponseEntity.status(HttpStatus.NO_CONTENT)
+            .header(IncludesIcnMajig.INCLUDES_ICN_HEADER, isBlank(icn) ? "NONE" : icn)
+            .body(null);
+    var optEntity = repository.findById(id);
+    if (optEntity.isEmpty()) {
+      return response;
     }
-    var questionnaireResponse = optionalQuestionnaireResponse.get();
-    ArchivedQuestionnaireResponseEntity archivedEntity =
+    var entity = optEntity.get();
+    matchIcn(icn, entity.deserializePayload(), QuestionnaireResponseIncludesIcnMajig::icns);
+    ArchivedQuestionnaireResponseEntity archiveEntity =
         ArchivedQuestionnaireResponseEntity.builder()
-            .id(questionnaireResponse.id())
-            .payload(questionnaireResponse.payload())
+            .id(entity.id())
+            .payload(entity.payload())
             .deletionTimestamp(nowMillis())
             .build();
-    archivedRepository.save(archivedEntity);
-    repository.delete(questionnaireResponse);
-    return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+    archivedRepository.save(archiveEntity);
+    repository.delete(entity);
+    return response;
   }
 
   private VulcanConfiguration<QuestionnaireResponseEntity> configuration() {
