@@ -329,6 +329,7 @@ databaseChangeLog:
                   type: datetime2
                   constraints:
                     - nullable: true
+
   - changeSet:
       id: 16
       author: pteracuda

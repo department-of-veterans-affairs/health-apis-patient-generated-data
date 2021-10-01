@@ -6,7 +6,6 @@ import static gov.va.api.health.patientgenerateddata.tests.Requests.doGet;
 import static gov.va.api.health.patientgenerateddata.tests.Requests.doInternalGet;
 import static gov.va.api.health.patientgenerateddata.tests.Requests.doInternalPost;
 import static gov.va.api.health.patientgenerateddata.tests.Requests.doPost;
-import static gov.va.api.health.patientgenerateddata.tests.Requests.doSandboxDelete;
 import static gov.va.api.health.sentinel.EnvironmentAssumptions.assumeEnvironmentIn;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -40,6 +39,7 @@ public class QuestionnaireResponseDeleteIT {
     String id = response.expectValid(QuestionnaireResponse.class).id();
 
     doDelete("archive the resource", "QuestionnaireResponse/" + id, 204);
+    doInternalGet("archive/r4/QuestionnaireResponse/" + id, CLIENT_KEY, 200);
     doGet("application/json", "QuestionnaireResponse/" + id, 404);
   }
 
@@ -79,6 +79,6 @@ public class QuestionnaireResponseDeleteIT {
 
     assertThat(archivedResponse.status()).isEqualTo(QuestionnaireResponse.Status.in_progress);
 
-    doSandboxDelete("tear down", "QuestionnaireResponse/" + TEST_ID, 200);
+    doGet("application/json", "QuestionnaireResponse/" + TEST_ID, 404);
   }
 }
