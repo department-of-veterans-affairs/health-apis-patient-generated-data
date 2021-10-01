@@ -21,6 +21,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Streams;
 import gov.va.api.health.autoconfig.logging.Loggable;
 import gov.va.api.health.patientgenerateddata.Exceptions;
+import gov.va.api.health.patientgenerateddata.IncludesIcnMajig;
 import gov.va.api.health.patientgenerateddata.JacksonMapperConfig;
 import gov.va.api.health.patientgenerateddata.LinkProperties;
 import gov.va.api.health.patientgenerateddata.Sourcerer;
@@ -101,12 +102,22 @@ public class QuestionnaireResponseController {
 
   /** Archive the QuestionnaireResponse if it exists and then delete it from the main table. */
   @DeleteMapping(value = "/{id}")
-  public ResponseEntity<Void> archivedDelete(@PathVariable("id") String id) {
+  ResponseEntity<Void> archivedDelete(
+      @PathVariable("id") String id,
+      @RequestHeader(name = "x-va-icn", required = false) String icn) {
+    ResponseEntity<Void> response =
+        ResponseEntity.status(HttpStatus.NO_CONTENT)
+            .header(IncludesIcnMajig.INCLUDES_ICN_HEADER, isBlank(icn) ? "NONE" : icn)
+            .body(null);
     var optionalQuestionnaireResponse = repository.findById(id);
     if (optionalQuestionnaireResponse.isEmpty()) {
-      return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+      return response;
     }
     var questionnaireResponse = optionalQuestionnaireResponse.get();
+    matchIcn(
+        icn,
+        questionnaireResponse.deserializePayload(),
+        QuestionnaireResponseIncludesIcnMajig::icns);
     ArchivedQuestionnaireResponseEntity archivedEntity =
         ArchivedQuestionnaireResponseEntity.builder()
             .id(questionnaireResponse.id())
@@ -115,7 +126,7 @@ public class QuestionnaireResponseController {
             .build();
     archivedRepository.save(archivedEntity);
     repository.delete(questionnaireResponse);
-    return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+    return response;
   }
 
   private VulcanConfiguration<QuestionnaireResponseEntity> configuration() {
