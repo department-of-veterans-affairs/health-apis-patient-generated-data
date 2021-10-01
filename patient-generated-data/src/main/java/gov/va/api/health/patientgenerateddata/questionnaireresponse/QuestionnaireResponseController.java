@@ -33,6 +33,9 @@ import gov.va.api.lighthouse.vulcan.VulcanConfiguration;
 import gov.va.api.lighthouse.vulcan.mappings.Mappings;
 import java.net.URI;
 import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
@@ -199,6 +202,19 @@ public class QuestionnaireResponseController {
             URI.create(
                 linkProperties.r4Url() + "/QuestionnaireResponse/" + questionnaireResponse.id()))
         .body(questionnaireResponse);
+  }
+
+  /** Remove 5 year or older archived questionnaire responses. */
+  public List<String> deleteOldArchives() {
+    Instant fiveYearsAgo = ZonedDateTime.now(ZoneId.systemDefault()).minusYears(5).toInstant();
+    List<String> deletedArchives = new ArrayList<>();
+    for (ArchivedQuestionnaireResponseEntity entity : archivedRepository.findAll()) {
+      if (entity.deletionTimestamp().isBefore(fiveYearsAgo)) {
+        deletedArchives.add(entity.id());
+        archivedRepository.delete(entity);
+      }
+    }
+    return deletedArchives;
   }
 
   public Optional<QuestionnaireResponse> findArchivedById(String id) {

@@ -25,6 +25,7 @@ import gov.va.api.health.patientgenerateddata.questionnaireresponse.Questionnair
 import gov.va.api.health.patientgenerateddata.questionnaireresponse.QuestionnaireResponseRepository;
 import java.net.URI;
 import java.time.Instant;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -126,6 +127,31 @@ public class ManagementControllerTest {
                     .build()));
     assertThrows(
         Exceptions.AlreadyExists.class, () -> _controller().create(questionnaire(), "Bearer sat"));
+  }
+
+  @Test
+  @SneakyThrows
+  void deleteOldArchives() {
+    when(archivedQuestionnaireResponseRepository.findAll())
+        .thenReturn(
+            List.of(
+                ArchivedQuestionnaireResponseEntity.builder()
+                    .id("x1")
+                    .payload(MAPPER.writeValueAsString(questionnaireResponse("x1")))
+                    .deletionTimestamp(Instant.now())
+                    .build(),
+                ArchivedQuestionnaireResponseEntity.builder()
+                    .id("x2")
+                    .payload(MAPPER.writeValueAsString(questionnaireResponse("x2")))
+                    .deletionTimestamp(ZonedDateTime.now().minusYears(6).toInstant())
+                    .build(),
+                ArchivedQuestionnaireResponseEntity.builder()
+                    .id("x3")
+                    .payload(MAPPER.writeValueAsString(questionnaireResponse("x3")))
+                    .deletionTimestamp(ZonedDateTime.now().minusYears(2).toInstant())
+                    .build()));
+    assertThat(_controller().deleteOldArchives())
+        .isEqualTo(List.of(questionnaireResponse("x2").id()));
   }
 
   @ParameterizedTest
