@@ -204,19 +204,6 @@ public class QuestionnaireResponseController {
         .body(questionnaireResponse);
   }
 
-  /** Remove 5 year or older archived questionnaire responses. */
-  public List<String> deleteOldArchives() {
-    Instant fiveYearsAgo = ZonedDateTime.now(ZoneId.systemDefault()).minusYears(5).toInstant();
-    List<String> deletedArchives = new ArrayList<>();
-    for (ArchivedQuestionnaireResponseEntity entity : archivedRepository.findAll()) {
-      if (entity.deletionTimestamp().isBefore(fiveYearsAgo)) {
-        deletedArchives.add(entity.id());
-        archivedRepository.delete(entity);
-      }
-    }
-    return deletedArchives;
-  }
-
   public Optional<QuestionnaireResponse> findArchivedById(String id) {
     return archivedRepository.findById(id).map(e -> e.deserializePayload());
   }
@@ -233,6 +220,20 @@ public class QuestionnaireResponseController {
   @InitBinder
   void initDirectFieldAccess(DataBinder dataBinder) {
     dataBinder.initDirectFieldAccess();
+  }
+
+  /** Remove 5 year or older archived questionnaire responses. */
+  public List<String> purgeArchives() {
+    Instant fiveYearsAgo = ZonedDateTime.now(ZoneId.of("UTC")).minusYears(5).toInstant();
+    List<String> deletedArchives = new ArrayList<>();
+    Streams.stream(archivedRepository.findAll())
+        .filter(entity -> entity.deletionTimestamp().isBefore(fiveYearsAgo))
+        .forEach(
+            entity -> {
+              deletedArchives.add(entity.id());
+              archivedRepository.delete(entity);
+            });
+    return deletedArchives;
   }
 
   @GetMapping(value = "/{id}")

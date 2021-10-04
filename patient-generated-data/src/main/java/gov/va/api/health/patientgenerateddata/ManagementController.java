@@ -91,14 +91,14 @@ public class ManagementController {
     return questionnaireResponseController.create(questionnaireResponse, authorization, null, now);
   }
 
-  @DeleteMapping(value = "/archive/r4/deleteOldArchives")
-  List<String> deleteOldArchives() {
-    return questionnaireResponseController.deleteOldArchives();
-  }
-
   @GetMapping(value = "/r4/Observation/ids")
   List<String> observationIds() {
     return observationController.getAllIds();
+  }
+
+  @DeleteMapping(value = "/archive/r4/purge")
+  List<String> purgeArchives() {
+    return questionnaireResponseController.purgeArchives();
   }
 
   @GetMapping(value = "/r4/Questionnaire/ids")
