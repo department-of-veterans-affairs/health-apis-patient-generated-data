@@ -19,6 +19,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -93,6 +94,11 @@ public class ManagementController {
   @GetMapping(value = "/r4/Observation/ids")
   List<String> observationIds() {
     return observationController.getAllIds();
+  }
+
+  @DeleteMapping(value = "/archive/r4/purge")
+  List<String> purgeArchives() {
+    return questionnaireResponseController.purgeArchives();
   }
 
   @GetMapping(value = "/r4/Questionnaire/ids")
