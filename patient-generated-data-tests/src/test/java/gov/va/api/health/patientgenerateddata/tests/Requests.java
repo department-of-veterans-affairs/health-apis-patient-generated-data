@@ -46,6 +46,13 @@ public class Requests {
     return doRequest(Method.GET, svc, null, request, null, headers, expectedStatus);
   }
 
+  static ExpectedResponse doInternalDelete(
+      String request, String clientKey, Integer expectedStatus) {
+    var svc = systemDefinition().management();
+    return doRequest(
+        Method.DELETE, svc, null, request, null, Map.of("client-key", clientKey), expectedStatus);
+  }
+
   static ExpectedResponse doInternalGet(String request, String clientKey, Integer expectedStatus) {
     var svc = systemDefinition().management();
     return doRequest(
