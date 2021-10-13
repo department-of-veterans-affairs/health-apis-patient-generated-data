@@ -48,7 +48,7 @@ import javax.ws.rs.Path;
     externalDocs =
         @ExternalDocumentation(
             description = "US Core Implementation Guide",
-            url = "https://build.fhir.org/ig/HL7/US-Core-R4/index.html"))
+            url = "https://hl7.org/fhir/us/core/STU4/index.html"))
 @SecuritySchemes({
   @SecurityScheme(
       name = "OauthFlowSandbox",
