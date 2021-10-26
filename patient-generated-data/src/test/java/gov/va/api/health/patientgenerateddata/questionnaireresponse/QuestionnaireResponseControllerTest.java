@@ -31,6 +31,7 @@ import org.mockito.ArgumentMatchers;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.DataBinder;
 
@@ -45,12 +46,55 @@ public class QuestionnaireResponseControllerTest {
           .r4BasePath("r4")
           .build();
 
-  private static QuestionnaireResponseController controller() {
-    return controller(mock(QuestionnaireResponseRepository.class));
+  private static QuestionnaireResponseController _controller() {
+    return _controller(
+        mock(ArchivedQuestionnaireResponseRepository.class),
+        mock(QuestionnaireResponseRepository.class));
   }
 
-  private static QuestionnaireResponseController controller(QuestionnaireResponseRepository repo) {
-    return new QuestionnaireResponseController(pageLinks, repo, new Sourcerer("{}", "sat"));
+  private static QuestionnaireResponseController _controller(
+      ArchivedQuestionnaireResponseRepository archivedRepo, QuestionnaireResponseRepository repo) {
+    return new QuestionnaireResponseController(
+        pageLinks, archivedRepo, repo, new Sourcerer("{}", "sat"));
+  }
+
+  @Test
+  @SneakyThrows
+  void archivedDelete() {
+    ArchivedQuestionnaireResponseRepository archivedRepo =
+        mock(ArchivedQuestionnaireResponseRepository.class);
+    QuestionnaireResponseRepository repo = mock(QuestionnaireResponseRepository.class);
+
+    String payload = MAPPER.writeValueAsString(questionnaireResponse());
+    when(repo.findById("x"))
+        .thenReturn(
+            Optional.of(QuestionnaireResponseEntity.builder().id("x").payload(payload).build()));
+
+    assertThat(_controller(archivedRepo, repo).archivedDelete("x", null))
+        .isEqualTo(
+            ResponseEntity.status(HttpStatus.NO_CONTENT)
+                .header("X-VA-INCLUDES-ICN", "NONE")
+                .body(null));
+
+    verify(archivedRepo, times(1))
+        .save(ArchivedQuestionnaireResponseEntity.builder().id("x").payload(payload).build());
+
+    verify(repo, times(1))
+        .delete(QuestionnaireResponseEntity.builder().id("x").payload(payload).build());
+  }
+
+  @Test
+  @SneakyThrows
+  void archivedDeleteNotFound() {
+    ArchivedQuestionnaireResponseRepository archivedRepo =
+        mock(ArchivedQuestionnaireResponseRepository.class);
+    QuestionnaireResponseRepository repo = mock(QuestionnaireResponseRepository.class);
+
+    assertThat(_controller(archivedRepo, repo).archivedDelete("x", null))
+        .isEqualTo(
+            ResponseEntity.status(HttpStatus.NO_CONTENT)
+                .header("X-VA-INCLUDES-ICN", "NONE")
+                .body(null));
   }
 
   @Test
@@ -60,8 +104,12 @@ public class QuestionnaireResponseControllerTest {
     var expected =
         questionnaireResponseWithLastUpdatedAndSource(
             now, "https://api.va.gov/services/pgd/static-access");
+    ArchivedQuestionnaireResponseRepository archivedRepo =
+        mock(ArchivedQuestionnaireResponseRepository.class);
     QuestionnaireResponseRepository repo = mock(QuestionnaireResponseRepository.class);
-    assertThat(controller(repo).create(questionnaireResponse(), "Bearer sat", null, now))
+    assertThat(
+            _controller(archivedRepo, repo)
+                .create(questionnaireResponse(), "Bearer sat", null, now))
         .isEqualTo(
             ResponseEntity.created(URI.create("http://foo.com/r4/QuestionnaireResponse/x"))
                 .body(expected));
@@ -76,10 +124,12 @@ public class QuestionnaireResponseControllerTest {
   @Test
   void create_invalid() {
     var questionnaireResponse = questionnaireResponse().id("123");
+    var archivedRepo = mock(ArchivedQuestionnaireResponseRepository.class);
     var repo = mock(QuestionnaireResponseRepository.class);
     var pageLinks = mock(LinkProperties.class);
     var controller =
-        new QuestionnaireResponseController(pageLinks, repo, new Sourcerer("{}", "sat"));
+        new QuestionnaireResponseController(
+            pageLinks, archivedRepo, repo, new Sourcerer("{}", "sat"));
     assertThrows(
         Exceptions.BadRequest.class, () -> controller.create(questionnaireResponse, "", null));
   }
@@ -87,11 +137,14 @@ public class QuestionnaireResponseControllerTest {
   @Test
   @SneakyThrows
   void getAllIds() {
+    ArchivedQuestionnaireResponseRepository archivedRepo =
+        mock(ArchivedQuestionnaireResponseRepository.class);
     QuestionnaireResponseRepository repo = mock(QuestionnaireResponseRepository.class);
     LinkProperties pageLinks =
         LinkProperties.builder().baseUrl("http://foo.com").r4BasePath("r4").build();
     var controller =
-        new QuestionnaireResponseController(pageLinks, repo, new Sourcerer("{}", "sat"));
+        new QuestionnaireResponseController(
+            pageLinks, archivedRepo, repo, new Sourcerer("{}", "sat"));
     when(repo.findAll())
         .thenReturn(
             List.of(
@@ -114,6 +167,7 @@ public class QuestionnaireResponseControllerTest {
   void initDirectFieldAccess() {
     new QuestionnaireResponseController(
             mock(LinkProperties.class),
+            mock(ArchivedQuestionnaireResponseRepository.class),
             mock(QuestionnaireResponseRepository.class),
             new Sourcerer("{}", "sat"))
         .initDirectFieldAccess(mock(DataBinder.class));
@@ -124,30 +178,36 @@ public class QuestionnaireResponseControllerTest {
       strings = {"", "?_id=123&authored=2000-01-01T00:00:00Z", "?_id=123&_lastUpdated=gt2020"})
   void invalidRequests(String query) {
     var r = requestFromUri("http://fonzy.com/r4/QuestionnaireResponse" + query);
-    assertThatExceptionOfType(InvalidRequest.class).isThrownBy(() -> controller().search(r));
+    assertThatExceptionOfType(InvalidRequest.class).isThrownBy(() -> _controller().search(r));
   }
 
   @Test
   @SneakyThrows
   void read() {
+    ArchivedQuestionnaireResponseRepository archivedRepo =
+        mock(ArchivedQuestionnaireResponseRepository.class);
     QuestionnaireResponseRepository repo = mock(QuestionnaireResponseRepository.class);
     String payload = MAPPER.writeValueAsString(questionnaireResponse());
     when(repo.findById("x"))
         .thenReturn(
             Optional.of(QuestionnaireResponseEntity.builder().id("x").payload(payload).build()));
     assertThat(
-            new QuestionnaireResponseController(pageLinks, repo, new Sourcerer("{}", "sat"))
+            new QuestionnaireResponseController(
+                    pageLinks, archivedRepo, repo, new Sourcerer("{}", "sat"))
                 .read("x"))
         .isEqualTo(questionnaireResponse());
   }
 
   @Test
   void read_notFound() {
+    ArchivedQuestionnaireResponseRepository archivedRepo =
+        mock(ArchivedQuestionnaireResponseRepository.class);
     QuestionnaireResponseRepository repo = mock(QuestionnaireResponseRepository.class);
     assertThrows(
         Exceptions.NotFound.class,
         () ->
-            new QuestionnaireResponseController(pageLinks, repo, new Sourcerer("{}", "sat"))
+            new QuestionnaireResponseController(
+                    pageLinks, archivedRepo, repo, new Sourcerer("{}", "sat"))
                 .read("notfound"));
   }
 
@@ -155,6 +215,8 @@ public class QuestionnaireResponseControllerTest {
   @SneakyThrows
   void update_existing() {
     Instant now = Instant.parse("2021-01-01T01:00:00.001Z");
+    ArchivedQuestionnaireResponseRepository archivedRepo =
+        mock(ArchivedQuestionnaireResponseRepository.class);
     QuestionnaireResponse questionnaireResponse =
         questionnaireResponseWithLastUpdatedAndSource(
             now, "https://api.va.gov/services/pgd/static-access");
@@ -167,7 +229,8 @@ public class QuestionnaireResponseControllerTest {
         questionnaireResponseWithLastUpdatedAndSource(
             now, "https://api.va.gov/services/pgd/static-access");
     assertThat(
-            new QuestionnaireResponseController(pageLinks, repo, new Sourcerer("{}", "sat"))
+            new QuestionnaireResponseController(
+                    pageLinks, archivedRepo, repo, new Sourcerer("{}", "sat"))
                 .update(questionnaireResponse, "Bearer sat", null, now))
         .isEqualTo(ResponseEntity.ok(expected));
     verify(repo, times(1))
@@ -176,12 +239,15 @@ public class QuestionnaireResponseControllerTest {
 
   @Test
   void update_not_existing() {
+    ArchivedQuestionnaireResponseRepository archivedRepo =
+        mock(ArchivedQuestionnaireResponseRepository.class);
     QuestionnaireResponseRepository repo = mock(QuestionnaireResponseRepository.class);
     QuestionnaireResponse questionnaireResponse = questionnaireResponse();
     assertThrows(
         Exceptions.NotFound.class,
         () ->
-            new QuestionnaireResponseController(pageLinks, repo, new Sourcerer("{}", "sat"))
+            new QuestionnaireResponseController(
+                    pageLinks, archivedRepo, repo, new Sourcerer("{}", "sat"))
                 .update("x", questionnaireResponse, "Bearer sat", null));
   }
 
@@ -189,6 +255,8 @@ public class QuestionnaireResponseControllerTest {
   @SneakyThrows
   void update_payloadSource() {
     Instant now = Instant.parse("2021-01-01T01:00:00.001Z");
+    ArchivedQuestionnaireResponseRepository archivedRepo =
+        mock(ArchivedQuestionnaireResponseRepository.class);
     QuestionnaireResponse questionnaireResponse =
         questionnaireResponseWithLastUpdatedAndSource(
             now, "https://api.va.gov/services/pgd/zombie-bob-nelson");
@@ -204,7 +272,8 @@ public class QuestionnaireResponseControllerTest {
         questionnaireResponseWithLastUpdatedAndSource(
             now, "https://api.va.gov/services/pgd/static-access");
     assertThat(
-            new QuestionnaireResponseController(pageLinks, repo, new Sourcerer("{}", "sat"))
+            new QuestionnaireResponseController(
+                    pageLinks, archivedRepo, repo, new Sourcerer("{}", "sat"))
                 .update(questionnaireResponse, "Bearer sat", null, now))
         .isEqualTo(ResponseEntity.ok(expected));
     verify(repo, times(1))
@@ -220,8 +289,10 @@ public class QuestionnaireResponseControllerTest {
         "?questionnaire=37953b72-961b-41ee-bd05-86c62bacc46b"
       })
   void validSearch(String query) {
+    ArchivedQuestionnaireResponseRepository archivedRepo =
+        mock(ArchivedQuestionnaireResponseRepository.class);
     QuestionnaireResponseRepository repo = mock(QuestionnaireResponseRepository.class);
-    QuestionnaireResponseController controller = controller(repo);
+    QuestionnaireResponseController controller = _controller(archivedRepo, repo);
     var anySpec = ArgumentMatchers.<Specification<QuestionnaireResponseEntity>>any();
     when(repo.findAll(anySpec, any(Pageable.class)))
         .thenAnswer(

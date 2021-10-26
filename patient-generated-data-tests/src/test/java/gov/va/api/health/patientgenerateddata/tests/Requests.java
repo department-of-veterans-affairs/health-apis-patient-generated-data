@@ -31,8 +31,9 @@ public class Requests {
           + ".Agj_xLqXasOzEet6Ja6hONNJ3z4D4xMvpQw0skXBaZI";
 
   static ExpectedResponse doDelete(String description, String request, Integer expectedStatus) {
-    var svc = systemDefinition().sandboxDataR4();
-    return doRequest(Method.DELETE, svc, description, request, null, Map.of(), expectedStatus);
+    var svc = systemDefinition().r4();
+    var headers = Map.of("Authorization", "Bearer " + ACCESS_TOKEN);
+    return doRequest(Method.DELETE, svc, description, request, null, headers, expectedStatus);
   }
 
   static ExpectedResponse doGet(String accept, String request, Integer expectedStatus) {
@@ -45,8 +46,15 @@ public class Requests {
     return doRequest(Method.GET, svc, null, request, null, headers, expectedStatus);
   }
 
+  static ExpectedResponse doInternalDelete(
+      String request, String clientKey, Integer expectedStatus) {
+    var svc = systemDefinition().management();
+    return doRequest(
+        Method.DELETE, svc, null, request, null, Map.of("client-key", clientKey), expectedStatus);
+  }
+
   static ExpectedResponse doInternalGet(String request, String clientKey, Integer expectedStatus) {
-    var svc = systemDefinition().internalR4();
+    var svc = systemDefinition().management();
     return doRequest(
         Method.GET, svc, null, request, null, Map.of("client-key", clientKey), expectedStatus);
   }
@@ -57,7 +65,7 @@ public class Requests {
       Resource payload,
       String clientKey,
       Integer expectedStatus) {
-    var svc = systemDefinition().internalR4();
+    var svc = systemDefinition().management();
     var headers =
         Map.of(
             "Authorization",
@@ -127,5 +135,11 @@ public class Requests {
       response.expect(expectedStatus);
     }
     return response;
+  }
+
+  static ExpectedResponse doSandboxDelete(
+      String description, String request, Integer expectedStatus) {
+    var svc = systemDefinition().sandboxDataR4();
+    return doRequest(Method.DELETE, svc, description, request, null, Map.of(), expectedStatus);
   }
 }

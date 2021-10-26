@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -70,6 +71,58 @@ public interface R4QuestionnaireResponseApi {
               description = "The FHIR resource in JSON format.",
               content = @Content(mediaType = "application/fhir+json"))
           QuestionnaireResponse body);
+
+  @Operation(
+      summary = "QuestionnaireResponse Delete",
+      description = "https://www.hl7.org/fhir/R4/questionnaireresponse.html",
+      tags = {"QuestionnaireResponse"})
+  @DELETE
+  @Path("QuestionnaireResponse/{id}")
+  @ApiResponse(responseCode = "204", description = "Record deleted")
+  @ApiResponse(
+      responseCode = "400",
+      description = "Bad request",
+      content =
+          @Content(
+              mediaType = "application/json",
+              schema = @Schema(implementation = OperationOutcome.class)))
+  @ApiResponse(
+      responseCode = "401",
+      description = "Unauthorized",
+      content =
+          @Content(
+              mediaType = "application/json",
+              schema = @Schema(implementation = OperationOutcome.class)))
+  @ApiResponse(
+      responseCode = "403",
+      description = "Forbidden",
+      content =
+          @Content(
+              mediaType = "application/json",
+              schema = @Schema(implementation = OperationOutcome.class)))
+  @ApiResponse(
+      responseCode = "429",
+      description = "Too many requests",
+      content =
+          @Content(
+              mediaType = "application/json",
+              schema = @Schema(implementation = OperationOutcome.class)))
+  @ApiResponse(
+      responseCode = "500",
+      description = "Internal server error",
+      content =
+          @Content(
+              mediaType = "application/json",
+              schema = @Schema(implementation = OperationOutcome.class)))
+  void questionnaireResponseDelete(
+      @Parameter(
+              in = ParameterIn.PATH,
+              name = "id",
+              required = true,
+              description =
+                  "The logical ID of the resource. Once assigned, this value never changes.",
+              example = "f003043a-9047-4c3a-b15b-a26c67f4e723")
+          String id);
 
   @Operation(
       summary = "QuestionnaireResponse Read",

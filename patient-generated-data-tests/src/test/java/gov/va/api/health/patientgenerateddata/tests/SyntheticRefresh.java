@@ -34,7 +34,7 @@ public class SyntheticRefresh {
           doPut("refresh", clazz.getSimpleName() + "/" + obj.id(), obj, ACCESS_TOKEN, null);
       if (response.response().statusCode() == 404) {
         log.info("Creating {}", clazz.getSimpleName() + "/" + obj.id());
-        doInternalPost("create", clazz.getSimpleName(), obj, CLIENT_KEY, 201);
+        doInternalPost("create", "r4/" + clazz.getSimpleName(), obj, CLIENT_KEY, 201);
         doPut("refresh", clazz.getSimpleName() + "/" + obj.id(), obj, ACCESS_TOKEN, 200);
       }
     }

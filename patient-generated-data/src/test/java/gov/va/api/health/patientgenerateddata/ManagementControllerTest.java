@@ -18,11 +18,14 @@ import gov.va.api.health.patientgenerateddata.observation.ObservationRepository;
 import gov.va.api.health.patientgenerateddata.questionnaire.QuestionnaireController;
 import gov.va.api.health.patientgenerateddata.questionnaire.QuestionnaireEntity;
 import gov.va.api.health.patientgenerateddata.questionnaire.QuestionnaireRepository;
+import gov.va.api.health.patientgenerateddata.questionnaireresponse.ArchivedQuestionnaireResponseEntity;
+import gov.va.api.health.patientgenerateddata.questionnaireresponse.ArchivedQuestionnaireResponseRepository;
 import gov.va.api.health.patientgenerateddata.questionnaireresponse.QuestionnaireResponseController;
 import gov.va.api.health.patientgenerateddata.questionnaireresponse.QuestionnaireResponseEntity;
 import gov.va.api.health.patientgenerateddata.questionnaireresponse.QuestionnaireResponseRepository;
 import java.net.URI;
 import java.time.Instant;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -44,6 +47,9 @@ public class ManagementControllerTest {
 
   QuestionnaireRepository questionnaireRepo = mock(QuestionnaireRepository.class);
 
+  ArchivedQuestionnaireResponseRepository archivedQuestionnaireResponseRepository =
+      mock(ArchivedQuestionnaireResponseRepository.class);
+
   QuestionnaireResponseRepository questionnaireResponseRepo =
       mock(QuestionnaireResponseRepository.class);
 
@@ -55,7 +61,25 @@ public class ManagementControllerTest {
     return new ManagementController(
         new ObservationController(linkProperties, observationRepo, sourcerer),
         new QuestionnaireController(linkProperties, questionnaireRepo, sourcerer),
-        new QuestionnaireResponseController(linkProperties, questionnaireResponseRepo, sourcerer));
+        new QuestionnaireResponseController(
+            linkProperties,
+            archivedQuestionnaireResponseRepository,
+            questionnaireResponseRepo,
+            sourcerer));
+  }
+
+  @Test
+  @SneakyThrows
+  void archivedQuestionnaireResponse() {
+    when(archivedQuestionnaireResponseRepository.findById("x1"))
+        .thenReturn(
+            Optional.of(
+                ArchivedQuestionnaireResponseEntity.builder()
+                    .id("x1")
+                    .payload(MAPPER.writeValueAsString(questionnaireResponse("x1")))
+                    .build()));
+    assertThat(_controller().archivedQuestionnaireResponse("x1"))
+        .isEqualTo(questionnaireResponse("x1"));
   }
 
   @Test
@@ -131,6 +155,30 @@ public class ManagementControllerTest {
                     .payload(MAPPER.writeValueAsString(observation("x3")))
                     .build()));
     assertThat(_controller().observationIds()).isEqualTo(List.of("x1", "x2", "x3"));
+  }
+
+  @Test
+  @SneakyThrows
+  void purgeArchives() {
+    when(archivedQuestionnaireResponseRepository.findAll())
+        .thenReturn(
+            List.of(
+                ArchivedQuestionnaireResponseEntity.builder()
+                    .id("x1")
+                    .payload(MAPPER.writeValueAsString(questionnaireResponse("x1")))
+                    .deletionTimestamp(Instant.now())
+                    .build(),
+                ArchivedQuestionnaireResponseEntity.builder()
+                    .id("x2")
+                    .payload(MAPPER.writeValueAsString(questionnaireResponse("x2")))
+                    .deletionTimestamp(ZonedDateTime.now().minusYears(6).toInstant())
+                    .build(),
+                ArchivedQuestionnaireResponseEntity.builder()
+                    .id("x3")
+                    .payload(MAPPER.writeValueAsString(questionnaireResponse("x3")))
+                    .deletionTimestamp(ZonedDateTime.now().minusYears(2).toInstant())
+                    .build()));
+    assertThat(_controller().purgeArchives()).isEqualTo(List.of(questionnaireResponse("x2").id()));
   }
 
   @Test

@@ -1,8 +1,8 @@
 package gov.va.api.health.patientgenerateddata.tests;
 
 import static gov.va.api.health.patientgenerateddata.tests.Requests.CLIENT_KEY;
-import static gov.va.api.health.patientgenerateddata.tests.Requests.doDelete;
 import static gov.va.api.health.patientgenerateddata.tests.Requests.doInternalPost;
+import static gov.va.api.health.patientgenerateddata.tests.Requests.doSandboxDelete;
 import static gov.va.api.health.sentinel.EnvironmentAssumptions.assumeEnvironmentIn;
 
 import gov.va.api.health.r4.api.datatypes.CodeableConcept;
@@ -69,21 +69,22 @@ public class ManagementControllerCreateIT {
   static void tearDown() {
     assumeEnvironmentIn(
         Environment.LOCAL, Environment.QA, Environment.STAGING, Environment.STAGING_LAB);
-    doDelete("tear down", "Observation/" + TEST_ID, 200);
-    doDelete("tear down", "Questionnaire/" + TEST_ID, 200);
-    doDelete("tear down", "QuestionnaireResponse/" + TEST_ID, 200);
+    doSandboxDelete("tear down", "Observation/" + TEST_ID, 200);
+    doSandboxDelete("tear down", "Questionnaire/" + TEST_ID, 200);
+    doSandboxDelete("tear down", "QuestionnaireResponse/" + TEST_ID, 200);
   }
 
   @Test
   void create_observation_knownId() {
-    doInternalPost("create resource with known ID", "Observation", observation(), CLIENT_KEY, 201);
+    doInternalPost(
+        "create resource with known ID", "r4/Observation", observation(), CLIENT_KEY, 201);
   }
 
   @Test
   void create_questionnaireResponse_knownId() {
     doInternalPost(
         "create resource with known ID",
-        "QuestionnaireResponse",
+        "r4/QuestionnaireResponse",
         questionnaireResponse(),
         CLIENT_KEY,
         201);
@@ -92,6 +93,6 @@ public class ManagementControllerCreateIT {
   @Test
   void create_questionnaire_knownId() {
     doInternalPost(
-        "create resource with known ID", "Questionnaire", questionnaire(), CLIENT_KEY, 201);
+        "create resource with known ID", "r4/Questionnaire", questionnaire(), CLIENT_KEY, 201);
   }
 }

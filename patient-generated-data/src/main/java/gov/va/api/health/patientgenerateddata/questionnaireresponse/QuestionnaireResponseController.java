@@ -21,6 +21,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Streams;
 import gov.va.api.health.autoconfig.logging.Loggable;
 import gov.va.api.health.patientgenerateddata.Exceptions;
+import gov.va.api.health.patientgenerateddata.IncludesIcnMajig;
 import gov.va.api.health.patientgenerateddata.JacksonMapperConfig;
 import gov.va.api.health.patientgenerateddata.LinkProperties;
 import gov.va.api.health.patientgenerateddata.Sourcerer;
@@ -32,6 +33,9 @@ import gov.va.api.lighthouse.vulcan.VulcanConfiguration;
 import gov.va.api.lighthouse.vulcan.mappings.Mappings;
 import java.net.URI;
 import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
@@ -40,9 +44,11 @@ import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.DataBinder;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -63,6 +69,8 @@ public class QuestionnaireResponseController {
   private static final ObjectMapper MAPPER = JacksonMapperConfig.createMapper();
 
   private final LinkProperties linkProperties;
+
+  private final ArchivedQuestionnaireResponseRepository archivedRepository;
 
   private final QuestionnaireResponseRepository repository;
 
@@ -93,6 +101,35 @@ public class QuestionnaireResponseController {
         QuestionnaireResponseEntity.builder().id(questionnaireResponse.id()).build();
     populateEntity(entity, questionnaireResponse);
     return entity;
+  }
+
+  /** Archive the QuestionnaireResponse if it exists and then delete it from the main table. */
+  @DeleteMapping(value = "/{id}")
+  ResponseEntity<Void> archivedDelete(
+      @PathVariable("id") String id,
+      @RequestHeader(name = "x-va-icn", required = false) String icn) {
+    ResponseEntity<Void> response =
+        ResponseEntity.status(HttpStatus.NO_CONTENT)
+            .header(IncludesIcnMajig.INCLUDES_ICN_HEADER, isBlank(icn) ? "NONE" : icn)
+            .body(null);
+    var optionalQuestionnaireResponse = repository.findById(id);
+    if (optionalQuestionnaireResponse.isEmpty()) {
+      return response;
+    }
+    var questionnaireResponse = optionalQuestionnaireResponse.get();
+    matchIcn(
+        icn,
+        questionnaireResponse.deserializePayload(),
+        QuestionnaireResponseIncludesIcnMajig::icns);
+    ArchivedQuestionnaireResponseEntity archivedEntity =
+        ArchivedQuestionnaireResponseEntity.builder()
+            .id(questionnaireResponse.id())
+            .payload(questionnaireResponse.payload())
+            .deletionTimestamp(nowMillis())
+            .build();
+    archivedRepository.save(archivedEntity);
+    repository.delete(questionnaireResponse);
+    return response;
   }
 
   private VulcanConfiguration<QuestionnaireResponseEntity> configuration() {
@@ -167,6 +204,10 @@ public class QuestionnaireResponseController {
         .body(questionnaireResponse);
   }
 
+  public Optional<QuestionnaireResponse> findArchivedById(String id) {
+    return archivedRepository.findById(id).map(e -> e.deserializePayload());
+  }
+
   public Optional<QuestionnaireResponse> findById(String id) {
     return repository.findById(id).map(e -> e.deserializePayload());
   }
@@ -179,6 +220,20 @@ public class QuestionnaireResponseController {
   @InitBinder
   void initDirectFieldAccess(DataBinder dataBinder) {
     dataBinder.initDirectFieldAccess();
+  }
+
+  /** Remove 5 year or older archived questionnaire responses. */
+  public List<String> purgeArchives() {
+    Instant fiveYearsAgo = ZonedDateTime.now(ZoneId.of("UTC")).minusYears(5).toInstant();
+    List<String> deletedArchives = new ArrayList<>();
+    Streams.stream(archivedRepository.findAll())
+        .filter(entity -> entity.deletionTimestamp().isBefore(fiveYearsAgo))
+        .forEach(
+            entity -> {
+              deletedArchives.add(entity.id());
+              archivedRepository.delete(entity);
+            });
+    return deletedArchives;
   }
 
   @GetMapping(value = "/{id}")
