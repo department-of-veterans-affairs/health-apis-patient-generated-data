@@ -78,13 +78,7 @@ public interface R4QuestionnaireResponseApi {
       tags = {"QuestionnaireResponse"})
   @DELETE
   @Path("QuestionnaireResponse/{id}")
-  @ApiResponse(
-      responseCode = "204",
-      description = "Record deleted",
-      content =
-          @Content(
-              mediaType = "application/fhir+json",
-              schema = @Schema(implementation = QuestionnaireResponse.class)))
+  @ApiResponse(responseCode = "204", description = "Record deleted")
   @ApiResponse(
       responseCode = "400",
       description = "Bad request",
