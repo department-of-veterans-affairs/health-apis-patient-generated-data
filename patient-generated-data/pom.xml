@@ -16,6 +16,7 @@
     <swagger-examples-maven-plugin.version>3.0.0</swagger-examples-maven-plugin.version>
     <swagger-maven-plugin.version>2.1.5</swagger-maven-plugin.version>
     <vulcan.version>3.0.0</vulcan.version>
+    <guava.version>29.0-jre</guava.version>
   </properties>
   <dependencies>
     <dependency>
@@ -56,7 +57,7 @@
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <version>29.0-jre</version>
+      <version>${guava.version}</version>
     </dependency>
   </dependencies>
   <build>
