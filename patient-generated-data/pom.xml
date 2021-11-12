@@ -12,11 +12,11 @@
   <packaging>jar</packaging>
   <properties>
     <fhir-resources.version>9.0.0</fhir-resources.version>
+    <guava.version>29.0-jre</guava.version>
     <nimbus-jose-jwt.version>9.13</nimbus-jose-jwt.version>
     <swagger-examples-maven-plugin.version>3.0.0</swagger-examples-maven-plugin.version>
     <swagger-maven-plugin.version>2.1.5</swagger-maven-plugin.version>
     <vulcan.version>3.0.0</vulcan.version>
-    <guava.version>29.0-jre</guava.version>
   </properties>
   <dependencies>
     <dependency>
