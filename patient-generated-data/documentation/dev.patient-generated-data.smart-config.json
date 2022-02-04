@@ -1,0 +1,22 @@
+{
+  "scopesSupported" : [
+    "offline_access",
+    "patient/Observation.read",
+    "patient/Observation.write",
+    "patient/Appointment.read",
+    "patient/Appointment.write",
+    "patient/QuestionnaireResponse.read",
+    "patient/QuestionnaireResponse.write",
+    "system/Questionnaire.read",
+    "system/Questionnaire.write"
+  ],
+  "responseTypeSupported" : [
+    "code"
+  ],
+  "capabilities" : [
+    "context-standalone-patient",
+    "launch-standalone",
+    "permission-offline",
+    "permission-patient"
+  ]
+}
