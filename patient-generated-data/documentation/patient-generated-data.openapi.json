@@ -1,0 +1,5402 @@
+{
+  "openapi" : "3.0.1",
+  "info" : {
+    "title" : "US Core R4",
+    "version" : "v1"
+  },
+  "externalDocs" : {
+    "description" : "US Core Implementation Guide",
+    "url" : "https://hl7.org/fhir/us/core/STU4/index.html"
+  },
+  "servers" : [ {
+    "url" : "https://sandbox-api.va.gov/services/pgd/v0/r4/",
+    "description" : "Sandbox",
+    "variables" : { }
+  }, {
+    "url" : "https://api.va.gov/services/pgd/v0/r4/",
+    "description" : "Production",
+    "variables" : { }
+  } ],
+  "security" : [ {
+    "OauthFlowSandbox" : [ "launch/patient", "offline_access", "patient/Appointment.read", "patient/Appointment.write", "patient/Observation.read", "patient/Observation.write", "patient/QuestionnaireResponse.read", "patient/QuestionnaireResponse.write", "system/Questionnaire.read", "system/Questionnaire.write" ]
+  }, {
+    "OauthFlowProduction" : [ "launch/patient", "offline_access", "patient/Appointment.read", "patient/Appointment.write", "patient/Observation.read", "patient/Observation.write", "patient/QuestionnaireResponse.read", "patient/QuestionnaireResponse.write", "system/Questionnaire.read", "system/Questionnaire.write" ]
+  } ],
+  "paths" : {
+    "/Appointment" : {
+      "get" : {
+        "tags" : [ "Appointment" ],
+        "summary" : "Appointment Search",
+        "description" : "https://www.hl7.org/fhir/R4/appointment.html",
+        "operationId" : "appointmentSearch",
+        "parameters" : [ {
+          "name" : "_id",
+          "in" : "query",
+          "description" : "The logical ID of the resource. Once assigned, this value never changes.",
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "0b9d2e37-f84d-4f9e-9ba3-995772f368d3"
+        }, {
+          "name" : "_lastUpdated",
+          "in" : "query",
+          "description" : "The date when the record was last updated.",
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "gt2021-01-01T00:00:00Z"
+        }, {
+          "name" : "page",
+          "in" : "query",
+          "description" : "The page number of the search result.",
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32",
+            "default" : 1
+          },
+          "example" : 1
+        }, {
+          "name" : "_count",
+          "in" : "query",
+          "description" : "The number of resources that should be returned in a single page. The maximum count size is 100.",
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32",
+            "default" : 15
+          },
+          "example" : 15
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Record found",
+            "content" : {
+              "application/fhir+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AppointmentBundle"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad request",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OperationOutcome"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OperationOutcome"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Forbidden",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OperationOutcome"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Not found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OperationOutcome"
+                }
+              }
+            }
+          },
+          "429" : {
+            "description" : "Too many requests",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OperationOutcome"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OperationOutcome"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "Appointment" ],
+        "summary" : "Appointment Create",
+        "description" : "https://www.hl7.org/fhir/R4/appointment.html",
+        "operationId" : "appointmentCreate",
+        "requestBody" : {
+          "description" : "The FHIR resource in JSON format.",
+          "content" : {
+            "application/fhir+json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/Appointment"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "201" : {
+            "description" : "Record created",
+            "content" : {
+              "application/fhir+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Appointment"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad request",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OperationOutcome"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OperationOutcome"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Forbidden",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OperationOutcome"
+                }
+              }
+            }
+          },
+          "429" : {
+            "description" : "Too many requests",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OperationOutcome"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OperationOutcome"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Appointment/{id}" : {
+      "get" : {
+        "tags" : [ "Appointment" ],
+        "summary" : "Appointment Read",
+        "description" : "https://www.hl7.org/fhir/R4/appointment.html",
+        "operationId" : "appointmentRead",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "The logical ID of the resource. Once assigned, this value never changes.",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "0b9d2e37-f84d-4f9e-9ba3-995772f368d3"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Record found",
+            "content" : {
+              "application/fhir+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Appointment"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad request",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OperationOutcome"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OperationOutcome"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Forbidden",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OperationOutcome"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Not found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OperationOutcome"
+                }
+              }
+            }
+          },
+          "429" : {
+            "description" : "Too many requests",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OperationOutcome"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OperationOutcome"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put" : {
+        "tags" : [ "Appointment" ],
+        "summary" : "Appointment Update",
+        "description" : "https://www.hl7.org/fhir/r4/appointment.html",
+        "operationId" : "appointmentUpdate",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "The logical ID of the resource. Once assigned, this value never changes.",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "0b9d2e37-f84d-4f9e-9ba3-995772f368d3"
+        } ],
+        "requestBody" : {
+          "description" : "The FHIR resource in JSON format.",
+          "content" : {
+            "application/fhir+json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/Appointment"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Record updated",
+            "content" : {
+              "application/fhir+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Appointment"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad request",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OperationOutcome"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OperationOutcome"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Forbidden",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OperationOutcome"
+                }
+              }
+            }
+          },
+          "429" : {
+            "description" : "Too many requests",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OperationOutcome"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OperationOutcome"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Observation" : {
+      "get" : {
+        "tags" : [ "Observation" ],
+        "summary" : "Observation Search",
+        "description" : "https://www.hl7.org/fhir/R4/observation.html",
+        "operationId" : "observationSearch",
+        "parameters" : [ {
+          "name" : "_id",
+          "in" : "query",
+          "description" : "The logical ID of the resource. Once assigned, this value never changes.",
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "0b9d2e37-f84d-4f9e-9ba3-995772f368d3"
+        }, {
+          "name" : "_lastUpdated",
+          "in" : "query",
+          "description" : "The date when the record was last updated.",
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "gt2021-01-01T00:00:00Z"
+        }, {
+          "name" : "page",
+          "in" : "query",
+          "description" : "The page number of the search result.",
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32",
+            "default" : 1
+          },
+          "example" : 1
+        }, {
+          "name" : "_count",
+          "in" : "query",
+          "description" : "The number of resources that should be returned in a single page. The maximum count size is 100.",
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32",
+            "default" : 15
+          },
+          "example" : 15
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Record found",
+            "content" : {
+              "application/fhir+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ObservationBundle"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad request",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OperationOutcome"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OperationOutcome"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Forbidden",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OperationOutcome"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Not found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OperationOutcome"
+                }
+              }
+            }
+          },
+          "429" : {
+            "description" : "Too many requests",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OperationOutcome"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OperationOutcome"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "Observation" ],
+        "summary" : "Observation Create",
+        "description" : "https://www.hl7.org/fhir/r4/observation.html",
+        "operationId" : "observationCreate",
+        "requestBody" : {
+          "description" : "The FHIR resource in JSON format.",
+          "content" : {
+            "application/fhir+json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/Observation"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "201" : {
+            "description" : "Record created",
+            "content" : {
+              "application/fhir+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Observation"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad request",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OperationOutcome"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OperationOutcome"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Forbidden",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OperationOutcome"
+                }
+              }
+            }
+          },
+          "429" : {
+            "description" : "Too many requests",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OperationOutcome"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OperationOutcome"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Observation/{id}" : {
+      "get" : {
+        "tags" : [ "Observation" ],
+        "summary" : "Observation Read",
+        "description" : "https://www.hl7.org/fhir/r4/observation.html",
+        "operationId" : "observationRead",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "The logical ID of the resource. Once assigned, this value never changes.",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "0b9d2e37-f84d-4f9e-9ba3-995772f368d3"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Record found",
+            "content" : {
+              "application/fhir+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Observation"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad request",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OperationOutcome"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OperationOutcome"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Forbidden",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OperationOutcome"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Not found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OperationOutcome"
+                }
+              }
+            }
+          },
+          "429" : {
+            "description" : "Too many requests",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OperationOutcome"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OperationOutcome"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put" : {
+        "tags" : [ "Observation" ],
+        "summary" : "Observation Update",
+        "description" : "https://www.hl7.org/fhir/r4/observation.html",
+        "operationId" : "observationUpdate",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "The logical ID of the resource. Once assigned, this value never changes.",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "0b9d2e37-f84d-4f9e-9ba3-995772f368d3"
+        } ],
+        "requestBody" : {
+          "description" : "The FHIR resource in JSON format.",
+          "content" : {
+            "application/fhir+json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/Observation"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Record updated",
+            "content" : {
+              "application/fhir+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Observation"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad request",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OperationOutcome"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OperationOutcome"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Forbidden",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OperationOutcome"
+                }
+              }
+            }
+          },
+          "429" : {
+            "description" : "Too many requests",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OperationOutcome"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OperationOutcome"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Questionnaire" : {
+      "get" : {
+        "tags" : [ "Questionnaire" ],
+        "summary" : "Questionnaire Search",
+        "description" : "https://www.hl7.org/fhir/R4/questionnaire.html",
+        "operationId" : "questionnaireSearch",
+        "parameters" : [ {
+          "name" : "_id",
+          "in" : "query",
+          "description" : "The logical ID of the resource. Once assigned, this value never changes.",
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "37953b72-961b-41ee-bd05-86c62bacc46b"
+        }, {
+          "name" : "_lastUpdated",
+          "in" : "query",
+          "description" : "The date when the record was last updated.",
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "gt2021-01-01T00:00:00Z"
+        }, {
+          "name" : "context-type-value",
+          "in" : "query",
+          "description" : "A use-context type and value assigned to the questionnaire.",
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "venue$vha_688_3485"
+        }, {
+          "name" : "page",
+          "in" : "query",
+          "description" : "The page number of the search result.",
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32",
+            "default" : 1
+          },
+          "example" : 1
+        }, {
+          "name" : "_count",
+          "in" : "query",
+          "description" : "The number of resources that should be returned in a single page. The maximum count size is 100.",
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32",
+            "default" : 15
+          },
+          "example" : 15
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Record found",
+            "content" : {
+              "application/fhir+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/QuestionnaireBundle"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad request",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OperationOutcome"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OperationOutcome"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Forbidden",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OperationOutcome"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Not found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OperationOutcome"
+                }
+              }
+            }
+          },
+          "429" : {
+            "description" : "Too many requests",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OperationOutcome"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OperationOutcome"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "Questionnaire" ],
+        "summary" : "Questionnaire Create",
+        "description" : "https://www.hl7.org/fhir/R4/questionnaire.html",
+        "operationId" : "questionnaireCreate",
+        "requestBody" : {
+          "description" : "The FHIR resource in JSON format.",
+          "content" : {
+            "application/fhir+json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/Questionnaire"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "201" : {
+            "description" : "Record created",
+            "content" : {
+              "application/fhir+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Questionnaire"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad request",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OperationOutcome"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OperationOutcome"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Forbidden",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OperationOutcome"
+                }
+              }
+            }
+          },
+          "429" : {
+            "description" : "Too many requests",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OperationOutcome"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OperationOutcome"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Questionnaire/{id}" : {
+      "get" : {
+        "tags" : [ "Questionnaire" ],
+        "summary" : "Questionnaire Read",
+        "description" : "https://www.hl7.org/fhir/R4/questionnaire.html",
+        "operationId" : "questionnaireRead",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "The logical ID of the resource. Once assigned, this value never changes.",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "37953b72-961b-41ee-bd05-86c62bacc46b"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Record found",
+            "content" : {
+              "application/fhir+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Questionnaire"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad request",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OperationOutcome"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OperationOutcome"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Forbidden",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OperationOutcome"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Not found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OperationOutcome"
+                }
+              }
+            }
+          },
+          "429" : {
+            "description" : "Too many requests",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OperationOutcome"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OperationOutcome"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put" : {
+        "tags" : [ "Questionnaire" ],
+        "summary" : "Questionnaire Update",
+        "description" : "https://www.hl7.org/fhir/R4/questionnaire.html",
+        "operationId" : "questionnaireUpdate",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "The logical ID of the resource. Once assigned, this value never changes.",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "37953b72-961b-41ee-bd05-86c62bacc46b"
+        } ],
+        "requestBody" : {
+          "description" : "The FHIR resource in JSON format.",
+          "content" : {
+            "application/fhir+json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/Questionnaire"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Record updated",
+            "content" : {
+              "application/fhir+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Questionnaire"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad request",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OperationOutcome"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OperationOutcome"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Forbidden",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OperationOutcome"
+                }
+              }
+            }
+          },
+          "429" : {
+            "description" : "Too many requests",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OperationOutcome"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OperationOutcome"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/QuestionnaireResponse" : {
+      "get" : {
+        "tags" : [ "QuestionnaireResponse" ],
+        "summary" : "QuestionnaireResponse Search",
+        "description" : "https://www.hl7.org/fhir/R4/questionnaireresponse.html",
+        "operationId" : "questionnaireResponseSearch",
+        "parameters" : [ {
+          "name" : "_id",
+          "in" : "query",
+          "description" : "The logical ID of the resource. Once assigned, this value never changes.",
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "f003043a-9047-4c3a-b15b-a26c67f4e723"
+        }, {
+          "name" : "_lastUpdated",
+          "in" : "query",
+          "description" : "The date when the record was last updated.",
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "gt2021-01-01T00:00:00Z"
+        }, {
+          "name" : "author",
+          "in" : "query",
+          "description" : "The person or entity who received and recorded the answers.",
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "1011537977V693883"
+        }, {
+          "name" : "authored",
+          "in" : "query",
+          "description" : "A date or range of dates (maximum of 2) that describes the date that the response was recorded.",
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "example" : "2013-02-19T19:15:00Z"
+        }, {
+          "name" : "source",
+          "in" : "query",
+          "description" : "The person who answered the questions",
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "1011537977V693883"
+        }, {
+          "name" : "subject",
+          "in" : "query",
+          "description" : "Who or what the answers apply to.",
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "1011537977V693883"
+        }, {
+          "name" : "_tag",
+          "in" : "query",
+          "description" : "A metadata tag",
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "questionnaire",
+          "in" : "query",
+          "description" : "The questionnaire that is being responded",
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "37953b72-961b-41ee-bd05-86c62bacc46b"
+        }, {
+          "name" : "page",
+          "in" : "query",
+          "description" : "The page number of the search result.",
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32",
+            "default" : 1
+          },
+          "example" : 1
+        }, {
+          "name" : "_count",
+          "in" : "query",
+          "description" : "The number of resources that should be returned in a single page. The maximum count size is 100.",
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32",
+            "default" : 15
+          },
+          "example" : 15
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Record found",
+            "content" : {
+              "application/fhir+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/QuestionnaireResponseBundle"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad request",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OperationOutcome"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OperationOutcome"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Forbidden",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OperationOutcome"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Not found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OperationOutcome"
+                }
+              }
+            }
+          },
+          "429" : {
+            "description" : "Too many requests",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OperationOutcome"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OperationOutcome"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "QuestionnaireResponse" ],
+        "summary" : "QuestionnaireResponse Create",
+        "description" : "https://www.hl7.org/fhir/R4/questionnaireresponse.html",
+        "operationId" : "questionnaireResponseCreate",
+        "requestBody" : {
+          "description" : "The FHIR resource in JSON format.",
+          "content" : {
+            "application/fhir+json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/QuestionnaireResponse"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "201" : {
+            "description" : "Record created",
+            "content" : {
+              "application/fhir+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/QuestionnaireResponse"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad request",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OperationOutcome"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OperationOutcome"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Forbidden",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OperationOutcome"
+                }
+              }
+            }
+          },
+          "429" : {
+            "description" : "Too many requests",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OperationOutcome"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OperationOutcome"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/QuestionnaireResponse/{id}" : {
+      "get" : {
+        "tags" : [ "QuestionnaireResponse" ],
+        "summary" : "QuestionnaireResponse Read",
+        "description" : "https://www.hl7.org/fhir/R4/questionnaireresponse.html",
+        "operationId" : "questionnaireResponseRead",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "The logical ID of the resource. Once assigned, this value never changes.",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "f003043a-9047-4c3a-b15b-a26c67f4e723"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Record found",
+            "content" : {
+              "application/fhir+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/QuestionnaireResponse"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad request",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OperationOutcome"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OperationOutcome"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Forbidden",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OperationOutcome"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Not found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OperationOutcome"
+                }
+              }
+            }
+          },
+          "429" : {
+            "description" : "Too many requests",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OperationOutcome"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OperationOutcome"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put" : {
+        "tags" : [ "QuestionnaireResponse" ],
+        "summary" : "QuestionnaireResponse Update",
+        "description" : "https://www.hl7.org/fhir/R4/questionnaireresponse.html",
+        "operationId" : "questionnaireResponseUpdate",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "The logical ID of the resource. Once assigned, this value never changes.",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "f003043a-9047-4c3a-b15b-a26c67f4e723"
+        } ],
+        "requestBody" : {
+          "description" : "The FHIR resource in JSON format.",
+          "content" : {
+            "application/fhir+json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/QuestionnaireResponse"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Record updated",
+            "content" : {
+              "application/fhir+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/QuestionnaireResponse"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad request",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OperationOutcome"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OperationOutcome"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Forbidden",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OperationOutcome"
+                }
+              }
+            }
+          },
+          "429" : {
+            "description" : "Too many requests",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OperationOutcome"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OperationOutcome"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "QuestionnaireResponse" ],
+        "summary" : "QuestionnaireResponse Delete",
+        "description" : "https://www.hl7.org/fhir/R4/questionnaireresponse.html",
+        "operationId" : "questionnaireResponseDelete",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "The logical ID of the resource. Once assigned, this value never changes.",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "f003043a-9047-4c3a-b15b-a26c67f4e723"
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "Record deleted"
+          },
+          "400" : {
+            "description" : "Bad request",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OperationOutcome"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OperationOutcome"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Forbidden",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OperationOutcome"
+                }
+              }
+            }
+          },
+          "429" : {
+            "description" : "Too many requests",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OperationOutcome"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OperationOutcome"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "Address" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "pattern" : "[A-Za-z0-9\\-\\.]{1,64}",
+            "type" : "string"
+          },
+          "extension" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Extension"
+            }
+          },
+          "use" : {
+            "type" : "string",
+            "enum" : [ "home", "work", "temp", "old", "billing" ]
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "postal", "physical", "both" ]
+          },
+          "text" : {
+            "pattern" : "[ \\r\\n\\t\\S]+",
+            "type" : "string"
+          },
+          "line" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "city" : {
+            "pattern" : "[ \\r\\n\\t\\S]+",
+            "type" : "string"
+          },
+          "district" : {
+            "pattern" : "[ \\r\\n\\t\\S]+",
+            "type" : "string"
+          },
+          "state" : {
+            "pattern" : "[ \\r\\n\\t\\S]+",
+            "type" : "string"
+          },
+          "postalCode" : {
+            "pattern" : "[ \\r\\n\\t\\S]+",
+            "type" : "string"
+          },
+          "country" : {
+            "pattern" : "[ \\r\\n\\t\\S]+",
+            "type" : "string"
+          },
+          "period" : {
+            "$ref" : "#/components/schemas/Period"
+          }
+        },
+        "description" : "https://www.hl7.org/fhir/R4/datatypes.html#Address"
+      },
+      "Age" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "pattern" : "[A-Za-z0-9\\-\\.]{1,64}",
+            "type" : "string"
+          },
+          "extension" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Extension"
+            }
+          },
+          "value" : {
+            "type" : "number"
+          },
+          "comparator" : {
+            "pattern" : "(<|<=|>=|>)",
+            "type" : "string"
+          },
+          "unit" : {
+            "type" : "string"
+          },
+          "system" : {
+            "pattern" : "\\S*",
+            "type" : "string"
+          },
+          "code" : {
+            "pattern" : "[^\\s]+(\\s[^\\s]+)*",
+            "type" : "string"
+          }
+        },
+        "description" : "http://hl7.org/fhir/R4/datatypes.html#Age"
+      },
+      "Annotation" : {
+        "required" : [ "text" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "pattern" : "[A-Za-z0-9\\-\\.]{1,64}",
+            "type" : "string"
+          },
+          "extension" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Extension"
+            }
+          },
+          "authorReference" : {
+            "$ref" : "#/components/schemas/Reference"
+          },
+          "authorString" : {
+            "pattern" : "[ \\r\\n\\t\\S]+",
+            "type" : "string"
+          },
+          "time" : {
+            "pattern" : "([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1])(T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00)))?)?)?",
+            "type" : "string"
+          },
+          "text" : {
+            "pattern" : "\\s*(\\S|\\s)*",
+            "type" : "string"
+          }
+        },
+        "description" : "https://www.hl7.org/fhir/R4/datatypes.html#Annotation"
+      },
+      "Appointment" : {
+        "required" : [ "participant", "resourceType", "status" ],
+        "type" : "object",
+        "properties" : {
+          "resourceType" : {
+            "type" : "string"
+          },
+          "id" : {
+            "pattern" : "[A-Za-z0-9\\-\\.]{1,64}",
+            "type" : "string"
+          },
+          "meta" : {
+            "$ref" : "#/components/schemas/Meta"
+          },
+          "implicitRules" : {
+            "pattern" : "\\S*",
+            "type" : "string"
+          },
+          "language" : {
+            "pattern" : "[^\\s]+(\\s[^\\s]+)*",
+            "type" : "string"
+          },
+          "text" : {
+            "$ref" : "#/components/schemas/Narrative"
+          },
+          "contained" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Resource"
+            }
+          },
+          "extension" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Extension"
+            }
+          },
+          "modifierExtension" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Extension"
+            }
+          },
+          "identifier" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Identifier"
+            }
+          },
+          "status" : {
+            "type" : "string",
+            "enum" : [ "proposed", "pending", "booked", "arrived", "fulfilled", "cancelled", "noshow", "entered-in-error", "checked-in", "waitlist" ]
+          },
+          "cancelationReason" : {
+            "$ref" : "#/components/schemas/CodeableConcept"
+          },
+          "serviceCategory" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/CodeableConcept"
+            }
+          },
+          "serviceType" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/CodeableConcept"
+            }
+          },
+          "specialty" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/CodeableConcept"
+            }
+          },
+          "appointmentType" : {
+            "$ref" : "#/components/schemas/CodeableConcept"
+          },
+          "reasonCode" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/CodeableConcept"
+            }
+          },
+          "reasonReference" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Reference"
+            }
+          },
+          "priority" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "description" : {
+            "pattern" : "[ \\r\\n\\t\\S]+",
+            "type" : "string"
+          },
+          "supportingInformation" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Reference"
+            }
+          },
+          "start" : {
+            "pattern" : "([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))",
+            "type" : "string"
+          },
+          "end" : {
+            "pattern" : "([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))",
+            "type" : "string"
+          },
+          "minutesDuration" : {
+            "minimum" : 1,
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "slot" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Reference"
+            }
+          },
+          "created" : {
+            "pattern" : "([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1])(T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00)))?)?)?",
+            "type" : "string"
+          },
+          "comment" : {
+            "pattern" : "[ \\r\\n\\t\\S]+",
+            "type" : "string"
+          },
+          "patientInstruction" : {
+            "pattern" : "[ \\r\\n\\t\\S]+",
+            "type" : "string"
+          },
+          "basedOn" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Reference"
+            }
+          },
+          "participant" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/AppointmentParticipant"
+            }
+          },
+          "requestedPeriod" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Period"
+            }
+          }
+        },
+        "description" : "https://www.hl7.org/fhir/R4/appointment.html",
+        "example" : {
+          "resourceType" : "Appointment",
+          "id" : "I2-09PJ067B07D553B93JCEB49A0JP12QW9",
+          "status" : "cancelled",
+          "description" : "Scheduled Visit",
+          "start" : "2006-06-30T17:00:00Z",
+          "participant" : [ {
+            "type" : [ {
+              "coding" : [ {
+                "system" : "http://hl7.org/fhir/v3/ParticipationType",
+                "code" : "PART",
+                "display" : "Participation"
+              } ],
+              "text" : "Participation"
+            } ],
+            "actor" : {
+              "reference" : "https://sandbox-api.va.gov/services/fhir/v0/r4/v0/Patient/185601V825290",
+              "display" : "VETERAN,JOHN Q"
+            },
+            "required" : "required",
+            "status" : "accepted"
+          }, {
+            "type" : [ {
+              "coding" : [ {
+                "system" : "http://hl7.org/fhir/v3/ParticipationType",
+                "code" : "PART",
+                "display" : "Participation"
+              } ],
+              "text" : "Participation"
+            } ],
+            "actor" : {
+              "reference" : "https://sandbox-api.va.gov/services/fhir/v0/r4/v0/Location/I2-LPMZXCR5691VTFT8P0P0123B90GY34TT",
+              "display" : "ZZZTG SURG POD SCHEULLER COBI"
+            },
+            "required" : "required",
+            "status" : "accepted"
+          } ]
+        }
+      },
+      "AppointmentBundle" : {
+        "required" : [ "resourceType", "type" ],
+        "type" : "object",
+        "properties" : {
+          "resourceType" : {
+            "type" : "string"
+          },
+          "id" : {
+            "pattern" : "[A-Za-z0-9\\-\\.]{1,64}",
+            "type" : "string"
+          },
+          "meta" : {
+            "$ref" : "#/components/schemas/Meta"
+          },
+          "implicitRules" : {
+            "pattern" : "\\S*",
+            "type" : "string"
+          },
+          "language" : {
+            "pattern" : "[^\\s]+(\\s[^\\s]+)*",
+            "type" : "string"
+          },
+          "identifier" : {
+            "$ref" : "#/components/schemas/Identifier"
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "document", "message", "transaction", "transaction-response", "batch", "batch-response", "history", "searchset", "collection" ]
+          },
+          "timestamp" : {
+            "pattern" : "([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))",
+            "type" : "string"
+          },
+          "total" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "link" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/BundleLink"
+            }
+          },
+          "entry" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/AppointmentEntry"
+            }
+          },
+          "signature" : {
+            "$ref" : "#/components/schemas/Signature"
+          }
+        },
+        "example" : {
+          "resourceType" : "Bundle",
+          "type" : "searchset",
+          "total" : 1,
+          "link" : [ {
+            "relation" : "self",
+            "url" : "https://sandbox-api.va.gov/services/fhir/v0/r4/v0/Appointment?patient=185601V825290&page=1&_count=15"
+          }, {
+            "relation" : "first",
+            "url" : "https://sandbox-api.va.gov/services/fhir/v0/r4/v0/Appointment?patient=185601V825290&page=1&_count=15"
+          }, {
+            "relation" : "last",
+            "url" : "https://sandbox-api.va.gov/services/fhir/v0/r4/v0/Appointment?patient=185601V825290&page=1&_count=15"
+          } ],
+          "entry" : [ {
+            "fullUrl" : "https://sandbox-api.va.gov/services/fhir/v0/r4/v0/Appointment/I2-09PJ067B07D553B93JCEB49A0JP12QW9",
+            "resource" : {
+              "resourceType" : "Appointment",
+              "id" : "I2-09PJ067B07D553B93JCEB49A0JP12QW9",
+              "status" : "cancelled",
+              "description" : "Scheduled Visit",
+              "start" : "2006-06-30T17:00:00Z",
+              "participant" : [ {
+                "type" : [ {
+                  "coding" : [ {
+                    "system" : "http://hl7.org/fhir/v3/ParticipationType",
+                    "code" : "PART",
+                    "display" : "Participation"
+                  } ],
+                  "text" : "Participation"
+                } ],
+                "actor" : {
+                  "reference" : "https://sandbox-api.va.gov/services/fhir/v0/r4/v0/Patient/185601V825290",
+                  "display" : "VETERAN,JOHN Q"
+                },
+                "required" : "required",
+                "status" : "accepted"
+              }, {
+                "type" : [ {
+                  "coding" : [ {
+                    "system" : "http://hl7.org/fhir/v3/ParticipationType",
+                    "code" : "PART",
+                    "display" : "Participation"
+                  } ],
+                  "text" : "Participation"
+                } ],
+                "actor" : {
+                  "reference" : "https://sandbox-api.va.gov/services/fhir/v0/r4/v0/Location/I2-LPMZXCR5691VTFT8P0P0123B90GY34TT",
+                  "display" : "ZZZTG SURG POD SCHEULLER COBI"
+                },
+                "required" : "required",
+                "status" : "accepted"
+              } ]
+            },
+            "search" : {
+              "mode" : "match"
+            }
+          } ]
+        }
+      },
+      "AppointmentEntry" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "pattern" : "[A-Za-z0-9\\-\\.]{1,64}",
+            "type" : "string"
+          },
+          "extension" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Extension"
+            }
+          },
+          "modifierExtension" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Extension"
+            }
+          },
+          "link" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/BundleLink"
+            }
+          },
+          "fullUrl" : {
+            "pattern" : "\\S*",
+            "type" : "string"
+          },
+          "resource" : {
+            "$ref" : "#/components/schemas/Appointment"
+          },
+          "search" : {
+            "$ref" : "#/components/schemas/Search"
+          },
+          "request" : {
+            "$ref" : "#/components/schemas/Request"
+          },
+          "response" : {
+            "$ref" : "#/components/schemas/Response"
+          }
+        }
+      },
+      "AppointmentParticipant" : {
+        "required" : [ "status" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "pattern" : "[A-Za-z0-9\\-\\.]{1,64}",
+            "type" : "string"
+          },
+          "extension" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Extension"
+            }
+          },
+          "modifierExtension" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Extension"
+            }
+          },
+          "type" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/CodeableConcept"
+            }
+          },
+          "actor" : {
+            "$ref" : "#/components/schemas/Reference"
+          },
+          "required" : {
+            "type" : "string",
+            "enum" : [ "required", "optional", "information-only" ]
+          },
+          "status" : {
+            "type" : "string",
+            "enum" : [ "accepted", "declined", "tentative", "needs-action" ]
+          },
+          "period" : {
+            "$ref" : "#/components/schemas/Period"
+          }
+        }
+      },
+      "Attachment" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "pattern" : "[A-Za-z0-9\\-\\.]{1,64}",
+            "type" : "string"
+          },
+          "extension" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Extension"
+            }
+          },
+          "contentType" : {
+            "pattern" : "[^\\s]+(\\s[^\\s]+)*",
+            "type" : "string"
+          },
+          "language" : {
+            "pattern" : "[^\\s]+(\\s[^\\s]+)*",
+            "type" : "string"
+          },
+          "data" : {
+            "pattern" : "(\\s*([0-9a-zA-Z\\+\\=]){4}\\s*)+",
+            "type" : "string"
+          },
+          "url" : {
+            "pattern" : "\\S*",
+            "type" : "string"
+          },
+          "size" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "hash" : {
+            "pattern" : "(\\s*([0-9a-zA-Z\\+\\=]){4}\\s*)+",
+            "type" : "string"
+          },
+          "title" : {
+            "pattern" : "[ \\r\\n\\t\\S]+",
+            "type" : "string"
+          },
+          "creation" : {
+            "pattern" : "([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1])(T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00)))?)?)?",
+            "type" : "string"
+          }
+        },
+        "description" : "https://www.hl7.org/fhir/R4/datatypes.html#Attachment"
+      },
+      "BundleLink" : {
+        "required" : [ "relation", "url" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "pattern" : "[A-Za-z0-9\\-\\.]{1,64}",
+            "type" : "string"
+          },
+          "extension" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Extension"
+            }
+          },
+          "modifierExtension" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Extension"
+            }
+          },
+          "relation" : {
+            "type" : "string",
+            "enum" : [ "about", "alternate", "appendix", "archives", "author", "blocked-by", "bookmark", "canonical", "chapter", "cite-as", "collection", "contents", "convertedFrom", "copyright", "create-form", "current", "describedby", "describes", "disclosure", "dns-prefetch", "duplicate", "edit", "edit-form", "edit-media", "enclosure", "first", "glossary", "help", "hosts", "hub", "icon", "index", "intervalAfter", "intervalBefore", "intervalContains", "intervalDisjoint", "intervalDuring", "intervalEquals", "intervalFinishedBy", "intervalFinishes", "intervalln", "intervalMeets", "intervalMetBy", "intervalOverlappedBy", "intervalOverlaps", "intervalStartedBy", "intervalStarts", "item", "last", "latest-version", "license", "lrdd", "memento", "monitor", "monitor-group", "next", "next-archive", "nofollow", "noreferrer", "original", "payment", "pingback", "preconnect", "predecessor-version", "prefetch", "preload", "prerender", "prev", "preview", "previous", "prev-archive", "privacy-policy", "profile", "related", "restconf", "replies", "search", "section", "self", "service", "start", "stylesheet", "subsection", "successor-version", "tag", "terms-of-service", "timegate", "timemap", "type", "up", "version-history", "via", "webmention", "working-copy", "working-copy-of" ]
+          },
+          "url" : {
+            "pattern" : "\\S*",
+            "type" : "string"
+          }
+        }
+      },
+      "CodeableConcept" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "pattern" : "[A-Za-z0-9\\-\\.]{1,64}",
+            "type" : "string"
+          },
+          "extension" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Extension"
+            }
+          },
+          "coding" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Coding"
+            }
+          },
+          "text" : {
+            "pattern" : "[ \\r\\n\\t\\S]+",
+            "type" : "string"
+          }
+        },
+        "description" : "https://www.hl7.org/fhir/R4/datatypes.html#CodeableConcept"
+      },
+      "CodeFilter" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "pattern" : "[A-Za-z0-9\\-\\.]{1,64}",
+            "type" : "string"
+          },
+          "extension" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Extension"
+            }
+          },
+          "path" : {
+            "pattern" : "[ \\r\\n\\t\\S]+",
+            "type" : "string"
+          },
+          "searchParam" : {
+            "pattern" : "[ \\r\\n\\t\\S]+",
+            "type" : "string"
+          },
+          "valueSet" : {
+            "pattern" : "\\S*",
+            "type" : "string"
+          },
+          "code" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Coding"
+            }
+          }
+        }
+      },
+      "Coding" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "pattern" : "[A-Za-z0-9\\-\\.]{1,64}",
+            "type" : "string"
+          },
+          "extension" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Extension"
+            }
+          },
+          "system" : {
+            "pattern" : "\\S*",
+            "type" : "string"
+          },
+          "version" : {
+            "pattern" : "[ \\r\\n\\t\\S]+",
+            "type" : "string"
+          },
+          "code" : {
+            "pattern" : "[^\\s]+(\\s[^\\s]+)*",
+            "type" : "string"
+          },
+          "display" : {
+            "pattern" : "[ \\r\\n\\t\\S]+",
+            "type" : "string"
+          },
+          "userSelected" : {
+            "type" : "boolean"
+          }
+        },
+        "description" : "https://hl7.org/fhir/R4/datatypes.html#Coding"
+      },
+      "Component" : {
+        "required" : [ "code" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "pattern" : "[A-Za-z0-9\\-\\.]{1,64}",
+            "type" : "string"
+          },
+          "extension" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Extension"
+            }
+          },
+          "modifierExtension" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Extension"
+            }
+          },
+          "code" : {
+            "$ref" : "#/components/schemas/CodeableConcept"
+          },
+          "valueQuantity" : {
+            "$ref" : "#/components/schemas/Quantity"
+          },
+          "valueCodeableConcept" : {
+            "$ref" : "#/components/schemas/CodeableConcept"
+          },
+          "valueString" : {
+            "type" : "string"
+          },
+          "valueBoolean" : {
+            "type" : "boolean"
+          },
+          "valueInteger" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "valueRange" : {
+            "$ref" : "#/components/schemas/Range"
+          },
+          "valueRatio" : {
+            "$ref" : "#/components/schemas/Ratio"
+          },
+          "valueSampledData" : {
+            "$ref" : "#/components/schemas/SampledData"
+          },
+          "valueTime" : {
+            "pattern" : "([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?",
+            "type" : "string"
+          },
+          "valueDateTime" : {
+            "pattern" : "([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1])(T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00)))?)?)?",
+            "type" : "string"
+          },
+          "valuePeriod" : {
+            "$ref" : "#/components/schemas/Period"
+          },
+          "dataAbsentReason" : {
+            "$ref" : "#/components/schemas/CodeableConcept"
+          },
+          "interpretation" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/CodeableConcept"
+            }
+          },
+          "referenceRange" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ReferenceRange"
+            }
+          }
+        }
+      },
+      "ContactDetail" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "pattern" : "[A-Za-z0-9\\-\\.]{1,64}",
+            "type" : "string"
+          },
+          "extension" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Extension"
+            }
+          },
+          "name" : {
+            "pattern" : "[ \\r\\n\\t\\S]+",
+            "type" : "string"
+          },
+          "telecom" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ContactPoint"
+            }
+          }
+        },
+        "description" : "https://www.hl7.org/fhir/R4/metadatatypes.html#ContactDetail"
+      },
+      "ContactPoint" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "pattern" : "[A-Za-z0-9\\-\\.]{1,64}",
+            "type" : "string"
+          },
+          "extension" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Extension"
+            }
+          },
+          "system" : {
+            "type" : "string",
+            "enum" : [ "phone", "fax", "email", "pager", "other", "url", "sms" ]
+          },
+          "value" : {
+            "pattern" : "[ \\r\\n\\t\\S]+",
+            "type" : "string"
+          },
+          "use" : {
+            "type" : "string",
+            "enum" : [ "home", "work", "temp", "old", "mobile" ]
+          },
+          "rank" : {
+            "minimum" : 1,
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "period" : {
+            "$ref" : "#/components/schemas/Period"
+          }
+        },
+        "description" : "https://hl7.org/fhir/R4/datatypes.html#ContactPoint"
+      },
+      "Contributor" : {
+        "required" : [ "name", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "pattern" : "[A-Za-z0-9\\-\\.]{1,64}",
+            "type" : "string"
+          },
+          "extension" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Extension"
+            }
+          },
+          "type" : {
+            "pattern" : "[^\\s]+(\\s[^\\s]+)*",
+            "type" : "string",
+            "enum" : [ "author", "editor", "reviewer", "endorser" ]
+          },
+          "name" : {
+            "pattern" : "[ \\r\\n\\t\\S]+",
+            "type" : "string"
+          },
+          "contact" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ContactDetail"
+            }
+          }
+        },
+        "description" : "https://www.hl7.org/fhir/R4/metadatatypes.html#contributor"
+      },
+      "DataRequirement" : {
+        "required" : [ "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "pattern" : "[A-Za-z0-9\\-\\.]{1,64}",
+            "type" : "string"
+          },
+          "extension" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Extension"
+            }
+          },
+          "type" : {
+            "pattern" : "[^\\s]+(\\s[^\\s]+)*",
+            "type" : "string"
+          },
+          "profile" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "subjectCodeableConcept" : {
+            "$ref" : "#/components/schemas/CodeableConcept"
+          },
+          "subjectReference" : {
+            "$ref" : "#/components/schemas/Reference"
+          },
+          "mustSupport" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "codeFilter" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/CodeFilter"
+            }
+          },
+          "dateFilter" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/DateFilter"
+            }
+          },
+          "limit" : {
+            "minimum" : 1,
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "sort" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Sort"
+            }
+          }
+        },
+        "description" : "https://www.hl7.org/fhir/R4/metadatatypes.html#DataRequirement"
+      },
+      "DateFilter" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "pattern" : "[A-Za-z0-9\\-\\.]{1,64}",
+            "type" : "string"
+          },
+          "extension" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Extension"
+            }
+          },
+          "path" : {
+            "pattern" : "[ \\r\\n\\t\\S]+",
+            "type" : "string"
+          },
+          "searchParam" : {
+            "pattern" : "[ \\r\\n\\t\\S]+",
+            "type" : "string"
+          },
+          "valueDateTime" : {
+            "pattern" : "([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1])(T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00)))?)?)?",
+            "type" : "string"
+          },
+          "valuePeriod" : {
+            "$ref" : "#/components/schemas/Period"
+          },
+          "valueDuration" : {
+            "$ref" : "#/components/schemas/Duration"
+          }
+        }
+      },
+      "Dosage" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "pattern" : "[A-Za-z0-9\\-\\.]{1,64}",
+            "type" : "string"
+          },
+          "extension" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Extension"
+            }
+          },
+          "modifierExtension" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Extension"
+            }
+          },
+          "sequence" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "text" : {
+            "pattern" : "[ \\r\\n\\t\\S]+",
+            "type" : "string"
+          },
+          "additionalInstruction" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/CodeableConcept"
+            }
+          },
+          "patientInstruction" : {
+            "pattern" : "[ \\r\\n\\t\\S]+",
+            "type" : "string"
+          },
+          "timing" : {
+            "$ref" : "#/components/schemas/Timing"
+          },
+          "asNeededBoolean" : {
+            "type" : "boolean"
+          },
+          "asNeededCodeableConcept" : {
+            "$ref" : "#/components/schemas/CodeableConcept"
+          },
+          "site" : {
+            "$ref" : "#/components/schemas/CodeableConcept"
+          },
+          "route" : {
+            "$ref" : "#/components/schemas/CodeableConcept"
+          },
+          "method" : {
+            "$ref" : "#/components/schemas/CodeableConcept"
+          },
+          "doseAndRate" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/DosageDoseAndRate"
+            }
+          },
+          "maxDosePerPeriod" : {
+            "$ref" : "#/components/schemas/Ratio"
+          },
+          "maxDosePerAdministration" : {
+            "$ref" : "#/components/schemas/SimpleQuantity"
+          },
+          "maxDosePerLifetime" : {
+            "$ref" : "#/components/schemas/SimpleQuantity"
+          }
+        },
+        "description" : "https://www.hl7.org/fhir/R4/dosage.html"
+      },
+      "DosageDoseAndRate" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "pattern" : "[A-Za-z0-9\\-\\.]{1,64}",
+            "type" : "string"
+          },
+          "extension" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Extension"
+            }
+          },
+          "type" : {
+            "$ref" : "#/components/schemas/CodeableConcept"
+          },
+          "doseRange" : {
+            "$ref" : "#/components/schemas/Range"
+          },
+          "doseQuantity" : {
+            "$ref" : "#/components/schemas/SimpleQuantity"
+          },
+          "rateRatio" : {
+            "$ref" : "#/components/schemas/Ratio"
+          },
+          "rateRange" : {
+            "$ref" : "#/components/schemas/Range"
+          },
+          "rateQuantity" : {
+            "$ref" : "#/components/schemas/SimpleQuantity"
+          }
+        }
+      },
+      "Duration" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "pattern" : "[A-Za-z0-9\\-\\.]{1,64}",
+            "type" : "string"
+          },
+          "extension" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Extension"
+            }
+          },
+          "value" : {
+            "type" : "number"
+          },
+          "comparator" : {
+            "pattern" : "(<|<=|>=|>)",
+            "type" : "string"
+          },
+          "unit" : {
+            "pattern" : "[ \\r\\n\\t\\S]+",
+            "type" : "string"
+          },
+          "system" : {
+            "pattern" : "\\S*",
+            "type" : "string"
+          },
+          "code" : {
+            "pattern" : "[^\\s]+(\\s[^\\s]+)*",
+            "type" : "string"
+          }
+        },
+        "description" : "https://www.hl7.org/fhir/r4/datatypes.html#Duration"
+      },
+      "Expression" : {
+        "required" : [ "language" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "pattern" : "[A-Za-z0-9\\-\\.]{1,64}",
+            "type" : "string"
+          },
+          "extension" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Extension"
+            }
+          },
+          "description" : {
+            "pattern" : "[ \\r\\n\\t\\S]+",
+            "type" : "string"
+          },
+          "name" : {
+            "pattern" : "[A-Za-z0-9\\-\\.]{1,64}",
+            "type" : "string"
+          },
+          "language" : {
+            "pattern" : "[^\\s]+(\\s[^\\s]+)*",
+            "type" : "string"
+          },
+          "expression" : {
+            "pattern" : "[ \\r\\n\\t\\S]+",
+            "type" : "string"
+          },
+          "reference" : {
+            "pattern" : "\\S*",
+            "type" : "string"
+          }
+        },
+        "description" : "https://www.hl7.org/fhir/R4/metadatatypes.html#expression"
+      },
+      "Extension" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "pattern" : "[A-Za-z0-9\\-\\.]{1,64}",
+            "type" : "string"
+          },
+          "extension" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Extension"
+            }
+          },
+          "url" : {
+            "pattern" : "\\S*",
+            "type" : "string"
+          },
+          "valueBase64Binary" : {
+            "pattern" : "(\\s*([0-9a-zA-Z\\+\\=]){4}\\s*)+",
+            "type" : "string"
+          },
+          "valueBoolean" : {
+            "type" : "boolean"
+          },
+          "valueCanonical" : {
+            "pattern" : "\\S*",
+            "type" : "string"
+          },
+          "valueCode" : {
+            "pattern" : "[^\\s]+(\\s[^\\s]+)*",
+            "type" : "string"
+          },
+          "valueDate" : {
+            "pattern" : "([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1]))?)?",
+            "type" : "string"
+          },
+          "valueDateTime" : {
+            "pattern" : "([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1])(T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00)))?)?)?",
+            "type" : "string"
+          },
+          "valueDecimal" : {
+            "type" : "number"
+          },
+          "valueId" : {
+            "pattern" : "[A-Za-z0-9\\-\\.]{1,64}",
+            "type" : "string"
+          },
+          "valueInstant" : {
+            "pattern" : "([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))",
+            "type" : "string"
+          },
+          "valueInteger" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "valueMarkdown" : {
+            "pattern" : "\\s*(\\S|\\s)*",
+            "type" : "string"
+          },
+          "valueOid" : {
+            "pattern" : "urn:oid:[0-2](\\.(0|[1-9][0-9]*))+",
+            "type" : "string"
+          },
+          "valuePositiveInt" : {
+            "minimum" : 1,
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "valueString" : {
+            "pattern" : "[ \\r\\n\\t\\S]+",
+            "type" : "string"
+          },
+          "valueTime" : {
+            "pattern" : "([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?",
+            "type" : "string"
+          },
+          "valueUnsignedInt" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "valueUri" : {
+            "pattern" : "\\S*",
+            "type" : "string"
+          },
+          "valueUrl" : {
+            "pattern" : "\\S*",
+            "type" : "string"
+          },
+          "valueUuid" : {
+            "pattern" : "\\S*",
+            "type" : "string"
+          },
+          "valueAddress" : {
+            "$ref" : "#/components/schemas/Address"
+          },
+          "valueAge" : {
+            "$ref" : "#/components/schemas/Age"
+          },
+          "valueAnnotation" : {
+            "$ref" : "#/components/schemas/Annotation"
+          },
+          "valueAttachment" : {
+            "$ref" : "#/components/schemas/Attachment"
+          },
+          "valueCodeableConcept" : {
+            "$ref" : "#/components/schemas/CodeableConcept"
+          },
+          "valueCoding" : {
+            "$ref" : "#/components/schemas/Coding"
+          },
+          "valueContactPoint" : {
+            "$ref" : "#/components/schemas/ContactPoint"
+          },
+          "valueCount" : {
+            "$ref" : "#/components/schemas/Quantity"
+          },
+          "valueDistance" : {
+            "$ref" : "#/components/schemas/Quantity"
+          },
+          "valueDuration" : {
+            "$ref" : "#/components/schemas/Duration"
+          },
+          "valueHumanName" : {
+            "$ref" : "#/components/schemas/HumanName"
+          },
+          "valueIdentifier" : {
+            "$ref" : "#/components/schemas/Identifier"
+          },
+          "valueMoney" : {
+            "$ref" : "#/components/schemas/Money"
+          },
+          "valuePeriod" : {
+            "$ref" : "#/components/schemas/Period"
+          },
+          "valueQuantity" : {
+            "$ref" : "#/components/schemas/Quantity"
+          },
+          "valueRange" : {
+            "$ref" : "#/components/schemas/Range"
+          },
+          "valueRatio" : {
+            "$ref" : "#/components/schemas/Ratio"
+          },
+          "valueReference" : {
+            "$ref" : "#/components/schemas/Reference"
+          },
+          "valueSampledData" : {
+            "$ref" : "#/components/schemas/SampledData"
+          },
+          "valueSignature" : {
+            "$ref" : "#/components/schemas/Signature"
+          },
+          "valueTiming" : {
+            "$ref" : "#/components/schemas/Timing"
+          },
+          "valueContactDetail" : {
+            "$ref" : "#/components/schemas/ContactDetail"
+          },
+          "valueContributor" : {
+            "$ref" : "#/components/schemas/Contributor"
+          },
+          "valueDataRequirement" : {
+            "$ref" : "#/components/schemas/DataRequirement"
+          },
+          "valueExpression" : {
+            "$ref" : "#/components/schemas/Expression"
+          },
+          "valueParameterDefinition" : {
+            "$ref" : "#/components/schemas/ParameterDefinition"
+          },
+          "valueRelatedArtifact" : {
+            "$ref" : "#/components/schemas/RelatedArtifact"
+          },
+          "valueTriggerDefinition" : {
+            "$ref" : "#/components/schemas/TriggerDefinition"
+          },
+          "valueUsageContext" : {
+            "$ref" : "#/components/schemas/UsageContext"
+          },
+          "valueDosage" : {
+            "$ref" : "#/components/schemas/Dosage"
+          },
+          "valueMeta" : {
+            "$ref" : "#/components/schemas/Meta"
+          }
+        },
+        "description" : "http://hl7.org/fhir/R4/extensibility.html#extension"
+      },
+      "HumanName" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "pattern" : "[A-Za-z0-9\\-\\.]{1,64}",
+            "type" : "string"
+          },
+          "extension" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Extension"
+            }
+          },
+          "use" : {
+            "type" : "string",
+            "enum" : [ "usual", "official", "temp", "nickname", "anonymous", "old", "maiden" ]
+          },
+          "text" : {
+            "pattern" : "[ \\r\\n\\t\\S]+",
+            "type" : "string"
+          },
+          "family" : {
+            "pattern" : "[ \\r\\n\\t\\S]+",
+            "type" : "string"
+          },
+          "given" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "prefix" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "suffix" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "period" : {
+            "$ref" : "#/components/schemas/Period"
+          }
+        },
+        "description" : "https://www.hl7.org/fhir/R4/datatypes.html#HumanName"
+      },
+      "Identifier" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "pattern" : "[A-Za-z0-9\\-\\.]{1,64}",
+            "type" : "string"
+          },
+          "extension" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Extension"
+            }
+          },
+          "use" : {
+            "type" : "string",
+            "enum" : [ "usual", "official", "temp", "secondary", "old" ]
+          },
+          "type" : {
+            "$ref" : "#/components/schemas/CodeableConcept"
+          },
+          "system" : {
+            "pattern" : "\\S*",
+            "type" : "string"
+          },
+          "value" : {
+            "pattern" : "[ \\r\\n\\t\\S]+",
+            "type" : "string"
+          },
+          "period" : {
+            "$ref" : "#/components/schemas/Period"
+          },
+          "assigner" : {
+            "$ref" : "#/components/schemas/Reference"
+          }
+        },
+        "description" : "https://www.hl7.org/fhir/R4/datatypes.html#Identifier"
+      },
+      "Issue" : {
+        "required" : [ "code", "severity" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "pattern" : "[A-Za-z0-9\\-\\.]{1,64}",
+            "type" : "string"
+          },
+          "modifierExtension" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Extension"
+            }
+          },
+          "extension" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Extension"
+            }
+          },
+          "severity" : {
+            "type" : "string",
+            "enum" : [ "fatal", "error", "warning", "information" ]
+          },
+          "code" : {
+            "pattern" : "[^\\s]+(\\s[^\\s]+)*",
+            "type" : "string",
+            "description" : "https://www.hl7.org/fhir/R4/valueset-issue-type.html"
+          },
+          "details" : {
+            "$ref" : "#/components/schemas/CodeableConcept"
+          },
+          "diagnostics" : {
+            "pattern" : "[ \\r\\n\\t\\S]+",
+            "type" : "string"
+          },
+          "location" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "expression" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          }
+        },
+        "description" : "https://www.hl7.org/fhir/R4/operationoutcome-definitions.html#OperationOutcome.issue"
+      },
+      "Meta" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "pattern" : "[A-Za-z0-9\\-\\.]{1,64}",
+            "type" : "string"
+          },
+          "extension" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Extension"
+            }
+          },
+          "versionId" : {
+            "pattern" : "[A-Za-z0-9\\-\\.]{1,64}",
+            "type" : "string"
+          },
+          "lastUpdated" : {
+            "pattern" : "([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))",
+            "type" : "string"
+          },
+          "source" : {
+            "pattern" : "\\S*",
+            "type" : "string"
+          },
+          "profile" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "security" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Coding"
+            }
+          },
+          "tag" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Coding"
+            }
+          }
+        },
+        "description" : "https://www.hl7.org/fhir/R4/resource.html#meta"
+      },
+      "Money" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "pattern" : "[A-Za-z0-9\\-\\.]{1,64}",
+            "type" : "string"
+          },
+          "extension" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Extension"
+            }
+          },
+          "value" : {
+            "type" : "number"
+          },
+          "currency" : {
+            "pattern" : "[^\\s]+(\\s[^\\s]+)*",
+            "type" : "string"
+          }
+        },
+        "description" : "https://www.hl7.org/fhir/R4/datatypes.html#Money"
+      },
+      "Narrative" : {
+        "required" : [ "div", "status" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "pattern" : "[A-Za-z0-9\\-\\.]{1,64}",
+            "type" : "string"
+          },
+          "extension" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Extension"
+            }
+          },
+          "status" : {
+            "type" : "string",
+            "enum" : [ "generated", "extensions", "additional", "empty" ]
+          },
+          "div" : {
+            "pattern" : "<.+>",
+            "type" : "string"
+          }
+        },
+        "description" : "https://www.hl7.org/fhir/R4/narrative.html"
+      },
+      "Observation" : {
+        "required" : [ "category", "code", "resourceType", "status", "subject" ],
+        "type" : "object",
+        "properties" : {
+          "resourceType" : {
+            "type" : "string"
+          },
+          "id" : {
+            "pattern" : "[A-Za-z0-9\\-\\.]{1,64}",
+            "type" : "string"
+          },
+          "meta" : {
+            "$ref" : "#/components/schemas/Meta"
+          },
+          "implicitRules" : {
+            "pattern" : "\\S*",
+            "type" : "string"
+          },
+          "language" : {
+            "pattern" : "[^\\s]+(\\s[^\\s]+)*",
+            "type" : "string"
+          },
+          "text" : {
+            "$ref" : "#/components/schemas/Narrative"
+          },
+          "contained" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Resource"
+            }
+          },
+          "extension" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Extension"
+            }
+          },
+          "modifierExtension" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Extension"
+            }
+          },
+          "identifier" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Identifier"
+            }
+          },
+          "basedOn" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Reference"
+            }
+          },
+          "partOf" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Reference"
+            }
+          },
+          "status" : {
+            "type" : "string",
+            "enum" : [ "registered", "preliminary", "final", "amended", "corrected", "cancelled", "entered-in-error", "unknown" ]
+          },
+          "category" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/CodeableConcept"
+            }
+          },
+          "code" : {
+            "$ref" : "#/components/schemas/CodeableConcept"
+          },
+          "subject" : {
+            "$ref" : "#/components/schemas/Reference"
+          },
+          "focus" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Reference"
+            }
+          },
+          "encounter" : {
+            "$ref" : "#/components/schemas/Reference"
+          },
+          "effectiveDateTime" : {
+            "pattern" : "([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1])(T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00)))?)?)?",
+            "type" : "string"
+          },
+          "effectivePeriod" : {
+            "$ref" : "#/components/schemas/Period"
+          },
+          "issued" : {
+            "pattern" : "([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))",
+            "type" : "string"
+          },
+          "performer" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Reference"
+            }
+          },
+          "valueQuantity" : {
+            "$ref" : "#/components/schemas/Quantity"
+          },
+          "valueCodeableConcept" : {
+            "$ref" : "#/components/schemas/CodeableConcept"
+          },
+          "valueString" : {
+            "type" : "string"
+          },
+          "valueBoolean" : {
+            "type" : "boolean"
+          },
+          "valueInteger" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "valueRange" : {
+            "$ref" : "#/components/schemas/Range"
+          },
+          "valueRatio" : {
+            "$ref" : "#/components/schemas/Ratio"
+          },
+          "valueSampledData" : {
+            "$ref" : "#/components/schemas/SampledData"
+          },
+          "valueTime" : {
+            "pattern" : "([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?",
+            "type" : "string"
+          },
+          "valueDateTime" : {
+            "pattern" : "([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1])(T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00)))?)?)?",
+            "type" : "string"
+          },
+          "valuePeriod" : {
+            "$ref" : "#/components/schemas/Period"
+          },
+          "dataAbsentReason" : {
+            "$ref" : "#/components/schemas/CodeableConcept"
+          },
+          "interpretation" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/CodeableConcept"
+            }
+          },
+          "note" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Annotation"
+            }
+          },
+          "bodySite" : {
+            "$ref" : "#/components/schemas/CodeableConcept"
+          },
+          "method" : {
+            "$ref" : "#/components/schemas/CodeableConcept"
+          },
+          "specimen" : {
+            "$ref" : "#/components/schemas/Reference"
+          },
+          "device" : {
+            "$ref" : "#/components/schemas/Reference"
+          },
+          "referenceRange" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ReferenceRange"
+            }
+          },
+          "hasMember" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Reference"
+            }
+          },
+          "derivedFrom" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Reference"
+            }
+          },
+          "component" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Component"
+            }
+          }
+        },
+        "description" : "https://hl7.org/fhir/us/core/STU4/StructureDefinition-us-core-observation-lab.html",
+        "example" : {
+          "resourceType" : "Observation",
+          "id" : "I2-RRCTYID4OWJHGGFQ7S7YPH4G6XVBG6D7VORRKERYLTZD7VBQLCJQ0000",
+          "status" : "final",
+          "category" : [ {
+            "coding" : [ {
+              "system" : "http://terminology.hl7.org/CodeSystem/observation-category",
+              "code" : "laboratory",
+              "display" : "Laboratory"
+            } ],
+            "text" : "Laboratory"
+          } ],
+          "code" : {
+            "coding" : [ {
+              "system" : "http://loinc.org",
+              "code" : "32623-1",
+              "display" : "Platelet mean volume [Entitic volume] in Blood by"
+            } ],
+            "text" : "Platelet mean volume [Entitic volume] in Blood by"
+          },
+          "subject" : {
+            "reference" : "https://sandbox-api.va.gov/services/argonaut/v0/Patient/1017283148V813263",
+            "display" : "Mr. Aurelio227 Cruickshank494"
+          },
+          "effectiveDateTime" : "2017-04-24T01:15:52Z",
+          "issued" : "2017-04-24T01:15:52Z",
+          "valueQuantity" : {
+            "value" : 10.226877417360429,
+            "unit" : "fL",
+            "system" : "http://unitsofmeasure.org",
+            "code" : "fL"
+          }
+        }
+      },
+      "ObservationBundle" : {
+        "required" : [ "resourceType", "type" ],
+        "type" : "object",
+        "properties" : {
+          "resourceType" : {
+            "type" : "string"
+          },
+          "id" : {
+            "pattern" : "[A-Za-z0-9\\-\\.]{1,64}",
+            "type" : "string"
+          },
+          "meta" : {
+            "$ref" : "#/components/schemas/Meta"
+          },
+          "implicitRules" : {
+            "pattern" : "\\S*",
+            "type" : "string"
+          },
+          "language" : {
+            "pattern" : "[^\\s]+(\\s[^\\s]+)*",
+            "type" : "string"
+          },
+          "identifier" : {
+            "$ref" : "#/components/schemas/Identifier"
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "document", "message", "transaction", "transaction-response", "batch", "batch-response", "history", "searchset", "collection" ]
+          },
+          "timestamp" : {
+            "pattern" : "([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))",
+            "type" : "string"
+          },
+          "total" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "link" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/BundleLink"
+            }
+          },
+          "entry" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ObservationEntry"
+            }
+          },
+          "signature" : {
+            "$ref" : "#/components/schemas/Signature"
+          }
+        },
+        "example" : {
+          "resourceType" : "Bundle",
+          "type" : "searchset",
+          "total" : 1,
+          "link" : [ {
+            "relation" : "self",
+            "url" : "https://sandbox-api.va.gov/services/argonaut/v0/Observation?patient=1017283148V813263&page=1&_count=15"
+          }, {
+            "relation" : "first",
+            "url" : "https://sandbox-api.va.gov/services/argonaut/v0/Observation?patient=1017283148V813263&page=1&_count=15"
+          }, {
+            "relation" : "last",
+            "url" : "https://sandbox-api.va.gov/services/argonaut/v0/Observation?patient=1017283148V813263&page=1&_count=15"
+          } ],
+          "entry" : [ {
+            "fullUrl" : "https://sandbox-api.va.gov/services/argonaut/v0/Observation/I2-RRCTYID4OWJHGGFQ7S7YPH4G6XVBG6D7VORRKERYLTZD7VBQLCJQ0000",
+            "resource" : {
+              "resourceType" : "Observation",
+              "id" : "I2-RRCTYID4OWJHGGFQ7S7YPH4G6XVBG6D7VORRKERYLTZD7VBQLCJQ0000",
+              "status" : "final",
+              "category" : [ {
+                "coding" : [ {
+                  "system" : "http://terminology.hl7.org/CodeSystem/observation-category",
+                  "code" : "laboratory",
+                  "display" : "Laboratory"
+                } ],
+                "text" : "Laboratory"
+              } ],
+              "code" : {
+                "coding" : [ {
+                  "system" : "http://loinc.org",
+                  "code" : "32623-1",
+                  "display" : "Platelet mean volume [Entitic volume] in Blood by"
+                } ],
+                "text" : "Platelet mean volume [Entitic volume] in Blood by"
+              },
+              "subject" : {
+                "reference" : "https://sandbox-api.va.gov/services/argonaut/v0/Patient/1017283148V813263",
+                "display" : "Mr. Aurelio227 Cruickshank494"
+              },
+              "effectiveDateTime" : "2017-04-24T01:15:52Z",
+              "issued" : "2017-04-24T01:15:52Z",
+              "valueQuantity" : {
+                "value" : 10.226877417360429,
+                "unit" : "fL",
+                "system" : "http://unitsofmeasure.org",
+                "code" : "fL"
+              }
+            },
+            "search" : {
+              "mode" : "match"
+            }
+          } ]
+        }
+      },
+      "ObservationEntry" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "pattern" : "[A-Za-z0-9\\-\\.]{1,64}",
+            "type" : "string"
+          },
+          "extension" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Extension"
+            }
+          },
+          "modifierExtension" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Extension"
+            }
+          },
+          "link" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/BundleLink"
+            }
+          },
+          "fullUrl" : {
+            "pattern" : "\\S*",
+            "type" : "string"
+          },
+          "resource" : {
+            "$ref" : "#/components/schemas/Observation"
+          },
+          "search" : {
+            "$ref" : "#/components/schemas/Search"
+          },
+          "request" : {
+            "$ref" : "#/components/schemas/Request"
+          },
+          "response" : {
+            "$ref" : "#/components/schemas/Response"
+          }
+        }
+      },
+      "OperationOutcome" : {
+        "required" : [ "issue", "resourceType" ],
+        "type" : "object",
+        "properties" : {
+          "resourceType" : {
+            "type" : "string"
+          },
+          "id" : {
+            "pattern" : "[A-Za-z0-9\\-\\.]{1,64}",
+            "type" : "string"
+          },
+          "meta" : {
+            "$ref" : "#/components/schemas/Meta"
+          },
+          "implicitRules" : {
+            "pattern" : "\\S*",
+            "type" : "string"
+          },
+          "language" : {
+            "pattern" : "[^\\s]+(\\s[^\\s]+)*",
+            "type" : "string"
+          },
+          "text" : {
+            "$ref" : "#/components/schemas/Narrative"
+          },
+          "contained" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Resource"
+            }
+          },
+          "modifierExtension" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Extension"
+            }
+          },
+          "extension" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Extension"
+            }
+          },
+          "issue" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Issue"
+            }
+          }
+        },
+        "description" : "https://www.hl7.org/fhir/R4/operationoutcome.html",
+        "example" : {
+          "resourceType" : "OperationOutcome",
+          "issue" : [ {
+            "severity" : "error",
+            "code" : "request error",
+            "details" : {
+              "text" : "This request can not be processed"
+            }
+          } ]
+        }
+      },
+      "ParameterDefinition" : {
+        "required" : [ "type", "use" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "pattern" : "[A-Za-z0-9\\-\\.]{1,64}",
+            "type" : "string"
+          },
+          "extension" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Extension"
+            }
+          },
+          "name" : {
+            "pattern" : "[^\\s]+(\\s[^\\s]+)*",
+            "type" : "string"
+          },
+          "use" : {
+            "type" : "string",
+            "enum" : [ "in", "out" ]
+          },
+          "min" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "max" : {
+            "pattern" : "[ \\r\\n\\t\\S]+",
+            "type" : "string"
+          },
+          "documentation" : {
+            "pattern" : "[ \\r\\n\\t\\S]+",
+            "type" : "string"
+          },
+          "type" : {
+            "pattern" : "[^\\s]+(\\s[^\\s]+)*",
+            "type" : "string"
+          },
+          "profile" : {
+            "pattern" : "\\S*",
+            "type" : "string"
+          }
+        },
+        "description" : "https://www.hl7.org/fhir/R4/metadatatypes.html#parameterdefinition"
+      },
+      "Period" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "pattern" : "[A-Za-z0-9\\-\\.]{1,64}",
+            "type" : "string"
+          },
+          "extension" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Extension"
+            }
+          },
+          "start" : {
+            "pattern" : "([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1])(T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00)))?)?)?",
+            "type" : "string"
+          },
+          "end" : {
+            "pattern" : "([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1])(T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00)))?)?)?",
+            "type" : "string"
+          }
+        },
+        "description" : "https://www.hl7.org/fhir/R4/datatypes.html#Period"
+      },
+      "Quantity" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "pattern" : "[A-Za-z0-9\\-\\.]{1,64}",
+            "type" : "string"
+          },
+          "extension" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Extension"
+            }
+          },
+          "value" : {
+            "type" : "number"
+          },
+          "comparator" : {
+            "pattern" : "(<|<=|>=|>)",
+            "type" : "string"
+          },
+          "unit" : {
+            "pattern" : "[ \\r\\n\\t\\S]+",
+            "type" : "string"
+          },
+          "system" : {
+            "pattern" : "\\S*",
+            "type" : "string"
+          },
+          "code" : {
+            "pattern" : "[^\\s]+(\\s[^\\s]+)*",
+            "type" : "string"
+          }
+        },
+        "description" : "https://www.hl7.org/fhir/R4/datatypes.html#Quantity"
+      },
+      "Questionnaire" : {
+        "required" : [ "resourceType", "status" ],
+        "type" : "object",
+        "properties" : {
+          "resourceType" : {
+            "type" : "string"
+          },
+          "id" : {
+            "pattern" : "[A-Za-z0-9\\-\\.]{1,64}",
+            "type" : "string"
+          },
+          "meta" : {
+            "$ref" : "#/components/schemas/Meta"
+          },
+          "implicitRules" : {
+            "pattern" : "\\S*",
+            "type" : "string"
+          },
+          "language" : {
+            "pattern" : "[^\\s]+(\\s[^\\s]+)*",
+            "type" : "string"
+          },
+          "text" : {
+            "$ref" : "#/components/schemas/Narrative"
+          },
+          "contained" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Resource"
+            }
+          },
+          "extension" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Extension"
+            }
+          },
+          "modifierExtension" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Extension"
+            }
+          },
+          "url" : {
+            "pattern" : "\\S*",
+            "type" : "string"
+          },
+          "identifier" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Identifier"
+            }
+          },
+          "version" : {
+            "type" : "string"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "title" : {
+            "type" : "string"
+          },
+          "derivedFrom" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "status" : {
+            "type" : "string",
+            "enum" : [ "draft", "active", "retired", "unknown" ]
+          },
+          "experimental" : {
+            "type" : "boolean"
+          },
+          "subjectType" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "date" : {
+            "pattern" : "([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1])(T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00)))?)?)?",
+            "type" : "string"
+          },
+          "publisher" : {
+            "type" : "string"
+          },
+          "contact" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ContactDetail"
+            }
+          },
+          "description" : {
+            "pattern" : "\\s*(\\S|\\s)*",
+            "type" : "string"
+          },
+          "useContext" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/UsageContext"
+            }
+          },
+          "jurisdiction" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/CodeableConcept"
+            }
+          },
+          "purpose" : {
+            "pattern" : "\\s*(\\S|\\s)*",
+            "type" : "string"
+          },
+          "copyright" : {
+            "pattern" : "\\s*(\\S|\\s)*",
+            "type" : "string"
+          },
+          "approvalDate" : {
+            "pattern" : "([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1]))?)?",
+            "type" : "string"
+          },
+          "lastReviewDate" : {
+            "pattern" : "([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1]))?)?",
+            "type" : "string"
+          },
+          "effectivePeriod" : {
+            "$ref" : "#/components/schemas/Period"
+          },
+          "code" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Coding"
+            }
+          },
+          "item" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/QuestionnaireItem"
+            }
+          }
+        },
+        "description" : "https://www.hl7.org/fhir/R4/questionnaire.html",
+        "example" : {
+          "resourceType" : "Questionnaire",
+          "id" : "3141",
+          "url" : "http://hl7.org/fhir/Questionnaire/3141",
+          "version" : "3.14",
+          "name" : "Cancer Quality Forum Questionnaire 2012",
+          "title" : "Cancer Quality Forum Questionnaire 2012",
+          "derivedFrom" : [ "Patient" ],
+          "status" : "draft",
+          "experimental" : true,
+          "subjectType" : [ "Patient" ],
+          "date" : "2012-01",
+          "approvalDate" : "2012-01",
+          "lastReviewDate" : "2012-01",
+          "item" : [ {
+            "id" : "1",
+            "linkId" : "1",
+            "definition" : "definition",
+            "code" : [ {
+              "system" : "http://example.org/system/code/sections",
+              "code" : "COMORBIDITY"
+            } ],
+            "prefix" : "prefix",
+            "text" : "text",
+            "type" : "group",
+            "enableBehavior" : "all",
+            "required" : true,
+            "repeats" : false,
+            "readOnly" : false,
+            "maxLength" : 2000,
+            "answerValueSet" : "answers",
+            "answerOption" : [ {
+              "valueString" : "x",
+              "initialSelected" : false
+            } ],
+            "initial" : [ {
+              "valueString" : "x"
+            } ],
+            "item" : [ {
+              "linkId" : "1.1",
+              "code" : [ {
+                "system" : "http://example.org/system/code/QUESTIONS",
+                "code" : "COMCAR00",
+                "display" : "Angina Pectoris"
+              } ],
+              "prefix" : "1",
+              "type" : "choice",
+              "answerValueSet" : "http://hl7.org/fhir/ValueSet/yesnodontknow"
+            }, {
+              "linkId" : "1.2",
+              "code" : [ {
+                "system" : "http://snomed.info/sct",
+                "code" : "22298006",
+                "display" : "Myocardial infarction (disorder)"
+              } ],
+              "prefix" : "1",
+              "type" : "choice",
+              "answerValueSet" : "http://hl7.org/fhir/ValueSet/yesnodontknow"
+            } ]
+          }, {
+            "id" : "2",
+            "linkId" : "2",
+            "definition" : "definition",
+            "code" : [ {
+              "system" : "http://example.org/system/code/sections",
+              "code" : "HISTOPATHOLOGY"
+            } ],
+            "prefix" : "prefix",
+            "text" : "text",
+            "type" : "group",
+            "enableBehavior" : "all",
+            "required" : true,
+            "repeats" : false,
+            "readOnly" : false,
+            "maxLength" : 2000,
+            "answerValueSet" : "answers",
+            "item" : [ {
+              "linkId" : "2.1",
+              "code" : [ {
+                "system" : "http://example.org/system/code/sections",
+                "code" : "ABDOMINAL"
+              } ],
+              "type" : "group",
+              "item" : [ {
+                "linkId" : "2.1.2",
+                "code" : [ {
+                  "system" : "http://example.org/system/code/questions",
+                  "code" : "STADPT",
+                  "display" : "pT category"
+                } ],
+                "type" : "choice"
+              } ]
+            } ]
+          } ]
+        }
+      },
+      "QuestionnaireBundle" : {
+        "required" : [ "resourceType", "type" ],
+        "type" : "object",
+        "properties" : {
+          "resourceType" : {
+            "type" : "string"
+          },
+          "id" : {
+            "pattern" : "[A-Za-z0-9\\-\\.]{1,64}",
+            "type" : "string"
+          },
+          "meta" : {
+            "$ref" : "#/components/schemas/Meta"
+          },
+          "implicitRules" : {
+            "pattern" : "\\S*",
+            "type" : "string"
+          },
+          "language" : {
+            "pattern" : "[^\\s]+(\\s[^\\s]+)*",
+            "type" : "string"
+          },
+          "identifier" : {
+            "$ref" : "#/components/schemas/Identifier"
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "document", "message", "transaction", "transaction-response", "batch", "batch-response", "history", "searchset", "collection" ]
+          },
+          "timestamp" : {
+            "pattern" : "([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))",
+            "type" : "string"
+          },
+          "total" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "link" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/BundleLink"
+            }
+          },
+          "entry" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/QuestionnaireEntry"
+            }
+          },
+          "signature" : {
+            "$ref" : "#/components/schemas/Signature"
+          }
+        },
+        "example" : {
+          "resourceType" : "Bundle",
+          "type" : "searchset",
+          "total" : 1,
+          "link" : [ {
+            "relation" : "self",
+            "url" : "https://sandbox-api.va.gov/services/fhir/v0/r4/v0/Questionnaire?_id=3141&page=1&_count=15"
+          }, {
+            "relation" : "first",
+            "url" : "https://sandbox-api.va.gov/services/fhir/v0/r4/v0/Questionnaire?_id=3141&page=1&_count=15"
+          }, {
+            "relation" : "last",
+            "url" : "https://sandbox-api.va.gov/services/fhir/v0/r4/v0/Questionnaire?_id=3141&page=1&_count=15"
+          } ],
+          "entry" : [ {
+            "fullUrl" : "https://sandbox-api.va.gov/services/fhir/v0/r4/v0/Questionnaire/3141",
+            "resource" : {
+              "resourceType" : "Questionnaire",
+              "id" : "3141",
+              "url" : "http://hl7.org/fhir/Questionnaire/3141",
+              "version" : "3.14",
+              "name" : "Cancer Quality Forum Questionnaire 2012",
+              "title" : "Cancer Quality Forum Questionnaire 2012",
+              "derivedFrom" : [ "Patient" ],
+              "status" : "draft",
+              "experimental" : true,
+              "subjectType" : [ "Patient" ],
+              "date" : "2012-01",
+              "approvalDate" : "2012-01",
+              "lastReviewDate" : "2012-01",
+              "item" : [ {
+                "id" : "1",
+                "linkId" : "1",
+                "definition" : "definition",
+                "code" : [ {
+                  "system" : "http://example.org/system/code/sections",
+                  "code" : "COMORBIDITY"
+                } ],
+                "prefix" : "prefix",
+                "text" : "text",
+                "type" : "group",
+                "enableBehavior" : "all",
+                "required" : true,
+                "repeats" : false,
+                "readOnly" : false,
+                "maxLength" : 2000,
+                "answerValueSet" : "answers",
+                "answerOption" : [ {
+                  "valueString" : "x",
+                  "initialSelected" : false
+                } ],
+                "initial" : [ {
+                  "valueString" : "x"
+                } ],
+                "item" : [ {
+                  "linkId" : "1.1",
+                  "code" : [ {
+                    "system" : "http://example.org/system/code/QUESTIONS",
+                    "code" : "COMCAR00",
+                    "display" : "Angina Pectoris"
+                  } ],
+                  "prefix" : "1",
+                  "type" : "choice",
+                  "answerValueSet" : "http://hl7.org/fhir/ValueSet/yesnodontknow"
+                }, {
+                  "linkId" : "1.2",
+                  "code" : [ {
+                    "system" : "http://snomed.info/sct",
+                    "code" : "22298006",
+                    "display" : "Myocardial infarction (disorder)"
+                  } ],
+                  "prefix" : "1",
+                  "type" : "choice",
+                  "answerValueSet" : "http://hl7.org/fhir/ValueSet/yesnodontknow"
+                } ]
+              }, {
+                "id" : "2",
+                "linkId" : "2",
+                "definition" : "definition",
+                "code" : [ {
+                  "system" : "http://example.org/system/code/sections",
+                  "code" : "HISTOPATHOLOGY"
+                } ],
+                "prefix" : "prefix",
+                "text" : "text",
+                "type" : "group",
+                "enableBehavior" : "all",
+                "required" : true,
+                "repeats" : false,
+                "readOnly" : false,
+                "maxLength" : 2000,
+                "answerValueSet" : "answers",
+                "item" : [ {
+                  "linkId" : "2.1",
+                  "code" : [ {
+                    "system" : "http://example.org/system/code/sections",
+                    "code" : "ABDOMINAL"
+                  } ],
+                  "type" : "group",
+                  "item" : [ {
+                    "linkId" : "2.1.2",
+                    "code" : [ {
+                      "system" : "http://example.org/system/code/questions",
+                      "code" : "STADPT",
+                      "display" : "pT category"
+                    } ],
+                    "type" : "choice"
+                  } ]
+                } ]
+              } ]
+            },
+            "search" : {
+              "mode" : "match"
+            }
+          } ]
+        }
+      },
+      "QuestionnaireEntry" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "pattern" : "[A-Za-z0-9\\-\\.]{1,64}",
+            "type" : "string"
+          },
+          "extension" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Extension"
+            }
+          },
+          "modifierExtension" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Extension"
+            }
+          },
+          "link" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/BundleLink"
+            }
+          },
+          "fullUrl" : {
+            "pattern" : "\\S*",
+            "type" : "string"
+          },
+          "resource" : {
+            "$ref" : "#/components/schemas/Questionnaire"
+          },
+          "search" : {
+            "$ref" : "#/components/schemas/Search"
+          },
+          "request" : {
+            "$ref" : "#/components/schemas/Request"
+          },
+          "response" : {
+            "$ref" : "#/components/schemas/Response"
+          }
+        }
+      },
+      "QuestionnaireItem" : {
+        "required" : [ "linkId", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "pattern" : "[A-Za-z0-9\\-\\.]{1,64}",
+            "type" : "string"
+          },
+          "extension" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Extension"
+            }
+          },
+          "modifierExtension" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Extension"
+            }
+          },
+          "linkId" : {
+            "type" : "string"
+          },
+          "definition" : {
+            "pattern" : "\\S*",
+            "type" : "string"
+          },
+          "code" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Coding"
+            }
+          },
+          "prefix" : {
+            "type" : "string"
+          },
+          "text" : {
+            "type" : "string"
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "group", "display", "question", "boolean", "decimal", "integer", "date", "dateTime", "time", "string", "text", "url", "choice", "open-choice", "attachment", "reference", "quantity" ]
+          },
+          "enableWhen" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/QuestionnaireItemEnableWhen"
+            }
+          },
+          "enableBehavior" : {
+            "type" : "string",
+            "enum" : [ "all", "any" ]
+          },
+          "required" : {
+            "type" : "boolean"
+          },
+          "repeats" : {
+            "type" : "boolean"
+          },
+          "readOnly" : {
+            "type" : "boolean"
+          },
+          "maxLength" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "answerValueSet" : {
+            "pattern" : "\\S*",
+            "type" : "string"
+          },
+          "answerOption" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/QuestionnaireItemAnswerOption"
+            }
+          },
+          "initial" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/QuestionnaireItemInitial"
+            }
+          }
+        }
+      },
+      "QuestionnaireItemAnswerOption" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "pattern" : "[A-Za-z0-9\\-\\.]{1,64}",
+            "type" : "string"
+          },
+          "extension" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Extension"
+            }
+          },
+          "modifierExtension" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Extension"
+            }
+          },
+          "valueInteger" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "valueDate" : {
+            "pattern" : "([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1]))?)?",
+            "type" : "string"
+          },
+          "valueTime" : {
+            "pattern" : "([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?",
+            "type" : "string"
+          },
+          "valueString" : {
+            "type" : "string"
+          },
+          "valueCoding" : {
+            "$ref" : "#/components/schemas/Coding"
+          },
+          "valueReference" : {
+            "$ref" : "#/components/schemas/Reference"
+          },
+          "initialSelected" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "QuestionnaireItemEnableWhen" : {
+        "required" : [ "operator", "question" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "pattern" : "[A-Za-z0-9\\-\\.]{1,64}",
+            "type" : "string"
+          },
+          "extension" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Extension"
+            }
+          },
+          "modifierExtension" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Extension"
+            }
+          },
+          "question" : {
+            "type" : "string"
+          },
+          "operator" : {
+            "type" : "string",
+            "enum" : [ "exists", "=", "!=", ">", "<", ">=", "<=" ]
+          },
+          "answerBoolean" : {
+            "type" : "boolean"
+          },
+          "answerDecimal" : {
+            "type" : "number"
+          },
+          "answerInteger" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "answerDate" : {
+            "pattern" : "([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1]))?)?",
+            "type" : "string"
+          },
+          "answerDateTime" : {
+            "pattern" : "([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1])(T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00)))?)?)?",
+            "type" : "string"
+          },
+          "answerTime" : {
+            "pattern" : "([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?",
+            "type" : "string"
+          },
+          "answerString" : {
+            "type" : "string"
+          },
+          "answerCoding" : {
+            "$ref" : "#/components/schemas/Coding"
+          },
+          "answerQuantity" : {
+            "$ref" : "#/components/schemas/Quantity"
+          },
+          "answerReference" : {
+            "$ref" : "#/components/schemas/Reference"
+          }
+        }
+      },
+      "QuestionnaireItemInitial" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "pattern" : "[A-Za-z0-9\\-\\.]{1,64}",
+            "type" : "string"
+          },
+          "extension" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Extension"
+            }
+          },
+          "modifierExtension" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Extension"
+            }
+          },
+          "valueBoolean" : {
+            "type" : "boolean"
+          },
+          "valueDecimal" : {
+            "type" : "number"
+          },
+          "valueInteger" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "valueDate" : {
+            "pattern" : "([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1]))?)?",
+            "type" : "string"
+          },
+          "valueDateTime" : {
+            "pattern" : "([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1])(T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00)))?)?)?",
+            "type" : "string"
+          },
+          "valueTime" : {
+            "pattern" : "([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?",
+            "type" : "string"
+          },
+          "valueString" : {
+            "type" : "string"
+          },
+          "valueUri" : {
+            "pattern" : "\\S*",
+            "type" : "string"
+          },
+          "valueAttachment" : {
+            "$ref" : "#/components/schemas/Attachment"
+          },
+          "valueCoding" : {
+            "$ref" : "#/components/schemas/Coding"
+          },
+          "valueQuantity" : {
+            "$ref" : "#/components/schemas/Quantity"
+          },
+          "valueReference" : {
+            "$ref" : "#/components/schemas/Reference"
+          }
+        }
+      },
+      "QuestionnaireResponse" : {
+        "required" : [ "resourceType", "status" ],
+        "type" : "object",
+        "properties" : {
+          "resourceType" : {
+            "type" : "string"
+          },
+          "id" : {
+            "pattern" : "[A-Za-z0-9\\-\\.]{1,64}",
+            "type" : "string"
+          },
+          "meta" : {
+            "$ref" : "#/components/schemas/Meta"
+          },
+          "implicitRules" : {
+            "pattern" : "\\S*",
+            "type" : "string"
+          },
+          "language" : {
+            "pattern" : "[^\\s]+(\\s[^\\s]+)*",
+            "type" : "string"
+          },
+          "text" : {
+            "$ref" : "#/components/schemas/Narrative"
+          },
+          "contained" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Resource"
+            }
+          },
+          "extension" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Extension"
+            }
+          },
+          "modifierExtension" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Extension"
+            }
+          },
+          "identifier" : {
+            "$ref" : "#/components/schemas/Identifier"
+          },
+          "basedOn" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Reference"
+            }
+          },
+          "partOf" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Reference"
+            }
+          },
+          "questionnaire" : {
+            "pattern" : "\\S*",
+            "type" : "string"
+          },
+          "status" : {
+            "type" : "string",
+            "enum" : [ "in-progress", "completed", "amended", "entered-in-error", "stopped" ]
+          },
+          "subject" : {
+            "$ref" : "#/components/schemas/Reference"
+          },
+          "encounter" : {
+            "$ref" : "#/components/schemas/Reference"
+          },
+          "authored" : {
+            "pattern" : "([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1])(T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00)))?)?)?",
+            "type" : "string"
+          },
+          "author" : {
+            "$ref" : "#/components/schemas/Reference"
+          },
+          "source" : {
+            "$ref" : "#/components/schemas/Reference"
+          },
+          "item" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/QuestionnaireResponseItem"
+            }
+          }
+        },
+        "description" : "https://www.hl7.org/fhir/R4/questionnaireresponse.html",
+        "example" : {
+          "resourceType" : "QuestionnaireResponse",
+          "id" : "3141",
+          "status" : "completed",
+          "subject" : {
+            "reference" : "https://sandbox-api.va.gov/services/fhir/v0/r4/Patient/2000163",
+            "display" : "Mr. Aurelio227 Cruickshank494"
+          },
+          "authored" : "2013-02-19T14:15:00Z",
+          "author" : {
+            "reference" : "https://sandbox-api.va.gov/services/fhir/v0/r4/Patient/2000163",
+            "display" : "Mr. Aurelio227 Cruickshank494"
+          },
+          "item" : [ {
+            "linkId" : "1",
+            "item" : [ {
+              "linkId" : "1.1",
+              "answer" : [ {
+                "valueCoding" : {
+                  "system" : "http://cancer.questionnaire.org/system/code/yesno",
+                  "code" : "1",
+                  "display" : "Yes"
+                }
+              } ]
+            }, {
+              "linkId" : "1.2",
+              "answer" : [ {
+                "valueCoding" : {
+                  "system" : "http://cancer.questionnaire.org/system/code/yesno",
+                  "code" : "1",
+                  "display" : "Yes"
+                }
+              } ]
+            } ]
+          } ]
+        }
+      },
+      "QuestionnaireResponseBundle" : {
+        "required" : [ "resourceType", "type" ],
+        "type" : "object",
+        "properties" : {
+          "resourceType" : {
+            "type" : "string"
+          },
+          "id" : {
+            "pattern" : "[A-Za-z0-9\\-\\.]{1,64}",
+            "type" : "string"
+          },
+          "meta" : {
+            "$ref" : "#/components/schemas/Meta"
+          },
+          "implicitRules" : {
+            "pattern" : "\\S*",
+            "type" : "string"
+          },
+          "language" : {
+            "pattern" : "[^\\s]+(\\s[^\\s]+)*",
+            "type" : "string"
+          },
+          "identifier" : {
+            "$ref" : "#/components/schemas/Identifier"
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "document", "message", "transaction", "transaction-response", "batch", "batch-response", "history", "searchset", "collection" ]
+          },
+          "timestamp" : {
+            "pattern" : "([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))",
+            "type" : "string"
+          },
+          "total" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "link" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/BundleLink"
+            }
+          },
+          "entry" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/QuestionnaireResponseEntry"
+            }
+          },
+          "signature" : {
+            "$ref" : "#/components/schemas/Signature"
+          }
+        },
+        "example" : {
+          "resourceType" : "Bundle",
+          "type" : "searchset",
+          "total" : 1,
+          "link" : [ {
+            "relation" : "self",
+            "url" : "https://sandbox-api.va.gov/services/fhir/v0/r4/v0/QuestionnaireResponse?_id=3141&page=1&_count=15"
+          }, {
+            "relation" : "first",
+            "url" : "https://sandbox-api.va.gov/services/fhir/v0/r4/v0/QuestionnaireResponse?_id=3141&page=1&_count=15"
+          }, {
+            "relation" : "last",
+            "url" : "https://sandbox-api.va.gov/services/fhir/v0/r4/v0/QuestionnaireResponse?_id=3141&page=1&_count=15"
+          } ],
+          "entry" : [ {
+            "fullUrl" : "https://sandbox-api.va.gov/services/fhir/v0/r4/v0/QuestionnaireResponse/3141",
+            "resource" : {
+              "resourceType" : "QuestionnaireResponse",
+              "id" : "3141",
+              "status" : "completed",
+              "subject" : {
+                "reference" : "https://sandbox-api.va.gov/services/fhir/v0/r4/Patient/2000163",
+                "display" : "Mr. Aurelio227 Cruickshank494"
+              },
+              "authored" : "2013-02-19T14:15:00Z",
+              "author" : {
+                "reference" : "https://sandbox-api.va.gov/services/fhir/v0/r4/Patient/2000163",
+                "display" : "Mr. Aurelio227 Cruickshank494"
+              },
+              "item" : [ {
+                "linkId" : "1",
+                "item" : [ {
+                  "linkId" : "1.1",
+                  "answer" : [ {
+                    "valueCoding" : {
+                      "system" : "http://cancer.questionnaire.org/system/code/yesno",
+                      "code" : "1",
+                      "display" : "Yes"
+                    }
+                  } ]
+                }, {
+                  "linkId" : "1.2",
+                  "answer" : [ {
+                    "valueCoding" : {
+                      "system" : "http://cancer.questionnaire.org/system/code/yesno",
+                      "code" : "1",
+                      "display" : "Yes"
+                    }
+                  } ]
+                } ]
+              } ]
+            },
+            "search" : {
+              "mode" : "match"
+            }
+          } ]
+        }
+      },
+      "QuestionnaireResponseEntry" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "pattern" : "[A-Za-z0-9\\-\\.]{1,64}",
+            "type" : "string"
+          },
+          "extension" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Extension"
+            }
+          },
+          "modifierExtension" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Extension"
+            }
+          },
+          "link" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/BundleLink"
+            }
+          },
+          "fullUrl" : {
+            "pattern" : "\\S*",
+            "type" : "string"
+          },
+          "resource" : {
+            "$ref" : "#/components/schemas/QuestionnaireResponse"
+          },
+          "search" : {
+            "$ref" : "#/components/schemas/Search"
+          },
+          "request" : {
+            "$ref" : "#/components/schemas/Request"
+          },
+          "response" : {
+            "$ref" : "#/components/schemas/Response"
+          }
+        }
+      },
+      "QuestionnaireResponseItem" : {
+        "required" : [ "linkId" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "pattern" : "[A-Za-z0-9\\-\\.]{1,64}",
+            "type" : "string"
+          },
+          "extension" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Extension"
+            }
+          },
+          "modifierExtension" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Extension"
+            }
+          },
+          "linkId" : {
+            "type" : "string"
+          },
+          "definition" : {
+            "pattern" : "\\S*",
+            "type" : "string"
+          },
+          "text" : {
+            "type" : "string"
+          },
+          "answer" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/QuestionnaireResponseItemAnswer"
+            }
+          }
+        }
+      },
+      "QuestionnaireResponseItemAnswer" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "pattern" : "[A-Za-z0-9\\-\\.]{1,64}",
+            "type" : "string"
+          },
+          "extension" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Extension"
+            }
+          },
+          "modifierExtension" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Extension"
+            }
+          },
+          "valueBoolean" : {
+            "type" : "boolean"
+          },
+          "valueDecimal" : {
+            "type" : "number"
+          },
+          "valueInteger" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "valueDate" : {
+            "pattern" : "([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1]))?)?",
+            "type" : "string"
+          },
+          "valueDateTime" : {
+            "pattern" : "([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1])(T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00)))?)?)?",
+            "type" : "string"
+          },
+          "valueTime" : {
+            "pattern" : "([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?",
+            "type" : "string"
+          },
+          "valueString" : {
+            "type" : "string"
+          },
+          "valueUri" : {
+            "pattern" : "\\S*",
+            "type" : "string"
+          },
+          "valueAttachment" : {
+            "$ref" : "#/components/schemas/Attachment"
+          },
+          "valueCoding" : {
+            "$ref" : "#/components/schemas/Coding"
+          },
+          "valueQuantity" : {
+            "$ref" : "#/components/schemas/Quantity"
+          },
+          "valueReference" : {
+            "$ref" : "#/components/schemas/Reference"
+          }
+        }
+      },
+      "Range" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "pattern" : "[A-Za-z0-9\\-\\.]{1,64}",
+            "type" : "string"
+          },
+          "extension" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Extension"
+            }
+          },
+          "low" : {
+            "$ref" : "#/components/schemas/SimpleQuantity"
+          },
+          "high" : {
+            "$ref" : "#/components/schemas/SimpleQuantity"
+          }
+        },
+        "description" : "https://www.hl7.org/fhir/R4/datatypes.html#Range"
+      },
+      "Ratio" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "pattern" : "[A-Za-z0-9\\-\\.]{1,64}",
+            "type" : "string"
+          },
+          "extension" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Extension"
+            }
+          },
+          "numerator" : {
+            "$ref" : "#/components/schemas/Quantity"
+          },
+          "denominator" : {
+            "$ref" : "#/components/schemas/Quantity"
+          }
+        },
+        "description" : "https://www.hl7.org/fhir/R4/datatypes.html#Ratio"
+      },
+      "Reference" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "pattern" : "[A-Za-z0-9\\-\\.]{1,64}",
+            "type" : "string"
+          },
+          "extension" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Extension"
+            }
+          },
+          "reference" : {
+            "pattern" : "[ \\r\\n\\t\\S]+",
+            "type" : "string"
+          },
+          "type" : {
+            "pattern" : "\\S*",
+            "type" : "string"
+          },
+          "identifier" : {
+            "$ref" : "#/components/schemas/Identifier"
+          },
+          "display" : {
+            "pattern" : "[ \\r\\n\\t\\S]+",
+            "type" : "string"
+          }
+        },
+        "description" : "https://www.hl7.org/fhir/R4/references.html"
+      },
+      "ReferenceRange" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "pattern" : "[A-Za-z0-9\\-\\.]{1,64}",
+            "type" : "string"
+          },
+          "extension" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Extension"
+            }
+          },
+          "modifierExtension" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Extension"
+            }
+          },
+          "low" : {
+            "$ref" : "#/components/schemas/SimpleQuantity"
+          },
+          "high" : {
+            "$ref" : "#/components/schemas/SimpleQuantity"
+          },
+          "type" : {
+            "$ref" : "#/components/schemas/CodeableConcept"
+          },
+          "appliesTo" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/CodeableConcept"
+            }
+          },
+          "age" : {
+            "$ref" : "#/components/schemas/Range"
+          },
+          "text" : {
+            "type" : "string"
+          }
+        }
+      },
+      "RelatedArtifact" : {
+        "required" : [ "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "pattern" : "[A-Za-z0-9\\-\\.]{1,64}",
+            "type" : "string"
+          },
+          "extension" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Extension"
+            }
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "documentation", "justification", "citation", "predecessor", "successor", "derived-from", "depends-on", "composed-of" ]
+          },
+          "label" : {
+            "pattern" : "[ \\r\\n\\t\\S]+",
+            "type" : "string"
+          },
+          "display" : {
+            "pattern" : "[ \\r\\n\\t\\S]+",
+            "type" : "string"
+          },
+          "citation" : {
+            "pattern" : "\\s*(\\S|\\s)*",
+            "type" : "string"
+          },
+          "url" : {
+            "pattern" : "\\S*",
+            "type" : "string"
+          },
+          "document" : {
+            "$ref" : "#/components/schemas/Attachment"
+          },
+          "resource" : {
+            "pattern" : "\\S*",
+            "type" : "string"
+          }
+        },
+        "description" : "https://www.hl7.org/fhir/R4/metadatatypes.html#relatedartifact"
+      },
+      "Request" : {
+        "type" : "object",
+        "description" : "https://hl7.org/fhir/R4/bundle.html"
+      },
+      "Resource" : {
+        "type" : "object",
+        "description" : "https://www.hl7.org/fhir/R4/resource.html"
+      },
+      "Response" : {
+        "type" : "object",
+        "description" : "https://hl7.org/fhir/R4/bundle.html"
+      },
+      "SampledData" : {
+        "required" : [ "dimensions", "origin", "period" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "pattern" : "[A-Za-z0-9\\-\\.]{1,64}",
+            "type" : "string"
+          },
+          "extension" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Extension"
+            }
+          },
+          "origin" : {
+            "$ref" : "#/components/schemas/SimpleQuantity"
+          },
+          "period" : {
+            "type" : "number"
+          },
+          "factor" : {
+            "type" : "number"
+          },
+          "lowerLimit" : {
+            "type" : "number"
+          },
+          "upperLimit" : {
+            "type" : "number"
+          },
+          "dimensions" : {
+            "minimum" : 1,
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "data" : {
+            "type" : "string"
+          }
+        },
+        "description" : "http://hl7.org/fhir/R4/datatypes.html#SampledData"
+      },
+      "Search" : {
+        "type" : "object",
+        "description" : "https://hl7.org/fhir/R4/bundle.html"
+      },
+      "Signature" : {
+        "required" : [ "type", "when", "who" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "pattern" : "[A-Za-z0-9\\-\\.]{1,64}",
+            "type" : "string"
+          },
+          "extension" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Extension"
+            }
+          },
+          "type" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Coding"
+            }
+          },
+          "when" : {
+            "pattern" : "([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))",
+            "type" : "string"
+          },
+          "who" : {
+            "$ref" : "#/components/schemas/Reference"
+          },
+          "onBehalfOf" : {
+            "$ref" : "#/components/schemas/Reference"
+          },
+          "targetFormat" : {
+            "pattern" : "[^\\s]+(\\s[^\\s]+)*",
+            "type" : "string"
+          },
+          "sigFormat" : {
+            "pattern" : "[^\\s]+(\\s[^\\s]+)*",
+            "type" : "string"
+          },
+          "data" : {
+            "pattern" : "(\\s*([0-9a-zA-Z\\+\\=]){4}\\s*)+",
+            "type" : "string"
+          }
+        },
+        "description" : "http://hl7.org/fhir/R4/datatypes.html#Signature"
+      },
+      "SimpleQuantity" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "pattern" : "[A-Za-z0-9\\-\\.]{1,64}",
+            "type" : "string"
+          },
+          "extension" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Extension"
+            }
+          },
+          "value" : {
+            "type" : "number"
+          },
+          "unit" : {
+            "pattern" : "[ \\r\\n\\t\\S]+",
+            "type" : "string"
+          },
+          "system" : {
+            "pattern" : "\\S*",
+            "type" : "string"
+          },
+          "code" : {
+            "pattern" : "[^\\s]+(\\s[^\\s]+)*",
+            "type" : "string"
+          }
+        },
+        "description" : "https://www.hl7.org/fhir/R4/datatypes.html#SimpleQuantity"
+      },
+      "Sort" : {
+        "required" : [ "direction", "path" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "pattern" : "[A-Za-z0-9\\-\\.]{1,64}",
+            "type" : "string"
+          },
+          "extension" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Extension"
+            }
+          },
+          "path" : {
+            "pattern" : "[ \\r\\n\\t\\S]+",
+            "type" : "string"
+          },
+          "direction" : {
+            "pattern" : "[^\\s]+(\\s[^\\s]+)*",
+            "type" : "string",
+            "enum" : [ "ascending", "descending" ]
+          }
+        }
+      },
+      "Timing" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "pattern" : "[A-Za-z0-9\\-\\.]{1,64}",
+            "type" : "string"
+          },
+          "extension" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Extension"
+            }
+          },
+          "event" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "repeat" : {
+            "$ref" : "#/components/schemas/TimingRepeat"
+          },
+          "code" : {
+            "$ref" : "#/components/schemas/CodeableConcept"
+          }
+        },
+        "description" : "https://www.hl7.org/fhir/R4/datatypes.html#Timing"
+      },
+      "TimingRepeat" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "pattern" : "[A-Za-z0-9\\-\\.]{1,64}",
+            "type" : "string"
+          },
+          "extension" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Extension"
+            }
+          },
+          "boundsDuration" : {
+            "$ref" : "#/components/schemas/Duration"
+          },
+          "boundsRange" : {
+            "$ref" : "#/components/schemas/Range"
+          },
+          "boundsPeriod" : {
+            "$ref" : "#/components/schemas/Period"
+          },
+          "count" : {
+            "minimum" : 1,
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "countMax" : {
+            "minimum" : 1,
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "duration" : {
+            "type" : "number"
+          },
+          "durationMax" : {
+            "type" : "number"
+          },
+          "durationUnit" : {
+            "type" : "string",
+            "enum" : [ "s", "min", "h", "d", "wk", "mo", "a" ]
+          },
+          "frequency" : {
+            "minimum" : 1,
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "frequencyMax" : {
+            "minimum" : 1,
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "period" : {
+            "type" : "number"
+          },
+          "periodMax" : {
+            "type" : "number"
+          },
+          "periodUnit" : {
+            "type" : "string",
+            "enum" : [ "s", "min", "h", "d", "wk", "mo", "a" ]
+          },
+          "dayOfWeek" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "enum" : [ "mon", "tue", "wed", "thu", "fri", "sat", "sun" ]
+            }
+          },
+          "timeOfDay" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "when" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "enum" : [ "MORN", "MORN.early", "MORN.late", "NOON", "AFT", "AFT.early", "AFT.late", "EVE", "EVE.early", "EVE.late", "NIGHT", "PHS", "HS", "WAKE", "C", "CM", "CD", "CV", "AC", "ACM", "ACD", "ACV", "PC", "PCM", "PCD", "PCV" ]
+            }
+          },
+          "offset" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }
+      },
+      "TriggerDefinition" : {
+        "required" : [ "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "pattern" : "[A-Za-z0-9\\-\\.]{1,64}",
+            "type" : "string"
+          },
+          "extension" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Extension"
+            }
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "named-event", "periodic", "data-changed", "data-added", "data-modified", "data-removed", "data-accessed", "data-access-ended" ]
+          },
+          "name" : {
+            "pattern" : "[ \\r\\n\\t\\S]+",
+            "type" : "string"
+          },
+          "timingTiming" : {
+            "$ref" : "#/components/schemas/Timing"
+          },
+          "timingReference" : {
+            "$ref" : "#/components/schemas/Reference"
+          },
+          "timingDate" : {
+            "pattern" : "([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1]))?)?",
+            "type" : "string"
+          },
+          "timingDateTime" : {
+            "pattern" : "([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1])(T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00)))?)?)?",
+            "type" : "string"
+          },
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/DataRequirement"
+            }
+          },
+          "condition" : {
+            "$ref" : "#/components/schemas/Expression"
+          }
+        },
+        "description" : "https://www.hl7.org/fhir/R4/metadatatypes.html#triggerdefinition"
+      },
+      "UsageContext" : {
+        "required" : [ "code" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "pattern" : "[A-Za-z0-9\\-\\.]{1,64}",
+            "type" : "string"
+          },
+          "extension" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Extension"
+            }
+          },
+          "code" : {
+            "$ref" : "#/components/schemas/Coding"
+          },
+          "valueCodeableConcept" : {
+            "$ref" : "#/components/schemas/CodeableConcept"
+          },
+          "valueQuantity" : {
+            "$ref" : "#/components/schemas/Quantity"
+          },
+          "valueRange" : {
+            "$ref" : "#/components/schemas/Range"
+          },
+          "valueReference" : {
+            "$ref" : "#/components/schemas/Reference"
+          }
+        },
+        "description" : "https://www.hl7.org/fhir/R4/metadatatypes.html#UsageContext"
+      }
+    },
+    "securitySchemes" : {
+      "OauthFlowSandbox" : {
+        "type" : "oauth2",
+        "flows" : {
+          "authorizationCode" : {
+            "authorizationUrl" : "https://sandbox-api.va.gov/oauth2/pgd/v1/authorization",
+            "tokenUrl" : "https://sandbox-api.va.gov/oauth2/pgd/v1/token",
+            "scopes" : {
+              "launch/patient" : "patient launch",
+              "offline_access" : "offline access",
+              "patient/Observation.read" : "read observations",
+              "patient/Observation.write" : "write observations",
+              "patient/QuestionnaireResponse.read" : "read questionnaire responses",
+              "patient/QuestionnaireResponse.write" : "write questionnaire responses",
+              "system/Questionnaire.read" : "read questionnaires",
+              "system/Questionnaire.write" : "write questionnaires"
+            }
+          }
+        }
+      },
+      "OauthFlowProduction" : {
+        "type" : "oauth2",
+        "flows" : {
+          "authorizationCode" : {
+            "authorizationUrl" : "https://api.va.gov/oauth2/pgd/v1/authorization",
+            "tokenUrl" : "https://api.va.gov/oauth2/pgd/v1/token",
+            "scopes" : {
+              "launch/patient" : "patient launch",
+              "offline_access" : "offline access",
+              "patient/Appointment.read" : "read appointments",
+              "patient/Appointment.write" : "write appointments",
+              "patient/Observation.read" : "read observations",
+              "patient/Observation.write" : "write observations",
+              "patient/QuestionnaireResponse.read" : "read questionnaire responses",
+              "patient/QuestionnaireResponse.write" : "write questionnaire responses",
+              "system/Questionnaire.read" : "read questionnaires",
+              "system/Questionnaire.write" : "write questionnaires"
+            }
+          }
+        }
+      }
+    }
+  }
+}
