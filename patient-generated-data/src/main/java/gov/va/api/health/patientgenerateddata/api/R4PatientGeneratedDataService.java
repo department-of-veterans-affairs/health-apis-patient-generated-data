@@ -21,7 +21,6 @@ import javax.ws.rs.Path;
             "launch/patient",
             "offline_access",
             "patient/Appointment.read",
-            "patient/Appointment.write",
             "patient/Observation.read",
             "patient/Observation.write",
             "patient/QuestionnaireResponse.read",
@@ -35,7 +34,6 @@ import javax.ws.rs.Path;
             "launch/patient",
             "offline_access",
             "patient/Appointment.read",
-            "patient/Appointment.write",
             "patient/Observation.read",
             "patient/Observation.write",
             "patient/QuestionnaireResponse.read",
@@ -66,6 +64,9 @@ import javax.ws.rs.Path;
                       scopes = {
                         @OAuthScope(name = "launch/patient", description = "patient launch"),
                         @OAuthScope(name = "offline_access", description = "offline access"),
+                        @OAuthScope(
+                            name = "patient/Appointment.read",
+                            description = "read appointments"),
                         @OAuthScope(
                             name = "patient/Observation.read",
                             description = "read observations"),
@@ -98,6 +99,9 @@ import javax.ws.rs.Path;
                         @OAuthScope(name = "launch/patient", description = "patient launch"),
                         @OAuthScope(name = "offline_access", description = "offline access"),
                         @OAuthScope(
+                            name = "patient/Appointment.read",
+                            description = "read appointments"),
+                        @OAuthScope(
                             name = "patient/Observation.read",
                             description = "read observations"),
                         @OAuthScope(
@@ -119,4 +123,4 @@ import javax.ws.rs.Path;
 })
 @Path("/")
 public interface R4PatientGeneratedDataService
-    extends R4ObservationApi, R4QuestionnaireApi, R4QuestionnaireResponseApi {}
+    extends R4AppointmentApi, R4ObservationApi, R4QuestionnaireApi, R4QuestionnaireResponseApi {}
