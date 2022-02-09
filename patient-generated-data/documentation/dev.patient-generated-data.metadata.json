@@ -1,240 +1,240 @@
 {
-  "id": "health-api-patient-generated-data-r4-capability",
-  "resourceType": "CapabilityStatement",
-  "version": "0",
-  "name": "API Management Platform | Patient Generated-Data | FHIR R4",
-  "status": "draft",
-  "date": "2022-02-02T14:54:59-05:00",
-  "publisher": "Department of Veterans Affairs",
-  "contact": [
+  "id" : "health-api-patient-generated-data-r4-capability",
+  "resourceType" : "CapabilityStatement",
+  "version" : "0",
+  "name" : "API Management Platform | Patient Generated-Data | FHIR R4",
+  "status" : "draft",
+  "date" : "2022-02-02T14:54:59-05:00",
+  "publisher" : "Department of Veterans Affairs",
+  "contact" : [
     {
-      "name": "API Support",
-      "telecom": [
+      "name" : "API Support",
+      "telecom" : [
         {
-          "system": "email",
-          "value": "api@va.gov"
+          "system" : "email",
+          "value" : "api@va.gov"
         }
       ]
     }
   ],
-  "description": "FHIR R4 Clinical Health APIs.",
-  "kind": "instance",
-  "software": {
-    "name": "health-api-patient-generated-data-r4"
+  "description" : "FHIR R4 Clinical Health APIs.",
+  "kind" : "instance",
+  "software" : {
+    "name" : "health-api-patient-generated-data-r4"
   },
-  "fhirVersion": "4.0.0",
-  "format": [
+  "fhirVersion" : "4.0.0",
+  "format" : [
     "application/json",
     "application/fhir+json"
   ],
-  "rest": [
+  "rest" : [
     {
-      "mode": "server",
-      "security": {
-        "extension": [
+      "mode" : "server",
+      "security" : {
+        "extension" : [
           {
-            "url": "http://fhir-registry.smarthealthit.org/StructureDefinition/oauth-uris",
-            "extension": [
+            "url" : "http://fhir-registry.smarthealthit.org/StructureDefinition/oauth-uris",
+            "extension" : [
               {
-                "url": "token",
-                "valueUri": "https://sandbox-api.va.gov/services/pgd/v0/r4/token"
+                "url" : "token",
+                "valueUri" : "https://sandbox-api.va.gov/services/pgd/v0/r4/token"
               },
               {
-                "url": "authorize",
-                "valueUri": "https://sandbox-api.va.gov/oauth2/pgd/v1/authorization"
+                "url" : "authorize",
+                "valueUri" : "https://sandbox-api.va.gov/oauth2/pgd/v1/authorization"
               },
               {
-                "url": "manage",
-                "valueUri": "https://sandbox-api.va.gov/oauth2/pgd/v1/manage"
+                "url" : "manage",
+                "valueUri" : "https://sandbox-api.va.gov/oauth2/pgd/v1/manage"
               },
               {
-                "url": "revoke",
-                "valueUri": "https://sandbox-api.va.gov/oauth2/pgd/v1/revoke"
+                "url" : "revoke",
+                "valueUri" : "https://sandbox-api.va.gov/oauth2/pgd/v1/revoke"
               }
             ]
           }
         ],
-        "cors": true,
-        "service": [
+        "cors" : true,
+        "service" : [
           {
-            "coding": [
+            "coding" : [
               {
-                "system": "https://www.hl7.org/fhir/valueset-restful-security-service.html",
-                "code": "SMART-on-FHIR",
-                "display": "SMART-on-FHIR"
+                "system" : "https://www.hl7.org/fhir/valueset-restful-security-service.html",
+                "code" : "SMART-on-FHIR",
+                "display" : "SMART-on-FHIR"
               }
             ],
-            "text": "SMART-on-FHIR"
+            "text" : "SMART-on-FHIR"
           }
         ],
-        "description": "http://docs.smarthealthit.org/"
+        "description" : "http://docs.smarthealthit.org/"
       },
-      "resource": [
+      "resource" : [
         {
-          "type": "Observation",
-          "profile": "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab",
-          "interaction": [
+          "type" : "Observation",
+          "profile" : "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab",
+          "interaction" : [
             {
-              "code": "search-type",
-              "documentation": "Implemented per specification. See http://hl7.org/fhir/R4/http.html"
+              "code" : "search-type",
+              "documentation" : "Implemented per specification. See http://hl7.org/fhir/R4/http.html"
             },
             {
-              "code": "read",
-              "documentation": "Implemented per specification. See http://hl7.org/fhir/R4/http.html"
+              "code" : "read",
+              "documentation" : "Implemented per specification. See http://hl7.org/fhir/R4/http.html"
             },
             {
-              "code": "write",
-              "documentation": "Implemented per specification. See http://hl7.org/fhir/R4/http.html"
+              "code" : "write",
+              "documentation" : "Implemented per specification. See http://hl7.org/fhir/R4/http.html"
             }
           ],
-          "versioning": "no-version",
-          "referencePolicy": [
+          "versioning" : "no-version",
+          "referencePolicy" : [
             "literal",
             "local"
           ],
-          "searchParam": [
+          "searchParam" : [
             {
-              "name": "_id",
-              "type": "token"
+              "name" : "_id",
+              "type" : "token"
             },
             {
-              "name": "_lastUpdated",
-              "type": "date"
+              "name" : "_lastUpdated",
+              "type" : "date"
             }
           ]
         },
         {
-          "type": "Appointment",
-          "profile": "https://www.hl7.org/fhir/appointment.html",
-          "interaction": [
+          "type" : "Appointment",
+          "profile" : "https://www.hl7.org/fhir/appointment.html",
+          "interaction" : [
             {
-              "code": "search-type",
-              "documentation": "Implemented per specification. See http://hl7.org/fhir/R4/http.html"
+              "code" : "search-type",
+              "documentation" : "Implemented per specification. See http://hl7.org/fhir/R4/http.html"
             },
             {
-              "code": "read",
-              "documentation": "Implemented per specification. See http://hl7.org/fhir/R4/http.html"
+              "code" : "read",
+              "documentation" : "Implemented per specification. See http://hl7.org/fhir/R4/http.html"
             },
             {
-              "code": "write",
-              "documentation": "Implemented per specification. See http://hl7.org/fhir/R4/http.html"
+              "code" : "write",
+              "documentation" : "Implemented per specification. See http://hl7.org/fhir/R4/http.html"
             }
           ],
-          "versioning": "no-version",
-          "referencePolicy": [
+          "versioning" : "no-version",
+          "referencePolicy" : [
             "literal",
             "local"
           ],
-          "searchParam": [
+          "searchParam" : [
             {
-              "name": "_id",
-              "type": "token"
+              "name" : "_id",
+              "type" : "token"
             },
             {
-              "name": "_lastUpdated",
-              "type": "date"
+              "name" : "_lastUpdated",
+              "type" : "date"
             },
             {
-              "name": "type",
-              "type": "string"
+              "name" : "type",
+              "type" : "string"
             },
             {
-              "name": "service",
-              "type": "string"
+              "name" : "service",
+              "type" : "string"
             },
             {
-              "name": "status",
-              "type": "string"
+              "name" : "status",
+              "type" : "string"
             }
           ]
         },
         {
-          "type": "Questionnaire",
-          "profile": "https://www.hl7.org/fhir/R4/questionnaire.html",
-          "interaction": [
+          "type" : "Questionnaire",
+          "profile" : "https://www.hl7.org/fhir/R4/questionnaire.html",
+          "interaction" : [
             {
-              "code": "search-type",
-              "documentation": "Implemented per specification. See http://hl7.org/fhir/R4/http.html"
+              "code" : "search-type",
+              "documentation" : "Implemented per specification. See http://hl7.org/fhir/R4/http.html"
             },
             {
-              "code": "read",
-              "documentation": "Implemented per specification. See http://hl7.org/fhir/R4/http.html"
+              "code" : "read",
+              "documentation" : "Implemented per specification. See http://hl7.org/fhir/R4/http.html"
             },
             {
-              "code": "write",
-              "documentation": "Implemented per specification. See http://hl7.org/fhir/R4/http.html"
+              "code" : "write",
+              "documentation" : "Implemented per specification. See http://hl7.org/fhir/R4/http.html"
             }
           ],
-          "versioning": "no-version",
-          "referencePolicy": [
+          "versioning" : "no-version",
+          "referencePolicy" : [
             "literal",
             "local"
           ],
-          "searchParam": [
+          "searchParam" : [
             {
-              "name": "_id",
-              "type": "token"
+              "name" : "_id",
+              "type" : "token"
             },
             {
-              "name": "_lastUpdated",
-              "type": "date"
+              "name" : "_lastUpdated",
+              "type" : "date"
             },
             {
-              "name": "context-type-value",
-              "type": "string"
+              "name" : "context-type-value",
+              "type" : "string"
             }
           ]
         },
         {
-          "type": "QuestionnaireResponse",
-          "profile": "https://www.hl7.org/fhir/R4/questionnaireresponse.html",
-          "interaction": [
+          "type" : "QuestionnaireResponse",
+          "profile" : "https://www.hl7.org/fhir/R4/questionnaireresponse.html",
+          "interaction" : [
             {
-              "code": "search-type",
-              "documentation": "Implemented per specification. See http://hl7.org/fhir/R4/http.html"
+              "code" : "search-type",
+              "documentation" : "Implemented per specification. See http://hl7.org/fhir/R4/http.html"
             },
             {
-              "code": "read",
-              "documentation": "Implemented per specification. See http://hl7.org/fhir/R4/http.html"
+              "code" : "read",
+              "documentation" : "Implemented per specification. See http://hl7.org/fhir/R4/http.html"
             },
             {
-              "code": "write",
-              "documentation": "Implemented per specification. See http://hl7.org/fhir/R4/http.html"
+              "code" : "write",
+              "documentation" : "Implemented per specification. See http://hl7.org/fhir/R4/http.html"
             }
           ],
-          "versioning": "no-version",
-          "referencePolicy": [
+          "versioning" : "no-version",
+          "referencePolicy" : [
             "literal",
             "local"
           ],
-          "searchParam": [
+          "searchParam" : [
             {
-              "name": "_id",
-              "type": "token"
+              "name" : "_id",
+              "type" : "token"
             },
             {
-              "name": "_lastUpdated",
-              "type": "date"
+              "name" : "_lastUpdated",
+              "type" : "date"
             },
             {
-              "name": "_tag",
-              "type": "token"
+              "name" : "_tag",
+              "type" : "token"
             },
             {
-              "name": "author",
-              "type": "string"
+              "name" : "author",
+              "type" : "string"
             },
             {
-              "name": "authored",
-              "type": "date"
+              "name" : "authored",
+              "type" : "date"
             },
             {
-              "name": "source",
-              "type": "string"
+              "name" : "source",
+              "type" : "string"
             },
             {
-              "name": "subject",
-              "type": "string"
+              "name" : "subject",
+              "type" : "string"
             }
           ]
         }
