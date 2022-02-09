@@ -114,10 +114,6 @@
             {
               "code" : "read",
               "documentation" : "Implemented per specification. See http://hl7.org/fhir/R4/http.html"
-            },
-            {
-              "code" : "write",
-              "documentation" : "Implemented per specification. See http://hl7.org/fhir/R4/http.html"
             }
           ],
           "versioning" : "no-version",
@@ -135,16 +131,20 @@
               "type" : "date"
             },
             {
-              "name" : "type",
-              "type" : "string"
+              "name" : "date",
+              "type" : "date"
             },
             {
-              "name" : "service",
-              "type" : "string"
+              "name" : "identifier",
+              "type" : "token"
             },
             {
-              "name" : "status",
-              "type" : "string"
+              "name" : "location",
+              "type" : "reference"
+            },
+            {
+              "name" : "patient",
+              "type" : "reference"
             }
           ]
         },
