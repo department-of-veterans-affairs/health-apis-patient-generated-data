@@ -18,8 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class Requests {
-  static final ObjectMapper MAPPER =
-      JacksonConfig.createMapper().registerModule(new Resource.ResourceModule());
+  static final ObjectMapper MAPPER = JacksonConfig.createMapper();
 
   static final String ACCESS_TOKEN = System.getProperty("access-token", "pterastatic");
 

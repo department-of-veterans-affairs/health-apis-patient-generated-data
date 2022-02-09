@@ -220,7 +220,11 @@ public class ObservationControllerTest {
         .thenAnswer(
             i ->
                 new PageImpl<ObservationEntity>(
-                    List.of(ObservationEntity.builder().build().id("1").payload("{ \"id\": 1}")),
+                    List.of(
+                        ObservationEntity.builder()
+                            .build()
+                            .id("1")
+                            .payload("{\"resourceType\":\"Observation\",\"id\":1}")),
                     i.getArgument(1, Pageable.class),
                     1));
     assertThat(

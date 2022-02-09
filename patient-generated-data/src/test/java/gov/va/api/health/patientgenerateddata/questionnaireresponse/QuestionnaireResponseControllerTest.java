@@ -302,7 +302,7 @@ public class QuestionnaireResponseControllerTest {
                         QuestionnaireResponseEntity.builder()
                             .build()
                             .id("1")
-                            .payload("{ \"id\": 1}")),
+                            .payload("{\"resourceType\":\"QuestionnaireResponse\",\"id\":1}")),
                     i.getArgument(1, Pageable.class),
                     1));
     var r = requestFromUri("http://fonzy.com/r4/QuestionnaireResponse" + query);
