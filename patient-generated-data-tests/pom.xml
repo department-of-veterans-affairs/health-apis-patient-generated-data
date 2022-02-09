@@ -4,7 +4,7 @@
   <parent>
     <groupId>gov.va.api.health</groupId>
     <artifactId>test-starter</artifactId>
-    <version>9.0.0</version>
+    <version>9.0.6</version>
     <relativePath/>
   </parent>
   <artifactId>patient-generated-data-tests</artifactId>
@@ -13,7 +13,7 @@
   <properties>
     <authorization.client-ids.escape>{\"P73R4CUD4\":\"pteracuda\"}</authorization.client-ids.escape>
     <authorization.client-ids>{"P73R4CUD4":"pteracuda"}</authorization.client-ids>
-    <fhir-resources.version>9.0.0</fhir-resources.version>
+    <fhir-resources.version>10.0.3</fhir-resources.version>
     <sentinel.skipLaunch>false</sentinel.skipLaunch>
   </properties>
   <dependencies>

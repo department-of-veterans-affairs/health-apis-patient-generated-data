@@ -13,7 +13,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Singular;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 
@@ -64,18 +63,20 @@ public class JacksonMapperConfigTest {
             .nope(reference("https://example.com/r4/Location/1234"))
             ._nope(DataAbsentReason.of(DataAbsentReason.Reason.unsupported))
             .alsoNo(reference("https://example.com/r4/Location/1234"))
-            .thing(reference(null))
-            .thing(reference(""))
-            .thing(reference("http://qualified.is.not/touched"))
-            .thing(reference("no/slash"))
-            .thing(reference("/cool/a/slash"))
-            .thing(reference("Location"))
-            .thing(reference("Location/1234"))
-            .thing(reference("https://example.com/r4/Location/1234"))
-            .thing(reference("/Organization"))
-            .thing(reference("Organization/1234"))
-            .thing(reference("https://example.com/r4/Organization/1234"))
-            .thing(reference("Practitioner/987"))
+            .things(
+                List.of(
+                    reference(null),
+                    reference(""),
+                    reference("http://qualified.is.not/touched"),
+                    reference("no/slash"),
+                    reference("/cool/a/slash"),
+                    reference("Location"),
+                    reference("Location/1234"),
+                    reference("https://example.com/r4/Location/1234"),
+                    reference("/Organization"),
+                    reference("Organization/1234"),
+                    reference("https://example.com/r4/Organization/1234"),
+                    reference("Practitioner/987")))
             .inner(
                 FugaziReferenceMajig.builder()
                     .ref(
@@ -93,18 +94,20 @@ public class JacksonMapperConfigTest {
             ._nope(DataAbsentReason.of(DataAbsentReason.Reason.unsupported))
             .alsoNo(reference("https://example.com/r4/Location/1234"))
             .ref(reference("https://example.com/r4/AllergyIntolerance/1234"))
-            .thing(reference(null))
-            .thing(reference(null))
-            .thing(reference("http://qualified.is.not/touched"))
-            .thing(reference("https://example.com/r4/no/slash"))
-            .thing(reference("https://example.com/r4/cool/a/slash"))
-            .thing(reference("https://example.com/r4/Location"))
-            .thing(reference("https://example.com/r4/Location/1234"))
-            .thing(reference("https://example.com/r4/Location/1234"))
-            .thing(reference("https://example.com/r4/Organization"))
-            .thing(reference("https://example.com/r4/Organization/1234"))
-            .thing(reference("https://example.com/r4/Organization/1234"))
-            .thing(reference("https://example.com/r4/Practitioner/987"))
+            .things(
+                List.of(
+                    reference(null),
+                    reference(null),
+                    reference("http://qualified.is.not/touched"),
+                    reference("https://example.com/r4/no/slash"),
+                    reference("https://example.com/r4/cool/a/slash"),
+                    reference("https://example.com/r4/Location"),
+                    reference("https://example.com/r4/Location/1234"),
+                    reference("https://example.com/r4/Location/1234"),
+                    reference("https://example.com/r4/Organization"),
+                    reference("https://example.com/r4/Organization/1234"),
+                    reference("https://example.com/r4/Organization/1234"),
+                    reference("https://example.com/r4/Practitioner/987")))
             .inner(
                 FugaziReferenceMajig.builder()
                     .ref(
@@ -144,7 +147,7 @@ public class JacksonMapperConfigTest {
 
     Reference alsoNo;
 
-    @Singular List<Reference> things;
+    List<Reference> things;
 
     JacksonMapperConfigTest.FugaziReferenceMajig inner;
 

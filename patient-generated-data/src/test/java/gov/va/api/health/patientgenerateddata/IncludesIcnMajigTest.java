@@ -128,6 +128,8 @@ public class IncludesIcnMajigTest {
   @Data
   @Builder
   static final class FakeResource implements Resource {
+    @Builder.Default String resourceType = "FakeResource";
+
     String id;
 
     String implicitRules;

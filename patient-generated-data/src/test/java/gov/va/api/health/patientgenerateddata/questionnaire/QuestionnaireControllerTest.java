@@ -162,7 +162,11 @@ public class QuestionnaireControllerTest {
         .thenAnswer(
             i ->
                 new PageImpl<QuestionnaireEntity>(
-                    List.of(QuestionnaireEntity.builder().build().id("1").payload("{ \"id\": 1}")),
+                    List.of(
+                        QuestionnaireEntity.builder()
+                            .build()
+                            .id("1")
+                            .payload("{\"resourceType\":\"Questionnaire\",\"id\":1}")),
                     i.getArgument(1, Pageable.class),
                     1));
     var r = requestFromUri("http://fonzy.com/r4/Questionnaire" + query);
