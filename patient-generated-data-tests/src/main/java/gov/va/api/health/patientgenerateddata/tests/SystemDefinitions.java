@@ -64,13 +64,15 @@ class SystemDefinitions {
                 "https://blue.lab.lighthouse.va.gov",
                 443,
                 "/patient-generated-data/management/"))
-        .r4(serviceDefinition("r4", "https://blue.lab.lighthouse.va.gov", 443, "/pgd/v0/r4/"))
+        .r4(
+            serviceDefinition(
+                "r4", "https://blue.lab.lighthouse.va.gov", 443, "/patient-generated-data/r4/"))
         .sandboxDataR4(
             serviceDefinition(
                 "sandbox-data-r4",
                 "https://blue.lab.lighthouse.va.gov",
                 443,
-                "/pgd/v0/sandbox-data/r4/"))
+                "/patient-generated-data/sandbox-data/r4/"))
         .ids(ids())
         .build();
   }
@@ -95,13 +97,16 @@ class SystemDefinitions {
                 "/patient-generated-data/management/"))
         .r4(
             serviceDefinition(
-                "r4", "https://blue.production.lighthouse.va.gov", 443, "/pgd/v0/r4/"))
+                "r4",
+                "https://blue.production.lighthouse.va.gov",
+                443,
+                "/patient-generated-data/r4/"))
         .sandboxDataR4(
             serviceDefinition(
                 "sandbox-data-r4",
                 "https://blue.production.lighthouse.va.gov",
                 443,
-                "/pgd/v0/sandbox-data/r4/"))
+                "/patient-generated-data/sandbox-data/r4/"))
         .ids(ids())
         .build();
   }
@@ -114,13 +119,15 @@ class SystemDefinitions {
                 "https://blue.qa.lighthouse.va.gov",
                 443,
                 "/patient-generated-data/management/"))
-        .r4(serviceDefinition("r4", "https://blue.qa.lighthouse.va.gov", 443, "/pgd/v0/r4/"))
+        .r4(
+            serviceDefinition(
+                "r4", "https://blue.qa.lighthouse.va.gov", 443, "/patient-generated-data/r4/"))
         .sandboxDataR4(
             serviceDefinition(
                 "sandbox-data-r4",
                 "https://blue.qa.lighthouse.va.gov",
                 443,
-                "/pgd/v0/sandbox-data/r4/"))
+                "/patient-generated-data/sandbox-data/r4/"))
         .ids(ids())
         .build();
   }
@@ -141,13 +148,15 @@ class SystemDefinitions {
                 "https://blue.staging.lighthouse.va.gov",
                 443,
                 "/patient-generated-data/management/"))
-        .r4(serviceDefinition("r4", "https://blue.staging.lighthouse.va.gov", 443, "/pgd/v0/r4/"))
+        .r4(
+            serviceDefinition(
+                "r4", "https://blue.staging.lighthouse.va.gov", 443, "/patient-generated-data/r4/"))
         .sandboxDataR4(
             serviceDefinition(
                 "sandbox-data-r4",
                 "https://blue.staging.lighthouse.va.gov",
                 443,
-                "/pgd/v0/sandbox-data/r4/"))
+                "/patient-generated-data/sandbox-data/r4/"))
         .ids(ids())
         .build();
   }
@@ -162,13 +171,16 @@ class SystemDefinitions {
                 "/patient-generated-data/management/"))
         .r4(
             serviceDefinition(
-                "r4", "https://blue.staging-lab.lighthouse.va.gov", 443, "/pgd/v0/r4/"))
+                "r4",
+                "https://blue.staging-lab.lighthouse.va.gov",
+                443,
+                "/patient-generated-data/r4/"))
         .sandboxDataR4(
             serviceDefinition(
                 "sandbox-data-r4",
                 "https://blue.staging-lab.lighthouse.va.gov",
                 443,
-                "/pgd/v0/sandbox-data/r4/"))
+                "/patient-generated-data/sandbox-data/r4/"))
         .ids(ids())
         .build();
   }
