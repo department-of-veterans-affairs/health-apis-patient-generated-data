@@ -8,12 +8,12 @@
     <relativePath/>
   </parent>
   <artifactId>patient-generated-data-tests</artifactId>
-  <version>2.0.5-SNAPSHOT</version>
+  <version>2.0.5</version>
   <packaging>jar</packaging>
   <properties>
     <authorization.client-ids.escape>{\"P73R4CUD4\":\"pteracuda\"}</authorization.client-ids.escape>
     <authorization.client-ids>{"P73R4CUD4":"pteracuda"}</authorization.client-ids>
-    <fhir-resources.version>10.0.7</fhir-resources.version>
+    <fhir-resources.version>10.0.8</fhir-resources.version>
     <sentinel.skipLaunch>false</sentinel.skipLaunch>
   </properties>
   <dependencies>
