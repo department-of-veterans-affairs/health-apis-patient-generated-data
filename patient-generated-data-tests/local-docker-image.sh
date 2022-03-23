@@ -27,9 +27,11 @@ run() {
   docker run \
     --rm \
     --network="host" \
+    -e CLIENT_KEY=pteracuda \
     -e K8S_ENVIRONMENT=${ENV:-local} \
-    -e K8S_LOAD_BALANCER=${LB:-localhost:8095} \
-    -e MAGIC_ACCESS_TOKEN=nope \
+    -e K8S_LOAD_BALANCER=${LB:-local} \
+    -e MAGIC_ACCESS_TOKEN=pterastatic \
+    -e SENTINEL_URL="http://host.docker.internal" \
      vasdvp/health-apis-patient-generated-data-tests:latest $@
 }
 
