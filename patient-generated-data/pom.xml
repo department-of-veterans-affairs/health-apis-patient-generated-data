@@ -16,7 +16,7 @@
     <nimbus-jose-jwt.version>9.13</nimbus-jose-jwt.version>
     <swagger-examples-maven-plugin.version>3.0.0</swagger-examples-maven-plugin.version>
     <swagger-maven-plugin.version>2.1.5</swagger-maven-plugin.version>
-    <vulcan.version>3.0.1</vulcan.version>
+    <vulcan.version>4.0.0</vulcan.version>
   </properties>
   <dependencies>
     <dependency>
