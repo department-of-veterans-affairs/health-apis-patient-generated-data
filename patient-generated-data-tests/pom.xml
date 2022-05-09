@@ -81,7 +81,7 @@
             </goals>
             <configuration>
               <name>patient-generated-data</name>
-              <healthcheckUrl>http://localhost:8095/actuator/health</healthcheckUrl>
+              <healthcheckUrl>http://localhost:8096/actuator/health</healthcheckUrl>
               <skip>${sentinel.skipLaunch}</skip>
               <processLogFile>${project.build.directory}/patient-generated-data.log</processLogFile>
               <waitAfterLaunch>60</waitAfterLaunch>
@@ -96,7 +96,7 @@
                 <argument>-Dloader=gov.va.api.health.patientgenerateddata.Application</argument>
                 <argument>-Dlogging.level.root=INFO</argument>
                 <argument>-Dpublic-r4-base-path=r4</argument>
-                <argument>-Dpublic-url=http://localhost:8095</argument>
+                <argument>-Dpublic-url=http://localhost:8096</argument>
                 <argument>-Dsandbox-data-management.enabled=true</argument>
                 <argument>-Dspring.datasource.driver-class-name=org.h2.Driver</argument>
                 <argument>-Dspring.datasource.password=sa</argument>

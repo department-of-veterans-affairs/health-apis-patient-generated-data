@@ -79,10 +79,10 @@ class SystemDefinitions {
 
   private static SystemDefinition local() {
     return SystemDefinition.builder()
-        .management(serviceDefinition("management", "http://localhost", 8095, "/management/"))
-        .r4(serviceDefinition("r4", "http://localhost", 8095, "/r4/"))
+        .management(serviceDefinition("management", "http://localhost", 8096, "/management/"))
+        .r4(serviceDefinition("r4", "http://localhost", 8096, "/r4/"))
         .sandboxDataR4(
-            serviceDefinition("sandbox-data-r4", "http://localhost", 8095, "/sandbox-data/r4/"))
+            serviceDefinition("sandbox-data-r4", "http://localhost", 8096, "/sandbox-data/r4/"))
         .ids(ids())
         .build();
   }
