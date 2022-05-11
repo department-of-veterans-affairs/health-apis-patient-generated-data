@@ -5,7 +5,6 @@ cd $(readlink -f $(dirname $0))
 echo 'stop and remove pgd-db'
 docker stop 'pgd-db' || true && docker rm 'pgd-db' || true
 
-#SQL_SERVER_IMAGE=mcr.microsoft.com/mssql/server:2017-latest
 SQL_SERVER_IMAGE=mcr.microsoft.com/azure-sql-edge:latest
 echo "using image $SQL_SERVER_IMAGE"
 
