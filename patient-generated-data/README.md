@@ -10,6 +10,9 @@ Main application.
 
 Use `less config/application-dev.properties` to verify application properties for local development
 
+A local database instance with PGD schema is required; see
+[patient-generated-data-synthetic](../patient-generated-data-synthetic)
+
 ### Build
 
 To resolve `error reading liquibase-core.jar; zip END header not found`,
