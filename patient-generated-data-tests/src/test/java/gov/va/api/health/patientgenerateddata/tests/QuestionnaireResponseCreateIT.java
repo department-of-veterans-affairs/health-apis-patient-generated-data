@@ -34,17 +34,6 @@ public class QuestionnaireResponseCreateIT {
   }
 
   @Test
-  void create_notMe() {
-    // Kong is required to populate ICN header
-    assumeEnvironmentNotIn(Environment.LOCAL);
-    doPost(
-        "create resource",
-        "QuestionnaireResponse",
-        questionnaireResponse().source(Reference.builder().reference("Patient/5555555").build()),
-        403);
-  }
-
-  @Test
   void create_valid() {
     var response = doPost("create resource", "QuestionnaireResponse", questionnaireResponse(), 201);
     String id = response.expectValid(QuestionnaireResponse.class).id();
