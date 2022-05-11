@@ -54,17 +54,6 @@ public class ObservationCreateIT {
   }
 
   @Test
-  void create_notMe() {
-    // Kong is required to populate ICN header
-    assumeEnvironmentNotIn(Environment.LOCAL);
-    doPost(
-        "create not-me",
-        "Observation",
-        observation().subject(Reference.builder().reference("Patient/5555555").build()),
-        403);
-  }
-
-  @Test
   void create_valid() {
     var response = doPost("create resource", "Observation", observation(), 201);
     String id = response.expectValid(Observation.class).id();
