@@ -2,6 +2,7 @@
 
 Integration tests docker image.
 Tests are executed during the standard build.
+
 Additional scripts:
 
 - Use `local-docker-image.sh` to build and run the integration test docker image
