@@ -13,6 +13,7 @@
   <properties>
     <fhir-resources.version>11.0.11</fhir-resources.version>
     <guava.version>31.0.1-jre</guava.version>
+	<jacoco.skip>true</jacoco.skip>
     <nimbus-jose-jwt.version>9.13</nimbus-jose-jwt.version>
     <swagger-examples-maven-plugin.version>3.0.0</swagger-examples-maven-plugin.version>
     <swagger-maven-plugin.version>2.1.5</swagger-maven-plugin.version>
@@ -48,10 +49,10 @@
       <artifactId>vulcan</artifactId>
       <version>${vulcan.version}</version>
     </dependency>
-    <dependency>
+    <!-- <dependency>
       <groupId>org.liquibase</groupId>
       <artifactId>liquibase-core</artifactId>
-    </dependency>
+    </dependency> -->
     <dependency>
       <groupId>org.postgresql</groupId>
       <artifactId>postgresql</artifactId>
