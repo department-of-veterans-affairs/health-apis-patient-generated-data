@@ -135,7 +135,7 @@ class SystemDefinitions {
   private static Service serviceDefinition(String name, String url, int port, String apiPath) {
     return Service.builder()
         .url(SentinelProperties.optionUrl(name, url))
-        .port(port)
+        .port(SentinelProperties.optionPort(name, port))
         .apiPath(SentinelProperties.optionApiPath(name, apiPath))
         .build();
   }
