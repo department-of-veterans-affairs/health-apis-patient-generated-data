@@ -2,19 +2,23 @@
 
 cd $(readlink -f $(dirname $0))
 
-echo "Stopping existing database container"
-docker stop "pgd-db"
-echo "Removing existing database container"
-docker rm "pgd-db"
+echo 'stop and remove pgd-db'
+docker stop 'pgd-db' || true && docker rm 'pgd-db' || true
 
-docker pull mcr.microsoft.com/mssql/server:2017-latest
+SQL_SERVER_IMAGE=mcr.microsoft.com/azure-sql-edge:latest
+echo "using image $SQL_SERVER_IMAGE"
 
-echo "Creating new database container"
+docker pull $SQL_SERVER_IMAGE
+
+echo 'creating pgd-db'
 docker run \
-  --name "pgd-db" \
+  --name 'pgd-db' \
   -e 'ACCEPT_EULA=Y' \
-  -e "SA_PASSWORD=<YourStrong!Passw0rd>" \
+  -e 'SA_PASSWORD=<YourStrong!Passw0rd>' \
   -p 1633:1433 \
-  -d mcr.microsoft.com/mssql/server:2017-latest
+  -d "$SQL_SERVER_IMAGE"
 
-mvn clean install -Ppopulaterator -P'!standard' -Dexec.cleanupDaemonThreads=false
+mvn clean install \
+  -Ppopulaterator \
+  -P'!standard' \
+  -Dexec.cleanupDaemonThreads=false

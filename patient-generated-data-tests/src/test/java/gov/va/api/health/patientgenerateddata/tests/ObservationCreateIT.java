@@ -4,7 +4,6 @@ import static gov.va.api.health.patientgenerateddata.tests.Requests.doPost;
 import static gov.va.api.health.patientgenerateddata.tests.Requests.doSandboxDelete;
 import static gov.va.api.health.patientgenerateddata.tests.SystemDefinitions.systemDefinition;
 import static gov.va.api.health.sentinel.EnvironmentAssumptions.assumeEnvironmentIn;
-import static gov.va.api.health.sentinel.EnvironmentAssumptions.assumeEnvironmentNotIn;
 
 import gov.va.api.health.r4.api.datatypes.CodeableConcept;
 import gov.va.api.health.r4.api.datatypes.Coding;
@@ -51,17 +50,6 @@ public class ObservationCreateIT {
   @Test
   void create_invalid() {
     doPost("create invalid resource (existing ID)", "Observation", observation().id("123"), 400);
-  }
-
-  @Test
-  void create_notMe() {
-    // Kong is required to populate ICN header
-    assumeEnvironmentNotIn(Environment.LOCAL);
-    doPost(
-        "create not-me",
-        "Observation",
-        observation().subject(Reference.builder().reference("Patient/5555555").build()),
-        403);
   }
 
   @Test

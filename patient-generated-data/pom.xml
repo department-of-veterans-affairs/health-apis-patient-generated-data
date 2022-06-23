@@ -8,15 +8,16 @@
     <relativePath/>
   </parent>
   <artifactId>patient-generated-data</artifactId>
-  <version>3.0.1-SNAPSHOT</version>
+  <version>3.0.8-SNAPSHOT</version>
   <packaging>jar</packaging>
   <properties>
-    <fhir-resources.version>11.0.0</fhir-resources.version>
+    <fhir-resources.version>11.0.13</fhir-resources.version>
     <guava.version>31.0.1-jre</guava.version>
     <nimbus-jose-jwt.version>9.13</nimbus-jose-jwt.version>
     <swagger-examples-maven-plugin.version>3.0.0</swagger-examples-maven-plugin.version>
     <swagger-maven-plugin.version>2.1.5</swagger-maven-plugin.version>
-    <vulcan.version>4.0.0</vulcan.version>
+    <talos.version>3.0.2</talos.version>
+    <vulcan.version>4.0.3</vulcan.version>
   </properties>
   <dependencies>
     <dependency>
@@ -36,6 +37,11 @@
       <groupId>gov.va.api.health</groupId>
       <artifactId>us-core-r4</artifactId>
       <version>${fhir-resources.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>gov.va.api.lighthouse</groupId>
+      <artifactId>talos</artifactId>
+      <version>${talos.version}</version>
     </dependency>
     <dependency>
       <groupId>gov.va.api.lighthouse</groupId>

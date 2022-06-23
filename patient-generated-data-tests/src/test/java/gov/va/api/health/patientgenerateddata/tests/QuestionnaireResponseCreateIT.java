@@ -3,9 +3,7 @@ package gov.va.api.health.patientgenerateddata.tests;
 import static gov.va.api.health.patientgenerateddata.tests.Requests.doPost;
 import static gov.va.api.health.patientgenerateddata.tests.Requests.doSandboxDelete;
 import static gov.va.api.health.sentinel.EnvironmentAssumptions.assumeEnvironmentIn;
-import static gov.va.api.health.sentinel.EnvironmentAssumptions.assumeEnvironmentNotIn;
 
-import gov.va.api.health.r4.api.elements.Reference;
 import gov.va.api.health.r4.api.resources.QuestionnaireResponse;
 import gov.va.api.health.sentinel.Environment;
 import org.junit.jupiter.api.BeforeAll;
@@ -31,17 +29,6 @@ public class QuestionnaireResponseCreateIT {
         "QuestionnaireResponse",
         questionnaireResponse().id("123"),
         400);
-  }
-
-  @Test
-  void create_notMe() {
-    // Kong is required to populate ICN header
-    assumeEnvironmentNotIn(Environment.LOCAL);
-    doPost(
-        "create resource",
-        "QuestionnaireResponse",
-        questionnaireResponse().source(Reference.builder().reference("Patient/5555555").build()),
-        403);
   }
 
   @Test

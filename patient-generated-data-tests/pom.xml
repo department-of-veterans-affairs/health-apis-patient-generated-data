@@ -8,12 +8,12 @@
     <relativePath/>
   </parent>
   <artifactId>patient-generated-data-tests</artifactId>
-  <version>3.0.1-SNAPSHOT</version>
+  <version>3.0.8-SNAPSHOT</version>
   <packaging>jar</packaging>
   <properties>
     <authorization.client-ids.escape>{\"P73R4CUD4\":\"pteracuda\"}</authorization.client-ids.escape>
     <authorization.client-ids>{"P73R4CUD4":"pteracuda"}</authorization.client-ids>
-    <fhir-resources.version>11.0.0</fhir-resources.version>
+    <fhir-resources.version>11.0.13</fhir-resources.version>
     <sentinel.skipLaunch>false</sentinel.skipLaunch>
   </properties>
   <dependencies>
@@ -81,7 +81,7 @@
             </goals>
             <configuration>
               <name>patient-generated-data</name>
-              <healthcheckUrl>http://localhost:8095/actuator/health</healthcheckUrl>
+              <healthcheckUrl>http://localhost:8096/actuator/health</healthcheckUrl>
               <skip>${sentinel.skipLaunch}</skip>
               <processLogFile>${project.build.directory}/patient-generated-data.log</processLogFile>
               <waitAfterLaunch>60</waitAfterLaunch>
@@ -96,7 +96,7 @@
                 <argument>-Dloader=gov.va.api.health.patientgenerateddata.Application</argument>
                 <argument>-Dlogging.level.root=INFO</argument>
                 <argument>-Dpublic-r4-base-path=r4</argument>
-                <argument>-Dpublic-url=http://localhost:8095</argument>
+                <argument>-Dpublic-url=http://localhost:8096</argument>
                 <argument>-Dsandbox-data-management.enabled=true</argument>
                 <argument>-Dspring.datasource.driver-class-name=org.h2.Driver</argument>
                 <argument>-Dspring.datasource.password=sa</argument>
