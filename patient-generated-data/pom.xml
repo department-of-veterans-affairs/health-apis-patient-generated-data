@@ -13,6 +13,7 @@
   <properties>
     <fhir-resources.version>11.0.13</fhir-resources.version>
     <guava.version>31.0.1-jre</guava.version>
+    <liquibase.version>4.8.0</liquibase.version>
     <nimbus-jose-jwt.version>9.13</nimbus-jose-jwt.version>
     <swagger-examples-maven-plugin.version>3.0.0</swagger-examples-maven-plugin.version>
     <swagger-maven-plugin.version>2.1.5</swagger-maven-plugin.version>
@@ -51,6 +52,7 @@
     <dependency>
       <groupId>org.liquibase</groupId>
       <artifactId>liquibase-core</artifactId>
+      <version>${liquibase.version}</version>
     </dependency>
     <dependency>
       <groupId>org.postgresql</groupId>

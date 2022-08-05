@@ -13,6 +13,7 @@
   <properties>
     <fhir-resources.version>11.0.13</fhir-resources.version>
     <javax.el.version>3.0.1-b12</javax.el.version>
+    <liquibase.version>4.8.0</liquibase.version>
     <populaterator.sqlserver>false</populaterator.sqlserver>
   </properties>
   <dependencies>
@@ -64,6 +65,7 @@
     <dependency>
       <groupId>org.liquibase</groupId>
       <artifactId>liquibase-core</artifactId>
+      <version>${liquibase.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
