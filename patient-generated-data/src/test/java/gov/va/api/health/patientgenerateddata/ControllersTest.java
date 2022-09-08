@@ -4,6 +4,7 @@ import static gov.va.api.health.patientgenerateddata.Controllers.checkRequestSta
 import static gov.va.api.health.patientgenerateddata.Controllers.parseDateTime;
 import static gov.va.api.health.patientgenerateddata.Controllers.resourceId;
 import static gov.va.api.health.patientgenerateddata.Controllers.resourceType;
+import static gov.va.api.health.patientgenerateddata.Controllers.validateSource;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -88,6 +89,15 @@ public class ControllersTest {
         .isEqualTo("patient");
     assertThat(resourceType(Reference.builder().reference("patient/123V456").build()))
         .isEqualTo("patient");
+  }
+
+  @Test
+  void sourceMismatch() {
+    Throwable ex =
+        assertThrows(Exceptions.Forbidden.class, () -> validateSource("x", "foo", "bar"));
+    assertThat(ex.getMessage())
+        .isEqualTo(
+            "For resource x, request source foo is not authorized to update original source bar");
   }
 
   @Test

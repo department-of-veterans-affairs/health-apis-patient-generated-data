@@ -4,20 +4,25 @@ import static com.google.common.base.Preconditions.checkState;
 import static gov.va.api.health.patientgenerateddata.Controllers.checkRequestState;
 import static gov.va.api.health.patientgenerateddata.Controllers.generateRandomId;
 import static gov.va.api.health.patientgenerateddata.Controllers.lastUpdatedFromMeta;
-import static gov.va.api.health.patientgenerateddata.Controllers.metaWithLastUpdated;
+import static gov.va.api.health.patientgenerateddata.Controllers.matchIcn;
+import static gov.va.api.health.patientgenerateddata.Controllers.metaWithLastUpdatedAndSource;
 import static gov.va.api.health.patientgenerateddata.Controllers.nowMillis;
+import static gov.va.api.health.patientgenerateddata.Controllers.validateSource;
 import static gov.va.api.lighthouse.vulcan.Rules.atLeastOneParameterOf;
 import static gov.va.api.lighthouse.vulcan.Rules.ifParameter;
 import static gov.va.api.lighthouse.vulcan.Vulcan.returnNothing;
+import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Streams;
 import gov.va.api.health.autoconfig.logging.Loggable;
 import gov.va.api.health.patientgenerateddata.CompositeMapping;
 import gov.va.api.health.patientgenerateddata.Exceptions;
 import gov.va.api.health.patientgenerateddata.JacksonMapperConfig;
 import gov.va.api.health.patientgenerateddata.LinkProperties;
+import gov.va.api.health.patientgenerateddata.Sourcerer;
 import gov.va.api.health.patientgenerateddata.VulcanizedBundler;
 import gov.va.api.health.r4.api.resources.Questionnaire;
 import gov.va.api.lighthouse.vulcan.Vulcan;
@@ -26,6 +31,7 @@ import gov.va.api.lighthouse.vulcan.mappings.Mappings;
 import java.net.URI;
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -41,6 +47,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -56,6 +63,8 @@ public class QuestionnaireController {
   private final LinkProperties linkProperties;
 
   private final QuestionnaireRepository repository;
+
+  private final Sourcerer sourcerer;
 
   @SneakyThrows
   private static void populateEntity(
@@ -101,20 +110,35 @@ public class QuestionnaireController {
 
   @PostMapping
   @Loggable(arguments = false)
-  ResponseEntity<Questionnaire> create(@Valid @RequestBody Questionnaire questionnaire) {
+  ResponseEntity<Questionnaire> create(
+      @Valid @RequestBody Questionnaire questionnaire,
+      @RequestHeader(name = "Authorization", required = true) String authorization,
+      @RequestHeader(name = "x-va-icn", required = false) String icn) {
     checkRequestState(
         isEmpty(questionnaire.id()), "ID must be empty, found %s", questionnaire.id());
     questionnaire.id(generateRandomId());
-    return create(questionnaire, nowMillis());
+    return create(questionnaire, authorization, icn, nowMillis());
   }
 
   /** Create resource. */
-  public ResponseEntity<Questionnaire> create(Questionnaire questionnaire, Instant now) {
-    questionnaire.meta(metaWithLastUpdated(questionnaire.meta(), now));
+  public ResponseEntity<Questionnaire> create(
+      Questionnaire questionnaire, String authorization, String icn, Instant now) {
+    matchIcn(icn, questionnaire, QuestionnaireIncludesIcnMajig::icns);
+    questionnaire.meta(
+        metaWithLastUpdatedAndSource(questionnaire.meta(), now, sourcerer.source(authorization)));
     repository.save(toEntity(questionnaire));
     return ResponseEntity.created(
             URI.create(linkProperties.r4Url() + "/Questionnaire/" + questionnaire.id()))
         .body(questionnaire);
+  }
+
+  public Optional<Questionnaire> findById(String id) {
+    return repository.findById(id).map(e -> e.deserializePayload());
+  }
+
+  /** Get all IDs for Questionnaire resource. */
+  public List<String> getAllIds() {
+    return Streams.stream(repository.findAll()).map(e -> e.id()).sorted().collect(toList());
   }
 
   @InitBinder
@@ -123,11 +147,8 @@ public class QuestionnaireController {
   }
 
   @GetMapping(value = "/{id}")
-  Questionnaire read(@PathVariable("id") String id) {
-    return repository
-        .findById(id)
-        .map(e -> e.deserializePayload())
-        .orElseThrow(() -> new Exceptions.NotFound(id));
+  public Questionnaire read(@PathVariable("id") String id) {
+    return findById(id).orElseThrow(() -> new Exceptions.NotFound(id));
   }
 
   @GetMapping
@@ -155,21 +176,31 @@ public class QuestionnaireController {
   @PutMapping(value = "/{id}")
   @Loggable(arguments = false)
   ResponseEntity<Questionnaire> update(
-      @PathVariable("id") String pathId, @Valid @RequestBody Questionnaire questionnaire) {
+      @PathVariable("id") String pathId,
+      @Valid @RequestBody Questionnaire questionnaire,
+      @RequestHeader(name = "Authorization", required = true) String authorization,
+      @RequestHeader(name = "x-va-icn", required = false) String icn) {
     checkRequestState(
         pathId.equals(questionnaire.id()),
         "Path ID (%s) and request body ID (%s) do not match",
         pathId,
         questionnaire.id());
-    return update(questionnaire, nowMillis());
+    return update(questionnaire, authorization, icn, nowMillis());
   }
 
-  ResponseEntity<Questionnaire> update(Questionnaire questionnaire, Instant now) {
-    questionnaire.meta(metaWithLastUpdated(questionnaire.meta(), now));
+  /** Update the given resource. */
+  public ResponseEntity<Questionnaire> update(
+      Questionnaire questionnaire, String authorization, String icn, Instant now) {
+    matchIcn(icn, questionnaire, QuestionnaireIncludesIcnMajig::icns);
+    String authorizationSource = sourcerer.source(authorization);
     QuestionnaireEntity entity =
         repository
             .findById(questionnaire.id())
             .orElseThrow(() -> new Exceptions.NotFound(questionnaire.id()));
+    validateSource(
+        questionnaire.id(), authorizationSource, entity.deserializePayload().meta().source());
+    questionnaire.meta(
+        metaWithLastUpdatedAndSource(questionnaire.meta(), now, authorizationSource));
     populateEntity(entity, questionnaire);
     repository.save(entity);
     return ResponseEntity.ok(questionnaire);

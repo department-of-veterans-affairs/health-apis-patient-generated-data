@@ -4,22 +4,30 @@
   <parent>
     <groupId>gov.va.api.health</groupId>
     <artifactId>service-starter</artifactId>
-    <version>8.0.26</version>
+    <version>10.0.0</version>
     <relativePath/>
   </parent>
   <artifactId>patient-generated-data</artifactId>
-  <version>1.0.14-SNAPSHOT</version>
+  <version>3.0.9-SNAPSHOT</version>
   <packaging>jar</packaging>
   <properties>
-    <fhir-resources.version>7.0.7</fhir-resources.version>
+    <fhir-resources.version>11.0.13</fhir-resources.version>
+    <guava.version>31.0.1-jre</guava.version>
+    <nimbus-jose-jwt.version>9.13</nimbus-jose-jwt.version>
     <swagger-examples-maven-plugin.version>3.0.0</swagger-examples-maven-plugin.version>
     <swagger-maven-plugin.version>2.1.5</swagger-maven-plugin.version>
-    <vulcan.version>2.0.8</vulcan.version>
+    <talos.version>3.0.2</talos.version>
+    <vulcan.version>4.0.3</vulcan.version>
   </properties>
   <dependencies>
     <dependency>
       <groupId>com.microsoft.sqlserver</groupId>
       <artifactId>mssql-jdbc</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.nimbusds</groupId>
+      <artifactId>nimbus-jose-jwt</artifactId>
+      <version>${nimbus-jose-jwt.version}</version>
     </dependency>
     <dependency>
       <groupId>gov.va.api.health</groupId>
@@ -29,6 +37,11 @@
       <groupId>gov.va.api.health</groupId>
       <artifactId>us-core-r4</artifactId>
       <version>${fhir-resources.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>gov.va.api.lighthouse</groupId>
+      <artifactId>talos</artifactId>
+      <version>${talos.version}</version>
     </dependency>
     <dependency>
       <groupId>gov.va.api.lighthouse</groupId>
@@ -46,6 +59,11 @@
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-data-jpa</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>${guava.version}</version>
     </dependency>
   </dependencies>
   <build>

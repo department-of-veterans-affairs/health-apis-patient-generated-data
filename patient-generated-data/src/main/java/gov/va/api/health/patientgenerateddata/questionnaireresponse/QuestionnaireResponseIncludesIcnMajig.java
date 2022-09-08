@@ -22,11 +22,13 @@ public class QuestionnaireResponseIncludesIcnMajig implements ResponseBodyAdvice
           .type(QuestionnaireResponse.class)
           .bundleType(QuestionnaireResponse.Bundle.class)
           .extractResources(bundle -> bundle.entry().stream().map(AbstractEntry::resource))
-          .extractIcns(
-              body ->
-                  Streams.concat(
-                      Stream.ofNullable(IncludesIcnMajig.icn(body.subject())),
-                      Stream.ofNullable(IncludesIcnMajig.icn(body.author())),
-                      Stream.ofNullable(IncludesIcnMajig.icn(body.source()))))
+          .extractIcns(body -> icns(body))
           .build();
+
+  static Stream<String> icns(QuestionnaireResponse qr) {
+    return Streams.concat(
+        Stream.ofNullable(IncludesIcnMajig.icn(qr.subject())),
+        Stream.ofNullable(IncludesIcnMajig.icn(qr.author())),
+        Stream.ofNullable(IncludesIcnMajig.icn(qr.source())));
+  }
 }

@@ -2,16 +2,21 @@ package gov.va.api.health.patientgenerateddata;
 
 import static com.google.common.base.Preconditions.checkState;
 import static java.time.temporal.ChronoUnit.MILLIS;
+import static java.util.stream.Collectors.toSet;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 import com.google.common.base.Splitter;
 import gov.va.api.health.r4.api.elements.Meta;
 import gov.va.api.health.r4.api.elements.Reference;
+import gov.va.api.health.r4.api.resources.Resource;
 import java.time.Instant;
 import java.time.OffsetDateTime;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Function;
+import java.util.stream.Stream;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
@@ -46,11 +51,26 @@ public class Controllers {
     return Optional.ofNullable(meta).map(m -> parseDateTime(m.lastUpdated()));
   }
 
-  /** Publishes lastUpdated in Meta. */
-  public static Meta metaWithLastUpdated(Meta meta, Instant lastUpdated) {
+  /** Validate that the request ICN, if present, is the only ICN for the resource. */
+  public static <T extends Resource> void matchIcn(
+      String requestIcn, T resource, Function<T, Stream<String>> extractIcns) {
+    if (requestIcn == null) {
+      return;
+    }
+    Collection<String> otherIcns =
+        extractIcns.apply(resource).distinct().filter(i -> !i.equals(requestIcn)).collect(toSet());
+    if (!otherIcns.isEmpty()) {
+      throw new Exceptions.Forbidden(
+          String.format("Token for ICN %s not allowed access to ICN %s", requestIcn, otherIcns));
+    }
+  }
+
+  /** Publishes lastUpdated and source in Meta. */
+  public static Meta metaWithLastUpdatedAndSource(Meta meta, Instant lastUpdated, String source) {
     return Optional.ofNullable(meta)
         .orElse(Meta.builder().build())
-        .lastUpdated(lastUpdated.toString());
+        .lastUpdated(lastUpdated.toString())
+        .source(source);
   }
 
   /** Current Instant truncated to milliseconds. */
@@ -166,5 +186,15 @@ public class Controllers {
       return null;
     }
     return resourceType;
+  }
+
+  /** Throw Exceptions.Forbidden if sources don't match. */
+  public static void validateSource(String id, String authorizationSource, String originalSource) {
+    if (!originalSource.equals(authorizationSource)) {
+      throw new Exceptions.Forbidden(
+          String.format(
+              "For resource %s, request source %s is not authorized to update original source %s",
+              id, authorizationSource, originalSource));
+    }
   }
 }

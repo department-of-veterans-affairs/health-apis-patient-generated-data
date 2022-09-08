@@ -23,8 +23,10 @@ public class Samples {
         .build();
   }
 
-  public static Questionnaire questionnaireWithLastUpdated(Instant lastUpdated) {
-    return questionnaire().meta(Meta.builder().lastUpdated(lastUpdated.toString()).build());
+  public static Questionnaire questionnaireWithLastUpdatedAndSource(
+      Instant lastUpdated, String source) {
+    return questionnaire()
+        .meta(Meta.builder().lastUpdated(lastUpdated.toString()).source(source).build());
   }
 
   public static Questionnaire questionnaireWithUseContext(

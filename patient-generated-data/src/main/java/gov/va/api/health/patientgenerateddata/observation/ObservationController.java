@@ -4,19 +4,24 @@ import static com.google.common.base.Preconditions.checkState;
 import static gov.va.api.health.patientgenerateddata.Controllers.checkRequestState;
 import static gov.va.api.health.patientgenerateddata.Controllers.generateRandomId;
 import static gov.va.api.health.patientgenerateddata.Controllers.lastUpdatedFromMeta;
-import static gov.va.api.health.patientgenerateddata.Controllers.metaWithLastUpdated;
+import static gov.va.api.health.patientgenerateddata.Controllers.matchIcn;
+import static gov.va.api.health.patientgenerateddata.Controllers.metaWithLastUpdatedAndSource;
 import static gov.va.api.health.patientgenerateddata.Controllers.nowMillis;
+import static gov.va.api.health.patientgenerateddata.Controllers.validateSource;
 import static gov.va.api.lighthouse.vulcan.Rules.atLeastOneParameterOf;
 import static gov.va.api.lighthouse.vulcan.Rules.ifParameter;
 import static gov.va.api.lighthouse.vulcan.Vulcan.returnNothing;
+import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Streams;
 import gov.va.api.health.autoconfig.logging.Loggable;
 import gov.va.api.health.patientgenerateddata.Exceptions;
 import gov.va.api.health.patientgenerateddata.JacksonMapperConfig;
 import gov.va.api.health.patientgenerateddata.LinkProperties;
+import gov.va.api.health.patientgenerateddata.Sourcerer;
 import gov.va.api.health.patientgenerateddata.VulcanizedBundler;
 import gov.va.api.health.r4.api.resources.Observation;
 import gov.va.api.lighthouse.vulcan.Vulcan;
@@ -25,6 +30,7 @@ import gov.va.api.lighthouse.vulcan.mappings.Mappings;
 import java.net.URI;
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -40,6 +46,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -55,6 +62,8 @@ public class ObservationController {
   private final LinkProperties linkProperties;
 
   private final ObservationRepository repository;
+
+  private final Sourcerer sourcerer;
 
   @SneakyThrows
   private static void populateEntity(
@@ -93,19 +102,34 @@ public class ObservationController {
 
   @PostMapping
   @Loggable(arguments = false)
-  ResponseEntity<Observation> create(@Valid @RequestBody Observation observation) {
+  ResponseEntity<Observation> create(
+      @Valid @RequestBody Observation observation,
+      @RequestHeader(name = "Authorization", required = true) String authorization,
+      @RequestHeader(name = "x-va-icn", required = false) String icn) {
     checkRequestState(isEmpty(observation.id()), "ID must be empty, found %s", observation.id());
     observation.id(generateRandomId());
-    return create(observation, nowMillis());
+    return create(observation, authorization, icn, nowMillis());
   }
 
   /** Create resource. */
-  public ResponseEntity<Observation> create(Observation observation, Instant now) {
-    observation.meta(metaWithLastUpdated(observation.meta(), now));
+  public ResponseEntity<Observation> create(
+      Observation observation, String authorization, String icn, Instant now) {
+    matchIcn(icn, observation, ObservationIncludesIcnMajig::icns);
+    observation.meta(
+        metaWithLastUpdatedAndSource(observation.meta(), now, sourcerer.source(authorization)));
     repository.save(toEntity(observation));
     return ResponseEntity.created(
             URI.create(linkProperties.r4Url() + "/Observation/" + observation.id()))
         .body(observation);
+  }
+
+  public Optional<Observation> findById(String id) {
+    return repository.findById(id).map(e -> e.deserializePayload());
+  }
+
+  /** Get all IDs for Observation resource. */
+  public List<String> getAllIds() {
+    return Streams.stream(repository.findAll()).map(e -> e.id()).sorted().collect(toList());
   }
 
   @InitBinder
@@ -114,11 +138,8 @@ public class ObservationController {
   }
 
   @GetMapping(value = "/{id}")
-  Observation read(@PathVariable("id") String id) {
-    return repository
-        .findById(id)
-        .map(e -> e.deserializePayload())
-        .orElseThrow(() -> new Exceptions.NotFound(id));
+  public Observation read(@PathVariable("id") String id) {
+    return findById(id).orElseThrow(() -> new Exceptions.NotFound(id));
   }
 
   @GetMapping
@@ -145,21 +166,30 @@ public class ObservationController {
   @PutMapping(value = "/{id}")
   @Loggable(arguments = false)
   ResponseEntity<Observation> update(
-      @PathVariable("id") String pathId, @Valid @RequestBody Observation observation) {
+      @PathVariable("id") String pathId,
+      @Valid @RequestBody Observation observation,
+      @RequestHeader(name = "Authorization", required = true) String authorization,
+      @RequestHeader(name = "x-va-icn", required = false) String icn) {
     checkRequestState(
         pathId.equals(observation.id()),
         "Path ID (%s) and request body ID (%s) do not match",
         pathId,
         observation.id());
-    return update(observation, nowMillis());
+    return update(observation, authorization, icn, nowMillis());
   }
 
-  ResponseEntity<Observation> update(Observation observation, Instant now) {
-    observation.meta(metaWithLastUpdated(observation.meta(), now));
+  /** Update the given resource. */
+  public ResponseEntity<Observation> update(
+      Observation observation, String authorization, String icn, Instant now) {
+    matchIcn(icn, observation, ObservationIncludesIcnMajig::icns);
+    String authorizationSource = sourcerer.source(authorization);
     ObservationEntity entity =
         repository
             .findById(observation.id())
             .orElseThrow(() -> new Exceptions.NotFound(observation.id()));
+    validateSource(
+        observation.id(), authorizationSource, entity.deserializePayload().meta().source());
+    observation.meta(metaWithLastUpdatedAndSource(observation.meta(), now, authorizationSource));
     populateEntity(entity, observation);
     repository.save(entity);
     return ResponseEntity.ok(observation);

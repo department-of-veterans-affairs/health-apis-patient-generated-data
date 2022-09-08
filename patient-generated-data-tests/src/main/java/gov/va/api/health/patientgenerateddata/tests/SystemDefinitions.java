@@ -10,14 +10,16 @@ import lombok.experimental.UtilityClass;
 
 @UtilityClass
 class SystemDefinitions {
-  static final String CLIENT_KEY_DEFAULT = "pteracuda";
-
   private static Ids ids() {
     return Ids.builder()
         .lastUpdated("gt2021-01-01T00:00:00Z")
         .observation("fc691a7f-a0f3-47b4-9d00-2786d055e8ba")
         .observationList(
-            List.of("fc691a7f-a0f3-47b4-9d00-2786d055e8ba", "0b9d2e37-f84d-4f9e-9ba3-995772f368d3"))
+            List.of(
+                "fc691a7f-a0f3-47b4-9d00-2786d055e8ba",
+                "8cdc73e7-56e1-4823-b1ad-9b107c33d9a2",
+                "0b9d2e37-f84d-4f9e-9ba3-995772f368d3"))
+        .observationSubject("1011537977V693883")
         .questionnaire("37953b72-961b-41ee-bd05-86c62bacc46b")
         .questionnaireContextTypeValue(
             Ids.UsageContextTypeValue.builder()
@@ -37,15 +39,15 @@ class SystemDefinitions {
             List.of("f003043a-9047-4c3a-b15b-a26c67f4e723", "e7c5799f-14fd-420d-8671-e24386773e7e"))
         .questionnaireResponseMetas(
             Ids.Metas.builder()
-                .applicationTag(
-                    Ids.MetaTag.builder()
-                        .system("https://api.va.gov/services/pgd")
-                        .code("66a5960c-68ee-4689-88ae-4c7cccf7ca79")
-                        .build())
                 .commonTag(
                     Ids.MetaTag.builder()
                         .system("http://terminology.hl7.org/CodeSystem/common-tags")
                         .code("actionable")
+                        .build())
+                .repoTag(
+                    Ids.MetaTag.builder()
+                        .system("https://github.com/department-of-veterans-affairs")
+                        .code("health-apis-patient-generated-data")
                         .build())
                 .build())
         .questionnaireResponseSource("1011537977V693883")
@@ -56,63 +58,76 @@ class SystemDefinitions {
 
   private static SystemDefinition lab() {
     return SystemDefinition.builder()
-        .internal(
+        .management(
             serviceDefinition(
-                "internal", "https://blue.lab.lighthouse.va.gov", 443, "/patient-generated-data/"))
-        .r4(serviceDefinition("r4", "https://blue.lab.lighthouse.va.gov", 443, "/pgd/v0/r4/"))
+                "management",
+                "https://blue.lab.lighthouse.va.gov",
+                443,
+                "/patient-generated-data/management/"))
+        .r4(
+            serviceDefinition(
+                "r4", "https://blue.lab.lighthouse.va.gov", 443, "/patient-generated-data/r4/"))
         .sandboxDataR4(
             serviceDefinition(
                 "sandbox-data-r4",
                 "https://blue.lab.lighthouse.va.gov",
                 443,
-                "/pgd/v0/sandbox-data/r4/"))
+                "/patient-generated-data/sandbox-data/r4/"))
         .ids(ids())
         .build();
   }
 
   private static SystemDefinition local() {
     return SystemDefinition.builder()
-        .internal(serviceDefinition("internal", "http://localhost", 8095, "/"))
-        .r4(serviceDefinition("r4", "http://localhost", 8095, "/r4/"))
+        .management(serviceDefinition("management", "http://localhost", 8096, "/management/"))
+        .r4(serviceDefinition("r4", "http://localhost", 8096, "/r4/"))
         .sandboxDataR4(
-            serviceDefinition("sandbox-data-r4", "http://localhost", 8095, "/sandbox-data/r4/"))
+            serviceDefinition("sandbox-data-r4", "http://localhost", 8096, "/sandbox-data/r4/"))
         .ids(ids())
         .build();
   }
 
   private static SystemDefinition production() {
     return SystemDefinition.builder()
-        .internal(
+        .management(
             serviceDefinition(
-                "internal",
+                "management",
                 "https://blue.production.lighthouse.va.gov",
                 443,
-                "/patient-generated-data/"))
+                "/patient-generated-data/management/"))
         .r4(
             serviceDefinition(
-                "r4", "https://blue.production.lighthouse.va.gov", 443, "/pgd/v0/r4/"))
+                "r4",
+                "https://blue.production.lighthouse.va.gov",
+                443,
+                "/patient-generated-data/r4/"))
         .sandboxDataR4(
             serviceDefinition(
                 "sandbox-data-r4",
                 "https://blue.production.lighthouse.va.gov",
                 443,
-                "/pgd/v0/sandbox-data/r4/"))
+                "/patient-generated-data/sandbox-data/r4/"))
         .ids(ids())
         .build();
   }
 
   private static SystemDefinition qa() {
     return SystemDefinition.builder()
-        .internal(
+        .management(
             serviceDefinition(
-                "internal", "https://blue.qa.lighthouse.va.gov", 443, "/patient-generated-data/"))
-        .r4(serviceDefinition("r4", "https://blue.qa.lighthouse.va.gov", 443, "/pgd/v0/r4/"))
+                "management",
+                "https://blue.qa.lighthouse.va.gov",
+                443,
+                "/patient-generated-data/management/"))
+        .r4(
+            serviceDefinition(
+                "r4", "https://blue.qa.lighthouse.va.gov", 443, "/patient-generated-data/r4/"))
         .sandboxDataR4(
             serviceDefinition(
                 "sandbox-data-r4",
                 "https://blue.qa.lighthouse.va.gov",
                 443,
-                "/pgd/v0/sandbox-data/r4/"))
+                "/patient-generated-data/sandbox-data/r4/"))
         .ids(ids())
         .build();
   }
@@ -120,47 +135,52 @@ class SystemDefinitions {
   private static Service serviceDefinition(String name, String url, int port, String apiPath) {
     return Service.builder()
         .url(SentinelProperties.optionUrl(name, url))
-        .port(port)
+        .port(SentinelProperties.optionPort(name, port))
         .apiPath(SentinelProperties.optionApiPath(name, apiPath))
         .build();
   }
 
   private static SystemDefinition staging() {
     return SystemDefinition.builder()
-        .internal(
+        .management(
             serviceDefinition(
-                "internal",
+                "management",
                 "https://blue.staging.lighthouse.va.gov",
                 443,
-                "/patient-generated-data/"))
-        .r4(serviceDefinition("r4", "https://blue.staging.lighthouse.va.gov", 443, "/pgd/v0/r4/"))
+                "/patient-generated-data/management/"))
+        .r4(
+            serviceDefinition(
+                "r4", "https://blue.staging.lighthouse.va.gov", 443, "/patient-generated-data/r4/"))
         .sandboxDataR4(
             serviceDefinition(
                 "sandbox-data-r4",
                 "https://blue.staging.lighthouse.va.gov",
                 443,
-                "/pgd/v0/sandbox-data/r4/"))
+                "/patient-generated-data/sandbox-data/r4/"))
         .ids(ids())
         .build();
   }
 
   private static SystemDefinition stagingLab() {
     return SystemDefinition.builder()
-        .internal(
+        .management(
             serviceDefinition(
-                "internal",
+                "management",
                 "https://blue.staging-lab.lighthouse.va.gov",
                 443,
-                "/patient-generated-data/"))
+                "/patient-generated-data/management/"))
         .r4(
             serviceDefinition(
-                "r4", "https://blue.staging-lab.lighthouse.va.gov", 443, "/pgd/v0/r4/"))
+                "r4",
+                "https://blue.staging-lab.lighthouse.va.gov",
+                443,
+                "/patient-generated-data/r4/"))
         .sandboxDataR4(
             serviceDefinition(
                 "sandbox-data-r4",
                 "https://blue.staging-lab.lighthouse.va.gov",
                 443,
-                "/pgd/v0/sandbox-data/r4/"))
+                "/patient-generated-data/sandbox-data/r4/"))
         .ids(ids())
         .build();
   }
@@ -194,6 +214,8 @@ class SystemDefinitions {
 
     @NonNull List<String> observationList;
 
+    @NonNull String observationSubject;
+
     @NonNull String questionnaire;
 
     @NonNull UsageContextTypeValue questionnaireContextTypeValue;
@@ -219,9 +241,9 @@ class SystemDefinitions {
     @Value
     @Builder
     static final class Metas {
-      @NonNull MetaTag applicationTag;
-
       @NonNull MetaTag commonTag;
+
+      @NonNull MetaTag repoTag;
     }
 
     @Value
@@ -272,7 +294,7 @@ class SystemDefinitions {
   @Value
   @Builder
   static final class SystemDefinition {
-    @NonNull Service internal;
+    @NonNull Service management;
 
     @NonNull Service r4;
 
