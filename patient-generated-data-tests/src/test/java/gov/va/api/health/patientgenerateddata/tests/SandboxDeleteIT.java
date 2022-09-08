@@ -1,8 +1,8 @@
 package gov.va.api.health.patientgenerateddata.tests;
 
-import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.doDelete;
-import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.doGet;
-import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.doPost;
+import static gov.va.api.health.patientgenerateddata.tests.Requests.doGet;
+import static gov.va.api.health.patientgenerateddata.tests.Requests.doPost;
+import static gov.va.api.health.patientgenerateddata.tests.Requests.doSandboxDelete;
 import static gov.va.api.health.sentinel.EnvironmentAssumptions.assumeEnvironmentIn;
 import static gov.va.api.health.sentinel.EnvironmentAssumptions.assumeEnvironmentNotIn;
 
@@ -17,7 +17,6 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 public class SandboxDeleteIT {
-
   private static Observation observation() {
     return Observation.builder()
         .status(Observation.ObservationStatus.unknown)
@@ -52,44 +51,44 @@ public class SandboxDeleteIT {
 
   @Test
   void deleteDisallowed() {
-    assumeEnvironmentIn(Environment.STAGING, Environment.PROD);
-    doDelete("Observation/5555555", "delete disallowed", 404);
+    assumeEnvironmentIn(Environment.PROD);
+    doSandboxDelete("delete disallowed", "Observation/5555555", 404);
   }
 
   @Test
   void deleteObservation() {
-    assumeEnvironmentNotIn(Environment.STAGING, Environment.PROD);
+    assumeEnvironmentNotIn(Environment.PROD);
     Observation observation = observation();
-    var response = doPost("Observation", observation, "create resource", 201);
+    var response = doPost("create resource", "Observation", observation, 201);
     Observation observationWritten = response.expectValid(Observation.class);
     String id = observationWritten.id();
     doGet("application/json", "Observation/" + id, 200);
-    doDelete("Observation/" + id, "delete resource", 200);
+    doSandboxDelete("delete resource", "Observation/" + id, 200);
     doGet("application/json", "Observation/" + id, 404);
   }
 
   @Test
   void deleteQuestionnaire() {
-    assumeEnvironmentNotIn(Environment.STAGING, Environment.PROD);
+    assumeEnvironmentNotIn(Environment.PROD);
     Questionnaire questionnaire = questionnaire();
-    var response = doPost("Questionnaire", questionnaire, "create resource", 201);
+    var response = doPost("create resource", "Questionnaire", questionnaire, 201);
     Questionnaire questionnaireWritten = response.expectValid(Questionnaire.class);
     String id = questionnaireWritten.id();
     doGet("application/json", "Questionnaire/" + id, 200);
-    doDelete("Questionnaire/" + id, "delete resource", 200);
+    doSandboxDelete("delete resource", "Questionnaire/" + id, 200);
     doGet("application/json", "Questionnaire/" + id, 404);
   }
 
   @Test
   void deleteQuestionnaireResponse() {
-    assumeEnvironmentNotIn(Environment.STAGING, Environment.PROD);
+    assumeEnvironmentNotIn(Environment.PROD);
     QuestionnaireResponse questionnaireResponse = questionnaireResponse();
-    var response = doPost("QuestionnaireResponse", questionnaireResponse, "create resource", 201);
+    var response = doPost("create resource", "QuestionnaireResponse", questionnaireResponse, 201);
     QuestionnaireResponse questionnaireResponseWritten =
         response.expectValid(QuestionnaireResponse.class);
     String id = questionnaireResponseWritten.id();
     doGet("application/json", "QuestionnaireResponse/" + id, 200);
-    doDelete("QuestionnaireResponse/" + id, "delete resource", 200);
+    doSandboxDelete("delete resource", "QuestionnaireResponse/" + id, 200);
     doGet("application/json", "QuestionnaireResponse/" + id, 404);
   }
 }

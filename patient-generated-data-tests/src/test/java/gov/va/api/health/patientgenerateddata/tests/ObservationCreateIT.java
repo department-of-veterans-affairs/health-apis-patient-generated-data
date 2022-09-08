@@ -1,6 +1,8 @@
 package gov.va.api.health.patientgenerateddata.tests;
 
-import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.doPost;
+import static gov.va.api.health.patientgenerateddata.tests.Requests.doPost;
+import static gov.va.api.health.patientgenerateddata.tests.Requests.doSandboxDelete;
+import static gov.va.api.health.patientgenerateddata.tests.SystemDefinitions.systemDefinition;
 import static gov.va.api.health.sentinel.EnvironmentAssumptions.assumeEnvironmentIn;
 
 import gov.va.api.health.r4.api.datatypes.CodeableConcept;
@@ -15,12 +17,13 @@ import org.junit.jupiter.api.Test;
 public class ObservationCreateIT {
   @BeforeAll
   static void assumeEnvironment() {
-    // These tests invent data that will not be cleaned up
-    // To avoid polluting the database, they should only run locally
-    assumeEnvironmentIn(Environment.LOCAL);
+    // These tests invent new data and then remove it
+    // Do not run in SLA'd environments
+    assumeEnvironmentIn(
+        Environment.LOCAL, Environment.QA, Environment.STAGING, Environment.STAGING_LAB);
   }
 
-  private static Observation observation() {
+  static Observation observation() {
     return Observation.builder()
         .status(Observation.ObservationStatus.unknown)
         .effectiveDateTime("2020-01-01T01:00:00Z")
@@ -37,19 +40,22 @@ public class ObservationCreateIT {
                     .text("laboratory")
                     .build()))
         .code(CodeableConcept.builder().text("code").build())
-        .subject(Reference.builder().reference("Patient/1").build())
+        .subject(
+            Reference.builder()
+                .reference("Patient/" + systemDefinition().ids().observationSubject())
+                .build())
         .build();
   }
 
   @Test
   void create_invalid() {
-    Observation observation = observation().id("123");
-    doPost("Observation", observation, "create invalid resource, existing id", 400);
+    doPost("create invalid resource (existing ID)", "Observation", observation().id("123"), 400);
   }
 
   @Test
   void create_valid() {
-    Observation observation = observation();
-    doPost("Observation", observation, "create resource", 201);
+    var response = doPost("create resource", "Observation", observation(), 201);
+    String id = response.expectValid(Observation.class).id();
+    doSandboxDelete("tear down", "Observation/" + id, 200);
   }
 }

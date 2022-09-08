@@ -1,6 +1,8 @@
 package gov.va.api.health.patientgenerateddata;
 
 import static com.google.common.base.Preconditions.checkState;
+import static gov.va.api.health.patientgenerateddata.Controllers.metaWithLastUpdatedAndSource;
+import static gov.va.api.health.patientgenerateddata.Controllers.nowMillis;
 import static java.util.stream.Collectors.joining;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -38,6 +40,8 @@ import lombok.Value;
 public final class Populaterator {
   private static final ObjectMapper MAPPER = JacksonMapperConfig.createMapper();
 
+  private static final String SOURCE = new Sourcerer("{}", "sat").source("Bearer sat");
+
   private static String baseDir() {
     return System.getProperty("basedir", ".");
   }
@@ -66,9 +70,8 @@ public final class Populaterator {
             .findCorrectDatabaseImplementation(new JdbcConnection(connection));
     try (Liquibase liquibase =
         new Liquibase(
-            baseDir()
-                + "/../patient-generated-data/src/main/resources/db/changelog/db.changelog-master.yaml",
-            new FileSystemResourceAccessor(),
+            "/../patient-generated-data/src/main/resources/db/changelog/db.changelog-master.yaml",
+            new FileSystemResourceAccessor(new File(baseDir())),
             database)) {
       liquibase.update(new Contexts(), new LabelExpression());
     }
@@ -102,11 +105,14 @@ public final class Populaterator {
   private static void observation(@NonNull Connection connection) {
     for (File f : new File(baseDir() + "/src/test/resources/observation").listFiles()) {
       Observation observation = readFile(Observation.class, f);
-      String sqlInsert = sqlInsert("app.Observation", List.of("id", "payload", "version"));
+      observation.meta(metaWithLastUpdatedAndSource(observation.meta(), nowMillis(), SOURCE));
+      String sqlInsert =
+          sqlInsert("app.Observation", List.of("id", "payload", "version", "lastUpdated"));
       try (PreparedStatement statement = connection.prepareStatement(sqlInsert)) {
         statement.setObject(1, observation.id());
         statement.setObject(2, MAPPER.writeValueAsString(observation));
         statement.setObject(3, 0);
+        statement.setTimestamp(4, timestamp(Controllers.nowMillis()));
         statement.execute();
       }
     }
@@ -131,13 +137,17 @@ public final class Populaterator {
   private static void questionnaire(@NonNull Connection connection) {
     for (File f : new File(baseDir() + "/src/test/resources/questionnaire").listFiles()) {
       Questionnaire questionnaire = readFile(Questionnaire.class, f);
+      questionnaire.meta(metaWithLastUpdatedAndSource(questionnaire.meta(), nowMillis(), SOURCE));
       String sqlInsert =
-          sqlInsert("app.Questionnaire", List.of("id", "payload", "version", "contextTypeValue"));
+          sqlInsert(
+              "app.Questionnaire",
+              List.of("id", "payload", "version", "contextTypeValue", "lastUpdated"));
       try (PreparedStatement statement = connection.prepareStatement(sqlInsert)) {
         statement.setObject(1, questionnaire.id());
         statement.setObject(2, MAPPER.writeValueAsString(questionnaire));
         statement.setObject(3, 0);
         statement.setObject(4, CompositeMapping.useContextValueJoin(questionnaire));
+        statement.setTimestamp(5, timestamp(Controllers.nowMillis()));
         statement.execute();
       }
     }
@@ -147,6 +157,7 @@ public final class Populaterator {
   private static void questionnaireResponse(@NonNull Connection connection) {
     for (File f : new File(baseDir() + "/src/test/resources/questionnaire-response").listFiles()) {
       QuestionnaireResponse response = readFile(QuestionnaireResponse.class, f);
+      response.meta(metaWithLastUpdatedAndSource(response.meta(), nowMillis(), SOURCE));
       String sqlInsert =
           sqlInsert(
               "app.QuestionnaireResponse",
@@ -159,17 +170,19 @@ public final class Populaterator {
                   "subject",
                   "metaTag",
                   "questionnaire",
-                  "source"));
+                  "source",
+                  "lastUpdated"));
       try (PreparedStatement statement = connection.prepareStatement(sqlInsert)) {
         statement.setObject(1, response.id());
         statement.setObject(2, MAPPER.writeValueAsString(response));
         statement.setObject(3, 0);
-        statement.setTimestamp(4, timestamp(ParseUtils.parseDateTime(response.authored())));
-        statement.setObject(5, ReferenceUtils.resourceId(response.author()));
-        statement.setObject(6, ReferenceUtils.resourceId(response.subject()));
+        statement.setTimestamp(4, timestamp(Controllers.parseDateTime(response.authored())));
+        statement.setObject(5, Controllers.resourceId(response.author()));
+        statement.setObject(6, Controllers.resourceId(response.subject()));
         statement.setObject(7, TokenListMapping.metadataTagJoin(response));
-        statement.setObject(8, ReferenceUtils.resourceId(response.questionnaire()));
-        statement.setObject(9, ReferenceUtils.resourceId(response.source()));
+        statement.setObject(8, Controllers.resourceId(response.questionnaire()));
+        statement.setObject(9, Controllers.resourceId(response.source()));
+        statement.setTimestamp(10, timestamp(Controllers.nowMillis()));
         statement.execute();
       }
     }

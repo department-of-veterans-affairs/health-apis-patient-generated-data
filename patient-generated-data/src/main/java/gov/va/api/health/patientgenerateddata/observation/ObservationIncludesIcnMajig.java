@@ -8,6 +8,11 @@ import lombok.experimental.Delegate;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
+/**
+ * Intercept all RequestMapping payloads of Type Observation.class or Observation.Bundle.class.
+ * Extract ICN(s) from these payloads with the provided function. This will lead to populating the
+ * X-VA-INCLUDES-ICN header.
+ */
 @ControllerAdvice
 public class ObservationIncludesIcnMajig implements ResponseBodyAdvice<Object> {
   @Delegate
@@ -16,6 +21,10 @@ public class ObservationIncludesIcnMajig implements ResponseBodyAdvice<Object> {
           .type(Observation.class)
           .bundleType(Observation.Bundle.class)
           .extractResources(bundle -> bundle.entry().stream().map(AbstractEntry::resource))
-          .extractIcns(body -> Stream.ofNullable(IncludesIcnMajig.icn(body.subject())))
+          .extractIcns(body -> icns(body))
           .build();
+
+  static Stream<String> icns(Observation observation) {
+    return Stream.ofNullable(IncludesIcnMajig.icn(observation.subject()));
+  }
 }

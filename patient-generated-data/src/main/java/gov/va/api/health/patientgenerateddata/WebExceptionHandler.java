@@ -27,8 +27,11 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
+import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.UnsatisfiedServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,6 +39,10 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.client.HttpClientErrorException;
 
+/**
+ * Exceptions that escape the rest controllers will be processed by this handler. It will convert
+ * exception into different HTTP status codes and produce an error response payload.
+ */
 @Slf4j
 @RestControllerAdvice
 @RequestMapping(produces = "application/json")
@@ -160,11 +167,20 @@ public final class WebExceptionHandler {
     Exceptions.AlreadyExists.class,
     Exceptions.BadRequest.class,
     gov.va.api.lighthouse.vulcan.InvalidRequest.class,
+    HttpMediaTypeNotSupportedException.class,
+    HttpMessageNotReadableException.class,
+    MissingRequestHeaderException.class,
     UnsatisfiedServletRequestParameterException.class
   })
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   OperationOutcome handleBadRequest(Exception e, HttpServletRequest request) {
     return responseFor("structure", e, request, emptyList(), true);
+  }
+
+  @ExceptionHandler({Exceptions.Forbidden.class})
+  @ResponseStatus(HttpStatus.FORBIDDEN)
+  OperationOutcome handleForbidden(Exception e, HttpServletRequest request) {
+    return responseFor("forbidden", e, request, emptyList(), true);
   }
 
   @ExceptionHandler({HttpRequestMethodNotSupportedException.class})

@@ -1,6 +1,7 @@
 package gov.va.api.health.patientgenerateddata.tests;
 
-import static gov.va.api.health.patientgenerateddata.tests.RequestUtils.doPost;
+import static gov.va.api.health.patientgenerateddata.tests.Requests.doPost;
+import static gov.va.api.health.patientgenerateddata.tests.Requests.doSandboxDelete;
 import static gov.va.api.health.sentinel.EnvironmentAssumptions.assumeEnvironmentIn;
 
 import gov.va.api.health.r4.api.resources.Questionnaire;
@@ -11,12 +12,13 @@ import org.junit.jupiter.api.Test;
 public class QuestionnaireCreateIT {
   @BeforeAll
   static void assumeEnvironment() {
-    // These tests invent data that will not be cleaned up
-    // To avoid polluting the database, they should only run locally
-    assumeEnvironmentIn(Environment.LOCAL);
+    // These tests invent new data and then remove it
+    // Do not run in SLA'd environments
+    assumeEnvironmentIn(
+        Environment.LOCAL, Environment.QA, Environment.STAGING, Environment.STAGING_LAB);
   }
 
-  private static Questionnaire questionnaire() {
+  static Questionnaire questionnaire() {
     return Questionnaire.builder()
         .title("x")
         .status(Questionnaire.PublicationStatus.active)
@@ -25,13 +27,14 @@ public class QuestionnaireCreateIT {
 
   @Test
   void create_invalid() {
-    Questionnaire questionnaire = questionnaire().id("123");
-    doPost("Questionnaire", questionnaire, "create invalid resource, existing id", 400);
+    doPost(
+        "create invalid resource (existing ID)", "Questionnaire", questionnaire().id("123"), 400);
   }
 
   @Test
   void create_valid() {
-    Questionnaire questionnaire = questionnaire();
-    doPost("Questionnaire", questionnaire, "create resource", 201);
+    var response = doPost("create resource", "Questionnaire", questionnaire(), 201);
+    String id = response.expectValid(Questionnaire.class).id();
+    doSandboxDelete("tear down", "Questionnaire/" + id, 200);
   }
 }

@@ -297,3 +297,60 @@ databaseChangeLog:
         - dropTable:
             tableName: Patient
             schemaName: app
+
+  - changeSet:
+      id: 15
+      author: pteracuda
+      changes:
+        - addColumn:
+            tableName: Observation
+            schemaName: app
+            columns:
+              - column:
+                  name: lastUpdated
+                  type: datetime2
+                  constraints:
+                    - nullable: true
+        - addColumn:
+            tableName: Questionnaire
+            schemaName: app
+            columns:
+              - column:
+                  name: lastUpdated
+                  type: datetime2
+                  constraints:
+                    - nullable: true
+        - addColumn:
+            tableName: QuestionnaireResponse
+            schemaName: app
+            columns:
+              - column:
+                  name: lastUpdated
+                  type: datetime2
+                  constraints:
+                    - nullable: true
+
+  - changeSet:
+      id: 16
+      author: pteracuda
+      changes:
+        - createTable:
+            tableName: ArchivedQuestionnaireResponse
+            schemaName: app
+            columns:
+              - column:
+                  name: id
+                  type: varchar(36)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: payload
+                  type: clob
+                  constraints:
+                    nullable: false
+              - column:
+                  name: deletionTimestamp
+                  type: datetime2
+                  constraints:
+                    nullable: false

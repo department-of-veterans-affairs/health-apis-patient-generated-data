@@ -16,6 +16,7 @@ import lombok.Builder;
 import lombok.NonNull;
 import lombok.Value;
 
+/** FHIR Resource bundler used by Vulcan. */
 @Builder
 public final class VulcanizedBundler<
         EntityT extends PayloadEntity<ResourceT>,
@@ -75,6 +76,7 @@ public final class VulcanizedBundler<
     return links.isEmpty() ? null : links;
   }
 
+  /** Vulcan Bundle. */
   @Value
   @Builder
   public static final class Bundling<

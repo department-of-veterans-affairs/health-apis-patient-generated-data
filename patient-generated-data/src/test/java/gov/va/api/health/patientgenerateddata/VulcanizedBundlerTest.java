@@ -98,6 +98,8 @@ public class VulcanizedBundlerTest {
   @Data
   @Builder
   private static final class FooResource implements Resource {
+    @Builder.Default String resourceType = "FooResource";
+
     String id;
 
     String implicitRules;

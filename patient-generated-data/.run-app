@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+
+set -x
+
+if [ -z "${RUN_APP_JAR}" ]
+then
+  RUN_APP_JAR=$(find target/ -maxdepth 1 -name "$app-*.jar" \
+    -not -name "*-tests.jar" -not -name "*-library.jar" 2> /dev/null)
+fi
+mvn dependency:copy -q -Dartifact=com.h2database:h2:1.4.200 -Dmdep.stripVersion=true
+H2_JAR=$(readlink -f target/dependency/h2.jar)
+H2_DB=$(readlink -f ../patient-generated-data-synthetic/target/pgd-db)
+
+if [ -z "${SPRING_PROFILES_ACTIVE:-}" ]
+then
+  export SPRING_PROFILES_ACTIVE=dev
+fi
+
+java \
+  -Dapp.name=${RUN_APP_NAME:-patient-generated-data} \
+  -Dloader.path=$H2_JAR \
+  -cp $RUN_APP_JAR \
+  org.springframework.boot.loader.PropertiesLauncher \
+  --server.port=8096 \
+  --spring.datasource.driver-class-name=org.h2.Driver \
+  --spring.datasource.url=jdbc:h2:$H2_DB \
+  --spring.datasource.password=sa \
+  --spring.datasource.username=sa \
+  --spring.jpa.properties.hibernate.globally_quoted_identifiers=false

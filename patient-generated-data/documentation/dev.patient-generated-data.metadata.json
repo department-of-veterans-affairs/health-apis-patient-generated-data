@@ -1,0 +1,244 @@
+{
+  "id" : "health-api-patient-generated-data-r4-capability",
+  "resourceType" : "CapabilityStatement",
+  "version" : "0",
+  "name" : "API Management Platform | Patient Generated-Data | FHIR R4",
+  "status" : "draft",
+  "date" : "2022-02-02T14:54:59-05:00",
+  "publisher" : "Department of Veterans Affairs",
+  "contact" : [
+    {
+      "name" : "API Support",
+      "telecom" : [
+        {
+          "system" : "email",
+          "value" : "api@va.gov"
+        }
+      ]
+    }
+  ],
+  "description" : "FHIR R4 Clinical Health APIs.",
+  "kind" : "instance",
+  "software" : {
+    "name" : "health-api-patient-generated-data-r4"
+  },
+  "fhirVersion" : "4.0.0",
+  "format" : [
+    "application/json",
+    "application/fhir+json"
+  ],
+  "rest" : [
+    {
+      "mode" : "server",
+      "security" : {
+        "extension" : [
+          {
+            "url" : "http://fhir-registry.smarthealthit.org/StructureDefinition/oauth-uris",
+            "extension" : [
+              {
+                "url" : "token",
+                "valueUri" : "https://sandbox-api.va.gov/services/pgd/v0/r4/token"
+              },
+              {
+                "url" : "authorize",
+                "valueUri" : "https://sandbox-api.va.gov/oauth2/pgd/v1/authorization"
+              },
+              {
+                "url" : "manage",
+                "valueUri" : "https://sandbox-api.va.gov/oauth2/pgd/v1/manage"
+              },
+              {
+                "url" : "revoke",
+                "valueUri" : "https://sandbox-api.va.gov/oauth2/pgd/v1/revoke"
+              }
+            ]
+          }
+        ],
+        "cors" : true,
+        "service" : [
+          {
+            "coding" : [
+              {
+                "system" : "https://www.hl7.org/fhir/valueset-restful-security-service.html",
+                "code" : "SMART-on-FHIR",
+                "display" : "SMART-on-FHIR"
+              }
+            ],
+            "text" : "SMART-on-FHIR"
+          }
+        ],
+        "description" : "http://docs.smarthealthit.org/"
+      },
+      "resource" : [
+        {
+          "type" : "Observation",
+          "profile" : "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab",
+          "interaction" : [
+            {
+              "code" : "search-type",
+              "documentation" : "Implemented per specification. See http://hl7.org/fhir/R4/http.html"
+            },
+            {
+              "code" : "read",
+              "documentation" : "Implemented per specification. See http://hl7.org/fhir/R4/http.html"
+            },
+            {
+              "code" : "write",
+              "documentation" : "Implemented per specification. See http://hl7.org/fhir/R4/http.html"
+            }
+          ],
+          "versioning" : "no-version",
+          "referencePolicy" : [
+            "literal",
+            "local"
+          ],
+          "searchParam" : [
+            {
+              "name" : "_id",
+              "type" : "token"
+            },
+            {
+              "name" : "_lastUpdated",
+              "type" : "date"
+            }
+          ]
+        },
+        {
+          "type" : "Appointment",
+          "profile" : "https://www.hl7.org/fhir/appointment.html",
+          "interaction" : [
+            {
+              "code" : "search-type",
+              "documentation" : "Implemented per specification. See http://hl7.org/fhir/R4/http.html"
+            },
+            {
+              "code" : "read",
+              "documentation" : "Implemented per specification. See http://hl7.org/fhir/R4/http.html"
+            }
+          ],
+          "versioning" : "no-version",
+          "referencePolicy" : [
+            "literal",
+            "local"
+          ],
+          "searchParam" : [
+            {
+              "name" : "_id",
+              "type" : "token"
+            },
+            {
+              "name" : "_lastUpdated",
+              "type" : "date"
+            },
+            {
+              "name" : "date",
+              "type" : "date"
+            },
+            {
+              "name" : "identifier",
+              "type" : "token"
+            },
+            {
+              "name" : "location",
+              "type" : "reference"
+            },
+            {
+              "name" : "patient",
+              "type" : "reference"
+            }
+          ]
+        },
+        {
+          "type" : "Questionnaire",
+          "profile" : "https://www.hl7.org/fhir/R4/questionnaire.html",
+          "interaction" : [
+            {
+              "code" : "search-type",
+              "documentation" : "Implemented per specification. See http://hl7.org/fhir/R4/http.html"
+            },
+            {
+              "code" : "read",
+              "documentation" : "Implemented per specification. See http://hl7.org/fhir/R4/http.html"
+            },
+            {
+              "code" : "write",
+              "documentation" : "Implemented per specification. See http://hl7.org/fhir/R4/http.html"
+            }
+          ],
+          "versioning" : "no-version",
+          "referencePolicy" : [
+            "literal",
+            "local"
+          ],
+          "searchParam" : [
+            {
+              "name" : "_id",
+              "type" : "token"
+            },
+            {
+              "name" : "_lastUpdated",
+              "type" : "date"
+            },
+            {
+              "name" : "context-type-value",
+              "type" : "string"
+            }
+          ]
+        },
+        {
+          "type" : "QuestionnaireResponse",
+          "profile" : "https://www.hl7.org/fhir/R4/questionnaireresponse.html",
+          "interaction" : [
+            {
+              "code" : "search-type",
+              "documentation" : "Implemented per specification. See http://hl7.org/fhir/R4/http.html"
+            },
+            {
+              "code" : "read",
+              "documentation" : "Implemented per specification. See http://hl7.org/fhir/R4/http.html"
+            },
+            {
+              "code" : "write",
+              "documentation" : "Implemented per specification. See http://hl7.org/fhir/R4/http.html"
+            }
+          ],
+          "versioning" : "no-version",
+          "referencePolicy" : [
+            "literal",
+            "local"
+          ],
+          "searchParam" : [
+            {
+              "name" : "_id",
+              "type" : "token"
+            },
+            {
+              "name" : "_lastUpdated",
+              "type" : "date"
+            },
+            {
+              "name" : "_tag",
+              "type" : "token"
+            },
+            {
+              "name" : "author",
+              "type" : "string"
+            },
+            {
+              "name" : "authored",
+              "type" : "date"
+            },
+            {
+              "name" : "source",
+              "type" : "string"
+            },
+            {
+              "name" : "subject",
+              "type" : "string"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

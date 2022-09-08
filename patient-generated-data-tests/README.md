@@ -1,7 +1,11 @@
 # patient-generated-data-tests
 
-Integration tests.
+Integration tests docker image.
+Tests are executed during the standard build.
 
-## Interactive local system
+Additional scripts:
 
-Use `maven-start-processes` to launch the application in standalone mode for integration testing.
+- Use `local-docker-image.sh` to build and run the integration test docker image
+- Use `start-processes-for-integration-tests.sh` to launch the application, as configured for local integration testing
+- Use `synthetic-refresh.sh` to create or update [synthetic records](../patient-generated-data-synthetic/README.md)
+  in a development environment
