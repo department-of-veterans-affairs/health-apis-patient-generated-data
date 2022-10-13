@@ -8,7 +8,7 @@
     <relativePath/>
   </parent>
   <artifactId>patient-generated-data-synthetic</artifactId>
-  <version>3.0.10-SNAPSHOT</version>
+  <version>3.0.10</version>
   <packaging>jar</packaging>
   <properties>
     <github.repository-name>health-apis-patient-generated-data</github.repository-name>
