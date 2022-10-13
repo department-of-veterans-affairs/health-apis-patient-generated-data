@@ -11,8 +11,9 @@
   <version>3.0.10-SNAPSHOT</version>
   <packaging>jar</packaging>
   <properties>
-    <github.repository-name>health-apis-patient-generated-data</github.repository-name>
+    <docker.organization>ghcr.io/department-of-veterans-affairs</docker.organization>
     <fhir-resources.version>11.0.20</fhir-resources.version>
+    <github.repository-name>health-apis-patient-generated-data</github.repository-name>
     <guava.version>31.0.1-jre</guava.version>
     <nimbus-jose-jwt.version>9.13</nimbus-jose-jwt.version>
     <swagger-examples-maven-plugin.version>3.0.0</swagger-examples-maven-plugin.version>
