@@ -4,17 +4,17 @@
   <parent>
     <groupId>gov.va.api.health</groupId>
     <artifactId>test-starter</artifactId>
-    <version>11.0.8</version>
+    <version>11.0.9</version>
     <relativePath/>
   </parent>
   <artifactId>patient-generated-data-tests</artifactId>
-  <version>3.0.9-SNAPSHOT</version>
+  <version>3.0.9</version>
   <packaging>jar</packaging>
   <properties>
     <github.repository-name>health-apis-patient-generated-data</github.repository-name>
     <authorization.client-ids.escape>{\"P73R4CUD4\":\"pteracuda\"}</authorization.client-ids.escape>
     <authorization.client-ids>{"P73R4CUD4":"pteracuda"}</authorization.client-ids>
-    <fhir-resources.version>11.0.13</fhir-resources.version>
+    <fhir-resources.version>11.0.20</fhir-resources.version>
     <sentinel.skipLaunch>false</sentinel.skipLaunch>
   </properties>
   <dependencies>
