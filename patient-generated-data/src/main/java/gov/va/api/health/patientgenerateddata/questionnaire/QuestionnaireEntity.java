@@ -21,7 +21,7 @@ import org.springframework.data.domain.Sort;
 @Data
 @Entity
 @Builder
-@Table(name = "Questionnaire", schema = "app")
+@Table(name = "questionnaire", schema = "app")
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
