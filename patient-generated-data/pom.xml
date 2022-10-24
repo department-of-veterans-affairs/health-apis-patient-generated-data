@@ -4,7 +4,7 @@
   <parent>
     <groupId>gov.va.api.health</groupId>
     <artifactId>service-starter</artifactId>
-    <version>11.0.9</version>
+    <version>11.0.14</version>
     <relativePath/>
   </parent>
   <artifactId>patient-generated-data</artifactId>
@@ -12,14 +12,14 @@
   <packaging>jar</packaging>
   <properties>
     <docker.organization>ghcr.io/department-of-veterans-affairs</docker.organization>
-    <fhir-resources.version>11.0.20</fhir-resources.version>
+    <fhir-resources.version>13.0.0</fhir-resources.version>
     <github.repository-name>health-apis-patient-generated-data</github.repository-name>
     <guava.version>31.0.1-jre</guava.version>
     <nimbus-jose-jwt.version>9.13</nimbus-jose-jwt.version>
-    <swagger-examples-maven-plugin.version>3.0.0</swagger-examples-maven-plugin.version>
+    <swagger-examples-maven-plugin.version>3.0.3</swagger-examples-maven-plugin.version>
     <swagger-maven-plugin.version>2.1.5</swagger-maven-plugin.version>
     <talos.version>3.0.2</talos.version>
-    <vulcan.version>4.0.4</vulcan.version>
+    <vulcan.version>4.0.6</vulcan.version>
   </properties>
   <dependencies>
     <dependency>
