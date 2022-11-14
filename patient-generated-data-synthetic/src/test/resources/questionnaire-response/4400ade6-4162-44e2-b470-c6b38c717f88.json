@@ -8,14 +8,14 @@
   "questionnaire" : "Questionnaire/9c930b5c-6e0e-4e84-9f3a-1c1a6cb4313e",
   "status" : "completed",
   "subject" : {
-    "reference" : "https://api.va.gov/services/fhir/v0/r4/Patient/1017283180V801730"
+    "reference" : "Patient/1017283180V801730"
   },
   "authored" : "2020-08-20T22:26:06.453127500Z",
   "author" : {
-    "reference" : "https://api.va.gov/services/fhir/v0/r4/Practitioner/I2-6NVSMKEGQKNB3KRDXBGE7NRIEY000000"
+    "reference" : "Practitioner/I2-6NVSMKEGQKNB3KRDXBGE7NRIEY000000"
   },
   "source" : {
-    "reference" : "https://api.va.gov/services/fhir/v0/r4/Patient/1017283180V801730"
+    "reference" : "Patient/1017283180V801730"
   },
   "item" : [
     {
