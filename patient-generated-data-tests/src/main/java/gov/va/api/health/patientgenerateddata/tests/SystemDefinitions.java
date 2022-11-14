@@ -121,7 +121,7 @@ class SystemDefinitions {
                 "/patient-generated-data/management/"))
         .r4(
             serviceDefinition(
-                "r4", "https://blue.qa.lighthouse.va.gov", 443, "/yanartas/fhir/preview/patient-generated-data/r4/"))
+                "r4", "https://blue.qa.lighthouse.va.gov", 443, "/patient-generated-data/r4/"))
         .sandboxDataR4(
             serviceDefinition(
                 "sandbox-data-r4",
