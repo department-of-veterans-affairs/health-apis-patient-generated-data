@@ -29,13 +29,13 @@
     "text" : "MDC_ECG_ELEC_POTL"
   },
   "subject" : {
-    "reference" : "https://api.va.gov/services/fhir/v0/r4/Patient/1011537977V693883",
+    "reference" : "Patient/1011537977V693883",
     "display" : "Ms. Carlita746 Kautzer186"
   },
   "effectiveDateTime" : "2015-02-19T09:30:35+01:00",
   "performer" : [
     {
-      "reference" : "https://api.va.gov/services/fhir/v0/r4/Practitioner/I2-6NVSMKEGQKNB3KRDXBGE7NRIEY000000",
+      "reference" : "Practitioner/I2-6NVSMKEGQKNB3KRDXBGE7NRIEY000000",
       "display" : "A. Langeveld"
     }
   ],
