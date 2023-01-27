@@ -14,6 +14,7 @@ import gov.va.api.health.r4.api.datatypes.Identifier;
 import gov.va.api.health.r4.api.datatypes.Signature;
 import gov.va.api.health.r4.api.elements.Extension;
 import gov.va.api.health.r4.api.elements.Meta;
+import gov.va.api.health.r4.api.elements.Reference;
 import gov.va.api.health.r4.api.resources.Resource;
 import java.util.List;
 import java.util.stream.Stream;
@@ -28,6 +29,15 @@ import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
 public class IncludesIcnMajigTest {
+
+  @Test
+  void extractPatientIcnFromReference() {
+    assertThat(IncludesIcnMajig.icn(Reference.builder().reference("Patient/p1").build()))
+        .isEqualTo("p1");
+    assertThat(IncludesIcnMajig.icn(Reference.builder().reference("Observation/o1").build()))
+        .isNull();
+  }
+
   @Test
   void icnHeaderIsPresentForResource() {
     ServerHttpResponse mockResponse = mock(ServerHttpResponse.class);

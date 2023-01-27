@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.api.health.autoconfig.configuration.JacksonConfig;
 import gov.va.api.health.r4.api.resources.Resource;
 import gov.va.api.health.sentinel.ExpectedResponse;
+import gov.va.api.health.sentinel.configurablevalues.ConfigurableValues;
 import io.restassured.RestAssured;
 import io.restassured.http.Method;
 import java.util.HashMap;
@@ -20,9 +21,11 @@ import lombok.extern.slf4j.Slf4j;
 public class Requests {
   static final ObjectMapper MAPPER = JacksonConfig.createMapper();
 
-  static final String ACCESS_TOKEN = System.getProperty("access-token", "pterastatic");
+  static final String ACCESS_TOKEN =
+      ConfigurableValues.get().forPropertyName("access-token").orElse("pterastatic").asString();
 
-  static final String CLIENT_KEY = System.getProperty("client-key", "pteracuda");
+  static final String CLIENT_KEY =
+      ConfigurableValues.get().forPropertyName("pgd.client-key").orElse("pteracuda").asString();
 
   // {"cid":"P73R4CUD4"}
   static final String LOCAL_JWT =
@@ -31,7 +34,7 @@ public class Requests {
 
   static ExpectedResponse doDelete(String description, String request, Integer expectedStatus) {
     var svc = systemDefinition().r4();
-    var headers = Map.of("Authorization", "Bearer " + ACCESS_TOKEN);
+    var headers = Map.of("Authorization", "Bearer " + ACCESS_TOKEN, "client-key", CLIENT_KEY);
     return doRequest(Method.DELETE, svc, description, request, null, headers, expectedStatus);
   }
 
@@ -42,6 +45,7 @@ public class Requests {
       headers.put("Accept", accept);
     }
     headers.put("Authorization", "Bearer " + ACCESS_TOKEN);
+    headers.put("client-key", CLIENT_KEY);
     return doRequest(Method.GET, svc, null, request, null, headers, expectedStatus);
   }
 
@@ -80,7 +84,13 @@ public class Requests {
       String description, String request, Resource payload, Integer expectedStatus) {
     var svc = systemDefinition().r4();
     var headers =
-        Map.of("Authorization", "Bearer " + ACCESS_TOKEN, "Content-Type", "application/json");
+        Map.of(
+            "Authorization",
+            "Bearer " + ACCESS_TOKEN,
+            "Content-Type",
+            "application/json",
+            "client-key",
+            CLIENT_KEY);
     return doRequest(Method.POST, svc, description, request, payload, headers, expectedStatus);
   }
 
@@ -92,7 +102,13 @@ public class Requests {
       Integer expectedStatus) {
     var svc = systemDefinition().r4();
     var headers =
-        Map.of("Authorization", "Bearer " + accessToken, "Content-Type", "application/json");
+        Map.of(
+            "Authorization",
+            "Bearer " + accessToken,
+            "Content-Type",
+            "application/json",
+            "client-key",
+            CLIENT_KEY);
     return doRequest(Method.PUT, svc, description, request, payload, headers, expectedStatus);
   }
 
@@ -109,7 +125,7 @@ public class Requests {
         headers.entrySet().stream()
             .filter(e -> !e.getKey().equalsIgnoreCase("Authorization"))
             .filter(e -> !e.getKey().equalsIgnoreCase("client-key"))
-            .collect(toMap(e -> e.getKey(), e -> e.getValue()));
+            .collect(toMap(Map.Entry::getKey, Map.Entry::getValue));
     log.info(
         "{} {}{}{}{}",
         method,
@@ -139,6 +155,13 @@ public class Requests {
   static ExpectedResponse doSandboxDelete(
       String description, String request, Integer expectedStatus) {
     var svc = systemDefinition().sandboxDataR4();
-    return doRequest(Method.DELETE, svc, description, request, null, Map.of(), expectedStatus);
+    return doRequest(
+        Method.DELETE,
+        svc,
+        description,
+        request,
+        null,
+        Map.of("client-key", CLIENT_KEY),
+        expectedStatus);
   }
 }
