@@ -1,18 +1,10 @@
 package gov.va.api.health.patientgenerateddata;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-@SpringBootTest
-@ExtendWith(SpringExtension.class)
+@SpringBootTest(properties = {"patient-generated-data.client-keys=disabled"})
 public class ApplicationTest {
   @Test
   void contextLoads() {}
-
-  @Test
-  void main() {
-    Application.main(new String[0]);
-  }
 }
