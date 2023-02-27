@@ -4,7 +4,7 @@
   <parent>
     <groupId>gov.va.api.health</groupId>
     <artifactId>test-starter</artifactId>
-    <version>11.0.17</version>
+    <version>12.0.2</version>
     <relativePath/>
   </parent>
   <artifactId>patient-generated-data-tests</artifactId>
@@ -14,7 +14,7 @@
     <authorization.client-ids.escape>{\"P73R4CUD4\":\"pteracuda\"}</authorization.client-ids.escape>
     <authorization.client-ids>{"P73R4CUD4":"pteracuda"}</authorization.client-ids>
     <docker.organization>ghcr.io/department-of-veterans-affairs</docker.organization>
-    <fhir-resources.version>13.0.24</fhir-resources.version>
+    <fhir-resources.version>14.0.1</fhir-resources.version>
     <github.repository-name>health-apis-patient-generated-data</github.repository-name>
     <sentinel.skipLaunch>false</sentinel.skipLaunch>
   </properties>
@@ -102,7 +102,7 @@
                 <argument>-Dsandbox-data-management.enabled=true</argument>
                 <argument>-Dspring.datasource.driver-class-name=org.h2.Driver</argument>
                 <argument>-Dspring.datasource.password=sa</argument>
-                <argument>-Dspring.datasource.url=jdbc:h2:${project.basedir}/../patient-generated-data-synthetic/target/pgd-db</argument>
+                <argument>-Dspring.datasource.url=jdbc:h2:${project.basedir}/../patient-generated-data-synthetic/target/pgd-db;NON_KEYWORDS=value</argument>
                 <argument>-Dspring.datasource.username=sa</argument>
                 <argument>-Dspring.jpa.generate-ddl=false</argument>
                 <argument>-Dspring.jpa.hibernate.ddl-auto=none</argument>

@@ -21,7 +21,7 @@ public class TokenListMappingJpaTest {
 
   @Test
   void specificationFor_csv() {
-    jdbc.execute("create table app.foo (id varchar, value varchar)");
+    jdbc.execute("create table app.foo (id varchar, `value` varchar)");
     String tagJoin =
         TokenListMapping.metadataTagJoin(questionnaireResponseWithTags("clinics", "123"));
     String tagJoinSecondary =
@@ -39,7 +39,7 @@ public class TokenListMappingJpaTest {
 
   @Test
   void specificationFor_edgeCases() {
-    jdbc.execute("create table app.foo (id varchar, value varchar)");
+    jdbc.execute("create table app.foo (id varchar, `value` varchar)");
     String tagJoin =
         TokenListMapping.metadataTagJoin(questionnaireResponseWithTags("clinics", "123"));
     FooEntity entity = FooEntity.builder().id("x").value(tagJoin).build();
@@ -54,7 +54,7 @@ public class TokenListMappingJpaTest {
 
   @Test
   void specificationFor_systemAndCode() {
-    jdbc.execute("create table app.foo (id varchar, value varchar)");
+    jdbc.execute("create table app.foo (id varchar, `value` varchar)");
     String tagJoin =
         TokenListMapping.metadataTagJoin(questionnaireResponseWithTags("clinics", "123"));
     FooEntity entity = FooEntity.builder().id("x").value(tagJoin).build();
