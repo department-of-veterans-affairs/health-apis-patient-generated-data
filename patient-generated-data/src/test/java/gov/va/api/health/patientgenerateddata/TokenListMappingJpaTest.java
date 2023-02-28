@@ -31,7 +31,7 @@ public class TokenListMappingJpaTest {
     repository.save(entity);
     repository.save(entitySecondary);
     TokenListMapping<FooEntity> mapping =
-        TokenListMapping.<FooEntity>builder().parameterName("param").fieldName("value").build();
+        TokenListMapping.<FooEntity>builder().parameterName("param").fieldName("val").build();
     Specification<FooEntity> spec =
         mapping.specificationFor(requestFromUri("http://fizz.com?param=clinics|123,something|456"));
     assertThat(repository.findAll(spec)).isEqualTo(List.of(entity, entitySecondary));
@@ -45,7 +45,7 @@ public class TokenListMappingJpaTest {
     FooEntity entity = FooEntity.builder().id("x").val(tagJoin).build();
     repository.save(entity);
     TokenListMapping<FooEntity> mapping =
-        TokenListMapping.<FooEntity>builder().parameterName("param").fieldName("value").build();
+        TokenListMapping.<FooEntity>builder().parameterName("param").fieldName("val").build();
     assertThat(mapping.specificationFor(requestFromUri("http://fizz.com?param=,"))).isNull();
     assertThat(mapping.specificationFor(requestFromUri("http://fizz.com?param=|,|"))).isNull();
     assertThat(mapping.specificationFor(requestFromUri("http://fizz.com?param=,|"))).isNull();
@@ -60,7 +60,7 @@ public class TokenListMappingJpaTest {
     FooEntity entity = FooEntity.builder().id("x").val(tagJoin).build();
     repository.save(entity);
     TokenListMapping<FooEntity> mapping =
-        TokenListMapping.<FooEntity>builder().parameterName("param").fieldName("value").build();
+        TokenListMapping.<FooEntity>builder().parameterName("param").fieldName("val").build();
     Specification<FooEntity> spec =
         mapping.specificationFor(requestFromUri("http://fizz.com?param=clinics|123"));
     assertThat(repository.findAll(spec)).isEqualTo(List.of(entity));
