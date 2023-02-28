@@ -18,8 +18,8 @@
     <nimbus-jose-jwt.version>9.13</nimbus-jose-jwt.version>
     <swagger-examples-maven-plugin.version>3.0.3</swagger-examples-maven-plugin.version>
     <swagger-maven-plugin.version>2.1.5</swagger-maven-plugin.version>
-    <talos.version>3.0.2</talos.version>
-    <vulcan.version>4.0.6</vulcan.version>
+    <talos.version>5.0.1</talos.version>
+    <vulcan.version>6.0.0</vulcan.version>
   </properties>
   <dependencies>
     <dependency>
