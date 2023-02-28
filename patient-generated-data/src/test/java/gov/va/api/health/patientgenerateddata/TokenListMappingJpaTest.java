@@ -21,13 +21,13 @@ public class TokenListMappingJpaTest {
 
   @Test
   void specificationFor_csv() {
-    jdbc.execute("create table app.foo (id varchar, `value` varchar)");
+    jdbc.execute("create table app.foo (id varchar, val varchar)");
     String tagJoin =
         TokenListMapping.metadataTagJoin(questionnaireResponseWithTags("clinics", "123"));
     String tagJoinSecondary =
         TokenListMapping.metadataTagJoin(questionnaireResponseWithTags("something", "456"));
-    FooEntity entity = FooEntity.builder().id("x").value(tagJoin).build();
-    FooEntity entitySecondary = FooEntity.builder().id("y").value(tagJoinSecondary).build();
+    FooEntity entity = FooEntity.builder().id("x").val(tagJoin).build();
+    FooEntity entitySecondary = FooEntity.builder().id("y").val(tagJoinSecondary).build();
     repository.save(entity);
     repository.save(entitySecondary);
     TokenListMapping<FooEntity> mapping =
@@ -39,10 +39,10 @@ public class TokenListMappingJpaTest {
 
   @Test
   void specificationFor_edgeCases() {
-    jdbc.execute("create table app.foo (id varchar, `value` varchar)");
+    jdbc.execute("create table app.foo (id varchar, val varchar)");
     String tagJoin =
         TokenListMapping.metadataTagJoin(questionnaireResponseWithTags("clinics", "123"));
-    FooEntity entity = FooEntity.builder().id("x").value(tagJoin).build();
+    FooEntity entity = FooEntity.builder().id("x").val(tagJoin).build();
     repository.save(entity);
     TokenListMapping<FooEntity> mapping =
         TokenListMapping.<FooEntity>builder().parameterName("param").fieldName("value").build();
@@ -54,10 +54,10 @@ public class TokenListMappingJpaTest {
 
   @Test
   void specificationFor_systemAndCode() {
-    jdbc.execute("create table app.foo (id varchar, `value` varchar)");
+    jdbc.execute("create table app.foo (id varchar, val varchar)");
     String tagJoin =
         TokenListMapping.metadataTagJoin(questionnaireResponseWithTags("clinics", "123"));
-    FooEntity entity = FooEntity.builder().id("x").value(tagJoin).build();
+    FooEntity entity = FooEntity.builder().id("x").val(tagJoin).build();
     repository.save(entity);
     TokenListMapping<FooEntity> mapping =
         TokenListMapping.<FooEntity>builder().parameterName("param").fieldName("value").build();

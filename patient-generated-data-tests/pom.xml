@@ -8,13 +8,13 @@
     <relativePath/>
   </parent>
   <artifactId>patient-generated-data-tests</artifactId>
-  <version>3.0.14-SNAPSHOT</version>
+  <version>4.0.0-SNAPSHOT</version>
   <packaging>jar</packaging>
   <properties>
     <authorization.client-ids.escape>{\"P73R4CUD4\":\"pteracuda\"}</authorization.client-ids.escape>
     <authorization.client-ids>{"P73R4CUD4":"pteracuda"}</authorization.client-ids>
     <docker.organization>ghcr.io/department-of-veterans-affairs</docker.organization>
-    <fhir-resources.version>14.0.1</fhir-resources.version>
+    <fhir-resources.version>14.0.2</fhir-resources.version>
     <github.repository-name>health-apis-patient-generated-data</github.repository-name>
     <sentinel.skipLaunch>false</sentinel.skipLaunch>
   </properties>

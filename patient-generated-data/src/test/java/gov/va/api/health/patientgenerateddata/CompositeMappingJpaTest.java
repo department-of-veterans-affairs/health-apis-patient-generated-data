@@ -34,11 +34,11 @@ public class CompositeMappingJpaTest {
 
   @Test
   void specificationFor_systemAndCode() {
-    jdbc.execute("create table app.foo (id varchar, `value` varchar)");
+    jdbc.execute("create table app.foo (id varchar, val varchar)");
     String join =
         CompositeMapping.useContextValueJoin(
             questionnaireWithUseContext("fizz", "buzz", "something", "else"));
-    FooEntity entity = FooEntity.builder().id("x").value(join).build();
+    FooEntity entity = FooEntity.builder().id("x").val(join).build();
     repository.save(entity);
     CompositeMapping<FooEntity> mapping =
         CompositeMapping.<FooEntity>builder().parameterName("param").fieldName("value").build();

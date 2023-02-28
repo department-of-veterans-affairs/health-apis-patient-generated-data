@@ -21,5 +21,5 @@ import lombok.NoArgsConstructor;
 public class FooEntity {
   @Id @EqualsAndHashCode.Include private String id;
 
-  @Lob private String value;
+  @Lob private String val;
 }
