@@ -276,7 +276,9 @@ public final class Populaterator {
     @SneakyThrows
     public Optional<Connection> bootstrapConnection() {
       String bootstrapUrl =
-          String.format("jdbc:sqlserver://%s:%s;user=%S;password=%s;encrypt=false", host, port, user, password);
+          String.format(
+              "jdbc:sqlserver://%s:%s;user=%S;password=%s;encrypt=false",
+              host, port, user, password);
       return Optional.of(DriverManager.getConnection(bootstrapUrl));
     }
 
