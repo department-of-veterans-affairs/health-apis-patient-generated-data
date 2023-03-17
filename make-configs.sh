@@ -42,11 +42,12 @@ configValue patient-generated-data $PROFILE metadata.endpoint-authorize 'http://
 configValue patient-generated-data $PROFILE metadata.endpoint-management 'http://fake.com/manage'
 configValue patient-generated-data $PROFILE metadata.endpoint-revocation 'http://fake.com/revoke'
 configValue patient-generated-data $PROFILE metadata.endpoint-token 'http://fake.com/token'
+configValue patient-generated-data $PROFILE patient-generated-data.client-keys 'disabled'
 configValue patient-generated-data $PROFILE public-r4-base-path 'r4'
 configValue patient-generated-data $PROFILE public-url 'http://localhost:8096'
 configValue patient-generated-data $PROFILE sandbox-data-management.enabled 'true'
 configValue patient-generated-data $PROFILE spring.datasource.password '<YourStrong!Passw0rd>'
-configValue patient-generated-data $PROFILE spring.datasource.url 'jdbc:sqlserver://localhost:1633;database=pgd;sendStringParametersAsUnicode=false'
+configValue patient-generated-data $PROFILE spring.datasource.url 'jdbc:sqlserver://localhost:1633;database=pgd;sendStringParametersAsUnicode=false;encrypt=false'
 configValue patient-generated-data $PROFILE spring.datasource.username 'SA'
 configValue patient-generated-data $PROFILE web-exception-key '-sharktopus-v-pteracuda-'
 checkForUnsetValues patient-generated-data $PROFILE

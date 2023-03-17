@@ -276,7 +276,7 @@ public final class Populaterator {
     @SneakyThrows
     public Optional<Connection> bootstrapConnection() {
       String bootstrapUrl =
-          String.format("jdbc:sqlserver://%s:%s;user=%S;password=%s", host, port, user, password);
+          String.format("jdbc:sqlserver://%s:%s;user=%S;password=%s;encrypt=false", host, port, user, password);
       return Optional.of(DriverManager.getConnection(bootstrapUrl));
     }
 
@@ -290,7 +290,7 @@ public final class Populaterator {
     public Connection connection() {
       return DriverManager.getConnection(
           String.format(
-              "jdbc:sqlserver://%s:%s;user=%S;password=%s;database=%s",
+              "jdbc:sqlserver://%s:%s;user=%S;password=%s;database=%s;encrypt=false",
               host, port, user, password, database));
     }
   }
