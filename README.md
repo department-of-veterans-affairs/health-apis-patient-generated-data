@@ -1,3 +1,5 @@
+# This repo has been archived and is no longer in use.
+
 # health-apis-patient-generated-data
 
 A [Spring Boot](https://spring.io/projects/spring-boot) application that provides
