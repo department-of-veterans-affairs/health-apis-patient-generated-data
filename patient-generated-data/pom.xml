@@ -14,7 +14,7 @@
     <docker.organization>ghcr.io/department-of-veterans-affairs</docker.organization>
     <fhir-resources.version>14.0.2</fhir-resources.version>
     <github.repository-name>health-apis-patient-generated-data</github.repository-name>
-    <guava.version>31.0.1-jre</guava.version>
+    <guava.version>32.0.0-jre</guava.version>
     <nimbus-jose-jwt.version>9.13</nimbus-jose-jwt.version>
     <swagger-examples-maven-plugin.version>3.0.3</swagger-examples-maven-plugin.version>
     <swagger-maven-plugin.version>2.1.5</swagger-maven-plugin.version>
